@@ -51,6 +51,14 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			AddFoundEntry((CSearchInfo*)lParam);
 		}
 		break;
+	case SEARCH_END:
+		{
+			HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
+			ListView_SetColumnWidth(hListControl, 0, LVSCW_AUTOSIZE_USEHEADER);
+			ListView_SetColumnWidth(hListControl, 1, LVSCW_AUTOSIZE_USEHEADER);
+			ListView_SetColumnWidth(hListControl, 2, LVSCW_AUTOSIZE_USEHEADER);
+		}
+		break;
 	default:
 		return FALSE;
 	}
@@ -195,6 +203,7 @@ DWORD CSearchDlg::SearchThread()
 			}
 		}
 	}
+	SendMessage(*this, SEARCH_END, 0, 0);
 	return 0L;
 }
 

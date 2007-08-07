@@ -6,6 +6,7 @@
 using namespace std;
 
 #define SEARCH_FOUND		(WM_APP+1)
+#define SEARCH_END			(WM_APP+2)
 
 
 /**
