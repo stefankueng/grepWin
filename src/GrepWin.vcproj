@@ -189,6 +189,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\DirFileEnum.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\GrepWin.cpp"
 				>
 			</File>
@@ -198,6 +202,10 @@
 			</File>
 			<File
 				RelativePath=".\SearchDlg.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SearchInfo.cpp"
 				>
 			</File>
 			<File
@@ -219,6 +227,10 @@
 						UsePrecompiledHeader="1"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\TextFile.cpp"
+				>
 			</File>
 			<File
 				RelativePath=".\UnicodeUtils.cpp"
@@ -247,6 +259,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\DirFileEnum.h"
+				>
+			</File>
+			<File
 				RelativePath=".\GrepWin.h"
 				>
 			</File>
@@ -263,7 +279,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SearchInfo.h"
+				>
+			</File>
+			<File
 				RelativePath=".\stdafx.h"
+				>
+			</File>
+			<File
+				RelativePath=".\TextFile.h"
 				>
 			</File>
 			<File
@@ -289,10 +313,6 @@
 				>
 			</File>
 		</Filter>
-		<File
-			RelativePath=".\ReadMe.txt"
-			>
-		</File>
 	</Files>
 	<Globals>
 	</Globals>
