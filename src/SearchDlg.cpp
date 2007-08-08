@@ -6,6 +6,7 @@
 #include "TextFile.h"
 #include "SearchInfo.h"
 #include "UnicodeUtils.h"
+#include "BrowseFolder.h"
 #include <string>
 #include <iostream>
 #include <fstream>
@@ -112,6 +113,20 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 		break;
 	case IDCANCEL:
 		EndDialog(*this, id);
+		break;
+	case IDC_SEARCHPATHBROWSE:
+		{
+			TCHAR path[MAX_PATH*4] = {0};
+			CBrowseFolder browse;
+
+			GetDlgItemText(*this, IDC_SEARCHPATH, path, MAX_PATH*4);
+			browse.SetInfo(_T("Select path to search"));
+			if (browse.Show(*this, path, MAX_PATH*4, m_searchpath.c_str()) == CBrowseFolder::OK)
+			{
+				SetDlgItemText(*this, IDC_SEARCHPATH, path);
+				m_searchpath = path;
+			}
+		}
 		break;
 	case IDC_SEARCHTEXT:
 		{
