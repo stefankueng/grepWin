@@ -184,7 +184,7 @@ DWORD CSearchDlg::SearchThread()
 		{
 			const WIN32_FIND_DATA * pFindData = fileEnumerator.GetFileInfo();
 			bool bSearch = ((m_bIncludeHidden)||((pFindData->dwFileAttributes & FILE_ATTRIBUTE_HIDDEN) == 0));
-			bSearch = bSearch || ((m_bIncludeSystem)||((pFindData->dwFileAttributes & FILE_ATTRIBUTE_SYSTEM) == 0));
+			bSearch = bSearch && ((m_bIncludeSystem)||((pFindData->dwFileAttributes & FILE_ATTRIBUTE_SYSTEM) == 0));
 			if (!m_bAllSize)
 			{
 				switch (m_sizeCmp)
@@ -200,7 +200,7 @@ DWORD CSearchDlg::SearchThread()
 					break;
 				}
 			}
-			bRecurse = ((bIsDirectory)&&(m_bIncludeSubfolders)&&(!bSearch));
+			bRecurse = ((bIsDirectory)&&(m_bIncludeSubfolders)&&(bSearch));
 
 			if (bSearch)
 			{
@@ -209,6 +209,13 @@ DWORD CSearchDlg::SearchThread()
 				int nFound = SearchFile(sinfo, m_bUseRegex, m_searchString);
 				SendMessage(*this, SEARCH_FOUND, nFound, (LPARAM)&sinfo);
 			}
+		}
+		else
+		{
+			const WIN32_FIND_DATA * pFindData = fileEnumerator.GetFileInfo();
+			bool bSearch = ((m_bIncludeHidden)||((pFindData->dwFileAttributes & FILE_ATTRIBUTE_HIDDEN) == 0));
+			bSearch = bSearch && ((m_bIncludeSystem)||((pFindData->dwFileAttributes & FILE_ATTRIBUTE_SYSTEM) == 0));
+			bRecurse = ((bIsDirectory)&&(m_bIncludeSubfolders)&&(bSearch));
 		}
 	}
 	SendMessage(*this, SEARCH_END, 0, 0);
