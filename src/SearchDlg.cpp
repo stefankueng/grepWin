@@ -220,30 +220,45 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bUseRegex, const wstring& se
 		CTextFile textfile;
 		if (textfile.Load(sinfo.filepath.c_str()))
 		{
-			wstring::const_iterator start, end;
-			start = textfile.GetFileString().begin();
-			end = textfile.GetFileString().end();
-			match_results<wstring::const_iterator> what;
-			match_flag_type flags = match_default;
-			try
+			if (bUseRegex)
 			{
-				wregex expression = wregex(searchString);
-				match_results<wstring::const_iterator> whatc;
-				while(regex_search(start, end, whatc, expression, flags))   
+				wstring::const_iterator start, end;
+				start = textfile.GetFileString().begin();
+				end = textfile.GetFileString().end();
+				match_results<wstring::const_iterator> what;
+				match_flag_type flags = match_default;
+				try
 				{
-					nFound++;
-					sinfo.matchstarts.push_back(whatc[0].first-textfile.GetFileString().begin());
-					sinfo.matchends.push_back(whatc[0].second-textfile.GetFileString().begin());
-					// update search position:
-					start = whatc[0].second;      
-					// update flags:
-					flags |= match_prev_avail;
-					flags |= match_not_bob;
+					wregex expression = wregex(searchString);
+					match_results<wstring::const_iterator> whatc;
+					while (regex_search(start, end, whatc, expression, flags))   
+					{
+						nFound++;
+						sinfo.matchstarts.push_back(whatc[0].first-textfile.GetFileString().begin());
+						sinfo.matchends.push_back(whatc[0].second-textfile.GetFileString().begin());
+						// update search position:
+						start = whatc[0].second;      
+						// update flags:
+						flags |= match_prev_avail;
+						flags |= match_not_bob;
+					}
+				}
+				catch (const std::exception&)
+				{
+
 				}
 			}
-			catch (const std::exception&)
+			else
 			{
+				wstring::size_type foundpos = textfile.GetFileString().find(searchString);
+				while (foundpos != wstring::npos)
+				{
+					nFound++;
+					sinfo.matchstarts.push_back(foundpos);
+					sinfo.matchends.push_back(foundpos+searchString.size());
 
+					foundpos = textfile.GetFileString().find(searchString, foundpos+1);
+				}
 			}
 		}
 	}
