@@ -231,14 +231,14 @@ public:
     * \param  result On successful return, holds the full path to the found
     *                file. (If this function returns FALSE, the value of
     *                result is unspecified).
-	* \param  bNoRecurse if true, then the last returned directory is not
+	* \param  bRecurse if false, then the last returned directory is not
 	*                recursed into. Only valid for directories.
 	* \param  pbIsDirectory Pointer to a bool variable which will hold
 	*                TRUE if the \c result path is a directory, FALSE
 	*				 if it's a file. Pass NULL if you don't need that information.
     * \return TRUE iff a file was found, false at end of the iteration.
     */
-   BOOL NextFile(LPTSTR result, bool bNoRecurse, bool* pbIsDirectory);
+   BOOL NextFile(LPTSTR result, bool bRecurse, bool* pbIsDirectory);
 
    const WIN32_FIND_DATA * GetFileInfo() {return m_seStack->GetFileFindData();}
 };
