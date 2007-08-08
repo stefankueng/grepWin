@@ -50,7 +50,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 		}
 		return TRUE;
 	case WM_COMMAND:
-		return DoCommand(LOWORD(wParam));
+		return DoCommand(LOWORD(wParam), HIWORD(wParam));
 	case SEARCH_FOUND:
 		if (wParam)
 		{
@@ -71,7 +71,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 	return FALSE;
 }
 
-LRESULT CSearchDlg::DoCommand(int id)
+LRESULT CSearchDlg::DoCommand(int id, int msg)
 {
 	switch (id)
 	{
@@ -112,6 +112,39 @@ LRESULT CSearchDlg::DoCommand(int id)
 		break;
 	case IDCANCEL:
 		EndDialog(*this, id);
+		break;
+	case IDC_SEARCHTEXT:
+		{
+			if (msg == EN_CHANGE)
+			{
+				if (IsDlgButtonChecked(*this, IDC_REGEXRADIO) == BST_CHECKED)
+				{
+					// check if the regex is valid
+					TCHAR buf[MAX_PATH*4] = {0};
+					GetDlgItemText(*this, IDC_SEARCHTEXT, buf, MAX_PATH*4);
+					bool bValid = true;
+					if (_tcslen(buf))
+					{
+						try
+						{
+							wregex expression = wregex(buf);
+						}
+						catch (const exception&)
+						{
+							bValid = false;
+						}
+					}
+					if (bValid)
+						SetDlgItemText(*this, IDC_REGEXOKLABEL, _T("regex ok"));
+					else
+						SetDlgItemText(*this, IDC_REGEXOKLABEL, _T("invalid regex!"));
+				}
+				else
+				{
+					SetDlgItemText(*this, IDC_REGEXOKLABEL, _T(""));
+				}
+			}
+		}
 		break;
 	}
 	return 1;

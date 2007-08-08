@@ -22,7 +22,7 @@ public:
 
 protected:
 	LRESULT CALLBACK		DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
-	LRESULT					DoCommand(int id);
+	LRESULT					DoCommand(int id, int msg);
 
 	int						SearchFile(CSearchInfo& sinfo, bool bUseRegex, const wstring& searchString);
 
