@@ -142,7 +142,7 @@ CDirFileEnum::~CDirFileEnum()
 	}
 }
 
-BOOL CDirFileEnum::NextFile(LPTSTR szResult, bool* pbIsDirectory)
+BOOL CDirFileEnum::NextFile(LPTSTR szResult, bool bNoRecurse, bool* pbIsDirectory)
 {
 	if (m_bIsNew) 
 	{
@@ -150,7 +150,7 @@ BOOL CDirFileEnum::NextFile(LPTSTR szResult, bool* pbIsDirectory)
 		// so don't do recurse-into-directory check.
 		m_bIsNew = FALSE;
 	} 
-	else if (m_seStack && m_seStack->IsDirectory()) 
+	else if (!bNoRecurse && m_seStack && m_seStack->IsDirectory()) 
 	{
 		TCHAR path[MAX_PATH];
 		m_seStack->GetFilePath(path);
