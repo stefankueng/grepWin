@@ -170,8 +170,9 @@ DWORD CSearchDlg::SearchThread()
 	TCHAR pathbuf[MAX_PATH*4] = {0};
 	bool bIsDirectory = false;
 	CDirFileEnum fileEnumerator(m_searchpath.c_str());
+	bool bRecurse = m_bIncludeSubfolders;
 
-	while (fileEnumerator.NextFile(pathbuf, &bIsDirectory))
+	while (fileEnumerator.NextFile(pathbuf, bRecurse, &bIsDirectory))
 	{
 		if (!bIsDirectory)
 		{
@@ -193,6 +194,7 @@ DWORD CSearchDlg::SearchThread()
 					break;
 				}
 			}
+			bRecurse = ((bIsDirectory)&&(m_bIncludeSubfolders)&&(!bSearch));
 
 			if (bSearch)
 			{
