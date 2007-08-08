@@ -13,5 +13,6 @@ public:
 
 	wstring				filepath;
 	DWORD				filesize;
-	vector<wstring>		matches;	
+	vector<DWORD>		matchstarts;	
+	vector<DWORD>		matchends;	
 };

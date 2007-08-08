@@ -159,7 +159,7 @@ bool CSearchDlg::AddFoundEntry(CSearchInfo * pInfo)
 		lv.pszText = sb;
 		ListView_SetItem(hListControl, &lv);
 		lv.iSubItem = 2;
-		_stprintf_s(sb, 20, _T("%ld"), pInfo->matches.size());
+		_stprintf_s(sb, 20, _T("%ld"), pInfo->matchstarts.size());
 		ListView_SetItem(hListControl, &lv);
 	}
 	return (ret != -1);
@@ -230,6 +230,8 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bUseRegex, const wstring& se
 				while(regex_search(start, end, whatc, expression, flags))   
 				{
 					nFound++;
+					sinfo.matchstarts.push_back(whatc[0].first-textfile.GetFileString().begin());
+					sinfo.matchends.push_back(whatc[0].second-textfile.GetFileString().begin());
 					// update search position:
 					start = whatc[0].second;      
 					// update flags:
