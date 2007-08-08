@@ -5,10 +5,16 @@
 #include "DirFileEnum.h"
 #include "TextFile.h"
 #include "SearchInfo.h"
+#include "UnicodeUtils.h"
 #include <string>
+#include <iostream>
+#include <fstream>
+#include <iterator>
+#include <algorithm>
 #include <Commdlg.h>
 
 #include <boost/regex.hpp>
+#include <boost/spirit/iterator/file_iterator.hpp>
 using namespace boost;
 using namespace std;
 
@@ -243,7 +249,7 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bUseRegex, const wstring& se
 						flags |= match_not_bob;
 					}
 				}
-				catch (const std::exception&)
+				catch (const exception&)
 				{
 
 				}
@@ -258,6 +264,64 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bUseRegex, const wstring& se
 					sinfo.matchends.push_back(foundpos+searchString.size());
 
 					foundpos = textfile.GetFileString().find(searchString, foundpos+1);
+				}
+			}
+		}
+	}
+	else
+	{
+		// assume binary file
+
+		string filepath = CUnicodeUtils::StdGetANSI(sinfo.filepath);
+		string searchfor = CUnicodeUtils::StdGetUTF8(searchString);
+
+		if (bUseRegex)
+		{
+			spirit::file_iterator<> start(filepath.c_str());
+			spirit::file_iterator<> fbeg = start;
+			spirit::file_iterator<> end = start.make_end();
+
+			match_results<string::const_iterator> what;
+			match_flag_type flags = match_default;
+			try
+			{
+				regex expression = regex(searchfor);
+				match_results<spirit::file_iterator<>> whatc;
+				while (regex_search(start, end, whatc, expression, flags))   
+				{
+					nFound++;
+					sinfo.matchstarts.push_back(whatc[0].first-fbeg);
+					sinfo.matchends.push_back(whatc[0].second-fbeg);
+					// update search position:
+					start = whatc[0].second;
+					// update flags:
+					flags |= match_prev_avail;
+					flags |= match_not_bob;
+				}
+			}
+			catch (const exception&)
+			{
+
+			}
+		}
+		else
+		{
+			ifstream file (filepath.c_str(), ios::in|ios::binary|ios::ate);
+			if (file.is_open())
+			{
+				file.seekg (0, ios::beg);
+
+				istream_iterator<string> start(file);
+				istream_iterator<string> end;
+
+				start = find(start, end, searchfor);
+				while (start != end)
+				{
+					nFound++;
+					sinfo.matchstarts.push_back(file.tellg());
+					sinfo.matchends.push_back((DWORD)file.tellg()+searchfor.size());
+					++start;
+					start = find(start, end, searchfor);
 				}
 			}
 		}
