@@ -103,6 +103,14 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			m_resizer.DoResize(LOWORD(lParam), HIWORD(lParam));
 		}
 		break;
+	case WM_GETMINMAXINFO:
+		{
+			MINMAXINFO * mmi = (MINMAXINFO*)lParam;
+			mmi->ptMinTrackSize.x = m_resizer.GetDlgRect()->right;
+			mmi->ptMinTrackSize.y = m_resizer.GetDlgRect()->bottom;
+			return 0;
+		}
+		break;
 	case SEARCH_FOUND:
 		if (wParam)
 		{
