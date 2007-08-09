@@ -33,6 +33,14 @@
 #define IDC_GROUPSEARCHRESULTS          1018
 #define IDC_KBTEXT                      1019
 #define IDC_SEARCHINFOLABEL             1020
+#define IDC_ADDTOBOOKMARKS              1021
+#define IDC_BOOKMARKS                   1022
+#define IDC_REPLACETEXT                 1023
+#define IDC_REGEXREPLACEOKLABEL         1024
+#define IDC_BUTTON3                     1025
+#define IDC_PREVIEW                     1025
+#define IDC_SEARCHFORLABEL              1026
+#define IDC_REPLACEWITHLABEL            1027
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
@@ -42,7 +50,7 @@
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        130
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1021
+#define _APS_NEXT_CONTROL_VALUE         1028
 #define _APS_NEXT_SYMED_VALUE           110
 #endif
 #endif
