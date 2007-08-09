@@ -197,6 +197,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\DlgResizer.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\GrepWin.cpp"
 				>
 			</File>
@@ -276,6 +280,10 @@
 			</File>
 			<File
 				RelativePath=".\DirFileEnum.h"
+				>
+			</File>
+			<File
+				RelativePath=".\DlgResizer.h"
 				>
 			</File>
 			<File
