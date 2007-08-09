@@ -2,6 +2,7 @@
 #include "basedialog.h"
 #include "SearchInfo.h"
 #include <string>
+#include <vector>
 
 using namespace std;
 
@@ -28,6 +29,7 @@ protected:
 
 	bool					InitResultList();
 	bool					AddFoundEntry(CSearchInfo * pInfo);
+	void					ShowContextMenu(int x, int y);
 private:
 	HWND					m_hParent;
 	wstring					m_searchpath;
@@ -41,4 +43,6 @@ private:
 	bool					m_bIncludeSubfolders;
 
 	HANDLE					m_hSearchThread;
+
+	vector<CSearchInfo>		m_items;
 };

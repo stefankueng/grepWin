@@ -213,6 +213,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ShellContextMenu.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\stdafx.cpp"
 				>
 				<FileConfiguration
@@ -292,6 +296,10 @@
 			</File>
 			<File
 				RelativePath=".\SearchInfo.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ShellContextMenu.h"
 				>
 			</File>
 			<File
