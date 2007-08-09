@@ -51,8 +51,10 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			SendDlgItemMessage(hwndDlg, IDC_SIZECOMBO, CB_INSERTSTRING, (WPARAM)-1, (LPARAM)_T("greater than"));
 			SendDlgItemMessage(hwndDlg, IDC_SIZECOMBO, CB_SETCURSEL, 0, 0);
 			SendDlgItemMessage(hwndDlg, IDC_INCLUDESUBFOLDERS, BM_SETCHECK, BST_CHECKED, 0);
+
+			SetFocus(GetDlgItem(hwndDlg, IDC_SEARCHTEXT));
 		}
-		return TRUE;
+		return FALSE;
 	case WM_COMMAND:
 		return DoCommand(LOWORD(wParam), HIWORD(wParam));
 	case WM_CONTEXTMENU:
