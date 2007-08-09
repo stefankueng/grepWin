@@ -1,0 +1,12 @@
+#define FILEVER        $MajorVersion$,$MinorVersion$,$MicroVersion$,$WCREV$
+#define PRODUCTVER     $MajorVersion$,$MinorVersion$,$MicroVersion$,$WCREV$
+#define STRFILEVER     "$MajorVersion$, $MinorVersion$, $MicroVersion$, $WCREV$\0"
+#define STRPRODUCTVER  "$MajorVersion$, $MinorVersion$, $MicroVersion$, $WCREV$\0"
+
+#define CM_VERMAJOR             $MajorVersion$
+#define CM_VERMINOR             $MinorVersion$
+#define CM_VERMICRO             $MicroVersion$
+#define CM_VERBUILD			    $WCREV$
+#define CM_VERDATE			    "$WCDATE$"
+
+
