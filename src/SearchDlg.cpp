@@ -44,7 +44,8 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			// initialize the controls
 			SetDlgItemText(hwndDlg, IDC_SEARCHPATH, m_searchpath.c_str());
 			CheckRadioButton(hwndDlg, IDC_REGEXRADIO, IDC_TEXTRADIO, IDC_REGEXRADIO);
-			CheckRadioButton(hwndDlg, IDC_ALLSIZERADIO, IDC_SIZERADIO, IDC_ALLSIZERADIO);
+			CheckRadioButton(hwndDlg, IDC_ALLSIZERADIO, IDC_SIZERADIO, IDC_SIZERADIO);
+			SetDlgItemText(hwndDlg, IDC_SIZEEDIT, _T("2000"));
 			SendDlgItemMessage(hwndDlg, IDC_SIZECOMBO, CB_INSERTSTRING, (WPARAM)-1, (LPARAM)_T("less than"));
 			SendDlgItemMessage(hwndDlg, IDC_SIZECOMBO, CB_INSERTSTRING, (WPARAM)-1, (LPARAM)_T("equal to"));
 			SendDlgItemMessage(hwndDlg, IDC_SIZECOMBO, CB_INSERTSTRING, (WPARAM)-1, (LPARAM)_T("greater than"));
@@ -178,6 +179,29 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 				else
 				{
 					SetDlgItemText(*this, IDC_REGEXOKLABEL, _T(""));
+				}
+			}
+		}
+		break;
+	case IDC_SIZEEDIT:
+		{
+			if (msg == EN_CHANGE)
+			{
+				TCHAR buf[10] = {0};
+				GetDlgItemText(*this, IDC_SIZEEDIT, buf, 10);
+				if (_tcslen(buf))
+				{
+					if (IsDlgButtonChecked(*this, IDC_ALLSIZERADIO) == BST_CHECKED)
+					{
+						CheckRadioButton(*this, IDC_ALLSIZERADIO, IDC_SIZERADIO, IDC_SIZERADIO);
+					}
+				}
+				else
+				{
+					if (IsDlgButtonChecked(*this, IDC_SIZERADIO) == BST_CHECKED)
+					{
+						CheckRadioButton(*this, IDC_ALLSIZERADIO, IDC_SIZERADIO, IDC_ALLSIZERADIO);
+					}
 				}
 			}
 		}
