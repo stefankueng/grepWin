@@ -8,6 +8,7 @@
 #include "UnicodeUtils.h"
 #include "BrowseFolder.h"
 #include "SysImageList.h"
+#include "ShellContextMenu.h"
 #include <string>
 #include <iostream>
 #include <fstream>
@@ -53,6 +54,14 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 		return TRUE;
 	case WM_COMMAND:
 		return DoCommand(LOWORD(wParam), HIWORD(wParam));
+	case WM_CONTEXTMENU:
+		{
+			if (HWND(wParam) == GetDlgItem(*this, IDC_RESULTLIST))
+			{
+				ShowContextMenu(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+			}
+		}
+		break;
 	case SEARCH_FOUND:
 		if (wParam)
 		{
@@ -65,6 +74,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			ListView_SetColumnWidth(hListControl, 0, LVSCW_AUTOSIZE_USEHEADER);
 			ListView_SetColumnWidth(hListControl, 1, LVSCW_AUTOSIZE_USEHEADER);
 			ListView_SetColumnWidth(hListControl, 2, LVSCW_AUTOSIZE_USEHEADER);
+			ListView_SetColumnWidth(hListControl, 3, LVSCW_AUTOSIZE_USEHEADER);
 		}
 		break;
 	default:
@@ -92,6 +102,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 			{
 				GetDlgItemText(*this, IDC_SIZEEDIT, buf, MAX_PATH*4);
 				m_lSize = _tstol(buf);
+				m_lSize *= 1024;
 				m_sizeCmp = SendDlgItemMessage(*this, IDC_SIZECOMBO, CB_GETCURSEL, 0, 0);
 			}
 			m_bIncludeSystem = (IsDlgButtonChecked(*this, IDC_INCLUDESYSTEM) == BST_CHECKED);
@@ -196,6 +207,8 @@ bool CSearchDlg::InitResultList()
 	ListView_SetColumnWidth(hListControl, 2, LVSCW_AUTOSIZE_USEHEADER);
 	ListView_SetColumnWidth(hListControl, 3, LVSCW_AUTOSIZE_USEHEADER);
 
+	m_items.clear();
+
 	return true;
 }
 
@@ -209,6 +222,7 @@ bool CSearchDlg::AddFoundEntry(CSearchInfo * pInfo)
 	_tcscpy_s(pBuf, pInfo->filepath.size()+1, name.c_str());
 	lv.pszText = pBuf;
 	lv.iImage = CSysImageList::GetInstance().GetFileIconIndex(pInfo->filepath);
+	lv.iItem = ListView_GetItemCount(hListControl);
 	int ret = ListView_InsertItem(hListControl, &lv);
 	delete [] pBuf;
 	if (ret >= 0)
@@ -223,10 +237,39 @@ bool CSearchDlg::AddFoundEntry(CSearchInfo * pInfo)
 		_stprintf_s(sb, MAX_PATH*4, _T("%ld"), pInfo->matchstarts.size());
 		ListView_SetItem(hListControl, &lv);
 		lv.iSubItem = 3;
-		_tcscpy_s(sb, MAX_PATH*4, pInfo->filepath.substr(0, pInfo->filepath.size()-name.size()).c_str()-1);
+		_tcscpy_s(sb, MAX_PATH*4, pInfo->filepath.substr(0, pInfo->filepath.size()-name.size()-1).c_str());
 		ListView_SetItem(hListControl, &lv);
 	}
+	if (ret != -1)
+		m_items.push_back(*pInfo);
+
 	return (ret != -1);
+}
+
+void CSearchDlg::ShowContextMenu(int x, int y)
+{
+	HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
+	int nCount = ListView_GetItemCount(hListControl);
+	if (nCount == 0)
+		return;
+	CShellContextMenu shellMenu;
+	int iItem = -1;
+	vector<wstring> paths;
+	while ((iItem = ListView_GetNextItem(hListControl, iItem, LVNI_SELECTED)) != (-1))
+		paths.push_back(m_items[iItem].filepath);
+
+	shellMenu.SetObjects(paths);
+
+	POINT pt = {x,y};
+	if ((x==-1)&&(y==-1))
+	{
+		RECT rc;
+		ListView_GetItemRect(hListControl, ListView_GetSelectionMark(hListControl), &rc, LVIR_LABEL);
+		pt.x = (rc.right-rc.left)/2;
+		pt.y = (rc.bottom-rc.top)/2;
+		ClientToScreen(hListControl, &pt);
+	}
+	shellMenu.ShowContextMenu(hListControl, pt);
 }
 
 DWORD CSearchDlg::SearchThread()
