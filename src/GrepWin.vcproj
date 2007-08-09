@@ -40,6 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
+				AdditionalIncludeDirectories="Resources"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_SCL_SECURE_NO_WARNINGS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -114,6 +115,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories="Resources"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_SCL_SECURE_NO_WARNINGS"
 				RuntimeLibrary="0"
 				UsePrecompiledHeader="2"
@@ -295,7 +297,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Resource.h"
+				RelativePath=".\Resources\resource.h"
 				>
 			</File>
 			<File
@@ -333,15 +335,15 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 			<File
-				RelativePath=".\GrepWin.ico"
+				RelativePath=".\Resources\GrepWin.ico"
 				>
 			</File>
 			<File
-				RelativePath=".\GrepWin.rc"
+				RelativePath=".\Resources\GrepWin.rc"
 				>
 			</File>
 			<File
-				RelativePath=".\small.ico"
+				RelativePath=".\Resources\small.ico"
 				>
 			</File>
 		</Filter>

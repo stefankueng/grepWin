@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+
+<!-- use this file to set the paths to the required tools
+     TortoiseSVN needs to build everything.
+     
+     first make a copy of this file and rename the copy to
+     default.build.user
+     then adjust the paths in the "value" field.
+     
+     Note: make sure you don't forget the path separator (";")
+     if you're appending your paths to the system PATH variable!
+     You will get linker errors if you forget them.
+-->
+
+<project name="ToolPaths" default="env">
+
+<!-- ====================================================================== -->
+<!-- These two targets have to exist in doc.build.user                      -->
+<!-- ====================================================================== -->
+
+	<target name="VSNET" description="Checks if the env variables for VS.NET2005 are set">
+		<if test="${not environment::variable-exists('VCINSTALLDIR')}">
+			<fail>You must first call "%VS80COMNTOOLS%\vsvars32.bat"</fail>
+		</if>
+		<!-- Uncomment the line below to allow limited building using VC Express instead of VS.NET. -->
+		<!-- <property name="buildtool" value="vcexpress.exe" /> -->
+	</target>
+
+	<target name="env">
+		<setenv>
+			<variable name="PATH" value="D:\Development\wix\;%PATH%" />
+			<variable name="WIXUI" value="D:\Development\wix\" />
+			<variable name="PATH" value="C:\Programme\TortoiseSVN\bin\;%PATH%" />
+		</setenv>
+	</target>
+</project>

@@ -1,0 +1,93 @@
+<?xml version="1.0"?>
+<project name="grepWin" default="grepWin">
+
+	<include buildfile="default.build.user" />
+	
+	<property name="configuration" value="release" />
+	<property name="platform" value="win32" />
+	
+<!-- ====================================================================== -->
+<!-- Configuration targets													-->
+<!-- ====================================================================== -->
+	<target name="debug">
+		<description>
+			Sets the environment up to build the debug versions.
+		</description>
+		<property name="configuration" value="debug" />
+	</target>
+
+<!-- ====================================================================== -->
+<!-- Project targets														-->
+<!-- ====================================================================== -->
+	<target name="clean" depends="VSNET">
+		<description>
+			Cleans every subproject.
+		</description>
+		<exec program="devenv.com" >
+			<arg value="grepWin.sln" />
+			<arg value="/clean" />
+			<arg value="${configuration}|${platform}" />
+		</exec>
+	</target>
+	
+	<target name="VersionInfo" depends="VSNET,env">
+		<description>
+			Sets the version information as properties, env variables
+			and sets up the different version specific files.
+		</description>
+		<nant target="versioninfo">
+			<buildfiles>
+				<include name="versioninfo.build" />
+			</buildfiles>
+		</nant>
+		<loadfile file="src\version.in" property="versionheaderfile">
+			<filterchain>
+				<replacetokens begintoken="$" endtoken="$">
+					<token key="MajorVersion" value="${environment::get-variable('MajorVersion')}" />
+					<token key="MinorVersion" value="${environment::get-variable('MinorVersion')}" />
+					<token key="MicroVersion" value="${environment::get-variable('Microversion')}" />
+					<token key="WCREV" value="${environment::get-variable('WCREV')}" />
+					<token key="WCDATE" value="${environment::get-variable('WCDATE')}" />
+				</replacetokens>
+			</filterchain>
+		</loadfile>
+		<echo file="src\version.h" message="${versionheaderfile}" />
+	</target>
+	
+	<target name="grepWin" depends="VSNET,env,VersionInfo">
+		<description>
+			Builds grepWin.
+		</description>
+		<exec program="devenv.com" >
+			<arg value="grepWin.sln" />
+			<arg value="/rebuild" />
+			<arg value="${configuration}|${platform}" />
+		</exec>
+	</target>
+
+	<target name="setup" depends="grepWin">
+		<description>
+			Uses WiX to create an msi installer file.
+		</description>
+		<nant target="setup">
+			<buildfiles>
+				<include name="src\Setup\setup.build" />
+			</buildfiles>
+		</nant>
+	</target>
+
+	<target name="msi" depends="VSNET,env">
+		<description>
+			Builds the msi installer from already built binaries.
+		</description>
+		<nant target="setup">
+			<buildfiles>
+				<include name="src\Setup\setup.build" />
+			</buildfiles>
+		</nant>
+	</target>
+
+
+</project>
+
+
