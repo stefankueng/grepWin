@@ -30,6 +30,7 @@ protected:
 	bool					InitResultList();
 	bool					AddFoundEntry(CSearchInfo * pInfo);
 	void					ShowContextMenu(int x, int y);
+	void					DoListNotify(LPNMITEMACTIVATE lpNMItemActivate);
 private:
 	HWND					m_hParent;
 	wstring					m_searchpath;

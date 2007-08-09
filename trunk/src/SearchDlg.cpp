@@ -62,6 +62,15 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			}
 		}
 		break;
+	case WM_NOTIFY:
+		{
+			LPNMHDR lpMhdr = (LPNMHDR)lParam;
+			if (lpMhdr->hwndFrom == GetDlgItem(*this, IDC_RESULTLIST))
+			{
+				DoListNotify((LPNMITEMACTIVATE)lParam);
+			}
+		}
+		break;
 	case SEARCH_FOUND:
 		if (wParam)
 		{
@@ -270,6 +279,23 @@ void CSearchDlg::ShowContextMenu(int x, int y)
 		ClientToScreen(hListControl, &pt);
 	}
 	shellMenu.ShowContextMenu(hListControl, pt);
+}
+
+void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
+{
+	if (lpNMItemActivate->iItem >= 0)
+	{
+		if (lpNMItemActivate->hdr.code == NM_DBLCLK)
+		{
+			SHELLEXECUTEINFO shExInfo = {0};
+			shExInfo.cbSize = sizeof(SHELLEXECUTEINFO);
+			shExInfo.fMask = SEE_MASK_UNICODE;
+			shExInfo.hwnd = *this;
+			shExInfo.lpFile = m_items[lpNMItemActivate->iItem].filepath.c_str();
+			shExInfo.nShow = SW_SHOW;
+			ShellExecuteEx(&shExInfo);
+		}
+	}
 }
 
 DWORD CSearchDlg::SearchThread()
