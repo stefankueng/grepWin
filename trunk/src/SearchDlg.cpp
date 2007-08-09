@@ -7,6 +7,7 @@
 #include "SearchInfo.h"
 #include "UnicodeUtils.h"
 #include "BrowseFolder.h"
+#include "SysImageList.h"
 #include <string>
 #include <iostream>
 #include <fstream>
@@ -176,6 +177,7 @@ bool CSearchDlg::InitResultList()
 		ListView_DeleteColumn(hListControl, c--);
 
 	ListView_SetExtendedListViewStyle(hListControl, exStyle);
+	ListView_SetImageList(hListControl, (WPARAM)(HIMAGELIST)CSysImageList::GetInstance(), LVSIL_SMALL);
 	LVCOLUMN lvc = {0};
 	lvc.mask = LVCF_TEXT;
 	lvc.fmt = LVCFMT_LEFT;
@@ -186,10 +188,13 @@ bool CSearchDlg::InitResultList()
 	ListView_InsertColumn(hListControl, 1, &lvc);
 	lvc.pszText = _T("Matches");
 	ListView_InsertColumn(hListControl, 2, &lvc);
+	lvc.pszText = _T("Path");
+	ListView_InsertColumn(hListControl, 3, &lvc);
 
 	ListView_SetColumnWidth(hListControl, 0, LVSCW_AUTOSIZE_USEHEADER);
 	ListView_SetColumnWidth(hListControl, 1, LVSCW_AUTOSIZE_USEHEADER);
 	ListView_SetColumnWidth(hListControl, 2, LVSCW_AUTOSIZE_USEHEADER);
+	ListView_SetColumnWidth(hListControl, 3, LVSCW_AUTOSIZE_USEHEADER);
 
 	return true;
 }
@@ -198,22 +203,27 @@ bool CSearchDlg::AddFoundEntry(CSearchInfo * pInfo)
 {
 	HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
 	LVITEM lv = {0};
-	lv.mask = LVIF_TEXT;
+	lv.mask = LVIF_TEXT | LVIF_IMAGE;
 	TCHAR * pBuf = new TCHAR[pInfo->filepath.size()+1];
-	_tcscpy_s(pBuf, pInfo->filepath.size()+1, pInfo->filepath.c_str());
+	wstring name = pInfo->filepath.substr(pInfo->filepath.find_last_of('\\')+1);
+	_tcscpy_s(pBuf, pInfo->filepath.size()+1, name.c_str());
 	lv.pszText = pBuf;
+	lv.iImage = CSysImageList::GetInstance().GetFileIconIndex(pInfo->filepath);
 	int ret = ListView_InsertItem(hListControl, &lv);
 	delete [] pBuf;
 	if (ret >= 0)
 	{
 		lv.iItem = ret;
 		lv.iSubItem = 1;
-		TCHAR sb[20] = {0};
+		TCHAR sb[MAX_PATH*4] = {0};
 		StrFormatByteSizeW(pInfo->filesize, sb, 20);
 		lv.pszText = sb;
 		ListView_SetItem(hListControl, &lv);
 		lv.iSubItem = 2;
-		_stprintf_s(sb, 20, _T("%ld"), pInfo->matchstarts.size());
+		_stprintf_s(sb, MAX_PATH*4, _T("%ld"), pInfo->matchstarts.size());
+		ListView_SetItem(hListControl, &lv);
+		lv.iSubItem = 3;
+		_tcscpy_s(sb, MAX_PATH*4, pInfo->filepath.substr(0, pInfo->filepath.size()-name.size()).c_str()-1);
 		ListView_SetItem(hListControl, &lv);
 	}
 	return (ret != -1);

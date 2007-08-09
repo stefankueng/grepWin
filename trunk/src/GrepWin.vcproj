@@ -233,6 +233,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\SysImageList.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\TextFile.cpp"
 				>
 			</File>
@@ -292,6 +296,10 @@
 			</File>
 			<File
 				RelativePath=".\stdafx.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SysImageList.h"
 				>
 			</File>
 			<File
