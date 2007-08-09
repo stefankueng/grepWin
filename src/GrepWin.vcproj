@@ -339,5 +339,9 @@
 		</Filter>
 	</Files>
 	<Globals>
+		<Global
+			Name="RESOURCE_FILE"
+			Value="GrepWin.rc"
+		/>
 	</Globals>
 </VisualStudioProject>
