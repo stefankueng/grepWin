@@ -30,6 +30,7 @@ public:
 
 	void	DoResize(int width, int height);
 
+	RECT *	GetDlgRect() {return &m_dlgRect;}
 private:
 	vector<ResizeCtrls>		m_controls;
 	RECT					m_dlgRect;
