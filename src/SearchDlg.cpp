@@ -24,7 +24,10 @@ using namespace std;
 DWORD WINAPI SearchThreadEntry(LPVOID lpParam);
 
 
-CSearchDlg::CSearchDlg(HWND hParent)
+CSearchDlg::CSearchDlg(HWND hParent) : m_searchedItems(0)
+	, m_totalitems(0)
+	, m_dwThreadRunning(FALSE)
+	, m_Cancelled(FALSE)
 {
 	m_hParent = hParent;
 }
@@ -72,10 +75,10 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			m_resizer.AddControl(hwndDlg, IDC_INCLUDESYSTEM, RESIZER_TOPLEFT);
 			m_resizer.AddControl(hwndDlg, IDC_INCLUDEHIDDEN, RESIZER_TOPLEFT);
 			m_resizer.AddControl(hwndDlg, IDC_INCLUDESUBFOLDERS, RESIZER_TOPLEFT);
+			m_resizer.AddControl(hwndDlg, IDOK, RESIZER_TOPRIGHT);
 			m_resizer.AddControl(hwndDlg, IDC_GROUPSEARCHRESULTS, RESIZER_TOPLEFTBOTTOMRIGHT);
 			m_resizer.AddControl(hwndDlg, IDC_RESULTLIST, RESIZER_TOPLEFTBOTTOMRIGHT);
-			m_resizer.AddControl(hwndDlg, IDOK, RESIZER_BOTTOMRIGHT);
-			m_resizer.AddControl(hwndDlg, IDCANCEL, RESIZER_BOTTOMRIGHT);
+			m_resizer.AddControl(hwndDlg, IDC_SEARCHINFOLABEL, RESIZER_BOTTOMLEFTRIGHT);
 
 		}
 		return FALSE;
@@ -111,10 +114,26 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			return 0;
 		}
 		break;
+	case SEARCH_START:
+		{
+			m_totalitems = 0;
+			m_searchedItems = 0;
+			UpdateInfoLabel();
+		}
+		break;
 	case SEARCH_FOUND:
 		if (wParam)
 		{
 			AddFoundEntry((CSearchInfo*)lParam);
+			UpdateInfoLabel();
+		}
+		break;
+	case SEARCH_PROGRESS:
+		{
+			if (wParam)
+				m_searchedItems++;
+			m_totalitems++;
+			UpdateInfoLabel();
 		}
 		break;
 	case SEARCH_END:
@@ -124,6 +143,8 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			ListView_SetColumnWidth(hListControl, 1, LVSCW_AUTOSIZE_USEHEADER);
 			ListView_SetColumnWidth(hListControl, 2, LVSCW_AUTOSIZE_USEHEADER);
 			ListView_SetColumnWidth(hListControl, 3, LVSCW_AUTOSIZE_USEHEADER);
+			UpdateInfoLabel();
+			SetDlgItemText(*this, IDOK, _T("&Search"));
 		}
 		break;
 	default:
@@ -138,38 +159,50 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 	{
 	case IDOK:
 		{
-			// get all the information we need from the dialog
-			TCHAR buf[MAX_PATH*4] = {0};
-			GetDlgItemText(*this, IDC_SEARCHPATH, buf, MAX_PATH*4);
-			m_searchpath = buf;
-			GetDlgItemText(*this, IDC_SEARCHTEXT, buf, MAX_PATH*4);
-			m_searchString = buf;
-
-			m_bUseRegex = (IsDlgButtonChecked(*this, IDC_REGEXRADIO) == BST_CHECKED);
-			m_bAllSize = (IsDlgButtonChecked(*this, IDC_ALLSIZERADIO) == BST_CHECKED);
-			if (!m_bAllSize)
+			if (m_dwThreadRunning)
 			{
-				GetDlgItemText(*this, IDC_SIZEEDIT, buf, MAX_PATH*4);
-				m_lSize = _tstol(buf);
-				m_lSize *= 1024;
-				m_sizeCmp = SendDlgItemMessage(*this, IDC_SIZECOMBO, CB_GETCURSEL, 0, 0);
+				InterlockedExchange(&m_Cancelled, TRUE);
 			}
-			m_bIncludeSystem = (IsDlgButtonChecked(*this, IDC_INCLUDESYSTEM) == BST_CHECKED);
-			m_bIncludeHidden = (IsDlgButtonChecked(*this, IDC_INCLUDEHIDDEN) == BST_CHECKED);
-			m_bIncludeSubfolders = (IsDlgButtonChecked(*this, IDC_INCLUDESUBFOLDERS) == BST_CHECKED);
-			
-			InitResultList();
+			else
+			{
+				// get all the information we need from the dialog
+				TCHAR buf[MAX_PATH*4] = {0};
+				GetDlgItemText(*this, IDC_SEARCHPATH, buf, MAX_PATH*4);
+				m_searchpath = buf;
+				GetDlgItemText(*this, IDC_SEARCHTEXT, buf, MAX_PATH*4);
+				m_searchString = buf;
 
-			// now start the thread which does the searching
-			DWORD dwThreadId = 0;
-			m_hSearchThread = CreateThread( 
-				NULL,              // no security attribute 
-				0,                 // default stack size 
-				SearchThreadEntry, 
-				(LPVOID)this,      // thread parameter 
-				0,                 // not suspended 
-				&dwThreadId);      // returns thread ID 
+				m_bUseRegex = (IsDlgButtonChecked(*this, IDC_REGEXRADIO) == BST_CHECKED);
+				m_bAllSize = (IsDlgButtonChecked(*this, IDC_ALLSIZERADIO) == BST_CHECKED);
+				if (!m_bAllSize)
+				{
+					GetDlgItemText(*this, IDC_SIZEEDIT, buf, MAX_PATH*4);
+					m_lSize = _tstol(buf);
+					m_lSize *= 1024;
+					m_sizeCmp = SendDlgItemMessage(*this, IDC_SIZECOMBO, CB_GETCURSEL, 0, 0);
+				}
+				m_bIncludeSystem = (IsDlgButtonChecked(*this, IDC_INCLUDESYSTEM) == BST_CHECKED);
+				m_bIncludeHidden = (IsDlgButtonChecked(*this, IDC_INCLUDEHIDDEN) == BST_CHECKED);
+				m_bIncludeSubfolders = (IsDlgButtonChecked(*this, IDC_INCLUDESUBFOLDERS) == BST_CHECKED);
 
+				m_searchedItems = 0;
+				m_totalitems = 0;
+
+				InitResultList();
+
+				InterlockedExchange(&m_dwThreadRunning, TRUE);
+				InterlockedExchange(&m_Cancelled, FALSE);
+				SetDlgItemText(*this, IDOK, _T("&Cancel"));
+				// now start the thread which does the searching
+				DWORD dwThreadId = 0;
+				m_hSearchThread = CreateThread( 
+					NULL,              // no security attribute 
+					0,                 // default stack size 
+					SearchThreadEntry, 
+					(LPVOID)this,      // thread parameter 
+					0,                 // not suspended 
+					&dwThreadId);      // returns thread ID 
+			}
 		}
 		break;
 	case IDCANCEL:
@@ -247,6 +280,14 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 		break;
 	}
 	return 1;
+}
+
+void CSearchDlg::UpdateInfoLabel()
+{
+	TCHAR buf[1024] = {0};
+	_stprintf_s(buf, 1024, _T("Searched %ld files, skipped %ld files. Found %ld files with the search string"),
+		m_searchedItems, m_totalitems-m_searchedItems, m_items.size());
+	SetDlgItemText(*this, IDC_SEARCHINFOLABEL, buf);
 }
 
 bool CSearchDlg::InitResultList()
@@ -368,7 +409,8 @@ DWORD CSearchDlg::SearchThread()
 	CDirFileEnum fileEnumerator(m_searchpath.c_str());
 	bool bRecurse = m_bIncludeSubfolders;
 
-	while (fileEnumerator.NextFile(pathbuf, bRecurse, &bIsDirectory))
+	SendMessage(*this, SEARCH_START, 0, 0);
+	while ((fileEnumerator.NextFile(pathbuf, bRecurse, &bIsDirectory))&&(!m_Cancelled))
 	{
 		if (!bIsDirectory)
 		{
@@ -399,6 +441,7 @@ DWORD CSearchDlg::SearchThread()
 				int nFound = SearchFile(sinfo, m_bUseRegex, m_searchString);
 				SendMessage(*this, SEARCH_FOUND, nFound, (LPARAM)&sinfo);
 			}
+			SendMessage(*this, SEARCH_PROGRESS, bSearch, 0);
 		}
 		else
 		{
@@ -409,6 +452,7 @@ DWORD CSearchDlg::SearchThread()
 		}
 	}
 	SendMessage(*this, SEARCH_END, 0, 0);
+	InterlockedExchange(&m_dwThreadRunning, FALSE);
 	return 0L;
 }
 
