@@ -41,6 +41,7 @@ private:
 	volatile LONG			m_Cancelled;
 	wstring					m_searchpath;
 	wstring					m_searchString;
+	wstring					m_replaceString;
 	bool					m_bUseRegex;
 	bool					m_bAllSize;
 	DWORD					m_lSize;

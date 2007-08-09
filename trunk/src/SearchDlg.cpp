@@ -62,10 +62,15 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			m_resizer.AddControl(hwndDlg, IDC_SEARCHPATH, RESIZER_TOPLEFTRIGHT);
 			m_resizer.AddControl(hwndDlg, IDC_SEARCHPATHBROWSE, RESIZER_TOPRIGHT);
 			m_resizer.AddControl(hwndDlg, IDC_GROUPSEARCHFOR, RESIZER_TOPLEFTRIGHT);
+			m_resizer.AddControl(hwndDlg, IDC_SEARCHFORLABEL, RESIZER_TOPLEFT);
 			m_resizer.AddControl(hwndDlg, IDC_SEARCHTEXT, RESIZER_TOPLEFTRIGHT);
+			m_resizer.AddControl(hwndDlg, IDC_REPLACEWITHLABEL, RESIZER_TOPLEFT);
+			m_resizer.AddControl(hwndDlg, IDC_REPLACETEXT, RESIZER_TOPLEFTRIGHT);
 			m_resizer.AddControl(hwndDlg, IDC_REGEXOKLABEL, RESIZER_TOPRIGHT);
 			m_resizer.AddControl(hwndDlg, IDC_REGEXRADIO, RESIZER_TOPLEFT);
 			m_resizer.AddControl(hwndDlg, IDC_TEXTRADIO, RESIZER_TOPLEFT);
+			m_resizer.AddControl(hwndDlg, IDC_ADDTOBOOKMARKS, RESIZER_TOPRIGHT);
+			m_resizer.AddControl(hwndDlg, IDC_BOOKMARKS, RESIZER_TOPRIGHT);
 			m_resizer.AddControl(hwndDlg, IDC_GROUPLIMITSEARCH, RESIZER_TOPLEFTRIGHT);
 			m_resizer.AddControl(hwndDlg, IDC_ALLSIZERADIO, RESIZER_TOPLEFT);
 			m_resizer.AddControl(hwndDlg, IDC_SIZERADIO, RESIZER_TOPLEFT);
@@ -75,6 +80,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			m_resizer.AddControl(hwndDlg, IDC_INCLUDESYSTEM, RESIZER_TOPLEFT);
 			m_resizer.AddControl(hwndDlg, IDC_INCLUDEHIDDEN, RESIZER_TOPLEFT);
 			m_resizer.AddControl(hwndDlg, IDC_INCLUDESUBFOLDERS, RESIZER_TOPLEFT);
+			m_resizer.AddControl(hwndDlg, IDC_PREVIEW, RESIZER_TOPRIGHT);
 			m_resizer.AddControl(hwndDlg, IDOK, RESIZER_TOPRIGHT);
 			m_resizer.AddControl(hwndDlg, IDC_GROUPSEARCHRESULTS, RESIZER_TOPLEFTBOTTOMRIGHT);
 			m_resizer.AddControl(hwndDlg, IDC_RESULTLIST, RESIZER_TOPLEFTBOTTOMRIGHT);
@@ -171,6 +177,8 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 				m_searchpath = buf;
 				GetDlgItemText(*this, IDC_SEARCHTEXT, buf, MAX_PATH*4);
 				m_searchString = buf;
+				GetDlgItemText(*this, IDC_REPLACETEXT, buf, MAX_PATH*4);
+				m_replaceString = buf;
 
 				m_bUseRegex = (IsDlgButtonChecked(*this, IDC_REGEXRADIO) == BST_CHECKED);
 				m_bAllSize = (IsDlgButtonChecked(*this, IDC_ALLSIZERADIO) == BST_CHECKED);
@@ -255,6 +263,25 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 			}
 		}
 		break;
+	case IDC_REPLACETEXT:
+		{
+			if (msg == EN_CHANGE)
+			{
+				TCHAR buf[MAX_PATH*4] = {0};
+				GetDlgItemText(*this, IDC_REPLACETEXT, buf, MAX_PATH*4);
+				bool bValid = (_tcslen(buf)>0);
+				if ((bValid)&&(!m_dwThreadRunning))
+				{
+					::SetDlgItemText(*this, IDOK, _T("Replace"));
+				}
+				else
+				{
+					::SetDlgItemText(*this, IDOK, _T("Search"));
+				}
+				::EnableWindow(GetDlgItem(*this, IDC_PREVIEW), bValid);
+			}
+		}
+		break;
 	case IDC_SIZEEDIT:
 		{
 			if (msg == EN_CHANGE)
@@ -275,6 +302,22 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 						CheckRadioButton(*this, IDC_ALLSIZERADIO, IDC_SIZERADIO, IDC_ALLSIZERADIO);
 					}
 				}
+			}
+		}
+		break;
+	case IDC_REGEXRADIO:
+	case IDC_TEXTRADIO:
+		{
+			bool bText = (IsDlgButtonChecked(*this, IDC_TEXTRADIO) == BST_CHECKED);
+			::EnableWindow(GetDlgItem(*this, IDC_REPLACETEXT), !bText);
+			::EnableWindow(GetDlgItem(*this, IDC_PREVIEW), !bText);
+			if ((!bText)&&(!m_dwThreadRunning))
+			{
+				::SetDlgItemText(*this, IDOK, _T("Replace"));
+			}
+			else
+			{
+				::SetDlgItemText(*this, IDOK, _T("Search"));
 			}
 		}
 		break;
