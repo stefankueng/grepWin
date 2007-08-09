@@ -1,6 +1,7 @@
 #pragma once
 #include "basedialog.h"
 #include "SearchInfo.h"
+#include "DlgResizer.h"
 #include <string>
 #include <vector>
 
@@ -46,4 +47,6 @@ private:
 	HANDLE					m_hSearchThread;
 
 	vector<CSearchInfo>		m_items;
+
+	CDlgResizer				m_resizer;
 };
