@@ -74,7 +74,7 @@ bool CTextFile::Load(LPCTSTR path)
 		wchar_t * pWideBuf = new wchar_t[ret];
 		int ret2 = MultiByteToWideChar(CP_UTF8, 0, (LPCSTR)pFileBuf, bytesread, pWideBuf, ret);
 		if (ret2 == ret)
-			textcontent = wstring(pWideBuf, bytesread);
+			textcontent = wstring(pWideBuf, ret);
 		delete [] pWideBuf;
 	}
 	else if (encoding == ANSI)
@@ -83,7 +83,7 @@ bool CTextFile::Load(LPCTSTR path)
 		wchar_t * pWideBuf = new wchar_t[ret];
 		int ret2 = MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, (LPCSTR)pFileBuf, bytesread, pWideBuf, ret);
 		if (ret2 == ret)
-			textcontent = wstring(pWideBuf, bytesread);
+			textcontent = wstring(pWideBuf, ret);
 		delete [] pWideBuf;
 	}
 	else
