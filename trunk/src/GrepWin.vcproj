@@ -347,6 +347,10 @@
 				>
 			</File>
 		</Filter>
+		<File
+			RelativePath=".\Setup\Setup.wxs"
+			>
+		</File>
 	</Files>
 	<Globals>
 		<Global
