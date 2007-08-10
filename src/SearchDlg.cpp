@@ -10,6 +10,8 @@
 #include "SysImageList.h"
 #include "ShellContextMenu.h"
 #include "RegexTestDlg.h"
+#include "NameDlg.h"
+#include "BookmarksDlg.h"
 #include <string>
 #include <iostream>
 #include <fstream>
@@ -353,6 +355,31 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 			{
 				::SetDlgItemText(*this, IDOK, _T("&Search"));
 			}
+		}
+		break;
+	case IDC_ADDTOBOOKMARKS:
+		{
+			TCHAR buf[MAX_PATH*4] = {0};
+			GetDlgItemText(*this, IDC_SEARCHTEXT, buf, MAX_PATH*4);
+			m_searchString = buf;
+			GetDlgItemText(*this, IDC_REPLACETEXT, buf, MAX_PATH*4);
+			m_replaceString = buf;
+
+			CNameDlg nameDlg(*this);
+			if (nameDlg.DoModal(hResource, IDD_NAME, *this) == IDOK)
+			{
+				// add the bookmark
+				CBookmarks bks;
+				bks.Load();
+				bks.AddBookmark(nameDlg.GetName(), m_searchString, m_replaceString);
+				bks.Save();
+			}
+		}
+		break;
+	case IDC_BOOKMARKS:
+		{
+			CBookmarksDlg dlg(*this);
+			dlg.DoModal(hResource, IDD_BOOKMARKS, *this);
 		}
 		break;
 	}

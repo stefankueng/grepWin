@@ -183,6 +183,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Bookmarks.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\BookmarksDlg.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\BrowseFolder.cpp"
 				>
 			</File>
@@ -204,6 +212,10 @@
 			</File>
 			<File
 				RelativePath=".\GrepWin.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\NameDlg.cpp"
 				>
 			</File>
 			<File
@@ -273,6 +285,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Bookmarks.h"
+				>
+			</File>
+			<File
+				RelativePath=".\BookmarksDlg.h"
+				>
+			</File>
+			<File
 				RelativePath=".\BrowseFolder.h"
 				>
 			</File>
@@ -297,6 +317,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\NameDlg.h"
+				>
+			</File>
+			<File
 				RelativePath=".\RegexTestDlg.h"
 				>
 			</File>
@@ -318,6 +342,10 @@
 			</File>
 			<File
 				RelativePath=".\ShellContextMenu.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SimpleIni.h"
 				>
 			</File>
 			<File
