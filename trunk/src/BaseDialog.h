@@ -32,5 +32,7 @@ protected:
 	{
 		return (CDialog *)GetWindowLongPtr(hWnd, GWLP_USERDATA);
 	}
+private:
+	bool		m_bPseudoModal;
 };
 
