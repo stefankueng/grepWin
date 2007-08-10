@@ -4,12 +4,14 @@
 
 INT_PTR CDialog::DoModal(HINSTANCE hInstance, int resID, HWND hWndParent)
 {
+	m_bPseudoModal = false;
 	hResource = hInstance;
 	return DialogBoxParam(hInstance, MAKEINTRESOURCE(resID), hWndParent, &CDialog::stDlgFunc, (LPARAM)this);
 }
 
 INT_PTR CDialog::DoModal(HINSTANCE hInstance, int resID, HWND hWndParent, UINT idAccel)
 {
+	m_bPseudoModal = true;
 	hResource = hInstance;
 	m_hwnd = CreateDialogParam(hInstance, MAKEINTRESOURCE(resID), hWndParent, &CDialog::stDlgFunc, (LPARAM)this);
 
@@ -49,12 +51,14 @@ INT_PTR CDialog::DoModal(HINSTANCE hInstance, int resID, HWND hWndParent, UINT i
 
 BOOL CDialog::EndDialog(HWND hDlg, INT_PTR nResult)
 {
-	::PostQuitMessage(nResult);
+	if (m_bPseudoModal)
+		::PostQuitMessage(nResult);
 	return ::EndDialog(hDlg, nResult);
 }
 
 HWND CDialog::Create(HINSTANCE hInstance, int resID, HWND hWndParent)
 {
+	m_bPseudoModal = true;
 	hResource = hInstance;
     m_hwnd = CreateDialogParam(hInstance, MAKEINTRESOURCE(resID), hWndParent, &CDialog::stDlgFunc, (LPARAM)this);
     return m_hwnd;
