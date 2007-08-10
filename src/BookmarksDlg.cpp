@@ -76,6 +76,22 @@ LRESULT CBookmarksDlg::DoCommand(int id, int /*msg*/)
 	case IDCANCEL:
 		EndDialog(*this, id);
 		break;
+	case ID_REMOVEBOOKMARK:
+		{
+			int iItem = ListView_GetSelectionMark(GetDlgItem(*this, IDC_BOOKMARKS));
+			if (iItem >= 0)
+			{
+				TCHAR buf[MAX_PATH*4] = {0};
+				LVITEM lv = {0};
+				lv.mask = LVIF_TEXT;
+				lv.pszText = buf;
+				lv.cchTextMax = MAX_PATH*4;
+				ListView_GetItem(GetDlgItem(*this, IDC_BOOKMARKS), &lv);
+				m_bookmarks.RemoveBookmark(buf);
+				ListView_DeleteItem(GetDlgItem(*this, IDC_BOOKMARKS), iItem);
+			}
+		}
+		break;
 	}
 	return 1;
 }

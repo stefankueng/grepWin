@@ -31,11 +31,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 		|ICC_UPDOWN_CLASS|ICC_USEREX_CLASSES|ICC_WIN95_CLASSES;
 	InitCommonControlsEx(&icex);
 
-	HACCEL hAccelTable;
-
 	CCmdLineParser parser(lpCmdLine);
-
-	hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_GREPWIN));
 
 	CSearchDlg searchDlg(NULL);
 	if (parser.HasVal(_T("searchpath")))
