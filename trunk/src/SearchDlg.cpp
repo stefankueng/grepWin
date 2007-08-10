@@ -31,6 +31,7 @@ CSearchDlg::CSearchDlg(HWND hParent) : m_searchedItems(0)
 	, m_totalitems(0)
 	, m_dwThreadRunning(FALSE)
 	, m_Cancelled(FALSE)
+	, m_bAscending(true)
 {
 	m_hParent = hParent;
 }
@@ -104,8 +105,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 		break;
 	case WM_NOTIFY:
 		{
-			LPNMHDR lpMhdr = (LPNMHDR)lParam;
-			if (lpMhdr->hwndFrom == GetDlgItem(*this, IDC_RESULTLIST))
+			if (wParam == IDC_RESULTLIST)
 			{
 				DoListNotify((LPNMITEMACTIVATE)lParam);
 			}
@@ -435,7 +435,7 @@ bool CSearchDlg::InitResultList()
 	return true;
 }
 
-bool CSearchDlg::AddFoundEntry(CSearchInfo * pInfo)
+bool CSearchDlg::AddFoundEntry(CSearchInfo * pInfo, bool bOnlyListControl)
 {
 	HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
 	LVITEM lv = {0};
@@ -463,7 +463,7 @@ bool CSearchDlg::AddFoundEntry(CSearchInfo * pInfo)
 		_tcscpy_s(sb, MAX_PATH*4, pInfo->filepath.substr(0, pInfo->filepath.size()-name.size()-1).c_str());
 		ListView_SetItem(hListControl, &lv);
 	}
-	if (ret != -1)
+	if ((ret != -1)&&(!bOnlyListControl))
 		m_items.push_back(*pInfo);
 
 	return (ret != -1);
@@ -497,9 +497,9 @@ void CSearchDlg::ShowContextMenu(int x, int y)
 
 void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
 {
-	if (lpNMItemActivate->iItem >= 0)
+	if (lpNMItemActivate->hdr.code == NM_DBLCLK)
 	{
-		if (lpNMItemActivate->hdr.code == NM_DBLCLK)
+		if (lpNMItemActivate->iItem >= 0)
 		{
 			SHELLEXECUTEINFO shExInfo = {0};
 			shExInfo.cbSize = sizeof(SHELLEXECUTEINFO);
@@ -510,6 +510,108 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
 			ShellExecuteEx(&shExInfo);
 		}
 	}
+	if (lpNMItemActivate->hdr.code == LVN_COLUMNCLICK)
+	{
+		m_bAscending = !m_bAscending;
+		switch (lpNMItemActivate->iSubItem)
+		{
+		case 0:
+			if (m_bAscending)
+				sort(m_items.begin(), m_items.end(), NameCompareAsc);
+			else
+				sort(m_items.begin(), m_items.end(), NameCompareDesc);
+			break;
+		case 1:
+			if (m_bAscending)
+				sort(m_items.begin(), m_items.end(), SizeCompareAsc);
+			else
+				sort(m_items.begin(), m_items.end(), SizeCompareDesc);
+			break;
+		case 2:
+			if (m_bAscending)
+				sort(m_items.begin(), m_items.end(), MatchesCompareAsc);
+			else
+				sort(m_items.begin(), m_items.end(), MatchesCompareDesc);
+			break;
+		case 3:
+			if (m_bAscending)
+				sort(m_items.begin(), m_items.end(), PathCompareAsc);
+			else
+				sort(m_items.begin(), m_items.end(), PathCompareDesc);
+			break;
+		}
+
+		HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
+		ListView_DeleteAllItems(hListControl);
+		for (vector<CSearchInfo>::iterator it = m_items.begin(); it != m_items.end(); ++it)
+		{
+			AddFoundEntry(&(*it), true);
+		}
+
+		ListView_SetColumnWidth(hListControl, 0, LVSCW_AUTOSIZE_USEHEADER);
+		ListView_SetColumnWidth(hListControl, 1, LVSCW_AUTOSIZE_USEHEADER);
+		ListView_SetColumnWidth(hListControl, 2, LVSCW_AUTOSIZE_USEHEADER);
+		ListView_SetColumnWidth(hListControl, 3, LVSCW_AUTOSIZE_USEHEADER);
+
+		HDITEM hd = {0};
+		hd.mask = HDI_FORMAT;
+		HWND hHeader = ListView_GetHeader(hListControl);
+		int iCount = Header_GetItemCount(hHeader);
+		for (int i=0; i<iCount; ++i)
+		{
+			Header_GetItem(hHeader, i, &hd);
+			hd.fmt &= ~(HDF_SORTDOWN | HDF_SORTUP);
+			Header_SetItem(hHeader, i, &hd);
+		}
+		Header_GetItem(hHeader, lpNMItemActivate->iSubItem, &hd);
+		hd.fmt |= (m_bAscending ? HDF_SORTUP : HDF_SORTDOWN);
+		Header_SetItem(hHeader, lpNMItemActivate->iSubItem, &hd);
+
+	}
+}
+
+bool CSearchDlg::NameCompareAsc(const CSearchInfo Entry1, const CSearchInfo Entry2)
+{
+	wstring name1 = Entry1.filepath.substr(Entry1.filepath.find_last_of('\\')+1);
+	wstring name2 = Entry2.filepath.substr(Entry2.filepath.find_last_of('\\')+1);
+	return name1.compare(name2) < 0;
+}
+
+bool CSearchDlg::SizeCompareAsc(const CSearchInfo Entry1, const CSearchInfo Entry2)
+{
+	return Entry1.filesize < Entry2.filesize;
+}
+
+bool CSearchDlg::MatchesCompareAsc(const CSearchInfo Entry1, const CSearchInfo Entry2)
+{
+	return Entry1.matchends.size() < Entry2.matchends.size();
+}
+
+bool CSearchDlg::PathCompareAsc(const CSearchInfo Entry1, const CSearchInfo Entry2)
+{
+	return Entry1.filepath.compare(Entry2.filepath) < 0;
+}
+
+bool CSearchDlg::NameCompareDesc(const CSearchInfo Entry1, const CSearchInfo Entry2)
+{
+	wstring name1 = Entry1.filepath.substr(Entry1.filepath.find_last_of('\\')+1);
+	wstring name2 = Entry2.filepath.substr(Entry2.filepath.find_last_of('\\')+1);
+	return name1.compare(name2) > 0;
+}
+
+bool CSearchDlg::SizeCompareDesc(const CSearchInfo Entry1, const CSearchInfo Entry2)
+{
+	return Entry1.filesize > Entry2.filesize;
+}
+
+bool CSearchDlg::MatchesCompareDesc(const CSearchInfo Entry1, const CSearchInfo Entry2)
+{
+	return Entry1.matchends.size() > Entry2.matchends.size();
+}
+
+bool CSearchDlg::PathCompareDesc(const CSearchInfo Entry1, const CSearchInfo Entry2)
+{
+	return Entry1.filepath.compare(Entry2.filepath) > 0;
 }
 
 DWORD CSearchDlg::SearchThread()
