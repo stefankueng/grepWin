@@ -194,6 +194,9 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 				m_searchString = buf;
 				GetDlgItemText(*this, IDC_REPLACETEXT, buf, MAX_PATH*4);
 				m_replaceString = buf;
+				
+				if (m_searchpath.empty() || m_searchString.empty())
+					break;
 
 				m_bUseRegex = (IsDlgButtonChecked(*this, IDC_REGEXRADIO) == BST_CHECKED);
 				m_bAllSize = (IsDlgButtonChecked(*this, IDC_ALLSIZERADIO) == BST_CHECKED);
