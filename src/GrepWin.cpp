@@ -38,8 +38,8 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 	hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_GREPWIN));
 
 	CSearchDlg searchDlg(NULL);
-
-	searchDlg.SetSearchPath(parser.GetVal(_T("searchpath")));
+	if (parser.HasVal(_T("searchpath")))
+		searchDlg.SetSearchPath(parser.GetVal(_T("searchpath")));
 	int ret = searchDlg.DoModal(hInstance, IDD_SEARCHDLG, NULL);
 
 	::OleUninitialize();
