@@ -9,6 +9,7 @@
 #include "BrowseFolder.h"
 #include "SysImageList.h"
 #include "ShellContextMenu.h"
+#include "RegexTestDlg.h"
 #include <string>
 #include <iostream>
 #include <fstream>
@@ -62,13 +63,15 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			m_resizer.AddControl(hwndDlg, IDC_SEARCHPATH, RESIZER_TOPLEFTRIGHT);
 			m_resizer.AddControl(hwndDlg, IDC_SEARCHPATHBROWSE, RESIZER_TOPRIGHT);
 			m_resizer.AddControl(hwndDlg, IDC_GROUPSEARCHFOR, RESIZER_TOPLEFTRIGHT);
+			m_resizer.AddControl(hwndDlg, IDC_REGEXRADIO, RESIZER_TOPLEFT);
+			m_resizer.AddControl(hwndDlg, IDC_TEXTRADIO, RESIZER_TOPLEFT);
 			m_resizer.AddControl(hwndDlg, IDC_SEARCHFORLABEL, RESIZER_TOPLEFT);
 			m_resizer.AddControl(hwndDlg, IDC_SEARCHTEXT, RESIZER_TOPLEFTRIGHT);
 			m_resizer.AddControl(hwndDlg, IDC_REPLACEWITHLABEL, RESIZER_TOPLEFT);
 			m_resizer.AddControl(hwndDlg, IDC_REPLACETEXT, RESIZER_TOPLEFTRIGHT);
 			m_resizer.AddControl(hwndDlg, IDC_REGEXOKLABEL, RESIZER_TOPRIGHT);
-			m_resizer.AddControl(hwndDlg, IDC_REGEXRADIO, RESIZER_TOPLEFT);
-			m_resizer.AddControl(hwndDlg, IDC_TEXTRADIO, RESIZER_TOPLEFT);
+			m_resizer.AddControl(hwndDlg, IDC_CREATEBACKUP, RESIZER_TOPLEFT);
+			m_resizer.AddControl(hwndDlg, IDC_TESTREGEX, RESIZER_TOPLEFT);
 			m_resizer.AddControl(hwndDlg, IDC_ADDTOBOOKMARKS, RESIZER_TOPRIGHT);
 			m_resizer.AddControl(hwndDlg, IDC_BOOKMARKS, RESIZER_TOPRIGHT);
 			m_resizer.AddControl(hwndDlg, IDC_GROUPLIMITSEARCH, RESIZER_TOPLEFTRIGHT);
@@ -80,7 +83,6 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			m_resizer.AddControl(hwndDlg, IDC_INCLUDESYSTEM, RESIZER_TOPLEFT);
 			m_resizer.AddControl(hwndDlg, IDC_INCLUDEHIDDEN, RESIZER_TOPLEFT);
 			m_resizer.AddControl(hwndDlg, IDC_INCLUDESUBFOLDERS, RESIZER_TOPLEFT);
-			m_resizer.AddControl(hwndDlg, IDC_PREVIEW, RESIZER_TOPRIGHT);
 			m_resizer.AddControl(hwndDlg, IDOK, RESIZER_TOPRIGHT);
 			m_resizer.AddControl(hwndDlg, IDC_GROUPSEARCHRESULTS, RESIZER_TOPLEFTBOTTOMRIGHT);
 			m_resizer.AddControl(hwndDlg, IDC_RESULTLIST, RESIZER_TOPLEFTBOTTOMRIGHT);
@@ -150,7 +152,18 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			ListView_SetColumnWidth(hListControl, 2, LVSCW_AUTOSIZE_USEHEADER);
 			ListView_SetColumnWidth(hListControl, 3, LVSCW_AUTOSIZE_USEHEADER);
 			UpdateInfoLabel();
-			SetDlgItemText(*this, IDOK, _T("&Search"));
+
+			TCHAR buf[4] = {0};
+			GetDlgItemText(*this, IDC_REPLACETEXT, buf, 4);
+			bool bValid = (_tcslen(buf)>0);
+			if (bValid)
+			{
+				::SetDlgItemText(*this, IDOK, _T("&Replace"));
+			}
+			else
+			{
+				::SetDlgItemText(*this, IDOK, _T("&Search"));
+			}
 		}
 		break;
 	default:
@@ -192,6 +205,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 				m_bIncludeSystem = (IsDlgButtonChecked(*this, IDC_INCLUDESYSTEM) == BST_CHECKED);
 				m_bIncludeHidden = (IsDlgButtonChecked(*this, IDC_INCLUDEHIDDEN) == BST_CHECKED);
 				m_bIncludeSubfolders = (IsDlgButtonChecked(*this, IDC_INCLUDESUBFOLDERS) == BST_CHECKED);
+				m_bCreateBackup = (IsDlgButtonChecked(*this, IDC_CREATEBACKUP) == BST_CHECKED);
 
 				m_searchedItems = 0;
 				m_totalitems = 0;
@@ -215,6 +229,26 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 		break;
 	case IDCANCEL:
 		EndDialog(*this, id);
+		break;
+	case IDC_TESTREGEX:
+		{
+			// get all the information we need from the dialog
+			TCHAR buf[MAX_PATH*4] = {0};
+			GetDlgItemText(*this, IDC_SEARCHTEXT, buf, MAX_PATH*4);
+			m_searchString = buf;
+			GetDlgItemText(*this, IDC_REPLACETEXT, buf, MAX_PATH*4);
+			m_replaceString = buf;
+
+			CRegexTestDlg dlg(*this);
+			dlg.SetStrings(m_searchString, m_replaceString);
+			if (dlg.DoModal(hResource, IDD_REGEXTEST, *this) == IDOK)
+			{
+				m_searchString = dlg.GetSearchString();
+				m_replaceString = dlg.GetReplaceString();
+				SetDlgItemText(*this, IDC_SEARCHTEXT, m_searchString.c_str());
+				SetDlgItemText(*this, IDC_REPLACETEXT, m_replaceString.c_str());
+			}
+		}
 		break;
 	case IDC_SEARCHPATHBROWSE:
 		{
@@ -272,13 +306,13 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 				bool bValid = (_tcslen(buf)>0);
 				if ((bValid)&&(!m_dwThreadRunning))
 				{
-					::SetDlgItemText(*this, IDOK, _T("Replace"));
+					::SetDlgItemText(*this, IDOK, _T("&Replace"));
 				}
 				else
 				{
-					::SetDlgItemText(*this, IDOK, _T("Search"));
+					::SetDlgItemText(*this, IDOK, _T("&Search"));
 				}
-				::EnableWindow(GetDlgItem(*this, IDC_PREVIEW), bValid);
+				::EnableWindow(GetDlgItem(*this, IDC_CREATEBACKUP), bValid);
 			}
 		}
 		break;
@@ -310,14 +344,14 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 		{
 			bool bText = (IsDlgButtonChecked(*this, IDC_TEXTRADIO) == BST_CHECKED);
 			::EnableWindow(GetDlgItem(*this, IDC_REPLACETEXT), !bText);
-			::EnableWindow(GetDlgItem(*this, IDC_PREVIEW), !bText);
+			::EnableWindow(GetDlgItem(*this, IDC_CREATEBACKUP), !bText);
 			if ((!bText)&&(!m_dwThreadRunning))
 			{
-				::SetDlgItemText(*this, IDOK, _T("Replace"));
+				::SetDlgItemText(*this, IDOK, _T("&Replace"));
 			}
 			else
 			{
-				::SetDlgItemText(*this, IDOK, _T("Search"));
+				::SetDlgItemText(*this, IDOK, _T("&Search"));
 			}
 		}
 		break;
@@ -516,21 +550,42 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bUseRegex, const wstring& se
 				start = textfile.GetFileString().begin();
 				end = textfile.GetFileString().end();
 				match_results<wstring::const_iterator> what;
-				match_flag_type flags = match_default;
 				try
 				{
 					wregex expression = wregex(searchString);
 					match_results<wstring::const_iterator> whatc;
-					while (regex_search(start, end, whatc, expression, flags))   
+					if (m_replaceString.empty())
 					{
-						nFound++;
-						sinfo.matchstarts.push_back(whatc[0].first-textfile.GetFileString().begin());
-						sinfo.matchends.push_back(whatc[0].second-textfile.GetFileString().begin());
-						// update search position:
-						start = whatc[0].second;      
-						// update flags:
-						flags |= match_prev_avail;
-						flags |= match_not_bob;
+						match_flag_type flags = match_default;
+						while (regex_search(start, end, whatc, expression, flags))   
+						{
+							nFound++;
+							sinfo.matchstarts.push_back(whatc[0].first-textfile.GetFileString().begin());
+							sinfo.matchends.push_back(whatc[0].second-textfile.GetFileString().begin());
+							// update search position:
+							start = whatc[0].second;      
+							// update flags:
+							flags |= match_prev_avail;
+							flags |= match_not_bob;
+						}
+					}
+					else
+					{
+						match_flag_type flags = match_default|format_all;
+						wstring replaced = regex_replace(textfile.GetFileString(), expression, m_replaceString, flags);
+						if (replaced.compare(textfile.GetFileString()))
+						{
+							nFound++;
+							sinfo.matchstarts.push_back(0);
+							sinfo.matchends.push_back(0);
+							textfile.SetFileContent(replaced);
+							if (m_bCreateBackup)
+							{
+								wstring backupfile = sinfo.filepath + _T(".bak");
+								CopyFile(sinfo.filepath.c_str(), backupfile.c_str(), FALSE);
+							}
+							textfile.Save(sinfo.filepath.c_str());
+						}
 					}
 				}
 				catch (const exception&)

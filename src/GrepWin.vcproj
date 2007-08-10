@@ -207,6 +207,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\RegexTestDlg.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Registry.cpp"
 				>
 			</File>
@@ -290,6 +294,10 @@
 			</File>
 			<File
 				RelativePath=".\GrepWin.h"
+				>
+			</File>
+			<File
+				RelativePath=".\RegexTestDlg.h"
 				>
 			</File>
 			<File
