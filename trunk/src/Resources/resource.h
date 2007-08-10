@@ -10,6 +10,8 @@
 #define IDC_GREPWIN                     109
 #define IDD_SEARCHDLG                   129
 #define IDD_REGEXTEST                   130
+#define IDD_NAME                        131
+#define IDD_BOOKMARKS                   132
 #define IDC_SEARCHTEXT                  1000
 #define IDC_REGEXRADIO                  1001
 #define IDC_TEXTRADIO                   1002
@@ -40,7 +42,7 @@
 #define IDC_TEXTCONTENT                 1030
 #define IDC_REGEXMATCH                  1031
 #define IDC_REGEXREPLACED               1032
-#define IDC_BUTTON2                     1036
+#define IDC_NAME                        1037
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
@@ -48,9 +50,9 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
-#define _APS_NEXT_RESOURCE_VALUE        131
+#define _APS_NEXT_RESOURCE_VALUE        133
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1037
+#define _APS_NEXT_CONTROL_VALUE         1039
 #define _APS_NEXT_SYMED_VALUE           110
 #endif
 #endif
