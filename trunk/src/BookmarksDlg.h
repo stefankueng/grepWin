@@ -16,6 +16,8 @@ public:
 	~CBookmarksDlg(void);
 
 	wstring					GetName() {return m_name;}
+	wstring					GetSelectedSearchString() {return m_searchString;}
+	wstring					GetSelectedReplaceString() {return m_replaceString;}
 
 protected:
 	LRESULT CALLBACK		DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -25,6 +27,9 @@ private:
 	HWND					m_hParent;
 	wstring					m_name;
 	CBookmarks				m_bookmarks;
+
+	wstring					m_searchString;
+	wstring					m_replaceString;
 
 	CDlgResizer				m_resizer;
 };

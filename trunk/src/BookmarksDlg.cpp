@@ -59,6 +59,18 @@ LRESULT CBookmarksDlg::DoCommand(int id, int /*msg*/)
 	case IDOK:
 		{
 			m_bookmarks.Save();
+			int iItem = ListView_GetSelectionMark(GetDlgItem(*this, IDC_BOOKMARKS));
+			if (iItem >= 0)
+			{
+				TCHAR buf[MAX_PATH*4] = {0};
+				LVITEM lv = {0};
+				lv.mask = LVIF_TEXT;
+				lv.pszText = buf;
+				lv.cchTextMax = MAX_PATH*4;
+				ListView_GetItem(GetDlgItem(*this, IDC_BOOKMARKS), &lv);
+				m_searchString = m_bookmarks.GetValue(buf, _T("searchString"), _T(""));
+				m_replaceString = m_bookmarks.GetValue(buf, _T("replaceString"), _T(""));
+			}
 		}
 		// fall through
 	case IDCANCEL:
