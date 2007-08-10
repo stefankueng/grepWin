@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='windows-1252'?>
+<Wix xmlns='http://schemas.microsoft.com/wix/2003/01/wi'>
+  <Product
+  UpgradeCode="C8EC878C-5B8A-4208-9670-64313B180089"  
+  Name='StExBar' 
+  Id='????????-????-????-????-????????????'
+  Language='1031' 
+  Codepage='1252' 
+  Version='1.0.0' 
+  Manufacturer='Stefans Tools'>
+
+    <Package Id='????????-????-????-????-????????????' Keywords='Installer'
+      Description="Stefans grepWin"
+      Comments='http://tools.tortoisesvn.net' Manufacturer='Stefans Tools'
+      InstallerVersion='100' Languages='1031' Compressed='yes' SummaryCodepage='1252' />
+      
+    <Upgrade Id="C8EC878C-5B8A-4208-9670-64313B180089" >
+      <!-- flag is set if the install will trigger an upgrade of an existing install -->
+      <UpgradeVersion Property="PREVIOUSVERSIONSINSTALLED" Maximum="1.0.0" IncludeMaximum="no" />
+    </Upgrade>
+
+    <Media Id='1' Cabinet='StExBar.cab' EmbedCab='yes' />
+	<Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR" />
+	<Condition Message='This application only runs on Windows 2000 and later.'>VersionNT &gt;= 500</Condition>
+	
+    <Directory Id='TARGETDIR' Name='SourceDir'>
+      <Directory Id='ProgramFilesFolder' Name='PFiles'>
+		  <Directory Id='INSTALLDIR' Name='grepWin' LongName='grepWin'>
+	
+			<Component Id='MainEXE' Guid='A9818B4B-B626-4455-AA31-588EAFAFA213'>
+			  <File Id='grepWin.EXE' Name='grepWin.exe' LongName='grepWin.exe' DiskId='1' Source='../../bin/release/grepWin.exe' Vital='yes'>
+			  </File>
+				<Registry Root="HKMU" Key="Directory\shell\Regex search" Action="createKeyAndRemoveKeyOnUninstall" />
+        <Registry Root="HKMU" Key="Directory\shell\Regex search\command" Value='[INSTALLDIR]grepWin.exe /searchpath:"%1"' Type="string" />
+			</Component>
+			
+		  </Directory>
+      </Directory>
+
+    </Directory>
+
+    <Feature Id='Complete' Title='grepWin' Description='The complete package.'
+      Display='expand' Level='1' ConfigurableDirectory='INSTALLDIR'>
+      <Feature Id='MainEXE' Title='Program' Description='The main executable.' Level='1'>
+        <ComponentRef Id='MainEXE' />
+      </Feature>
+    </Feature>
+
+    <UIRef Id="WixUI_InstallDir" />
+    <UIRef Id="WixUI_ErrorProgressText" />
+    
+    <InstallExecuteSequence>
+      <AppSearch Sequence="1"></AppSearch>
+      <LaunchConditions After="AppSearch" />
+      <RemoveExistingProducts After="InstallValidate"><![CDATA[PREVIOUSVERSIONSINSTALLED]]></RemoveExistingProducts>
+    </InstallExecuteSequence>
+
+  </Product>
+</Wix>

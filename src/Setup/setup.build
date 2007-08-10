@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<project name="setup" default="setup">
+
+	<target name="setup">
+		<exec program="candle">
+			<arg value="-nologo" />
+			<arg value="-out" />
+			<arg value="..\..\bin\" />
+			<arg value="Setup.wxs" />
+		</exec>
+		<exec program="light">
+			<arg value="-nologo" />
+			<arg value="-out" />
+			<arg value="..\..\bin\grepWin.msi" />
+			<arg value="..\..\bin\Setup.wixobj" />
+			<arg value="${environment::get-variable('WIXUI')}\WixUI.wixlib" />
+			<arg value="-loc" />
+			<arg value="${environment::get-variable('WIXUI')}\WixUI_en-us.wxl" />
+		</exec>
+		<delete>
+			<fileset>
+				<include name="bin\*.wixobj" />
+			</fileset>
+		</delete>
+	</target>
+</project>
