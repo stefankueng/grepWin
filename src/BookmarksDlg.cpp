@@ -128,7 +128,7 @@ LRESULT CBookmarksDlg::DoCommand(int id, int /*msg*/)
 void CBookmarksDlg::InitBookmarks()
 {
 	HWND hListControl = GetDlgItem(*this, IDC_BOOKMARKS);
-	DWORD exStyle = LVS_EX_DOUBLEBUFFER;
+	DWORD exStyle = LVS_EX_DOUBLEBUFFER | LVS_EX_FULLROWSELECT;
 	ListView_DeleteAllItems(hListControl);
 
 	int c = Header_GetItemCount(ListView_GetHeader(hListControl))-1;
