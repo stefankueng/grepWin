@@ -2,17 +2,14 @@
 // Microsoft Visual C++ generated include file.
 // Used by GrepWin.rc
 //
-#define IDC_MYICON                      2
-#define IDD_GREPWIN_DIALOG              102
 #define IDS_APP_TITLE                   103
-#define IDD_ABOUTBOX                    103
 #define IDM_ABOUT                       104
 #define IDM_EXIT                        105
 #define IDI_GREPWIN                     107
 #define IDI_SMALL                       108
 #define IDC_GREPWIN                     109
-#define IDR_MAINFRAME                   128
 #define IDD_SEARCHDLG                   129
+#define IDD_REGEXTEST                   130
 #define IDC_SEARCHTEXT                  1000
 #define IDC_REGEXRADIO                  1001
 #define IDC_TEXTRADIO                   1002
@@ -36,11 +33,14 @@
 #define IDC_ADDTOBOOKMARKS              1021
 #define IDC_BOOKMARKS                   1022
 #define IDC_REPLACETEXT                 1023
-#define IDC_REGEXREPLACEOKLABEL         1024
-#define IDC_BUTTON3                     1025
-#define IDC_PREVIEW                     1025
 #define IDC_SEARCHFORLABEL              1026
 #define IDC_REPLACEWITHLABEL            1027
+#define IDC_TESTREGEX                   1028
+#define IDC_CREATEBACKUP                1029
+#define IDC_TEXTCONTENT                 1030
+#define IDC_REGEXMATCH                  1031
+#define IDC_REGEXREPLACED               1032
+#define IDC_BUTTON2                     1036
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
@@ -48,9 +48,9 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
-#define _APS_NEXT_RESOURCE_VALUE        130
+#define _APS_NEXT_RESOURCE_VALUE        131
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1028
+#define _APS_NEXT_CONTROL_VALUE         1037
 #define _APS_NEXT_SYMED_VALUE           110
 #endif
 #endif

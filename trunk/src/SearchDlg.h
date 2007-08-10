@@ -35,6 +35,7 @@ protected:
 	void					ShowContextMenu(int x, int y);
 	void					DoListNotify(LPNMITEMACTIVATE lpNMItemActivate);
 	void					UpdateInfoLabel();
+	void					UpdateSearchButton();
 private:
 	HWND					m_hParent;
 	volatile LONG			m_dwThreadRunning;
@@ -49,6 +50,7 @@ private:
 	bool					m_bIncludeSystem;
 	bool					m_bIncludeHidden;
 	bool					m_bIncludeSubfolders;
+	bool					m_bCreateBackup;
 
 	HANDLE					m_hSearchThread;
 
