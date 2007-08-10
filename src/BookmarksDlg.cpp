@@ -46,6 +46,35 @@ LRESULT CBookmarksDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lP
 			return 0;
 		}
 		break;
+	case WM_CONTEXTMENU:
+		{
+			long x = GET_X_LPARAM(lParam);
+			long y = GET_Y_LPARAM(lParam);
+			HWND hListControl = GetDlgItem(*this, IDC_BOOKMARKS);
+			if (HWND(wParam) == hListControl)
+			{
+				int nCount = ListView_GetItemCount(hListControl);
+				if (nCount == 0)
+					break;
+				int iItem = ListView_GetSelectionMark(hListControl);
+				if (iItem < 0)
+					break;
+
+				POINT pt = {x,y};
+				if ((x==-1)&&(y==-1))
+				{
+					RECT rc;
+					ListView_GetItemRect(hListControl, iItem, &rc, LVIR_LABEL);
+					pt.x = (rc.right-rc.left)/2;
+					pt.y = (rc.bottom-rc.top)/2;
+					ClientToScreen(hListControl, &pt);
+				}
+				HMENU hMenu = LoadMenu(hResource, MAKEINTRESOURCE(IDC_BKPOPUP));
+				HMENU hPopup = GetSubMenu(hMenu, 0);
+				TrackPopupMenu(hPopup, TPM_LEFTALIGN|TPM_RIGHTBUTTON, x, y, 0, *this, NULL);
+			}
+		}
+		break;
 	default:
 		return FALSE;
 	}

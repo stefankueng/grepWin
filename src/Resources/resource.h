@@ -3,8 +3,6 @@
 // Used by GrepWin.rc
 //
 #define IDS_APP_TITLE                   103
-#define IDM_ABOUT                       104
-#define IDM_EXIT                        105
 #define IDI_GREPWIN                     107
 #define IDI_SMALL                       108
 #define IDC_GREPWIN                     109
@@ -12,6 +10,8 @@
 #define IDD_REGEXTEST                   130
 #define IDD_NAME                        131
 #define IDD_BOOKMARKS                   132
+#define IDR_MENU1                       133
+#define IDC_BKPOPUP                     133
 #define IDC_SEARCHTEXT                  1000
 #define IDC_REGEXRADIO                  1001
 #define IDC_TEXTRADIO                   1002
@@ -51,7 +51,7 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
-#define _APS_NEXT_RESOURCE_VALUE        133
+#define _APS_NEXT_RESOURCE_VALUE        134
 #define _APS_NEXT_COMMAND_VALUE         32773
 #define _APS_NEXT_CONTROL_VALUE         1039
 #define _APS_NEXT_SYMED_VALUE           110
