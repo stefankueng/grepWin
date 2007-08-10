@@ -11,7 +11,9 @@ class CDialog
 {
 public:
 	INT_PTR DoModal(HINSTANCE hInstance, int resID, HWND hWndParent);
+	INT_PTR DoModal(HINSTANCE hInstance, int resID, HWND hWndParent, UINT idAccel);
     HWND    Create(HINSTANCE hInstance, int resID, HWND hWndParent);
+	BOOL	EndDialog(HWND hDlg, INT_PTR nResult);
 
 	virtual LRESULT CALLBACK DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) = 0;
 

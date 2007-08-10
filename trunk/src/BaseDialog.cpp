@@ -8,6 +8,51 @@ INT_PTR CDialog::DoModal(HINSTANCE hInstance, int resID, HWND hWndParent)
 	return DialogBoxParam(hInstance, MAKEINTRESOURCE(resID), hWndParent, &CDialog::stDlgFunc, (LPARAM)this);
 }
 
+INT_PTR CDialog::DoModal(HINSTANCE hInstance, int resID, HWND hWndParent, UINT idAccel)
+{
+	hResource = hInstance;
+	m_hwnd = CreateDialogParam(hInstance, MAKEINTRESOURCE(resID), hWndParent, &CDialog::stDlgFunc, (LPARAM)this);
+
+	// deactivate the parent window
+	if (hWndParent)
+		::EnableWindow(hWndParent, FALSE);
+
+	ShowWindow(m_hwnd, SW_SHOW);
+
+	// Main message loop:
+	MSG msg;
+	HACCEL hAccelTable = LoadAccelerators(hResource, MAKEINTRESOURCE(idAccel));
+	BOOL bRet = TRUE;
+	while ((bRet = GetMessage(&msg, NULL, 0, 0)) != 0)
+	{ 
+		if (bRet == -1)
+		{
+			// handle the error and possibly exit
+			break;
+		}
+		else
+		{
+			if (!TranslateAccelerator(m_hwnd, hAccelTable, &msg) && 
+				!IsDialogMessage(m_hwnd, &msg)) 
+			{ 
+				TranslateMessage(&msg); 
+				DispatchMessage(&msg); 
+			}
+		}
+	} 
+	// re-enable the parent window
+	if (hWndParent)
+		::EnableWindow(hWndParent, TRUE);
+	DestroyWindow(m_hwnd);
+	return msg.wParam;
+}
+
+BOOL CDialog::EndDialog(HWND hDlg, INT_PTR nResult)
+{
+	::PostQuitMessage(nResult);
+	return ::EndDialog(hDlg, nResult);
+}
+
 HWND CDialog::Create(HINSTANCE hInstance, int resID, HWND hWndParent)
 {
 	hResource = hInstance;
