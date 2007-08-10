@@ -151,6 +151,20 @@ BEGIN
 END
 #endif    // APSTUDIO_INVOKED
 
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDC_BKPOPUP MENU 
+BEGIN
+    POPUP "Dummy"
+    BEGIN
+        MENUITEM "Remove Bookmark",             ID_REMOVEBOOKMARK
+    END
+END
+
 #endif    // English (U.S.) resources
 /////////////////////////////////////////////////////////////////////////////
 
@@ -173,24 +187,6 @@ LANGUAGE LANG_GERMAN, SUBLANG_GERMAN_SWISS
 // remains consistent on all systems.
 IDI_GREPWIN             ICON                    "GrepWin.ico"
 IDI_SMALL               ICON                    "small.ico"
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Menu
-//
-
-IDC_GREPWIN MENU 
-BEGIN
-    POPUP "&File"
-    BEGIN
-        MENUITEM "E&xit",                       IDM_EXIT
-    END
-    POPUP "&Help"
-    BEGIN
-        MENUITEM "&About ...",                  IDM_ABOUT
-    END
-END
-
 
 /////////////////////////////////////////////////////////////////////////////
 //
