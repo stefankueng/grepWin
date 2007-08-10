@@ -199,6 +199,21 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 					break;
 
 				m_bUseRegex = (IsDlgButtonChecked(*this, IDC_REGEXRADIO) == BST_CHECKED);
+				if (m_bUseRegex)
+				{
+					// check if the regex is valid before doing the search
+					bool bValid = true;
+					try
+					{
+						wregex expression = wregex(m_searchString);
+					}
+					catch (const exception&)
+					{
+						bValid = false;
+					}
+					if (!bValid)
+						break;
+				}
 				m_bAllSize = (IsDlgButtonChecked(*this, IDC_ALLSIZERADIO) == BST_CHECKED);
 				if (!m_bAllSize)
 				{
