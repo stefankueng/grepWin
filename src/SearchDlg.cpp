@@ -379,7 +379,13 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 	case IDC_BOOKMARKS:
 		{
 			CBookmarksDlg dlg(*this);
-			dlg.DoModal(hResource, IDD_BOOKMARKS, *this);
+			if (dlg.DoModal(hResource, IDD_BOOKMARKS, *this) == IDOK)
+			{
+				m_searchString = dlg.GetSelectedSearchString();
+				m_replaceString = dlg.GetSelectedReplaceString();
+				SetDlgItemText(*this, IDC_SEARCHTEXT, m_searchString.c_str());
+				SetDlgItemText(*this, IDC_REPLACETEXT, m_replaceString.c_str());
+			}
 		}
 		break;
 	}
