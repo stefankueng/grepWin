@@ -32,11 +32,22 @@ protected:
 	int						SearchFile(CSearchInfo& sinfo, bool bUseRegex, const wstring& searchString);
 
 	bool					InitResultList();
-	bool					AddFoundEntry(CSearchInfo * pInfo);
+	bool					AddFoundEntry(CSearchInfo * pInfo, bool bOnlyListControl = false);
 	void					ShowContextMenu(int x, int y);
 	void					DoListNotify(LPNMITEMACTIVATE lpNMItemActivate);
 	void					UpdateInfoLabel();
 	void					UpdateSearchButton();
+private:
+	static bool				NameCompareAsc(const CSearchInfo Entry1, const CSearchInfo Entry2);
+	static bool				SizeCompareAsc(const CSearchInfo Entry1, const CSearchInfo Entry2);
+	static bool				MatchesCompareAsc(const CSearchInfo Entry1, const CSearchInfo Entry2);
+	static bool				PathCompareAsc(const CSearchInfo Entry1, const CSearchInfo Entry2);
+
+	static bool				NameCompareDesc(const CSearchInfo Entry1, const CSearchInfo Entry2);
+	static bool				SizeCompareDesc(const CSearchInfo Entry1, const CSearchInfo Entry2);
+	static bool				MatchesCompareDesc(const CSearchInfo Entry1, const CSearchInfo Entry2);
+	static bool				PathCompareDesc(const CSearchInfo Entry1, const CSearchInfo Entry2);
+
 private:
 	HWND					m_hParent;
 	volatile LONG			m_dwThreadRunning;
@@ -58,6 +69,7 @@ private:
 	vector<CSearchInfo>		m_items;
 	int						m_totalitems;
 	int						m_searchedItems;
+	bool					m_bAscending;
 
 	CDlgResizer				m_resizer;
 };
