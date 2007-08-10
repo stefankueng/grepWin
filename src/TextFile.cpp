@@ -91,6 +91,48 @@ bool CTextFile::Load(LPCTSTR path)
 	return CalculateLines();
 }
 
+void CTextFile::SetFileContent(const wstring& content)
+{
+	if (pFileBuf)
+		delete [] pFileBuf;
+	pFileBuf = NULL;
+	filelen = 0;
+	if (encoding == UNICODE_LE)
+	{
+		pFileBuf = new BYTE[content.size()*sizeof(wchar_t)];
+		memcpy(pFileBuf, content.c_str(), content.size()*sizeof(wchar_t));
+		filelen = content.size()*sizeof(wchar_t);
+	}
+	else if (encoding == UTF8)
+	{
+		int ret = WideCharToMultiByte(CP_UTF8, 0, content.c_str(), -1, NULL, 0, NULL, NULL);
+		pFileBuf = new BYTE[ret];
+		int ret2 = WideCharToMultiByte(CP_UTF8, 0, content.c_str(), -1, (LPSTR)pFileBuf, ret, NULL, NULL);
+		filelen = ret2-1;
+		if (ret2 != ret)
+		{
+			delete [] pFileBuf;
+			pFileBuf = NULL;
+			filelen = 0;
+		}
+	}
+	else if (encoding == ANSI)
+	{
+		int ret = WideCharToMultiByte(CP_ACP, 0, content.c_str(), -1, NULL, 0, NULL, NULL);
+		pFileBuf = new BYTE[ret];
+		int ret2 = WideCharToMultiByte(CP_ACP, 0, content.c_str(), -1, (LPSTR)pFileBuf, ret, NULL, NULL);
+		filelen = ret2-1;
+		if (ret2 != ret)
+		{
+			delete [] pFileBuf;
+			pFileBuf = NULL;
+			filelen = 0;
+		}
+	}
+	if (pFileBuf)
+		textcontent = content;
+}
+
 bool CTextFile::ContentsModified(LPVOID pBuf, DWORD newLen)
 {
 	if (pFileBuf)

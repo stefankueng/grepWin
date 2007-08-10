@@ -82,6 +82,11 @@ public:
 	 * Returns the filename extension (if any)
 	 */
 	wstring			GetFileNameExtension();
+
+	/**
+	 * Replaces the file content.
+	 */
+	void			SetFileContent(const wstring& content);
 protected:
 	/**
 	 * Tries to find out the encoding of the file (utf8, utf16, ansi)
@@ -92,6 +97,7 @@ protected:
 	 * to get the line from a char position.
 	 */
 	bool			CalculateLines();
+
 private:
 	LPVOID			pFileBuf;
 	DWORD			filelen;
