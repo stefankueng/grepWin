@@ -39,6 +39,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 
 	CSearchDlg searchDlg(NULL);
 
+	searchDlg.SetSearchPath(parser.GetVal(_T("searchpath")));
 	int ret = searchDlg.DoModal(hInstance, IDD_SEARCHDLG, NULL);
 
 	::OleUninitialize();

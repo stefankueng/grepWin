@@ -23,6 +23,7 @@ public:
 	~CSearchDlg(void);
 
 	DWORD					SearchThread();
+	void					SetSearchPath(const wstring& path) {m_searchpath = path;}
 
 protected:
 	LRESULT CALLBACK		DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);

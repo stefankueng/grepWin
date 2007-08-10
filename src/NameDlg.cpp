@@ -54,7 +54,7 @@ LRESULT CNameDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	return FALSE;
 }
 
-LRESULT CNameDlg::DoCommand(int id, int msg)
+LRESULT CNameDlg::DoCommand(int id, int /*msg*/)
 {
 	switch (id)
 	{
