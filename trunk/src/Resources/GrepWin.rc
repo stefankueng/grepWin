@@ -199,8 +199,7 @@ END
 
 IDC_GREPWIN ACCELERATORS 
 BEGIN
-    "?",            IDM_ABOUT,              ASCII,  ALT
-    "/",            IDM_ABOUT,              ASCII,  ALT
+    VK_DELETE,      ID_REMOVEBOOKMARK,      VIRTKEY, NOINVERT
 END
 
 
