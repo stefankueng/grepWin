@@ -29,6 +29,9 @@ LRESULT CBookmarksDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lP
 			InitBookmarks();
 
 			m_resizer.Init(hwndDlg);
+			m_resizer.AddControl(hwndDlg, IDC_BOOKMARKS, RESIZER_TOPLEFTBOTTOMRIGHT);
+			m_resizer.AddControl(hwndDlg, IDOK, RESIZER_BOTTOMRIGHT);
+			m_resizer.AddControl(hwndDlg, IDCANCEL, RESIZER_BOTTOMRIGHT);
 		}
 		return TRUE;
 	case WM_COMMAND:
