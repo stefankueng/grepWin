@@ -4,7 +4,6 @@
 //
 #define IDS_APP_TITLE                   103
 #define IDI_GREPWIN                     107
-#define IDI_SMALL                       108
 #define IDC_GREPWIN                     109
 #define IDD_SEARCHDLG                   129
 #define IDD_REGEXTEST                   130
