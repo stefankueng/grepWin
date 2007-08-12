@@ -19,7 +19,7 @@
 		</exec>
 		<delete>
 			<fileset>
-				<include name="bin\*.wixobj" />
+				<include name="..\..\bin\*.wixobj" />
 			</fileset>
 		</delete>
 	</target>
