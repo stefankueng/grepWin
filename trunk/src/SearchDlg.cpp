@@ -6,6 +6,7 @@
 #include "TextFile.h"
 #include "SearchInfo.h"
 #include "UnicodeUtils.h"
+#include "StringUtils.h"
 #include "BrowseFolder.h"
 #include "SysImageList.h"
 #include "ShellContextMenu.h"
@@ -87,6 +88,8 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			m_resizer.AddControl(hwndDlg, IDC_INCLUDESYSTEM, RESIZER_TOPLEFT);
 			m_resizer.AddControl(hwndDlg, IDC_INCLUDEHIDDEN, RESIZER_TOPLEFT);
 			m_resizer.AddControl(hwndDlg, IDC_INCLUDESUBFOLDERS, RESIZER_TOPLEFT);
+			m_resizer.AddControl(hwndDlg, IDC_PATTERNLABEL, RESIZER_TOPLEFT);
+			m_resizer.AddControl(hwndDlg, IDC_PATTERN, RESIZER_TOPLEFTRIGHT);
 			m_resizer.AddControl(hwndDlg, IDOK, RESIZER_TOPRIGHT);
 			m_resizer.AddControl(hwndDlg, IDC_GROUPSEARCHRESULTS, RESIZER_TOPLEFTBOTTOMRIGHT);
 			m_resizer.AddControl(hwndDlg, IDC_RESULTLIST, RESIZER_TOPLEFTBOTTOMRIGHT);
@@ -195,7 +198,24 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 				m_searchString = buf;
 				GetDlgItemText(*this, IDC_REPLACETEXT, buf, MAX_PATH*4);
 				m_replaceString = buf;
-				
+				GetDlgItemText(*this, IDC_PATTERN, buf, MAX_PATH*4);
+				// split the pattern string into single patterns and
+				// add them to an array
+				TCHAR * pBuf = buf;
+				size_t pos = 0;
+				m_patterns.clear();
+				do 
+				{
+					pos = _tcscspn(pBuf, _T(",; "));
+					wstring s = wstring(pBuf, pos);
+					if (!s.empty())
+					{
+						m_patterns.push_back(s);
+					}
+					pBuf += pos;
+					pBuf++;
+				} while(*pBuf && (*(pBuf-1)));
+
 				if (m_searchpath.empty() || m_searchString.empty())
 					break;
 
@@ -664,15 +684,23 @@ DWORD CSearchDlg::SearchThread()
 				}
 			}
 			bRecurse = ((bIsDirectory)&&(m_bIncludeSubfolders)&&(bSearch));
+			bool bPattern = false;
+			if (m_patterns.size())
+			{
+				for (vector<wstring>::const_iterator it = m_patterns.begin(); it != m_patterns.end(); ++it)
+					bPattern = bPattern || wcswildcmp(it->c_str(), pathbuf);
+			}
+			else
+				bPattern = true;
 
-			if (bSearch)
+			if (bSearch && bPattern)
 			{
 				CSearchInfo sinfo(pathbuf);
 				sinfo.filesize = pFindData->nFileSizeLow;
 				int nFound = SearchFile(sinfo, m_bUseRegex, m_searchString);
 				SendMessage(*this, SEARCH_FOUND, nFound, (LPARAM)&sinfo);
 			}
-			SendMessage(*this, SEARCH_PROGRESS, bSearch, 0);
+			SendMessage(*this, SEARCH_PROGRESS, bSearch && bPattern, 0);
 		}
 		else
 		{

@@ -259,6 +259,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\StringUtils.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\SysImageList.cpp"
 				>
 			</File>
@@ -350,6 +354,10 @@
 			</File>
 			<File
 				RelativePath=".\stdafx.h"
+				>
+			</File>
+			<File
+				RelativePath=".\StringUtils.h"
 				>
 			</File>
 			<File
