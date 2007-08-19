@@ -315,7 +315,8 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 					TCHAR buf[MAX_PATH*4] = {0};
 					GetDlgItemText(*this, IDC_SEARCHTEXT, buf, MAX_PATH*4);
 					bool bValid = true;
-					if (_tcslen(buf))
+					int len = _tcslen(buf);
+					if (len)
 					{
 						try
 						{
@@ -326,10 +327,17 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 							bValid = false;
 						}
 					}
-					if (bValid)
-						SetDlgItemText(*this, IDC_REGEXOKLABEL, _T("regex ok"));
+					if (len)
+					{
+						if (bValid)
+							SetDlgItemText(*this, IDC_REGEXOKLABEL, _T("regex ok"));
+						else
+							SetDlgItemText(*this, IDC_REGEXOKLABEL, _T("invalid regex!"));
+					}
 					else
-						SetDlgItemText(*this, IDC_REGEXOKLABEL, _T("invalid regex!"));
+					{
+						SetDlgItemText(*this, IDC_REGEXOKLABEL, _T(""));
+					}
 				}
 				else
 				{
