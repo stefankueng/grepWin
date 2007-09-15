@@ -29,7 +29,7 @@ protected:
 	LRESULT CALLBACK		DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 	LRESULT					DoCommand(int id, int msg);
 
-	int						SearchFile(CSearchInfo& sinfo, bool bUseRegex, const wstring& searchString);
+	int						SearchFile(CSearchInfo& sinfo, bool bUseRegex, bool bCaseSensitive, const wstring& searchString);
 
 	bool					InitResultList();
 	bool					AddFoundEntry(CSearchInfo * pInfo, bool bOnlyListControl = false);
@@ -64,6 +64,7 @@ private:
 	bool					m_bIncludeHidden;
 	bool					m_bIncludeSubfolders;
 	bool					m_bCreateBackup;
+	bool					m_bCaseSensitive;
 
 	HANDLE					m_hSearchThread;
 

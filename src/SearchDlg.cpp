@@ -13,6 +13,7 @@
 #include "RegexTestDlg.h"
 #include "NameDlg.h"
 #include "BookmarksDlg.h"
+#include "InfoDlg.h"
 #include <string>
 #include <iostream>
 #include <fstream>
@@ -74,6 +75,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			m_resizer.AddControl(hwndDlg, IDC_SEARCHTEXT, RESIZER_TOPLEFTRIGHT);
 			m_resizer.AddControl(hwndDlg, IDC_REPLACEWITHLABEL, RESIZER_TOPLEFT);
 			m_resizer.AddControl(hwndDlg, IDC_REPLACETEXT, RESIZER_TOPLEFTRIGHT);
+			m_resizer.AddControl(hwndDlg, IDC_CASE_SENSITIVE, RESIZER_TOPLEFT);
 			m_resizer.AddControl(hwndDlg, IDC_REGEXOKLABEL, RESIZER_TOPRIGHT);
 			m_resizer.AddControl(hwndDlg, IDC_CREATEBACKUP, RESIZER_TOPLEFT);
 			m_resizer.AddControl(hwndDlg, IDC_TESTREGEX, RESIZER_TOPLEFT);
@@ -172,6 +174,11 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			}
 		}
 		break;
+	case WM_HELP:
+		{
+			CInfoDlg::ShowDialog(IDR_INFODLG, hResource);
+		}
+		break;
 	default:
 		return FALSE;
 	}
@@ -247,6 +254,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 				m_bIncludeHidden = (IsDlgButtonChecked(*this, IDC_INCLUDEHIDDEN) == BST_CHECKED);
 				m_bIncludeSubfolders = (IsDlgButtonChecked(*this, IDC_INCLUDESUBFOLDERS) == BST_CHECKED);
 				m_bCreateBackup = (IsDlgButtonChecked(*this, IDC_CREATEBACKUP) == BST_CHECKED);
+				m_bCaseSensitive = (IsDlgButtonChecked(*this, IDC_CASE_SENSITIVE) == BST_CHECKED);
 
 				m_searchedItems = 0;
 				m_totalitems = 0;
@@ -705,7 +713,7 @@ DWORD CSearchDlg::SearchThread()
 			{
 				CSearchInfo sinfo(pathbuf);
 				sinfo.filesize = pFindData->nFileSizeLow;
-				int nFound = SearchFile(sinfo, m_bUseRegex, m_searchString);
+				int nFound = SearchFile(sinfo, m_bUseRegex, m_bCaseSensitive, m_searchString);
 				SendMessage(*this, SEARCH_FOUND, nFound, (LPARAM)&sinfo);
 			}
 			SendMessage(*this, SEARCH_PROGRESS, bSearch && bPattern, 0);
@@ -723,77 +731,68 @@ DWORD CSearchDlg::SearchThread()
 	return 0L;
 }
 
-int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bUseRegex, const wstring& searchString)
+int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bUseRegex, bool bCaseSensitive, const wstring& searchString)
 {
 	int nFound = 0;
 	// we keep it simple:
 	// files bigger than 10MB are considered binary. Binary files are searched
 	// as if they're ANSI text files.
+	wstring localSearchString = searchString;
+	if (!bUseRegex)
+		localSearchString = _T("\\Q") + searchString + _T("\\E");
 	if (sinfo.filesize < 10*1024*1024)
 	{
 		CTextFile textfile;
 		if (textfile.Load(sinfo.filepath.c_str()))
 		{
-			if (bUseRegex)
+			wstring::const_iterator start, end;
+			start = textfile.GetFileString().begin();
+			end = textfile.GetFileString().end();
+			match_results<wstring::const_iterator> what;
+			try
 			{
-				wstring::const_iterator start, end;
-				start = textfile.GetFileString().begin();
-				end = textfile.GetFileString().end();
-				match_results<wstring::const_iterator> what;
-				try
+				int ft = regex::normal;
+				if (!bCaseSensitive)
+					ft |= regbase::icase;
+				wregex expression = wregex(localSearchString, ft);
+				match_results<wstring::const_iterator> whatc;
+				if (m_replaceString.empty())
 				{
-					wregex expression = wregex(searchString);
-					match_results<wstring::const_iterator> whatc;
-					if (m_replaceString.empty())
+					match_flag_type flags = match_default;
+					while (regex_search(start, end, whatc, expression, flags))   
 					{
-						match_flag_type flags = match_default;
-						while (regex_search(start, end, whatc, expression, flags))   
-						{
-							nFound++;
-							sinfo.matchstarts.push_back(whatc[0].first-textfile.GetFileString().begin());
-							sinfo.matchends.push_back(whatc[0].second-textfile.GetFileString().begin());
-							// update search position:
-							start = whatc[0].second;      
-							// update flags:
-							flags |= match_prev_avail;
-							flags |= match_not_bob;
-						}
-					}
-					else
-					{
-						match_flag_type flags = match_default|format_all;
-						wstring replaced = regex_replace(textfile.GetFileString(), expression, m_replaceString, flags);
-						if (replaced.compare(textfile.GetFileString()))
-						{
-							nFound++;
-							sinfo.matchstarts.push_back(0);
-							sinfo.matchends.push_back(0);
-							textfile.SetFileContent(replaced);
-							if (m_bCreateBackup)
-							{
-								wstring backupfile = sinfo.filepath + _T(".bak");
-								CopyFile(sinfo.filepath.c_str(), backupfile.c_str(), FALSE);
-							}
-							textfile.Save(sinfo.filepath.c_str());
-						}
+						nFound++;
+						sinfo.matchstarts.push_back(whatc[0].first-textfile.GetFileString().begin());
+						sinfo.matchends.push_back(whatc[0].second-textfile.GetFileString().begin());
+						// update search position:
+						start = whatc[0].second;      
+						// update flags:
+						flags |= match_prev_avail;
+						flags |= match_not_bob;
 					}
 				}
-				catch (const exception&)
+				else
 				{
-
+					match_flag_type flags = match_default|format_all;
+					wstring replaced = regex_replace(textfile.GetFileString(), expression, m_replaceString, flags);
+					if (replaced.compare(textfile.GetFileString()))
+					{
+						nFound++;
+						sinfo.matchstarts.push_back(0);
+						sinfo.matchends.push_back(0);
+						textfile.SetFileContent(replaced);
+						if (m_bCreateBackup)
+						{
+							wstring backupfile = sinfo.filepath + _T(".bak");
+							CopyFile(sinfo.filepath.c_str(), backupfile.c_str(), FALSE);
+						}
+						textfile.Save(sinfo.filepath.c_str());
+					}
 				}
 			}
-			else
+			catch (const exception&)
 			{
-				wstring::size_type foundpos = textfile.GetFileString().find(searchString);
-				while (foundpos != wstring::npos)
-				{
-					nFound++;
-					sinfo.matchstarts.push_back(foundpos);
-					sinfo.matchends.push_back(foundpos+searchString.size());
 
-					foundpos = textfile.GetFileString().find(searchString, foundpos+1);
-				}
 			}
 		}
 	}
@@ -804,55 +803,37 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bUseRegex, const wstring& se
 		string filepath = CUnicodeUtils::StdGetANSI(sinfo.filepath);
 		string searchfor = CUnicodeUtils::StdGetUTF8(searchString);
 
-		if (bUseRegex)
+		if (!bUseRegex)
 		{
-			spirit::file_iterator<> start(filepath.c_str());
-			spirit::file_iterator<> fbeg = start;
-			spirit::file_iterator<> end = start.make_end();
+			searchfor = "\\Q";
+			searchfor += CUnicodeUtils::StdGetUTF8(searchString);
+			searchfor += "\\E";
+		}
+		spirit::file_iterator<> start(filepath.c_str());
+		spirit::file_iterator<> fbeg = start;
+		spirit::file_iterator<> end = start.make_end();
 
-			match_results<string::const_iterator> what;
-			match_flag_type flags = match_default;
-			try
+		match_results<string::const_iterator> what;
+		match_flag_type flags = match_default;
+		try
+		{
+			regex expression = regex(searchfor);
+			match_results<spirit::file_iterator<>> whatc;
+			while (regex_search(start, end, whatc, expression, flags))   
 			{
-				regex expression = regex(searchfor);
-				match_results<spirit::file_iterator<>> whatc;
-				while (regex_search(start, end, whatc, expression, flags))   
-				{
-					nFound++;
-					sinfo.matchstarts.push_back(whatc[0].first-fbeg);
-					sinfo.matchends.push_back(whatc[0].second-fbeg);
-					// update search position:
-					start = whatc[0].second;
-					// update flags:
-					flags |= match_prev_avail;
-					flags |= match_not_bob;
-				}
-			}
-			catch (const exception&)
-			{
-
+				nFound++;
+				sinfo.matchstarts.push_back(whatc[0].first-fbeg);
+				sinfo.matchends.push_back(whatc[0].second-fbeg);
+				// update search position:
+				start = whatc[0].second;
+				// update flags:
+				flags |= match_prev_avail;
+				flags |= match_not_bob;
 			}
 		}
-		else
+		catch (const exception&)
 		{
-			ifstream file (filepath.c_str(), ios::in|ios::binary|ios::ate);
-			if (file.is_open())
-			{
-				file.seekg (0, ios::beg);
 
-				istream_iterator<string> start(file);
-				istream_iterator<string> end;
-
-				start = find(start, end, searchfor);
-				while (start != end)
-				{
-					nFound++;
-					sinfo.matchstarts.push_back(file.tellg());
-					sinfo.matchends.push_back((DWORD)file.tellg()+searchfor.size());
-					++start;
-					start = find(start, end, searchfor);
-				}
-			}
 		}
 	}
 
