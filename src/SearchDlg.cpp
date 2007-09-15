@@ -402,7 +402,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 			bool bText = (IsDlgButtonChecked(*this, IDC_TEXTRADIO) == BST_CHECKED);
 			::EnableWindow(GetDlgItem(*this, IDC_REPLACETEXT), !bText);
 			::EnableWindow(GetDlgItem(*this, IDC_CREATEBACKUP), !bText);
-			if ((!bText)&&(!m_dwThreadRunning))
+			if ((!bText)&&(!m_dwThreadRunning)&&(GetWindowTextLength(GetDlgItem(*this, IDC_REPLACETEXT))>0))
 			{
 				::SetDlgItemText(*this, IDOK, _T("&Replace"));
 			}
