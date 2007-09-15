@@ -215,6 +215,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\InfoDlg.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\NameDlg.cpp"
 				>
 			</File>
@@ -321,6 +325,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\InfoDlg.h"
+				>
+			</File>
+			<File
 				RelativePath=".\NameDlg.h"
 				>
 			</File>
@@ -391,6 +399,16 @@
 				>
 			</File>
 		</Filter>
+		<File
+			RelativePath=".\Resources\html1.htm"
+			DeploymentContent="true"
+			>
+		</File>
+		<File
+			RelativePath=".\Resources\infodlg.htm"
+			DeploymentContent="true"
+			>
+		</File>
 		<File
 			RelativePath=".\Setup\Setup.wxs"
 			>
