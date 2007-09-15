@@ -17,6 +17,27 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
+// Neutral resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NEU)
+#ifdef _WIN32
+LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_GREPWIN             ICON                    "GrepWin.ico"
+#endif    // Neutral resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
 // English (U.S.) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
@@ -38,7 +59,7 @@ BEGIN
     GROUPBOX        "Search in",IDC_GROUPSEARCHIN,7,7,436,29
     EDITTEXT        IDC_SEARCHPATH,14,17,373,14,ES_AUTOHSCROLL | NOT WS_TABSTOP
     PUSHBUTTON      "...",IDC_SEARCHPATHBROWSE,400,17,36,14
-    GROUPBOX        "Search",IDC_GROUPSEARCHFOR,7,41,436,96
+    GROUPBOX        "Search",IDC_GROUPSEARCHFOR,7,41,436,110
     CONTROL         "Regex search",IDC_REGEXRADIO,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,52,60,10
     CONTROL         "Text search",IDC_TEXTRADIO,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,108,52,54,10
     LTEXT           "Search for:",IDC_SEARCHFORLABEL,14,65,37,8
@@ -46,24 +67,25 @@ BEGIN
     LTEXT           "",IDC_REGEXOKLABEL,393,77,43,8
     LTEXT           "Replace with:",IDC_REPLACEWITHLABEL,14,90,44,8
     EDITTEXT        IDC_REPLACETEXT,14,100,373,14,ES_AUTOHSCROLL
-    CONTROL         "Create backup files",IDC_CREATEBACKUP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,120,77,10
-    PUSHBUTTON      "Test regex",IDC_TESTREGEX,185,118,50,14
-    PUSHBUTTON      "Add to Bookmarks",IDC_ADDTOBOOKMARKS,258,118,76,14
-    PUSHBUTTON      "Bookmarks",IDC_BOOKMARKS,337,118,50,14
-    GROUPBOX        "Limit search",IDC_GROUPLIMITSEARCH,7,142,436,86
-    CONTROL         "All sizes",IDC_ALLSIZERADIO,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,153,41,10
-    CONTROL         "Size is",IDC_SIZERADIO,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,166,35,10
-    COMBOBOX        IDC_SIZECOMBO,56,164,73,41,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-    EDITTEXT        IDC_SIZEEDIT,134,163,40,14,ES_AUTOHSCROLL,WS_EX_RIGHT
-    LTEXT           "KB",IDC_KBTEXT,178,166,9,8
-    CONTROL         "Include system folders",IDC_INCLUDESYSTEM,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,185,88,10
-    CONTROL         "Include hidden items",IDC_INCLUDEHIDDEN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,200,76,10
-    CONTROL         "Include subfolders",IDC_INCLUDESUBFOLDERS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,214,75,10
-    LTEXT           "Files which match:",IDC_PATTERNLABEL,174,187,59,8
-    EDITTEXT        IDC_PATTERN,239,184,148,14,ES_AUTOHSCROLL
-    DEFPUSHBUTTON   "Search",IDOK,386,231,50,14
-    GROUPBOX        "Search results",IDC_GROUPSEARCHRESULTS,7,244,436,110
-    CONTROL         "",IDC_RESULTLIST,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,14,261,422,78
+    CONTROL         "Search case-sensitive",IDC_CASE_SENSITIVE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,120,85,10
+    CONTROL         "Create backup files",IDC_CREATEBACKUP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,134,77,10
+    PUSHBUTTON      "Test regex",IDC_TESTREGEX,185,132,50,14
+    PUSHBUTTON      "Add to Bookmarks",IDC_ADDTOBOOKMARKS,258,132,76,14
+    PUSHBUTTON      "Bookmarks",IDC_BOOKMARKS,337,132,50,14
+    GROUPBOX        "Limit search",IDC_GROUPLIMITSEARCH,7,156,436,86
+    CONTROL         "All sizes",IDC_ALLSIZERADIO,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,167,41,10
+    CONTROL         "Size is",IDC_SIZERADIO,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,14,180,35,10
+    COMBOBOX        IDC_SIZECOMBO,56,178,73,41,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    EDITTEXT        IDC_SIZEEDIT,134,177,40,14,ES_AUTOHSCROLL,WS_EX_RIGHT
+    LTEXT           "KB",IDC_KBTEXT,178,180,9,8
+    CONTROL         "Include system folders",IDC_INCLUDESYSTEM,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,199,88,10
+    CONTROL         "Include hidden items",IDC_INCLUDEHIDDEN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,214,76,10
+    CONTROL         "Include subfolders",IDC_INCLUDESUBFOLDERS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,228,75,10
+    LTEXT           "Files which match:",IDC_PATTERNLABEL,174,201,59,8
+    EDITTEXT        IDC_PATTERN,239,198,148,14,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "Search",IDOK,386,244,50,14
+    GROUPBOX        "Search results",IDC_GROUPSEARCHRESULTS,7,259,436,95
+    CONTROL         "",IDC_RESULTLIST,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,14,270,422,69
     LTEXT           "",IDC_SEARCHINFOLABEL,14,342,422,8
 END
 
@@ -125,6 +147,7 @@ BEGIN
         VERTGUIDE, 436
         TOPMARGIN, 7
         BOTTOMMARGIN, 354
+        HORZGUIDE, 62
     END
 
     IDD_REGEXTEST, DIALOG
@@ -167,6 +190,36 @@ BEGIN
     END
 END
 
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator
+//
+
+IDC_GREPWIN ACCELERATORS 
+BEGIN
+    VK_DELETE,      ID_REMOVEBOOKMARK,      VIRTKEY, NOINVERT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// HTML
+//
+
+IDR_INFODLG             HTML                    "infodlg.htm"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDS_APP_TITLE           "GrepWin"
+    IDC_GREPWIN             "GREPWIN"
+END
+
 #endif    // English (U.S.) resources
 /////////////////////////////////////////////////////////////////////////////
 
@@ -179,26 +232,6 @@ END
 LANGUAGE LANG_GERMAN, SUBLANG_GERMAN_SWISS
 #pragma code_page(1252)
 #endif //_WIN32
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Icon
-//
-
-// Icon with lowest ID value placed first to ensure application icon
-// remains consistent on all systems.
-IDI_GREPWIN             ICON                    "GrepWin.ico"
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Accelerator
-//
-
-IDC_GREPWIN ACCELERATORS 
-BEGIN
-    VK_DELETE,      ID_REMOVEBOOKMARK,      VIRTKEY, NOINVERT
-END
-
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -223,22 +256,10 @@ END
 
 3 TEXTINCLUDE 
 BEGIN
-    "\r\0"
+    "\r\n\0"
 END
 
 #endif    // APSTUDIO_INVOKED
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// String Table
-//
-
-STRINGTABLE 
-BEGIN
-    IDS_APP_TITLE           "GrepWin"
-    IDC_GREPWIN             "GREPWIN"
-END
 
 #endif    // German (Switzerland) resources
 /////////////////////////////////////////////////////////////////////////////
