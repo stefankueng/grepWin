@@ -50,23 +50,9 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 	case WM_INITDIALOG:
 		{
 			InitDialog(hwndDlg, IDI_GREPWIN);
-			// create the tooltip control
-			m_hToolTips = CreateWindowEx(NULL,
-				TOOLTIPS_CLASS, NULL,
-				WS_POPUP | TTS_NOPREFIX | TTS_ALWAYSTIP,
-				CW_USEDEFAULT, CW_USEDEFAULT,
-				CW_USEDEFAULT, CW_USEDEFAULT,
-				hwndDlg,
-				NULL, hResource,
-				NULL);
-
-			SetWindowPos(m_hToolTips, HWND_TOPMOST,0, 0, 0, 0,
-				SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
-			SendMessage(m_hToolTips, TTM_SETMAXTIPWIDTH, 0, 600);  
 
 			AddToolTip(IDC_PATTERN, _T("only files that matches this pattern are searched.\r\nExample: *.cpp;*.h"));
-
-			SendMessage(m_hToolTips, TTM_ACTIVATE, TRUE, 0);
+			AddToolTip(IDC_SEARCHPATH, _T("the path which is searched recursively"));
 
 			// initialize the controls
 			SetDlgItemText(hwndDlg, IDC_SEARCHPATH, m_searchpath.c_str());
@@ -463,18 +449,6 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 		break;
 	}
 	return 1;
-}
-
-void CSearchDlg::AddToolTip(UINT ctrlID, LPTSTR text)
-{
-	TOOLINFO tt;
-	tt.cbSize = sizeof(TOOLINFO);
-	tt.uFlags = TTF_IDISHWND|TTF_CENTERTIP|TTF_SUBCLASS;
-	tt.hwnd = GetDlgItem(*this, ctrlID);
-	tt.uId = (UINT)GetDlgItem(*this, ctrlID);
-	tt.lpszText = text;
-
-	SendMessage (m_hToolTips, TTM_ADDTOOL, 0, (LPARAM) &tt);
 }
 
 void CSearchDlg::UpdateInfoLabel()

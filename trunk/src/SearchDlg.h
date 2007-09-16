@@ -37,7 +37,6 @@ protected:
 	void					DoListNotify(LPNMITEMACTIVATE lpNMItemActivate);
 	void					UpdateInfoLabel();
 	void					UpdateSearchButton();
-	void					AddToolTip(UINT ctrlID, LPTSTR text);
 private:
 	static bool				NameCompareAsc(const CSearchInfo Entry1, const CSearchInfo Entry2);
 	static bool				SizeCompareAsc(const CSearchInfo Entry1, const CSearchInfo Entry2);
@@ -51,7 +50,6 @@ private:
 
 private:
 	HWND					m_hParent;
-	HWND					m_hToolTips;
 	volatile LONG			m_dwThreadRunning;
 	volatile LONG			m_Cancelled;
 	wstring					m_searchpath;

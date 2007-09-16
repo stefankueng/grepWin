@@ -87,6 +87,19 @@ void CDialog::InitDialog(HWND hwndDlg, UINT iconID)
 	::SendMessage(hwndDlg, WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
 }
 
+void CDialog::AddToolTip(UINT ctrlID, LPTSTR text)
+{
+	TOOLINFO tt;
+	tt.cbSize = sizeof(TOOLINFO);
+	tt.uFlags = TTF_IDISHWND|TTF_CENTERTIP|TTF_SUBCLASS;
+	tt.hwnd = GetDlgItem(*this, ctrlID);
+	tt.uId = (UINT)GetDlgItem(*this, ctrlID);
+	tt.lpszText = text;
+
+	SendMessage (m_hToolTips, TTM_ADDTOOL, 0, (LPARAM) &tt);
+}
+
+
 INT_PTR CALLBACK CDialog::stDlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	CDialog* pWnd;
@@ -96,6 +109,20 @@ INT_PTR CALLBACK CDialog::stDlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPAR
 		SetWindowLongPtr(hwndDlg, GWLP_USERDATA, lParam);
 		pWnd = (CDialog*)lParam;
 		pWnd->m_hwnd = hwndDlg;
+		// create the tooltip control
+		pWnd->m_hToolTips = CreateWindowEx(NULL,
+			TOOLTIPS_CLASS, NULL,
+			WS_POPUP | TTS_NOPREFIX | TTS_ALWAYSTIP,
+			CW_USEDEFAULT, CW_USEDEFAULT,
+			CW_USEDEFAULT, CW_USEDEFAULT,
+			hwndDlg,
+			NULL, pWnd->hResource,
+			NULL);
+
+		SetWindowPos(pWnd->m_hToolTips, HWND_TOPMOST,0, 0, 0, 0,
+			SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+		SendMessage(pWnd->m_hToolTips, TTM_SETMAXTIPWIDTH, 0, 600);  
+		SendMessage(pWnd->m_hToolTips, TTM_ACTIVATE, TRUE, 0);
 	}
 	// get the pointer to the window
 	pWnd = GetObjectFromWindow(hwndDlg);
