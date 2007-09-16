@@ -65,6 +65,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			SendDlgItemMessage(hwndDlg, IDC_SIZECOMBO, CB_SETCURSEL, 0, 0);
 			SendDlgItemMessage(hwndDlg, IDC_INCLUDESUBFOLDERS, BM_SETCHECK, BST_CHECKED, 0);
 			SendDlgItemMessage(hwndDlg, IDC_CREATEBACKUP, BM_SETCHECK, BST_CHECKED, 0);
+			EnableWindow(GetDlgItem(*this, IDC_ADDTOBOOKMARKS), FALSE);
 
 			SetFocus(GetDlgItem(hwndDlg, IDC_SEARCHTEXT));
 
@@ -321,13 +322,13 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 		{
 			if (msg == EN_CHANGE)
 			{
+				TCHAR buf[MAX_PATH*4] = {0};
+				GetDlgItemText(*this, IDC_SEARCHTEXT, buf, MAX_PATH*4);
+				int len = _tcslen(buf);
 				if (IsDlgButtonChecked(*this, IDC_REGEXRADIO) == BST_CHECKED)
 				{
 					// check if the regex is valid
-					TCHAR buf[MAX_PATH*4] = {0};
-					GetDlgItemText(*this, IDC_SEARCHTEXT, buf, MAX_PATH*4);
 					bool bValid = true;
-					int len = _tcslen(buf);
 					if (len)
 					{
 						try
@@ -355,6 +356,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 				{
 					SetDlgItemText(*this, IDC_REGEXOKLABEL, _T(""));
 				}
+				EnableWindow(GetDlgItem(*this, IDC_ADDTOBOOKMARKS), len > 0);				
 			}
 		}
 		break;
