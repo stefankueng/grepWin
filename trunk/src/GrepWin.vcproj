@@ -400,11 +400,6 @@
 			</File>
 		</Filter>
 		<File
-			RelativePath=".\Resources\html1.htm"
-			DeploymentContent="true"
-			>
-		</File>
-		<File
 			RelativePath=".\Resources\infodlg.htm"
 			DeploymentContent="true"
 			>
