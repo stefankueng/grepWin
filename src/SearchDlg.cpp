@@ -496,7 +496,7 @@ bool CSearchDlg::InitResultList()
 	ListView_InsertColumn(hListControl, 3, &lvc);
 
 	ListView_SetColumnWidth(hListControl, 0, 300);
-	ListView_SetColumnWidth(hListControl, 1, LVSCW_AUTOSIZE_USEHEADER);
+	ListView_SetColumnWidth(hListControl, 1, 50);
 	ListView_SetColumnWidth(hListControl, 2, LVSCW_AUTOSIZE_USEHEADER);
 	ListView_SetColumnWidth(hListControl, 3, LVSCW_AUTOSIZE_USEHEADER);
 
