@@ -2,6 +2,7 @@
 #include "basedialog.h"
 #include "SearchInfo.h"
 #include "DlgResizer.h"
+#include "FileDropTarget.h"
 #include <string>
 #include <vector>
 
@@ -74,4 +75,6 @@ private:
 	bool					m_bAscending;
 
 	CDlgResizer				m_resizer;
+
+	CFileDropTarget *		m_pDropTarget;
 };

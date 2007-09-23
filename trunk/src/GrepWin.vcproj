@@ -211,6 +211,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FileDropTarget.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\GrepWin.cpp"
 				>
 			</File>
@@ -321,6 +325,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FileDropTarget.h"
+				>
+			</File>
+			<File
 				RelativePath=".\GrepWin.h"
 				>
 			</File>
@@ -338,6 +346,10 @@
 			</File>
 			<File
 				RelativePath=".\Registry.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\StExBar\src\RenameDlg.h"
 				>
 			</File>
 			<File

@@ -34,12 +34,15 @@ CSearchDlg::CSearchDlg(HWND hParent) : m_searchedItems(0)
 	, m_dwThreadRunning(FALSE)
 	, m_Cancelled(FALSE)
 	, m_bAscending(true)
+	, m_pDropTarget(NULL)
 {
 	m_hParent = hParent;
 }
 
 CSearchDlg::~CSearchDlg(void)
 {
+	if (m_pDropTarget)
+		delete m_pDropTarget;
 }
 
 LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -56,6 +59,21 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 
 			// initialize the controls
 			SetDlgItemText(hwndDlg, IDC_SEARCHPATH, m_searchpath.c_str());
+
+			// the path edit control should work as a drop target for files and folders
+			HWND hSearchPath = GetDlgItem(hwndDlg, IDC_SEARCHPATH);
+			m_pDropTarget = new CFileDropTarget(hSearchPath);
+			RegisterDragDrop(hSearchPath, m_pDropTarget);
+			// create the supported formats:
+			FORMATETC ftetc={0}; 
+			ftetc.cfFormat = CF_TEXT; 
+			ftetc.dwAspect = DVASPECT_CONTENT; 
+			ftetc.lindex = -1; 
+			ftetc.tymed = TYMED_HGLOBAL; 
+			m_pDropTarget->AddSuportedFormat(ftetc); 
+			ftetc.cfFormat=CF_HDROP; 
+			m_pDropTarget->AddSuportedFormat(ftetc);
+
 			CheckRadioButton(hwndDlg, IDC_REGEXRADIO, IDC_TEXTRADIO, IDC_REGEXRADIO);
 			CheckRadioButton(hwndDlg, IDC_ALLSIZERADIO, IDC_SIZERADIO, IDC_SIZERADIO);
 			SetDlgItemText(hwndDlg, IDC_SIZEEDIT, _T("2000"));
@@ -101,7 +119,6 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			m_resizer.AddControl(hwndDlg, IDC_GROUPSEARCHRESULTS, RESIZER_TOPLEFTBOTTOMRIGHT);
 			m_resizer.AddControl(hwndDlg, IDC_RESULTLIST, RESIZER_TOPLEFTBOTTOMRIGHT);
 			m_resizer.AddControl(hwndDlg, IDC_SEARCHINFOLABEL, RESIZER_BOTTOMLEFTRIGHT);
-
 		}
 		return FALSE;
 	case WM_COMMAND:
