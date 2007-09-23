@@ -135,6 +135,15 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			return 0;
 		}
 		break;
+	case WM_SETCURSOR:
+		{
+			if (m_dwThreadRunning)
+				SetCursor(LoadCursor(NULL, IDC_WAIT));
+			else
+				SetCursor(LoadCursor(NULL, IDC_ARROW));
+			return TRUE;
+		}
+		break;
 	case SEARCH_START:
 		{
 			m_totalitems = 0;
