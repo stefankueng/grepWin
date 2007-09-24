@@ -2,6 +2,7 @@
 #include <vector>
 #include <ole2.h>
 #include <ShellApi.h>
+#include <ShlObj.h>
 
 class CIDropTarget : public IDropTarget
 {
