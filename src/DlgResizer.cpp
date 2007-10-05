@@ -14,7 +14,43 @@ CDlgResizer::~CDlgResizer(void)
 
 void CDlgResizer::Init(HWND hWndDlg)
 {
+	m_hDlg = hWndDlg;
 	GetClientRect(hWndDlg, &m_dlgRect);
+
+	m_sizeGrip.cx = GetSystemMetrics(SM_CXVSCROLL);
+	m_sizeGrip.cy = GetSystemMetrics(SM_CYHSCROLL);
+
+	RECT rect = { 0 , 0, m_sizeGrip.cx, m_sizeGrip.cy };
+
+	m_wndGrip = ::CreateWindowEx(0, _T("SCROLLBAR"), 
+		(LPCTSTR)NULL, 
+		WS_CHILD | WS_CLIPSIBLINGS | SBS_SIZEGRIP,
+		rect.left, rect.top, 
+		rect.right-rect.left,
+		rect.bottom-rect.top,
+		m_hDlg,
+		(HMENU)0,
+		NULL,
+		NULL);
+
+	if (m_wndGrip)
+	{
+		// set a triangular window region
+		HRGN rgnGrip, rgn;
+		rgn = ::CreateRectRgn(0,0,1,1);
+		rgnGrip = ::CreateRectRgnIndirect(&rect);
+
+		for (int y=0; y<m_sizeGrip.cy; y++)
+		{
+			::SetRectRgn(rgn, 0, y, m_sizeGrip.cx-y, y+1);
+			::CombineRgn(rgnGrip, rgnGrip, rgn, RGN_DIFF); 
+		}
+		::SetWindowRgn(m_wndGrip, rgnGrip, FALSE);
+
+		// update pos
+		UpdateGripPos();
+		ShowSizeGrip();
+	}
 }
 
 void CDlgResizer::AddControl(HWND hWndDlg, UINT ctrlId, UINT resizeType)
@@ -32,6 +68,7 @@ void CDlgResizer::AddControl(HWND hWndDlg, UINT ctrlId, UINT resizeType)
 
 void CDlgResizer::DoResize(int width, int height)
 {
+	UpdateGripPos();
 	if (m_controls.size() == 0)
 		return;
 
@@ -76,3 +113,30 @@ void CDlgResizer::DoResize(int width, int height)
 	}
 	EndDeferWindowPos(hdwp);
 }
+
+void CDlgResizer::UpdateGripPos()
+{
+	RECT rect;
+	::GetClientRect(m_hDlg, &rect);
+
+	rect.left = rect.right - m_sizeGrip.cx;
+	rect.top = rect.bottom - m_sizeGrip.cy;
+
+	// must stay below other children
+	::SetWindowPos(m_wndGrip,HWND_BOTTOM, rect.left, rect.top, 0, 0,
+		SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOREPOSITION);
+
+	// maximized windows cannot be resized
+
+	if ( ::IsZoomed(m_hDlg) )
+	{
+		::EnableWindow(m_wndGrip, FALSE);
+		ShowSizeGrip(false);
+	}
+	else
+	{
+		::EnableWindow(m_wndGrip, TRUE);
+		ShowSizeGrip(false);
+	}
+}
+

@@ -155,10 +155,11 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 	case WM_SETCURSOR:
 		{
 			if (m_dwThreadRunning)
+			{
 				SetCursor(LoadCursor(NULL, IDC_WAIT));
-			else
-				SetCursor(LoadCursor(NULL, IDC_ARROW));
-			return TRUE;
+				return TRUE;
+			}
+			return FALSE;
 		}
 		break;
 	case SEARCH_START:
