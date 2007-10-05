@@ -31,7 +31,14 @@ public:
 	void	DoResize(int width, int height);
 
 	RECT *	GetDlgRect() {return &m_dlgRect;}
+	void	ShowSizeGrip(bool bShow = true) {::ShowWindow(m_wndGrip, bShow ? SW_SHOW : SW_HIDE);}
+	void	UpdateGripPos();
+
 private:
+	HWND					m_hDlg;
 	vector<ResizeCtrls>		m_controls;
 	RECT					m_dlgRect;
+	SIZE					m_sizeGrip;
+	HWND					m_wndGrip;
+
 };
