@@ -78,6 +78,18 @@ LRESULT CBookmarksDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lP
 			}
 		}
 		break;
+	case WM_NOTIFY:
+		{
+			if (wParam == IDC_BOOKMARKS)
+			{
+				LPNMITEMACTIVATE lpnmitem = (LPNMITEMACTIVATE) lParam;
+				if (lpnmitem->hdr.code == NM_DBLCLK)
+				{
+					DoCommand(IDOK, 0);
+				}
+			}
+		}
+		break;
 	default:
 		return FALSE;
 	}
