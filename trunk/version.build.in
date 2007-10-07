@@ -4,7 +4,7 @@
 		<setenv>
 			<variable name="MajorVersion" value="1" />
 			<variable name="MinorVersion" value="0" />
-			<variable name="MicroVersion" value="0" />
+			<variable name="MicroVersion" value="1" />
 			<variable name="WCREV" value="$WCREV$" />
 			<variable name="WCDATE" value="$WCDATE$" />
 		</setenv>
