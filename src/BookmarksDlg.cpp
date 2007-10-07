@@ -96,6 +96,7 @@ LRESULT CBookmarksDlg::DoCommand(int id, int /*msg*/)
 			{
 				TCHAR buf[MAX_PATH*4] = {0};
 				LVITEM lv = {0};
+				lv.iItem = iItem;
 				lv.mask = LVIF_TEXT;
 				lv.pszText = buf;
 				lv.cchTextMax = MAX_PATH*4;
