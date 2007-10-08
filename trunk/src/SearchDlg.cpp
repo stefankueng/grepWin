@@ -569,6 +569,9 @@ void CSearchDlg::ShowContextMenu(int x, int y)
 	while ((iItem = ListView_GetNextItem(hListControl, iItem, LVNI_SELECTED)) != (-1))
 		paths.push_back(m_items[iItem].filepath);
 
+	if (paths.size() == 0)
+		return;
+
 	shellMenu.SetObjects(paths);
 
 	POINT pt = {x,y};
