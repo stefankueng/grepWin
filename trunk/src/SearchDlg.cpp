@@ -732,7 +732,7 @@ DWORD CSearchDlg::SearchThread()
 					break;
 				}
 			}
-			bRecurse = ((bIsDirectory)&&(m_bIncludeSubfolders)&&(bSearch));
+			bRecurse = ((m_bIncludeSubfolders)&&(bSearch));
 			bool bPattern = false;
 			if (m_patterns.size())
 			{
