@@ -750,7 +750,8 @@ DWORD CSearchDlg::SearchThread()
 				CSearchInfo sinfo(pathbuf);
 				sinfo.filesize = pFindData->nFileSizeLow;
 				int nFound = SearchFile(sinfo, m_bUseRegex, m_bCaseSensitive, m_searchString);
-				SendMessage(*this, SEARCH_FOUND, nFound, (LPARAM)&sinfo);
+				if (nFound >= 0)
+					SendMessage(*this, SEARCH_FOUND, nFound, (LPARAM)&sinfo);
 			}
 			SendMessage(*this, SEARCH_PROGRESS, bSearch && bPattern, 0);
 		}
@@ -828,9 +829,11 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bUseRegex, bool bCaseSensiti
 			}
 			catch (const exception&)
 			{
-
+				return -1;
 			}
 		}
+		else
+			return -1;
 	}
 	else
 	{
@@ -869,7 +872,7 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bUseRegex, bool bCaseSensiti
 		}
 		catch (const exception&)
 		{
-
+			return -1;
 		}
 	}
 
