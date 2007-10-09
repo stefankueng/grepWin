@@ -86,7 +86,7 @@ bool CTextFile::Load(LPCTSTR path)
 			textcontent = wstring(pWideBuf, ret);
 		delete [] pWideBuf;
 	}
-	else if (encoding == ANSI)
+	else //if (encoding == ANSI)
 	{
 		int ret = MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, (LPCSTR)pFileBuf, bytesread, NULL, 0);
 		wchar_t * pWideBuf = new wchar_t[ret];
@@ -95,8 +95,6 @@ bool CTextFile::Load(LPCTSTR path)
 			textcontent = wstring(pWideBuf, ret);
 		delete [] pWideBuf;
 	}
-	else
-		return false;
 	return CalculateLines();
 }
 
