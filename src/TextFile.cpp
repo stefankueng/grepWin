@@ -34,8 +34,17 @@ bool CTextFile::Load(LPCTSTR path)
 	if (pFileBuf)
 		delete [] pFileBuf;
 	pFileBuf = NULL;
-	HANDLE hFile = CreateFile(path, GENERIC_READ, FILE_SHARE_READ,
-		NULL, OPEN_EXISTING, FILE_FLAG_SEQUENTIAL_SCAN, NULL);
+	HANDLE hFile = INVALID_HANDLE_VALUE;
+	int retrycounter = 0;
+	do 
+	{
+		if (retrycounter)
+			Sleep(20);
+		hFile = CreateFile(path, GENERIC_READ, FILE_SHARE_READ,
+			NULL, OPEN_EXISTING, FILE_FLAG_SEQUENTIAL_SCAN, NULL);
+		retrycounter++;
+	} while (hFile == INVALID_HANDLE_VALUE && retrycounter < 5);
+
 	if (hFile == INVALID_HANDLE_VALUE)
 		return false;
 	wstring wpath(path);
@@ -228,7 +237,7 @@ bool CTextFile::CalculateLines()
 	if (pFileBuf == NULL)
 		return false;
 	if (textcontent.empty())
-		return false;
+		return true;
 	linepositions.clear();
 	size_t pos = 0;
 	for (wstring::iterator it = textcontent.begin(); it != textcontent.end(); ++it)
