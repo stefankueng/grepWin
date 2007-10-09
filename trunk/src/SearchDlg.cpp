@@ -309,7 +309,10 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 		}
 		break;
 	case IDCANCEL:
-		EndDialog(*this, id);
+		if (m_dwThreadRunning)
+			InterlockedExchange(&m_Cancelled, TRUE);
+		else
+			EndDialog(*this, id);
 		break;
 	case IDC_TESTREGEX:
 		{
