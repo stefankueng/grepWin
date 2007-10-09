@@ -765,6 +765,12 @@ DWORD CSearchDlg::SearchThread()
 	}
 	SendMessage(*this, SEARCH_END, 0, 0);
 	InterlockedExchange(&m_dwThreadRunning, FALSE);
+
+	// refresh cursor
+	POINT pt;
+	GetCursorPos(&pt);
+	SetCursorPos(pt.x, pt.y);
+
 	return 0L;
 }
 
