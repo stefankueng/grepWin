@@ -14,6 +14,8 @@ CTextFile::~CTextFile(void)
 
 bool CTextFile::Save(LPCTSTR path)
 {
+	if (pFileBuf == NULL)
+		return false;
 	HANDLE hFile = CreateFile(path, GENERIC_WRITE, FILE_SHARE_READ,
 		NULL, CREATE_ALWAYS, FILE_FLAG_SEQUENTIAL_SCAN, NULL);
 	if (hFile == INVALID_HANDLE_VALUE)
@@ -65,6 +67,8 @@ bool CTextFile::Load(LPCTSTR path)
 	pFileBuf = new BYTE[lint.LowPart];
 	if (!ReadFile(hFile, pFileBuf, lint.LowPart, &bytesread, NULL))
 	{
+		delete [] pFileBuf;
+		pFileBuf = NULL;
 		CloseHandle(hFile);
 		return false;
 	}
@@ -138,9 +142,11 @@ void CTextFile::SetFileContent(const wstring& content)
 	}
 	if (pFileBuf)
 		textcontent = content;
+	else
+		textcontent = _T("");
 }
 
-bool CTextFile::ContentsModified(LPVOID pBuf, DWORD newLen)
+bool CTextFile::ContentsModified(BYTE * pBuf, DWORD newLen)
 {
 	if (pFileBuf)
 		delete [] pFileBuf;
@@ -149,7 +155,7 @@ bool CTextFile::ContentsModified(LPVOID pBuf, DWORD newLen)
 	return true;
 }
 
-CTextFile::UnicodeType CTextFile::CheckUnicodeType(LPVOID pBuffer, int cb)
+CTextFile::UnicodeType CTextFile::CheckUnicodeType(BYTE * pBuffer, int cb)
 {
 	if (cb < 2)
 		return ANSI;
