@@ -275,6 +275,8 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 						break;
 				}
 				m_bAllSize = (IsDlgButtonChecked(*this, IDC_ALLSIZERADIO) == BST_CHECKED);
+				m_lSize = 0;
+				m_sizeCmp = 0;
 				if (!m_bAllSize)
 				{
 					GetDlgItemText(*this, IDC_SIZEEDIT, buf, MAX_PATH*4);

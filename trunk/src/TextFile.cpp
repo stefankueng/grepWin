@@ -158,7 +158,7 @@ CTextFile::UnicodeType CTextFile::CheckUnicodeType(LPVOID pBuffer, int cb)
 	// scan the whole buffer for a 0x0000 sequence
 	// if found, we assume a binary file
 	bool bNull = false;
-	for (int i=0; i<(cb-1); i=i+2)
+	for (int i=0; i<(cb-2); i=i+2)
 	{
 		if (0x0000 == *pVal++)
 			return BINARY;
@@ -190,7 +190,7 @@ CTextFile::UnicodeType CTextFile::CheckUnicodeType(LPVOID pBuffer, int cb)
 	}
 	pVal2 = (UINT8 *)pBuffer;
 	bool bUTF8 = false;
-	for (int i=0; i<(cb-3); ++i)
+	for (int i=0; i<(cb-4); ++i)
 	{
 		if ((*pVal2 & 0xE0)==0xC0)
 		{
