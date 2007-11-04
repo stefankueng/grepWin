@@ -750,15 +750,16 @@ DWORD CSearchDlg::SearchThread()
 			else
 				bPattern = true;
 
+			int nFound = -1;
 			if (bSearch && bPattern)
 			{
 				CSearchInfo sinfo(pathbuf);
 				sinfo.filesize = pFindData->nFileSizeLow;
-				int nFound = SearchFile(sinfo, m_bUseRegex, m_bCaseSensitive, m_searchString);
+				nFound = SearchFile(sinfo, m_bUseRegex, m_bCaseSensitive, m_searchString);
 				if (nFound >= 0)
 					SendMessage(*this, SEARCH_FOUND, nFound, (LPARAM)&sinfo);
 			}
-			SendMessage(*this, SEARCH_PROGRESS, bSearch && bPattern, 0);
+			SendMessage(*this, SEARCH_PROGRESS, bSearch && bPattern && (nFound >= 0), 0);
 		}
 		else
 		{
