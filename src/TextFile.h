@@ -39,7 +39,7 @@ public:
 	 * \param newLen length of the new file content in bytes
 	 * \note the old buffer is automatically freed.
 	 */
-	bool			ContentsModified(LPVOID pBuf, DWORD newLen);
+	bool			ContentsModified(BYTE * pBuf, DWORD newLen);
 
 	/**
 	 * Returns the line number from a given character position inside the file.
@@ -91,7 +91,7 @@ protected:
 	/**
 	 * Tries to find out the encoding of the file (utf8, utf16, ansi)
 	 */
-	UnicodeType		CheckUnicodeType(LPVOID pBuffer, int cb);
+	UnicodeType		CheckUnicodeType(BYTE * pBuffer, int cb);
 	/**
 	 * Fills an array with line information to make it faster later
 	 * to get the line from a char position.
@@ -99,7 +99,7 @@ protected:
 	bool			CalculateLines();
 
 private:
-	LPVOID			pFileBuf;
+	BYTE *			pFileBuf;
 	DWORD			filelen;
 	wstring			textcontent;
 	vector<size_t>	linepositions;
