@@ -6,6 +6,7 @@
 
 IContextMenu2 * g_IContext2 = NULL;
 IContextMenu3 * g_IContext3 = NULL;
+WNDPROC g_OldWndProc = NULL;
 
 CShellContextMenu::CShellContextMenu()
 {
@@ -80,20 +81,25 @@ LRESULT CALLBACK CShellContextMenu::HookWndProc(HWND hWnd, UINT message, WPARAM 
 		if (wParam) 
 			break; // if wParam != 0 then the message is not menu-related
   
+	case WM_INITMENU:
 	case WM_INITMENUPOPUP:
-		if (g_IContext2)
+		if (g_IContext3)
+		{
+			LRESULT lResult = 0;
+			g_IContext3->HandleMenuMsg2 (message, wParam, lParam, &lResult);
+		}
+		else
 			g_IContext2->HandleMenuMsg (message, wParam, lParam);
-		else	// version 3
-			g_IContext3->HandleMenuMsg (message, wParam, lParam);
-		return (message == WM_INITMENUPOPUP ? 0 : TRUE); // inform caller that we handled WM_INITPOPUPMENU by ourself
+
+		return TRUE;
 		break;
 
 	default:
 		break;
 	}
 
-	// call original WndProc of window to prevent undefined behaviour of window
-	return ::CallWindowProc ((WNDPROC) GetProp ( hWnd, TEXT ("OldWndProc")), hWnd, message, wParam, lParam);
+	// call original WndProc of window to prevent undefined behavior of window
+	return ::CallWindowProc (g_OldWndProc , hWnd, message, wParam, lParam);
 }
 
 
@@ -115,22 +121,21 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
 	pContextMenu->QueryContextMenu(m_Menu, GetMenuItemCount(m_Menu), MIN_ID, MAX_ID, CMF_NORMAL | CMF_EXPLORE);
  
 	// subclass window to handle menu related messages in CShellContextMenu 
-	WNDPROC OldWndProc;
 	if (iMenuType > 1)	// only subclass if its version 2 or 3
 	{
-		OldWndProc = (WNDPROC)SetWindowLong (hWnd, GWL_WNDPROC, (DWORD)HookWndProc);
+		g_OldWndProc = (WNDPROC)SetWindowLong (hWnd, GWL_WNDPROC, (DWORD)HookWndProc);
 		if (iMenuType == 2)
 			g_IContext2 = (LPCONTEXTMENU2)pContextMenu;
 		else	// version 3
 			g_IContext3 = (LPCONTEXTMENU3)pContextMenu;
 	}
 	else
-		OldWndProc = NULL;
+		g_OldWndProc = NULL;
 
 	UINT idCommand = TrackPopupMenu(m_Menu, TPM_RETURNCMD | TPM_LEFTALIGN, pt.x, pt.y, 0, hWnd, NULL);
 
-	if (OldWndProc) // un-subclass
-		SetWindowLong(hWnd, GWL_WNDPROC, (DWORD) OldWndProc);
+	if (g_OldWndProc) // un-subclass
+		SetWindowLong(hWnd, GWL_WNDPROC, (DWORD) g_OldWndProc);
 
 	if (idCommand >= MIN_ID && idCommand <= MAX_ID)	// see if returned idCommand belongs to shell menu entries
 	{
