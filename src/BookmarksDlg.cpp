@@ -103,7 +103,7 @@ LRESULT CBookmarksDlg::DoCommand(int id, int /*msg*/)
 	case IDOK:
 		{
 			m_bookmarks.Save();
-			int iItem = ListView_GetSelectionMark(GetDlgItem(*this, IDC_BOOKMARKS));
+			int iItem = ListView_GetNextItem(GetDlgItem(*this, IDC_BOOKMARKS), -1, LVNI_SELECTED);
 			if (iItem >= 0)
 			{
 				TCHAR buf[MAX_PATH*4] = {0};
@@ -123,7 +123,7 @@ LRESULT CBookmarksDlg::DoCommand(int id, int /*msg*/)
 		break;
 	case ID_REMOVEBOOKMARK:
 		{
-			int iItem = ListView_GetSelectionMark(GetDlgItem(*this, IDC_BOOKMARKS));
+			int iItem = ListView_GetNextItem(GetDlgItem(*this, IDC_BOOKMARKS), -1, LVNI_SELECTED);
 			if (iItem >= 0)
 			{
 				TCHAR buf[MAX_PATH*4] = {0};
