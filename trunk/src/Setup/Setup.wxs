@@ -30,8 +30,8 @@
 			<Component Id='MainEXE' Guid='A9818B4B-B626-4455-AA31-588EAFAFA213'>
 			  <File Id='grepWin.EXE' Name='grepWin.exe' LongName='grepWin.exe' DiskId='1' Source='../../bin/release/grepWin.exe' Vital='yes'>
 			  </File>
-			  <Registry Root="HKMU" Key="Software\Classes\Directory\shell\RegexSearch" Action="createKeyAndRemoveKeyOnUninstall" />
-			  <Registry Root="HKMU" Key="Software\Classes\Directory\shell\RegexSearch\command" Value='[INSTALLDIR]grepWin.exe /searchpath:"%1"' Type="string" />
+			  <Registry Root="HKMU" Key="Software\Classes\Directory\shell\RegexSearch..." Action="createKeyAndRemoveKeyOnUninstall" />
+			  <Registry Root="HKMU" Key="Software\Classes\Directory\shell\RegexSearch...\command" Value='[INSTALLDIR]grepWin.exe /searchpath:"%1"' Type="string" />
         <Shortcut Id="startMenugrepWin" Directory="ProgramMenuDir" Name="grepWin" LongName="grepWin" Target="[INSTALLDIR]grepWin.exe" Description="regular expression search and replace" />
 			</Component>
 			
