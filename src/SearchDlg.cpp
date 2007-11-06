@@ -57,6 +57,14 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			AddToolTip(IDC_PATTERN, _T("only files that matches this pattern are searched.\r\nExample: *.cpp;*.h"));
 			AddToolTip(IDC_SEARCHPATH, _T("the path which is searched recursively"));
 
+			// expand a possible 'short' path
+			DWORD ret = 0;
+			ret = ::GetLongPathName(m_searchpath.c_str(), NULL, 0);
+			TCHAR * pathbuf = new TCHAR[ret+2];
+			ret = ::GetLongPathName(m_searchpath.c_str(), pathbuf, ret+1);
+			m_searchpath = wstring(pathbuf, ret);
+			delete pathbuf;
+
 			// initialize the controls
 			SetDlgItemText(hwndDlg, IDC_SEARCHPATH, m_searchpath.c_str());
 
