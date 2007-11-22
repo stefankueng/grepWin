@@ -13,6 +13,7 @@
 #include "RegexTestDlg.h"
 #include "NameDlg.h"
 #include "BookmarksDlg.h"
+#include "AboutDlg.h"
 #include "InfoDlg.h"
 #include <string>
 #include <iostream>
@@ -81,6 +82,14 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			m_pDropTarget->AddSuportedFormat(ftetc); 
 			ftetc.cfFormat=CF_HDROP; 
 			m_pDropTarget->AddSuportedFormat(ftetc);
+
+			// add an "About" entry to the system menu
+			HMENU hSysMenu = GetSystemMenu(hwndDlg, FALSE);
+			if (hSysMenu)
+			{
+				AppendMenu(hSysMenu, MF_SEPARATOR, NULL, NULL);
+				AppendMenu(hSysMenu, MF_STRING, ID_ABOUTBOX, _T("&About grepWin..."));
+			}
 
 			CheckRadioButton(hwndDlg, IDC_REGEXRADIO, IDC_TEXTRADIO, IDC_REGEXRADIO);
 			CheckRadioButton(hwndDlg, IDC_ALLSIZERADIO, IDC_SIZERADIO, IDC_SIZERADIO);
@@ -217,6 +226,15 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 	case WM_HELP:
 		{
 			CInfoDlg::ShowDialog(IDR_INFODLG, hResource);
+		}
+		break;
+	case WM_SYSCOMMAND:
+		{
+			if ((wParam & 0xFFF0) == ID_ABOUTBOX)
+			{
+				CAboutDlg dlgAbout(*this);
+				dlgAbout.DoModal(hResource, IDD_ABOUT, *this);
+			}
 		}
 		break;
 	default:
