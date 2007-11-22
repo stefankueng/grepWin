@@ -187,11 +187,8 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 		}
 		break;
 	case SEARCH_FOUND:
-		if (wParam)
-		{
-			AddFoundEntry((CSearchInfo*)lParam);
-			UpdateInfoLabel();
-		}
+		AddFoundEntry((CSearchInfo*)lParam);
+		UpdateInfoLabel();
 		break;
 	case SEARCH_PROGRESS:
 		{
@@ -281,7 +278,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 					pBuf++;
 				} while(*pBuf && (*(pBuf-1)));
 
-				if (m_searchpath.empty() || m_searchString.empty())
+				if (m_searchpath.empty())
 					break;
 
 				m_bUseRegex = (IsDlgButtonChecked(*this, IDC_REGEXRADIO) == BST_CHECKED);
@@ -297,7 +294,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 					{
 						bValid = false;
 					}
-					if (!bValid)
+					if ((!bValid)&&(!m_searchString.empty()))
 						break;
 				}
 				m_bAllSize = (IsDlgButtonChecked(*this, IDC_ALLSIZERADIO) == BST_CHECKED);
@@ -781,9 +778,14 @@ DWORD CSearchDlg::SearchThread()
 			{
 				CSearchInfo sinfo(pathbuf);
 				sinfo.filesize = pFindData->nFileSizeLow;
-				nFound = SearchFile(sinfo, m_bUseRegex, m_bCaseSensitive, m_searchString);
-				if (nFound >= 0)
-					SendMessage(*this, SEARCH_FOUND, nFound, (LPARAM)&sinfo);
+				if (m_searchString.empty())
+					SendMessage(*this, SEARCH_FOUND, 0, (LPARAM)&sinfo);
+				else
+				{
+					nFound = SearchFile(sinfo, m_bUseRegex, m_bCaseSensitive, m_searchString);
+					if (nFound >= 0)
+						SendMessage(*this, SEARCH_FOUND, nFound, (LPARAM)&sinfo);
+				}
 			}
 			SendMessage(*this, SEARCH_PROGRESS, bSearch && bPattern && (nFound >= 0), 0);
 		}
