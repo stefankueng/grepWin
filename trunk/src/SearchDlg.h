@@ -58,7 +58,9 @@ private:
 	wstring					m_searchString;
 	wstring					m_replaceString;
 	vector<wstring>			m_patterns;
+	wstring					m_patternregex;
 	bool					m_bUseRegex;
+	bool					m_bUseRegexForPaths;
 	bool					m_bAllSize;
 	DWORD					m_lSize;
 	int						m_sizeCmp;
