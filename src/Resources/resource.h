@@ -52,6 +52,9 @@
 #define IDC_VERSIONINFO                 1043
 #define IDC_DATE                        1044
 #define IDC_WEBLINK                     1045
+#define IDC_FILEPATTERNREGEX            1046
+#define IDC_RADIO2                      1047
+#define IDC_FILEPATTERNTEXT             1048
 #define ID_REMOVEBOOKMARK               32771
 #define IDC_STATIC                      -1
 
@@ -62,7 +65,7 @@
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        136
 #define _APS_NEXT_COMMAND_VALUE         32773
-#define _APS_NEXT_CONTROL_VALUE         1046
+#define _APS_NEXT_CONTROL_VALUE         1049
 #define _APS_NEXT_SYMED_VALUE           110
 #endif
 #endif

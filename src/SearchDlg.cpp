@@ -93,6 +93,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 
 			CheckRadioButton(hwndDlg, IDC_REGEXRADIO, IDC_TEXTRADIO, IDC_REGEXRADIO);
 			CheckRadioButton(hwndDlg, IDC_ALLSIZERADIO, IDC_SIZERADIO, IDC_SIZERADIO);
+			CheckRadioButton(hwndDlg, IDC_FILEPATTERNREGEX, IDC_FILEPATTERNTEXT, IDC_FILEPATTERNTEXT);
 			SetDlgItemText(hwndDlg, IDC_SIZEEDIT, _T("2000"));
 			SendDlgItemMessage(hwndDlg, IDC_SIZECOMBO, CB_INSERTSTRING, (WPARAM)-1, (LPARAM)_T("less than"));
 			SendDlgItemMessage(hwndDlg, IDC_SIZECOMBO, CB_INSERTSTRING, (WPARAM)-1, (LPARAM)_T("equal to"));
@@ -132,6 +133,8 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			m_resizer.AddControl(hwndDlg, IDC_INCLUDESUBFOLDERS, RESIZER_TOPLEFT);
 			m_resizer.AddControl(hwndDlg, IDC_PATTERNLABEL, RESIZER_TOPLEFT);
 			m_resizer.AddControl(hwndDlg, IDC_PATTERN, RESIZER_TOPLEFTRIGHT);
+			m_resizer.AddControl(hwndDlg, IDC_FILEPATTERNREGEX, RESIZER_TOPLEFT);
+			m_resizer.AddControl(hwndDlg, IDC_FILEPATTERNTEXT, RESIZER_TOPLEFT);
 			m_resizer.AddControl(hwndDlg, IDOK, RESIZER_TOPRIGHT);
 			m_resizer.AddControl(hwndDlg, IDC_GROUPSEARCHRESULTS, RESIZER_TOPLEFTBOTTOMRIGHT);
 			m_resizer.AddControl(hwndDlg, IDC_RESULTLIST, RESIZER_TOPLEFTBOTTOMRIGHT);
@@ -261,6 +264,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 				GetDlgItemText(*this, IDC_REPLACETEXT, buf, MAX_PATH*4);
 				m_replaceString = buf;
 				GetDlgItemText(*this, IDC_PATTERN, buf, MAX_PATH*4);
+				m_patternregex = buf;
 				// split the pattern string into single patterns and
 				// add them to an array
 				TCHAR * pBuf = buf;
@@ -297,6 +301,23 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 					if ((!bValid)&&(!m_searchString.empty()))
 						break;
 				}
+				m_bUseRegexForPaths = (IsDlgButtonChecked(*this, IDC_FILEPATTERNREGEX) == BST_CHECKED);
+				if (m_bUseRegexForPaths)
+				{
+					// check if the regex is valid before doing the search
+					bool bValid = true;
+					try
+					{
+						wregex expression = wregex(m_patternregex);
+					}
+					catch (const exception&)
+					{
+						bValid = false;
+					}
+					if (!bValid)
+						break;
+				}
+
 				m_bAllSize = (IsDlgButtonChecked(*this, IDC_ALLSIZERADIO) == BST_CHECKED);
 				m_lSize = 0;
 				m_sizeCmp = 0;
@@ -765,13 +786,32 @@ DWORD CSearchDlg::SearchThread()
 			}
 			bRecurse = ((m_bIncludeSubfolders)&&(bSearch));
 			bool bPattern = false;
-			if (m_patterns.size())
+			if (m_bUseRegexForPaths)
 			{
-				for (vector<wstring>::const_iterator it = m_patterns.begin(); it != m_patterns.end(); ++it)
-					bPattern = bPattern || wcswildcmp(it->c_str(), pathbuf);
+				try
+				{
+					wregex expression = wregex(m_patternregex, regex::normal|regbase::icase);
+					wcmatch whatc;
+					if (regex_match((const wchar_t *)pathbuf, whatc, expression))
+					{
+						bPattern = true;
+					}
+				}
+				catch (const exception&)
+				{
+					
+				}
 			}
 			else
-				bPattern = true;
+			{
+				if (m_patterns.size())
+				{
+					for (vector<wstring>::const_iterator it = m_patterns.begin(); it != m_patterns.end(); ++it)
+						bPattern = bPattern || wcswildcmp(it->c_str(), pathbuf);
+				}
+				else
+					bPattern = true;
+			}
 
 			int nFound = -1;
 			if (bSearch && bPattern)
