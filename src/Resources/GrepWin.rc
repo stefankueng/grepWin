@@ -129,6 +129,18 @@ BEGIN
     PUSHBUTTON      "Cancel",IDCANCEL,183,108,50,14
 END
 
+IDD_ABOUT DIALOGEX 0, 0, 263, 67
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,206,46,50,14
+    ICON            IDI_GREPWIN,IDC_STATIC,17,14,21,20,SS_CENTERIMAGE
+    LTEXT           "",IDC_VERSIONINFO,50,18,206,8
+    LTEXT           "",IDC_DATE,50,30,206,8
+    LTEXT           "Visit our website",IDC_WEBLINK,50,48,143,8
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -172,6 +184,15 @@ BEGIN
         RIGHTMARGIN, 233
         TOPMARGIN, 7
         BOTTOMMARGIN, 122
+    END
+
+    IDD_ABOUT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 256
+        VERTGUIDE, 50
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 60
     END
 END
 #endif    // APSTUDIO_INVOKED

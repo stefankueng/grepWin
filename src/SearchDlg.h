@@ -13,6 +13,7 @@ using namespace std;
 #define SEARCH_PROGRESS		(WM_APP+3)
 #define SEARCH_END			(WM_APP+4)
 
+#define ID_ABOUTBOX			0x0010
 
 /**
  * search dialog.
