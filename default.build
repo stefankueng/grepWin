@@ -54,7 +54,7 @@
 		<echo file="src\version.h" message="${versionheaderfile}" />
 	</target>
 	
-	<target name="grepWin" depends="VSNET,env,VersionInfo">
+	<target name="grepWin" depends="VersionInfo">
 		<description>
 			Builds grepWin.
 		</description>
@@ -76,7 +76,7 @@
 		</nant>
 	</target>
 
-	<target name="msi" depends="VSNET,env">
+	<target name="msi" depends="VersionInfo">
 		<description>
 			Builds the msi installer from already built binaries.
 		</description>
