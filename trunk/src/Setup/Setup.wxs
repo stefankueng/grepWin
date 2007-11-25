@@ -6,7 +6,7 @@
   Id='????????-????-????-????-????????????'
   Language='1031' 
   Codepage='1252' 
-  Version='1.0.3' 
+  Version='1.1.0' 
   Manufacturer='Stefans Tools'>
 
     <Package Id='????????-????-????-????-????????????' Keywords='Installer'
@@ -16,7 +16,7 @@
       
     <Upgrade Id="C8EC878C-5B8A-4208-9670-64313B180089" >
       <!-- flag is set if the install will trigger an upgrade of an existing install -->
-      <UpgradeVersion Property="PREVIOUSVERSIONSINSTALLED" Maximum="1.0.3" IncludeMaximum="no" />
+      <UpgradeVersion Property="PREVIOUSVERSIONSINSTALLED" Maximum="1.1.0" IncludeMaximum="no" />
     </Upgrade>
 
     <Media Id='1' Cabinet='grepWin.cab' EmbedCab='yes' />
