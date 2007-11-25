@@ -2,6 +2,8 @@
 <project name="setup" default="setup">
 
 	<target name="setup">
+		<property name="verstring" value="${environment::get-variable('MajorVersion')}.${environment::get-variable('MinorVersion')}.${environment::get-variable('MicroVersion')}" />
+		<property name="msifilename" value="grepWin-${verstring}" />
 		<exec program="candle">
 			<arg value="-nologo" />
 			<arg value="-out" />
@@ -11,7 +13,7 @@
 		<exec program="light">
 			<arg value="-nologo" />
 			<arg value="-out" />
-			<arg value="..\..\bin\grepWin.msi" />
+			<arg value="..\..\bin\${msifilename}.msi" />
 			<arg value="..\..\bin\Setup.wixobj" />
 			<arg value="${environment::get-variable('WIXUI')}\WixUI.wixlib" />
 			<arg value="-loc" />
