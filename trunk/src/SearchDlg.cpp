@@ -757,84 +757,109 @@ bool CSearchDlg::PathCompareDesc(const CSearchInfo Entry1, const CSearchInfo Ent
 DWORD CSearchDlg::SearchThread()
 {
 	TCHAR pathbuf[MAX_PATH*4] = {0};
-	bool bIsDirectory = false;
-	CDirFileEnum fileEnumerator(m_searchpath.c_str());
-	bool bRecurse = m_bIncludeSubfolders;
 
-	SendMessage(*this, SEARCH_START, 0, 0);
-	while ((fileEnumerator.NextFile(pathbuf, bRecurse, &bIsDirectory))&&(!m_Cancelled))
+	// split the path string into single paths and
+	// add them to an array
+	const TCHAR * pBuf = m_searchpath.c_str();
+	size_t pos = 0;
+	vector<wstring> pathvector;
+	do 
 	{
-		if (!bIsDirectory)
+		pos = _tcscspn(pBuf, _T("|"));
+		wstring s = wstring(pBuf, pos);
+		if (!s.empty())
 		{
-			const WIN32_FIND_DATA * pFindData = fileEnumerator.GetFileInfo();
-			bool bSearch = ((m_bIncludeHidden)||((pFindData->dwFileAttributes & FILE_ATTRIBUTE_HIDDEN) == 0));
-			bSearch = bSearch && ((m_bIncludeSystem)||((pFindData->dwFileAttributes & FILE_ATTRIBUTE_SYSTEM) == 0));
-			if (!m_bAllSize)
-			{
-				switch (m_sizeCmp)
-				{
-				case 0:	// less than
-					bSearch = bSearch && (pFindData->nFileSizeLow < m_lSize);
-					break;
-				case 1:	// equal
-					bSearch = bSearch && (pFindData->nFileSizeLow == m_lSize);
-					break;
-				case 2:	// greater than
-					bSearch = bSearch && (pFindData->nFileSizeLow > m_lSize);
-					break;
-				}
-			}
-			bRecurse = ((m_bIncludeSubfolders)&&(bSearch));
-			bool bPattern = false;
-			if (m_bUseRegexForPaths)
-			{
-				try
-				{
-					wregex expression = wregex(m_patternregex, regex::normal|regbase::icase);
-					wcmatch whatc;
-					if (regex_match((const wchar_t *)pathbuf, whatc, expression))
-					{
-						bPattern = true;
-					}
-				}
-				catch (const exception&)
-				{
-					
-				}
-			}
-			else
-			{
-				if (m_patterns.size())
-				{
-					for (vector<wstring>::const_iterator it = m_patterns.begin(); it != m_patterns.end(); ++it)
-						bPattern = bPattern || wcswildcmp(it->c_str(), pathbuf);
-				}
-				else
-					bPattern = true;
-			}
-
-			int nFound = -1;
-			if (bSearch && bPattern)
-			{
-				CSearchInfo sinfo(pathbuf);
-				sinfo.filesize = pFindData->nFileSizeLow;
-				if (m_searchString.empty())
-					SendMessage(*this, SEARCH_FOUND, 0, (LPARAM)&sinfo);
-				else
-				{
-					nFound = SearchFile(sinfo, m_bUseRegex, m_bCaseSensitive, m_searchString);
-					if (nFound >= 0)
-						SendMessage(*this, SEARCH_FOUND, nFound, (LPARAM)&sinfo);
-				}
-			}
-			SendMessage(*this, SEARCH_PROGRESS, bSearch && bPattern && (nFound >= 0), 0);
+			pathvector.push_back(s);
 		}
-		else
+		pBuf += pos;
+		pBuf++;
+	} while(*pBuf && (*(pBuf-1)));
+
+	for (vector<wstring>::const_iterator it = pathvector.begin(); it != pathvector.end(); ++it)
+	{
+		wstring searchpath = *it;
+		if (!searchpath.empty())
 		{
-			const WIN32_FIND_DATA * pFindData = fileEnumerator.GetFileInfo();
-			bool bSearch = ((m_bIncludeHidden)||((pFindData->dwFileAttributes & FILE_ATTRIBUTE_HIDDEN) == 0));
-			bSearch = bSearch && ((m_bIncludeSystem)||((pFindData->dwFileAttributes & FILE_ATTRIBUTE_SYSTEM) == 0));
-			bRecurse = ((bIsDirectory)&&(m_bIncludeSubfolders)&&(bSearch));
+			bool bIsDirectory = false;
+			CDirFileEnum fileEnumerator(searchpath.c_str());
+			bool bRecurse = m_bIncludeSubfolders;
+
+			SendMessage(*this, SEARCH_START, 0, 0);
+			while ((fileEnumerator.NextFile(pathbuf, bRecurse, &bIsDirectory))&&(!m_Cancelled))
+			{
+				if (!bIsDirectory)
+				{
+					const WIN32_FIND_DATA * pFindData = fileEnumerator.GetFileInfo();
+					bool bSearch = ((m_bIncludeHidden)||((pFindData->dwFileAttributes & FILE_ATTRIBUTE_HIDDEN) == 0));
+					bSearch = bSearch && ((m_bIncludeSystem)||((pFindData->dwFileAttributes & FILE_ATTRIBUTE_SYSTEM) == 0));
+					if (!m_bAllSize)
+					{
+						switch (m_sizeCmp)
+						{
+						case 0:	// less than
+							bSearch = bSearch && (pFindData->nFileSizeLow < m_lSize);
+							break;
+						case 1:	// equal
+							bSearch = bSearch && (pFindData->nFileSizeLow == m_lSize);
+							break;
+						case 2:	// greater than
+							bSearch = bSearch && (pFindData->nFileSizeLow > m_lSize);
+							break;
+						}
+					}
+					bRecurse = ((m_bIncludeSubfolders)&&(bSearch));
+					bool bPattern = false;
+					if (m_bUseRegexForPaths)
+					{
+						try
+						{
+							wregex expression = wregex(m_patternregex, regex::normal|regbase::icase);
+							wcmatch whatc;
+							if (regex_match((const wchar_t *)pathbuf, whatc, expression))
+							{
+								bPattern = true;
+							}
+						}
+						catch (const exception&)
+						{
+
+						}
+					}
+					else
+					{
+						if (m_patterns.size())
+						{
+							for (vector<wstring>::const_iterator it = m_patterns.begin(); it != m_patterns.end(); ++it)
+								bPattern = bPattern || wcswildcmp(it->c_str(), pathbuf);
+						}
+						else
+							bPattern = true;
+					}
+
+					int nFound = -1;
+					if (bSearch && bPattern)
+					{
+						CSearchInfo sinfo(pathbuf);
+						sinfo.filesize = pFindData->nFileSizeLow;
+						if (m_searchString.empty())
+							SendMessage(*this, SEARCH_FOUND, 0, (LPARAM)&sinfo);
+						else
+						{
+							nFound = SearchFile(sinfo, m_bUseRegex, m_bCaseSensitive, m_searchString);
+							if (nFound >= 0)
+								SendMessage(*this, SEARCH_FOUND, nFound, (LPARAM)&sinfo);
+						}
+					}
+					SendMessage(*this, SEARCH_PROGRESS, bSearch && bPattern && (nFound >= 0), 0);
+				}
+				else
+				{
+					const WIN32_FIND_DATA * pFindData = fileEnumerator.GetFileInfo();
+					bool bSearch = ((m_bIncludeHidden)||((pFindData->dwFileAttributes & FILE_ATTRIBUTE_HIDDEN) == 0));
+					bSearch = bSearch && ((m_bIncludeSystem)||((pFindData->dwFileAttributes & FILE_ATTRIBUTE_SYSTEM) == 0));
+					bRecurse = ((bIsDirectory)&&(m_bIncludeSubfolders)&&(bSearch));
+				}
+			}
 		}
 	}
 	SendMessage(*this, SEARCH_END, 0, 0);
