@@ -80,4 +80,7 @@ private:
 	CDlgResizer				m_resizer;
 
 	CFileDropTarget *		m_pDropTarget;
+
+	DWORD					m_startTime;
+	static UINT				GREPWIN_STARTUPMSG;
 };

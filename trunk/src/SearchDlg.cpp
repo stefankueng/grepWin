@@ -29,6 +29,7 @@ using namespace std;
 
 DWORD WINAPI SearchThreadEntry(LPVOID lpParam);
 
+UINT CSearchDlg::GREPWIN_STARTUPMSG = RegisterWindowMessage(_T("grepWin_StartupMessage"));
 
 CSearchDlg::CSearchDlg(HWND hParent) : m_searchedItems(0)
 	, m_totalitems(0)
@@ -38,6 +39,7 @@ CSearchDlg::CSearchDlg(HWND hParent) : m_searchedItems(0)
 	, m_pDropTarget(NULL)
 {
 	m_hParent = hParent;
+	m_startTime = GetTickCount();
 }
 
 CSearchDlg::~CSearchDlg(void)
@@ -49,6 +51,15 @@ CSearchDlg::~CSearchDlg(void)
 LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	UNREFERENCED_PARAMETER(lParam);
+	if (uMsg == GREPWIN_STARTUPMSG)
+	{
+		if ((GetTickCount() - 1000) < m_startTime)
+		{
+			m_startTime = GetTickCount();
+			return TRUE;
+		}
+		return FALSE;
+	}
 	switch (uMsg)
 	{
 	case WM_INITDIALOG:
@@ -235,6 +246,22 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 				CAboutDlg dlgAbout(*this);
 				dlgAbout.DoModal(hResource, IDD_ABOUT, *this);
 			}
+		}
+		break;
+	case WM_COPYDATA:
+		{
+			if (lParam)
+			{
+				PCOPYDATASTRUCT pCopyData = (PCOPYDATASTRUCT)lParam;
+				wstring newpath = wstring((LPCTSTR)pCopyData->lpData, pCopyData->cbData/sizeof(wchar_t));
+				if (!newpath.empty())
+				{
+					m_searchpath += _T("|");
+					m_searchpath += newpath;
+					SetDlgItemText(hwndDlg, IDC_SEARCHPATH, m_searchpath.c_str());
+				}
+			}
+			return TRUE;
 		}
 		break;
 	default:
