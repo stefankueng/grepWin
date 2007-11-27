@@ -17,6 +17,7 @@ public:
 	void	AddToolTip(UINT ctrlID, LPTSTR text);
 
 	virtual LRESULT CALLBACK DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) = 0;
+	virtual bool PreTranslateMessage(MSG* pMsg);
 
 	operator HWND() {return m_hwnd;}
 protected:

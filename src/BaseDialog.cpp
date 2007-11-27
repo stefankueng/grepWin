@@ -34,11 +34,14 @@ INT_PTR CDialog::DoModal(HINSTANCE hInstance, int resID, HWND hWndParent, UINT i
 		}
 		else
 		{
-			if (!TranslateAccelerator(m_hwnd, hAccelTable, &msg) && 
-				!IsDialogMessage(m_hwnd, &msg)) 
-			{ 
-				TranslateMessage(&msg); 
-				DispatchMessage(&msg); 
+			if (!PreTranslateMessage(&msg))
+			{
+				if (!TranslateAccelerator(m_hwnd, hAccelTable, &msg) && 
+					!IsDialogMessage(m_hwnd, &msg)) 
+				{ 
+					TranslateMessage(&msg); 
+					DispatchMessage(&msg); 
+				}
 			}
 		}
 	} 
@@ -137,4 +140,9 @@ INT_PTR CALLBACK CDialog::stDlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPAR
 	}
 	else
 		return DefWindowProc(hwndDlg, uMsg, wParam, lParam);
+}
+
+bool CDialog::PreTranslateMessage(MSG* /*pMsg*/)
+{
+	return false;
 }
