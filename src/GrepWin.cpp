@@ -56,7 +56,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 		CSearchDlg searchDlg(NULL);
 		if (parser.HasVal(_T("searchpath")))
 			searchDlg.SetSearchPath(parser.GetVal(_T("searchpath")));
-		ret = searchDlg.DoModal(hInstance, IDD_SEARCHDLG, NULL, IDC_GREPWIN);
+		ret = searchDlg.DoModal(hInstance, IDD_SEARCHDLG, NULL, IDR_SEARCHDLG);
 	}
 
 	::OleUninitialize();

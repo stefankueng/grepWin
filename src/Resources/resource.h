@@ -13,6 +13,8 @@
 #define IDC_BKPOPUP                     133
 #define IDR_INFODLG                     134
 #define IDD_ABOUT                       135
+#define IDR_ACCELERATOR1                136
+#define IDR_SEARCHDLG                   136
 #define IDC_SEARCHTEXT                  1000
 #define IDC_REGEXRADIO                  1001
 #define IDC_TEXTRADIO                   1002
@@ -53,7 +55,6 @@
 #define IDC_DATE                        1044
 #define IDC_WEBLINK                     1045
 #define IDC_FILEPATTERNREGEX            1046
-#define IDC_RADIO2                      1047
 #define IDC_FILEPATTERNTEXT             1048
 #define ID_REMOVEBOOKMARK               32771
 #define IDC_STATIC                      -1
@@ -63,8 +64,8 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
-#define _APS_NEXT_RESOURCE_VALUE        136
-#define _APS_NEXT_COMMAND_VALUE         32773
+#define _APS_NEXT_RESOURCE_VALUE        137
+#define _APS_NEXT_COMMAND_VALUE         32774
 #define _APS_NEXT_CONTROL_VALUE         1049
 #define _APS_NEXT_SYMED_VALUE           110
 #endif
