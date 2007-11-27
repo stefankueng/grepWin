@@ -201,7 +201,8 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 		}
 		break;
 	case SEARCH_FOUND:
-		AddFoundEntry((CSearchInfo*)lParam);
+		if ((wParam != 0)||(m_searchString.empty()))
+			AddFoundEntry((CSearchInfo*)lParam);
 		UpdateInfoLabel();
 		break;
 	case SEARCH_PROGRESS:
