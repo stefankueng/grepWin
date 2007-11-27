@@ -663,6 +663,30 @@ void CSearchDlg::ShowContextMenu(int x, int y)
 	shellMenu.ShowContextMenu(hListControl, pt);
 }
 
+bool CSearchDlg::PreTranslateMessage(MSG* pMsg)
+{
+	if ((pMsg->message == WM_KEYDOWN)&&(pMsg->wParam == VK_RETURN))
+	{
+		HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
+		if (GetFocus() == hListControl)
+		{
+			int selItem = ListView_GetSelectionMark(hListControl);
+			if ((selItem >= 0)&&(selItem < (int)m_items.size()))
+			{
+				SHELLEXECUTEINFO shExInfo = {0};
+				shExInfo.cbSize = sizeof(SHELLEXECUTEINFO);
+				shExInfo.fMask = SEE_MASK_UNICODE;
+				shExInfo.hwnd = *this;
+				shExInfo.lpFile = m_items[selItem].filepath.c_str();
+				shExInfo.nShow = SW_SHOW;
+				ShellExecuteEx(&shExInfo);
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
 void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
 {
 	if (lpNMItemActivate->hdr.code == NM_DBLCLK)
