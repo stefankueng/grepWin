@@ -30,6 +30,7 @@ public:
 protected:
 	LRESULT CALLBACK		DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 	LRESULT					DoCommand(int id, int msg);
+	bool					PreTranslateMessage(MSG* pMsg);
 
 	int						SearchFile(CSearchInfo& sinfo, bool bUseRegex, bool bCaseSensitive, const wstring& searchString);
 
