@@ -861,13 +861,19 @@ DWORD CSearchDlg::SearchThread()
 					}
 					bRecurse = ((m_bIncludeSubfolders)&&(bSearch));
 					bool bPattern = false;
+                    // find start of pathname
+                    const TCHAR * pName = _tcsrchr(pathbuf, '\\');
+                    if (pName == NULL)
+                        pName = pathbuf;
+                    else
+                        pName++;    // skip the last '\\' char
 					if (m_bUseRegexForPaths)
 					{
 						try
 						{
 							wregex expression = wregex(m_patternregex, regex::normal|regbase::icase);
 							wcmatch whatc;
-							if (regex_match((const wchar_t *)pathbuf, whatc, expression))
+							if (regex_match(pName, whatc, expression))
 							{
 								bPattern = true;
 							}
@@ -882,7 +888,7 @@ DWORD CSearchDlg::SearchThread()
 						if (m_patterns.size())
 						{
 							for (vector<wstring>::const_iterator it = m_patterns.begin(); it != m_patterns.end(); ++it)
-								bPattern = bPattern || wcswildcmp(it->c_str(), pathbuf);
+								bPattern = bPattern || wcswildcmp(it->c_str(), pName);
 						}
 						else
 							bPattern = true;
