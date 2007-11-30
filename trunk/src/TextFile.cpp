@@ -30,7 +30,7 @@ bool CTextFile::Save(LPCTSTR path)
 	return true;
 }
 
-bool CTextFile::Load(LPCTSTR path)
+bool CTextFile::Load(LPCTSTR path, UnicodeType& type)
 {
 	LARGE_INTEGER lint;
 	if (pFileBuf)
@@ -99,6 +99,7 @@ bool CTextFile::Load(LPCTSTR path)
 			textcontent = wstring(pWideBuf, ret);
 		delete [] pWideBuf;
 	}
+	type = encoding;
 	return CalculateLines();
 }
 
