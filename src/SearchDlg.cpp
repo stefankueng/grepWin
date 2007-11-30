@@ -529,6 +529,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 			m_searchString = buf;
 			GetDlgItemText(*this, IDC_REPLACETEXT, buf, MAX_PATH*4);
 			m_replaceString = buf;
+			bool bUseRegex = (IsDlgButtonChecked(*this, IDC_REGEXRADIO) == BST_CHECKED);
 
 			CNameDlg nameDlg(*this);
 			if (nameDlg.DoModal(hResource, IDD_NAME, *this) == IDOK)
@@ -536,7 +537,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 				// add the bookmark
 				CBookmarks bks;
 				bks.Load();
-				bks.AddBookmark(nameDlg.GetName(), m_searchString, m_replaceString);
+				bks.AddBookmark(nameDlg.GetName(), m_searchString, m_replaceString, bUseRegex);
 				bks.Save();
 			}
 		}
@@ -548,8 +549,10 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 			{
 				m_searchString = dlg.GetSelectedSearchString();
 				m_replaceString = dlg.GetSelectedReplaceString();
+				m_bUseRegex = dlg.GetSelectedUseRegex();
 				SetDlgItemText(*this, IDC_SEARCHTEXT, m_searchString.c_str());
 				SetDlgItemText(*this, IDC_REPLACETEXT, m_replaceString.c_str());
+				CheckRadioButton(*this, IDC_REGEXRADIO, IDC_TEXTRADIO, m_bUseRegex ? IDC_REGEXRADIO : IDC_TEXTRADIO);
 			}
 		}
 		break;
