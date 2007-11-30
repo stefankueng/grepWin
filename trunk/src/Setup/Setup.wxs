@@ -6,7 +6,7 @@
   Id='????????-????-????-????-????????????'
   Language='1031' 
   Codepage='1252' 
-  Version='1.1.0' 
+  Version='1.2.0' 
   Manufacturer='Stefans Tools'>
 
     <Package Id='????????-????-????-????-????????????' Keywords='Installer'
@@ -16,7 +16,7 @@
       
     <Upgrade Id="C8EC878C-5B8A-4208-9670-64313B180089" >
       <!-- flag is set if the install will trigger an upgrade of an existing install -->
-      <UpgradeVersion Property="PREVIOUSVERSIONSINSTALLED" Maximum="1.1.0" IncludeMaximum="no" />
+      <UpgradeVersion Property="PREVIOUSVERSIONSINSTALLED" Maximum="1.2.0" IncludeMaximum="no" />
     </Upgrade>
 
     <Media Id='1' Cabinet='grepWin.cab' EmbedCab='yes' />
@@ -30,9 +30,15 @@
 			<Component Id='MainEXE' Guid='A9818B4B-B626-4455-AA31-588EAFAFA213'>
 			  <File Id='grepWin.EXE' Name='grepWin.exe' LongName='grepWin.exe' DiskId='1' Source='../../bin/release/grepWin.exe' Vital='yes'>
 			  </File>
-			  <Registry Root="HKMU" Key="Software\Classes\Directory\shell\grepWin..." Action="createKeyAndRemoveKeyOnUninstall" />
-			  <Registry Root="HKMU" Key="Software\Classes\Directory\shell\grepWin...\command" Value='[INSTALLDIR]grepWin.exe /searchpath:"%1"' Type="string" />
-        <Shortcut Id="startMenugrepWin" Directory="ProgramMenuDir" Name="grepWin" LongName="grepWin" Target="[INSTALLDIR]grepWin.exe" Description="regular expression search and replace" />
+				<Registry Root="HKMU" Key="Software\Classes\Directory\shell\grepWin..." Action="createKeyAndRemoveKeyOnUninstall" />
+				<Registry Root="HKMU" Key="Software\Classes\Directory\shell\grepWin...\command" Value='[INSTALLDIR]grepWin.exe /searchpath:"%1"' Type="string" />
+				<Registry Root="HKMU" Key="Software\Classes\Directory\Background\shell\grepWin..." Action="createKeyAndRemoveKeyOnUninstall" />
+				<Registry Root="HKMU" Key="Software\Classes\Directory\Background\shell\grepWin...\command" Value='[INSTALLDIR]grepWin.exe /searchpath:"%1"' Type="string" />
+				<Registry Root="HKMU" Key="Software\Classes\Folder\shell\grepWin..." Action="createKeyAndRemoveKeyOnUninstall" />
+				<Registry Root="HKMU" Key="Software\Classes\Folder\shell\grepWin...\command" Value='[INSTALLDIR]grepWin.exe /searchpath:"%1"' Type="string" />
+				<Registry Root="HKMU" Key="Software\Classes\Drive\shell\grepWin..." Action="createKeyAndRemoveKeyOnUninstall" />
+				<Registry Root="HKMU" Key="Software\Classes\Drive\shell\grepWin...\command" Value='[INSTALLDIR]grepWin.exe /searchpath:"%1"' Type="string" />
+				<Shortcut Id="startMenugrepWin" Directory="ProgramMenuDir" Name="grepWin" LongName="grepWin" Target="[INSTALLDIR]grepWin.exe" Description="regular expression search and replace" />
 			</Component>
 			
 		  </Directory>
