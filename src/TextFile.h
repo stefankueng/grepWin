@@ -25,7 +25,7 @@ public:
 	/**
 	 * Loads a file from the specified \c path.
 	 */
-	bool			Load(LPCTSTR path);
+	bool			Load(LPCTSTR path, UnicodeType& type);
 
 	/**
 	 * Saves the file contents to disk at \c path.

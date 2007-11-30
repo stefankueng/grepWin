@@ -592,11 +592,14 @@ bool CSearchDlg::InitResultList()
 	ListView_InsertColumn(hListControl, 2, &lvc);
 	lvc.pszText = _T("Path");
 	ListView_InsertColumn(hListControl, 3, &lvc);
+	lvc.pszText = _T("Encoding");
+	ListView_InsertColumn(hListControl, 4, &lvc);
 
 	ListView_SetColumnWidth(hListControl, 0, 300);
 	ListView_SetColumnWidth(hListControl, 1, 50);
 	ListView_SetColumnWidth(hListControl, 2, LVSCW_AUTOSIZE_USEHEADER);
 	ListView_SetColumnWidth(hListControl, 3, LVSCW_AUTOSIZE_USEHEADER);
+	ListView_SetColumnWidth(hListControl, 4, LVSCW_AUTOSIZE_USEHEADER);
 
 	m_items.clear();
 
@@ -629,6 +632,26 @@ bool CSearchDlg::AddFoundEntry(CSearchInfo * pInfo, bool bOnlyListControl)
 		ListView_SetItem(hListControl, &lv);
 		lv.iSubItem = 3;
 		_tcscpy_s(sb, MAX_PATH*4, pInfo->filepath.substr(0, pInfo->filepath.size()-name.size()-1).c_str());
+		ListView_SetItem(hListControl, &lv);
+		lv.iSubItem = 4;
+		switch (pInfo->encoding)
+		{
+		case CTextFile::ANSI:
+			_tcscpy_s(sb, MAX_PATH*4, _T("ANSI"));
+			break;
+		case CTextFile::UNICODE_LE:
+			_tcscpy_s(sb, MAX_PATH*4, _T("UNICODE"));
+			break;
+		case CTextFile::UTF8:
+			_tcscpy_s(sb, MAX_PATH*4, _T("UTF8"));
+			break;
+		case CTextFile::BINARY:
+			_tcscpy_s(sb, MAX_PATH*4, _T("BINARY"));
+			break;
+		default:
+			_tcscpy_s(sb, MAX_PATH*4, _T(""));
+			break;
+		}
 		ListView_SetItem(hListControl, &lv);
 	}
 	if ((ret != -1)&&(!bOnlyListControl))
@@ -946,8 +969,11 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bUseRegex, bool bCaseSensiti
 	if (sinfo.filesize < 10*1024*1024)
 	{
 		CTextFile textfile;
-		if (textfile.Load(sinfo.filepath.c_str()))
+
+		CTextFile::UnicodeType type = CTextFile::AUTOTYPE;
+		if (textfile.Load(sinfo.filepath.c_str(), type))
 		{
+			sinfo.encoding = type;
 			wstring::const_iterator start, end;
 			start = textfile.GetFileString().begin();
 			end = textfile.GetFileString().end();
@@ -1005,6 +1031,7 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bUseRegex, bool bCaseSensiti
 	{
 		// assume binary file
 
+		sinfo.encoding = CTextFile::BINARY;
 		string filepath = CUnicodeUtils::StdGetANSI(sinfo.filepath);
 		string searchfor = CUnicodeUtils::StdGetUTF8(searchString);
 

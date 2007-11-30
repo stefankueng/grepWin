@@ -1,8 +1,10 @@
 #pragma once
 #include <string>
 #include <vector>
+#include "TextFile.h"
 
 using namespace std;
+
 
 class CSearchInfo
 {
@@ -14,5 +16,6 @@ public:
 	wstring				filepath;
 	DWORD				filesize;
 	vector<DWORD>		matchstarts;	
-	vector<DWORD>		matchends;	
+	vector<DWORD>		matchends;
+	CTextFile::UnicodeType	encoding;
 };
