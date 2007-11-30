@@ -115,6 +115,7 @@ LRESULT CBookmarksDlg::DoCommand(int id, int /*msg*/)
 				ListView_GetItem(GetDlgItem(*this, IDC_BOOKMARKS), &lv);
 				m_searchString = m_bookmarks.GetValue(buf, _T("searchString"), _T(""));
 				m_replaceString = m_bookmarks.GetValue(buf, _T("replaceString"), _T(""));
+				m_bUseRegex = _tcscmp(m_bookmarks.GetValue(buf, _T("useregex"), _T("false")), _T("true")) == 0;
 			}
 		}
 		// fall through

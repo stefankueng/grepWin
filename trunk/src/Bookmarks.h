@@ -13,7 +13,7 @@ public:
 
 	void				Load();
 	void				Save();
-	void				AddBookmark(const wstring& name, const wstring& search, const wstring& replace);
+	void				AddBookmark(const wstring& name, const wstring& search, const wstring& replace, bool bRegex);
 	void				RemoveBookmark(const wstring& name);
 
 protected:

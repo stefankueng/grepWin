@@ -35,15 +35,17 @@ void CBookmarks::Save()
 	fclose(pFile);
 }
 
-void CBookmarks::AddBookmark(const wstring& name, const wstring& search, const wstring& replace)
+void CBookmarks::AddBookmark(const wstring& name, const wstring& search, const wstring& replace, bool bRegex)
 {
 	SetValue(name.c_str(), _T("searchString"), search.c_str());
 	SetValue(name.c_str(), _T("replaceString"), replace.c_str());
+	SetValue(name.c_str(), _T("useregex"), bRegex ? _T("true") : _T("false"));
 }
 
 void CBookmarks::RemoveBookmark(const wstring& name)
 {
 	Delete(name.c_str(), _T("searchString"), true);
 	Delete(name.c_str(), _T("replaceString"), true);
+	Delete(name.c_str(), _T("useregex"), true);
 }
 
