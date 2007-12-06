@@ -563,7 +563,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 void CSearchDlg::UpdateInfoLabel()
 {
 	TCHAR buf[1024] = {0};
-	_stprintf_s(buf, 1024, _T("Searched %ld files, skipped %ld files. Found %ld files with the search string"),
+	_stprintf_s(buf, 1024, _T("Searched %ld files, skipped %ld files. Found %ld files which match the search parameters."),
 		m_searchedItems, m_totalitems-m_searchedItems, m_items.size());
 	SetDlgItemText(*this, IDC_SEARCHINFOLABEL, buf);
 }
