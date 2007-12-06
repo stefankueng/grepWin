@@ -209,7 +209,7 @@ IDC_BKPOPUP MENU
 BEGIN
     POPUP "Dummy"
     BEGIN
-        MENUITEM "Remove Bookmark",             ID_REMOVEBOOKMARK
+        MENUITEM "Remove Preset",               ID_REMOVEBOOKMARK
     END
 END
 
