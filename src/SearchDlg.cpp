@@ -304,6 +304,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 					wstring s = wstring(pBuf, pos);
 					if (!s.empty())
 					{
+						std::transform(s.begin(), s.end(), s.begin(), (int(*)(int)) std::tolower);
 						m_patterns.push_back(s);
 					}
 					pBuf += pos;
@@ -913,8 +914,11 @@ DWORD CSearchDlg::SearchThread()
 					{
 						if (m_patterns.size())
 						{
+							wstring fname = pName;
+							std::transform(fname.begin(), fname.end(), fname.begin(), (int(*)(int)) std::tolower);
+
 							for (vector<wstring>::const_iterator it = m_patterns.begin(); it != m_patterns.end(); ++it)
-								bPattern = bPattern || wcswildcmp(it->c_str(), pName);
+								bPattern = bPattern || wcswildcmp(it->c_str(), fname.c_str());
 						}
 						else
 							bPattern = true;
