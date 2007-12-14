@@ -93,6 +93,14 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			m_pDropTarget->AddSuportedFormat(ftetc); 
 			ftetc.cfFormat=CF_HDROP; 
 			m_pDropTarget->AddSuportedFormat(ftetc);
+			SHAutoComplete(GetDlgItem(*this, IDC_SEARCHPATH), SHACF_FILESYSTEM|SHACF_AUTOSUGGEST_FORCE_ON);
+
+			m_AutoCompleteFilePatterns.Load(_T("Software\\grepWin\\History"), _T("FilePattern"));
+			m_AutoCompleteFilePatterns.Init(GetDlgItem(hwndDlg, IDC_PATTERN));
+			m_AutoCompleteSearchPatterns.Load(_T("Software\\grepWin\\History"), _T("SearchPattern"));
+			m_AutoCompleteSearchPatterns.Init(GetDlgItem(hwndDlg, IDC_SEARCHTEXT));
+			m_AutoCompleteReplacePatterns.Load(_T("Software\\grepWin\\History"), _T("ReplacePattern"));
+			m_AutoCompleteReplacePatterns.Init(GetDlgItem(hwndDlg, IDC_REPLACETEXT));
 
 			// add an "About" entry to the system menu
 			HMENU hSysMenu = GetSystemMenu(hwndDlg, FALSE);
@@ -368,6 +376,11 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 
 				InitResultList();
 
+				m_AutoCompleteFilePatterns.AddEntry(m_patternregex.c_str());
+				m_AutoCompleteSearchPatterns.AddEntry(m_searchString.c_str());
+				m_AutoCompleteReplacePatterns.AddEntry(m_replaceString.c_str());
+
+
 				InterlockedExchange(&m_dwThreadRunning, TRUE);
 				InterlockedExchange(&m_Cancelled, FALSE);
 				SetDlgItemText(*this, IDOK, _T("&Cancel"));
@@ -387,7 +400,12 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 		if (m_dwThreadRunning)
 			InterlockedExchange(&m_Cancelled, TRUE);
 		else
+		{
+			m_AutoCompleteFilePatterns.Save();
+			m_AutoCompleteSearchPatterns.Save();
+			m_AutoCompleteReplacePatterns.Save();
 			EndDialog(*this, id);
+		}
 		break;
 	case IDC_TESTREGEX:
 		{

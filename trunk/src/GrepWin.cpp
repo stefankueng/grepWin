@@ -22,7 +22,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 	UNREFERENCED_PARAMETER(nCmdShow);
 
 	::OleInitialize(NULL);
-
+	::CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
 	// we need some of the common controls
 	INITCOMMONCONTROLSEX icex;
 	icex.dwSize = sizeof(INITCOMMONCONTROLSEX);
@@ -59,6 +59,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 		ret = searchDlg.DoModal(hInstance, IDD_SEARCHDLG, NULL, IDR_SEARCHDLG);
 	}
 
+	::CoUninitialize();
 	::OleUninitialize();
 	return ret;
 }
