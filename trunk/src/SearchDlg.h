@@ -4,7 +4,7 @@
 #include "DlgResizer.h"
 #include "FileDropTarget.h"
 #include "AutoComplete.h"
-
+#include "Registry.h"
 #include <string>
 #include <vector>
 
@@ -90,4 +90,13 @@ private:
 	CAutoComplete			m_AutoCompleteFilePatterns;
 	CAutoComplete			m_AutoCompleteSearchPatterns;
 	CAutoComplete			m_AutoCompleteReplacePatterns;
+	CRegStdWORD				m_regUseRegex;
+	CRegStdWORD				m_regAllSize;
+	CRegStdWORD				m_regSize;
+	CRegStdWORD				m_regSizeCombo;
+	CRegStdWORD				m_regIncludeSystem;
+	CRegStdWORD				m_regIncludeHidden;
+	CRegStdWORD				m_regIncludeSubfolders;
+	CRegStdWORD				m_regCreateBackup;
+	CRegStdWORD				m_regCaseSensitive;
 };
