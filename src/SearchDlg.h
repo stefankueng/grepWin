@@ -3,6 +3,8 @@
 #include "SearchInfo.h"
 #include "DlgResizer.h"
 #include "FileDropTarget.h"
+#include "AutoComplete.h"
+
 #include <string>
 #include <vector>
 
@@ -84,4 +86,8 @@ private:
 
 	DWORD					m_startTime;
 	static UINT				GREPWIN_STARTUPMSG;
+
+	CAutoComplete			m_AutoCompleteFilePatterns;
+	CAutoComplete			m_AutoCompleteSearchPatterns;
+	CAutoComplete			m_AutoCompleteReplacePatterns;
 };

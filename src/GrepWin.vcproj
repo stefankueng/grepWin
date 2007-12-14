@@ -179,6 +179,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\AutoComplete.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\BaseDialog.cpp"
 				>
 			</File>
@@ -236,6 +240,10 @@
 			</File>
 			<File
 				RelativePath=".\RegexTestDlg.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\RegHistory.cpp"
 				>
 			</File>
 			<File
@@ -301,6 +309,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\AutoComplete.h"
+				>
+			</File>
+			<File
 				RelativePath=".\BaseDialog.h"
 				>
 			</File>
@@ -358,6 +370,10 @@
 			</File>
 			<File
 				RelativePath=".\RegexTestDlg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\RegHistory.h"
 				>
 			</File>
 			<File
