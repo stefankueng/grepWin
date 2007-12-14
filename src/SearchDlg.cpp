@@ -37,8 +37,17 @@ CSearchDlg::CSearchDlg(HWND hParent) : m_searchedItems(0)
 	, m_Cancelled(FALSE)
 	, m_bAscending(true)
 	, m_pDropTarget(NULL)
+	, m_hParent(hParent)
+	, m_regUseRegex(_T("Software\\grepWin\\UseRegex"), 1)
+	, m_regAllSize(_T("Software\\grepWin\\AllSize"))
+	, m_regSize(_T("Software\\grepWin\\Size"), 2000)
+	, m_regSizeCombo(_T("Software\\grepWin\\SizeCombo"), 0)
+	, m_regIncludeSystem(_T("Software\\grepWin\\IncludeSystem"))
+	, m_regIncludeHidden(_T("Software\\grepWin\\IncludeHidden"))
+	, m_regIncludeSubfolders(_T("Software\\grepWin\\IncludeSubfolders"), 1)
+	, m_regCreateBackup(_T("Software\\grepWin\\CreateBackup"))
+	, m_regCaseSensitive(_T("Software\\grepWin\\CaseSensitive"))
 {
-	m_hParent = hParent;
 	m_startTime = GetTickCount();
 }
 
@@ -110,16 +119,27 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 				AppendMenu(hSysMenu, MF_STRING, ID_ABOUTBOX, _T("&About grepWin..."));
 			}
 
-			CheckRadioButton(hwndDlg, IDC_REGEXRADIO, IDC_TEXTRADIO, IDC_REGEXRADIO);
-			CheckRadioButton(hwndDlg, IDC_ALLSIZERADIO, IDC_SIZERADIO, IDC_SIZERADIO);
+			CheckRadioButton(hwndDlg, IDC_REGEXRADIO, IDC_TEXTRADIO, DWORD(m_regUseRegex) ? IDC_REGEXRADIO : IDC_TEXTRADIO);
+			CheckRadioButton(hwndDlg, IDC_ALLSIZERADIO, IDC_SIZERADIO, DWORD(m_regAllSize) ? IDC_ALLSIZERADIO : IDC_SIZERADIO);
 			CheckRadioButton(hwndDlg, IDC_FILEPATTERNREGEX, IDC_FILEPATTERNTEXT, IDC_FILEPATTERNTEXT);
-			SetDlgItemText(hwndDlg, IDC_SIZEEDIT, _T("2000"));
+			TCHAR buf[MAX_PATH] = {0};
+			if (DWORD(m_regSize) > 0)
+			{
+				_stprintf_s(buf, MAX_PATH, _T("%ld"), DWORD(m_regSize));
+				SetDlgItemText(hwndDlg, IDC_SIZEEDIT, buf);
+			}
+			else
+				SetDlgItemText(hwndDlg, IDC_SIZEEDIT, _T("2000"));
 			SendDlgItemMessage(hwndDlg, IDC_SIZECOMBO, CB_INSERTSTRING, (WPARAM)-1, (LPARAM)_T("less than"));
 			SendDlgItemMessage(hwndDlg, IDC_SIZECOMBO, CB_INSERTSTRING, (WPARAM)-1, (LPARAM)_T("equal to"));
 			SendDlgItemMessage(hwndDlg, IDC_SIZECOMBO, CB_INSERTSTRING, (WPARAM)-1, (LPARAM)_T("greater than"));
-			SendDlgItemMessage(hwndDlg, IDC_SIZECOMBO, CB_SETCURSEL, 0, 0);
-			SendDlgItemMessage(hwndDlg, IDC_INCLUDESUBFOLDERS, BM_SETCHECK, BST_CHECKED, 0);
-			SendDlgItemMessage(hwndDlg, IDC_CREATEBACKUP, BM_SETCHECK, BST_CHECKED, 0);
+			SendDlgItemMessage(hwndDlg, IDC_SIZECOMBO, CB_SETCURSEL, DWORD(m_regSizeCombo), 0);
+			SendDlgItemMessage(hwndDlg, IDC_INCLUDESUBFOLDERS, BM_SETCHECK, DWORD(m_regIncludeSubfolders) ? BST_CHECKED : BST_UNCHECKED, 0);
+			SendDlgItemMessage(hwndDlg, IDC_CREATEBACKUP, BM_SETCHECK, DWORD(m_regCreateBackup) ? BST_CHECKED : BST_UNCHECKED, 0);
+			SendDlgItemMessage(hwndDlg, IDC_INCLUDESYSTEM, BM_SETCHECK, DWORD(m_regIncludeSystem) ? BST_CHECKED : BST_UNCHECKED, 0);
+			SendDlgItemMessage(hwndDlg, IDC_INCLUDEHIDDEN, BM_SETCHECK, DWORD(m_regIncludeHidden) ? BST_CHECKED : BST_UNCHECKED, 0);
+			SendDlgItemMessage(hwndDlg, IDC_CASE_SENSITIVE, BM_SETCHECK, DWORD(m_regCaseSensitive) ? BST_CHECKED : BST_UNCHECKED, 0);
+
 			EnableWindow(GetDlgItem(*this, IDC_ADDTOBOOKMARKS), FALSE);
 
 			SetFocus(GetDlgItem(hwndDlg, IDC_SEARCHTEXT));
@@ -323,6 +343,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 					break;
 
 				m_bUseRegex = (IsDlgButtonChecked(*this, IDC_REGEXRADIO) == BST_CHECKED);
+				m_regUseRegex = (DWORD)m_bUseRegex;
 				if (m_bUseRegex)
 				{
 					// check if the regex is valid before doing the search
@@ -356,20 +377,29 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 				}
 
 				m_bAllSize = (IsDlgButtonChecked(*this, IDC_ALLSIZERADIO) == BST_CHECKED);
+				m_regAllSize = (DWORD)m_bAllSize;
 				m_lSize = 0;
 				m_sizeCmp = 0;
 				if (!m_bAllSize)
 				{
 					GetDlgItemText(*this, IDC_SIZEEDIT, buf, MAX_PATH*4);
 					m_lSize = _tstol(buf);
+					m_regSize = m_lSize;
 					m_lSize *= 1024;
 					m_sizeCmp = SendDlgItemMessage(*this, IDC_SIZECOMBO, CB_GETCURSEL, 0, 0);
+					m_regSizeCombo = m_sizeCmp;
 				}
 				m_bIncludeSystem = (IsDlgButtonChecked(*this, IDC_INCLUDESYSTEM) == BST_CHECKED);
 				m_bIncludeHidden = (IsDlgButtonChecked(*this, IDC_INCLUDEHIDDEN) == BST_CHECKED);
 				m_bIncludeSubfolders = (IsDlgButtonChecked(*this, IDC_INCLUDESUBFOLDERS) == BST_CHECKED);
 				m_bCreateBackup = (IsDlgButtonChecked(*this, IDC_CREATEBACKUP) == BST_CHECKED);
 				m_bCaseSensitive = (IsDlgButtonChecked(*this, IDC_CASE_SENSITIVE) == BST_CHECKED);
+
+				m_regIncludeSystem = (DWORD)m_bIncludeSystem;
+				m_regIncludeHidden = (DWORD)m_bIncludeHidden;
+				m_regIncludeSubfolders = (DWORD)m_bIncludeSubfolders;
+				m_regCreateBackup = (DWORD)m_bCreateBackup;
+				m_regCaseSensitive = (DWORD)m_bCaseSensitive;
 
 				m_searchedItems = 0;
 				m_totalitems = 0;
