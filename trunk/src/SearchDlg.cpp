@@ -1009,7 +1009,7 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bUseRegex, bool bCaseSensiti
 				}
 				else
 				{
-					match_flag_type flags = match_default|format_all;
+					match_flag_type flags = match_default | format_all | match_not_dot_newline;
 					wstring replaced = regex_replace(textfile.GetFileString(), expression, m_replaceString, flags);
 					if (replaced.compare(textfile.GetFileString()))
 					{
@@ -1053,7 +1053,7 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bUseRegex, bool bCaseSensiti
 		spirit::file_iterator<> end = start.make_end();
 
 		match_results<string::const_iterator> what;
-		match_flag_type flags = match_default;
+		match_flag_type flags = match_default | match_not_dot_newline;
 		try
 		{
 			regex expression = regex(searchfor);
