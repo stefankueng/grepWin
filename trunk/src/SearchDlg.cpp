@@ -991,12 +991,15 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bUseRegex, bool bCaseSensiti
 				match_results<wstring::const_iterator> whatc;
 				if (m_replaceString.empty())
 				{
-					match_flag_type flags = match_default;
+					match_flag_type flags = match_default | match_not_dot_newline;
 					while (regex_search(start, end, whatc, expression, flags))   
 					{
-						nFound++;
-						sinfo.matchstarts.push_back(whatc[0].first-textfile.GetFileString().begin());
-						sinfo.matchends.push_back(whatc[0].second-textfile.GetFileString().begin());
+						if (whatc[0].matched)
+						{
+							nFound++;
+							sinfo.matchstarts.push_back(whatc[0].first-textfile.GetFileString().begin());
+							sinfo.matchends.push_back(whatc[0].second-textfile.GetFileString().begin());
+						}
 						// update search position:
 						start = whatc[0].second;      
 						// update flags:
