@@ -42,6 +42,8 @@ protected:
 	void					DoListNotify(LPNMITEMACTIVATE lpNMItemActivate);
 	void					UpdateInfoLabel();
 	void					UpdateSearchButton();
+	bool					SaveSettings();
+
 private:
 	static bool				NameCompareAsc(const CSearchInfo Entry1, const CSearchInfo Entry2);
 	static bool				SizeCompareAsc(const CSearchInfo Entry1, const CSearchInfo Entry2);

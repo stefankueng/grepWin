@@ -312,95 +312,8 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 			}
 			else
 			{
-				// get all the information we need from the dialog
-				TCHAR buf[MAX_PATH*4] = {0};
-				GetDlgItemText(*this, IDC_SEARCHPATH, buf, MAX_PATH*4);
-				m_searchpath = buf;
-				GetDlgItemText(*this, IDC_SEARCHTEXT, buf, MAX_PATH*4);
-				m_searchString = buf;
-				GetDlgItemText(*this, IDC_REPLACETEXT, buf, MAX_PATH*4);
-				m_replaceString = buf;
-				GetDlgItemText(*this, IDC_PATTERN, buf, MAX_PATH*4);
-				m_patternregex = buf;
-				// split the pattern string into single patterns and
-				// add them to an array
-				TCHAR * pBuf = buf;
-				size_t pos = 0;
-				m_patterns.clear();
-				do 
-				{
-					pos = _tcscspn(pBuf, _T(",; "));
-					wstring s = wstring(pBuf, pos);
-					if (!s.empty())
-					{
-						std::transform(s.begin(), s.end(), s.begin(), (int(*)(int)) std::tolower);
-						m_patterns.push_back(s);
-					}
-					pBuf += pos;
-					pBuf++;
-				} while(*pBuf && (*(pBuf-1)));
-
-				if (m_searchpath.empty())
+				if (!SaveSettings())
 					break;
-
-				m_bUseRegex = (IsDlgButtonChecked(*this, IDC_REGEXRADIO) == BST_CHECKED);
-				m_regUseRegex = (DWORD)m_bUseRegex;
-				if (m_bUseRegex)
-				{
-					// check if the regex is valid before doing the search
-					bool bValid = true;
-					try
-					{
-						wregex expression = wregex(m_searchString);
-					}
-					catch (const exception&)
-					{
-						bValid = false;
-					}
-					if ((!bValid)&&(!m_searchString.empty()))
-						break;
-				}
-				m_bUseRegexForPaths = (IsDlgButtonChecked(*this, IDC_FILEPATTERNREGEX) == BST_CHECKED);
-				if (m_bUseRegexForPaths)
-				{
-					// check if the regex is valid before doing the search
-					bool bValid = true;
-					try
-					{
-						wregex expression = wregex(m_patternregex);
-					}
-					catch (const exception&)
-					{
-						bValid = false;
-					}
-					if (!bValid)
-						break;
-				}
-
-				m_bAllSize = (IsDlgButtonChecked(*this, IDC_ALLSIZERADIO) == BST_CHECKED);
-				m_regAllSize = (DWORD)m_bAllSize;
-				m_lSize = 0;
-				m_sizeCmp = 0;
-				if (!m_bAllSize)
-				{
-					GetDlgItemText(*this, IDC_SIZEEDIT, buf, MAX_PATH*4);
-					m_lSize = _tstol(buf);
-					m_regSize = m_lSize;
-					m_lSize *= 1024;
-					m_sizeCmp = SendDlgItemMessage(*this, IDC_SIZECOMBO, CB_GETCURSEL, 0, 0);
-					m_regSizeCombo = m_sizeCmp;
-				}
-				m_bIncludeSystem = (IsDlgButtonChecked(*this, IDC_INCLUDESYSTEM) == BST_CHECKED);
-				m_bIncludeHidden = (IsDlgButtonChecked(*this, IDC_INCLUDEHIDDEN) == BST_CHECKED);
-				m_bIncludeSubfolders = (IsDlgButtonChecked(*this, IDC_INCLUDESUBFOLDERS) == BST_CHECKED);
-				m_bCreateBackup = (IsDlgButtonChecked(*this, IDC_CREATEBACKUP) == BST_CHECKED);
-				m_bCaseSensitive = (IsDlgButtonChecked(*this, IDC_CASE_SENSITIVE) == BST_CHECKED);
-
-				m_regIncludeSystem = (DWORD)m_bIncludeSystem;
-				m_regIncludeHidden = (DWORD)m_bIncludeHidden;
-				m_regIncludeSubfolders = (DWORD)m_bIncludeSubfolders;
-				m_regCreateBackup = (DWORD)m_bCreateBackup;
-				m_regCaseSensitive = (DWORD)m_bCaseSensitive;
 
 				m_searchedItems = 0;
 				m_totalitems = 0;
@@ -432,6 +345,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 			InterlockedExchange(&m_Cancelled, TRUE);
 		else
 		{
+			SaveSettings();
 			m_AutoCompleteFilePatterns.Save();
 			m_AutoCompleteSearchPatterns.Save();
 			m_AutoCompleteReplacePatterns.Save();
@@ -836,6 +750,101 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
 		Header_SetItem(hHeader, lpNMItemActivate->iSubItem, &hd);
 
 	}
+}
+
+bool CSearchDlg::SaveSettings()
+{
+	// get all the information we need from the dialog
+	TCHAR buf[MAX_PATH*4] = {0};
+	GetDlgItemText(*this, IDC_SEARCHPATH, buf, MAX_PATH*4);
+	m_searchpath = buf;
+	GetDlgItemText(*this, IDC_SEARCHTEXT, buf, MAX_PATH*4);
+	m_searchString = buf;
+	GetDlgItemText(*this, IDC_REPLACETEXT, buf, MAX_PATH*4);
+	m_replaceString = buf;
+	GetDlgItemText(*this, IDC_PATTERN, buf, MAX_PATH*4);
+	m_patternregex = buf;
+	// split the pattern string into single patterns and
+	// add them to an array
+	TCHAR * pBuf = buf;
+	size_t pos = 0;
+	m_patterns.clear();
+	do 
+	{
+		pos = _tcscspn(pBuf, _T(",; "));
+		wstring s = wstring(pBuf, pos);
+		if (!s.empty())
+		{
+			std::transform(s.begin(), s.end(), s.begin(), (int(*)(int)) std::tolower);
+			m_patterns.push_back(s);
+		}
+		pBuf += pos;
+		pBuf++;
+	} while(*pBuf && (*(pBuf-1)));
+
+	if (m_searchpath.empty())
+		return false;
+
+	m_bUseRegex = (IsDlgButtonChecked(*this, IDC_REGEXRADIO) == BST_CHECKED);
+	m_regUseRegex = (DWORD)m_bUseRegex;
+	if (m_bUseRegex)
+	{
+		// check if the regex is valid before doing the search
+		bool bValid = true;
+		try
+		{
+			wregex expression = wregex(m_searchString);
+		}
+		catch (const exception&)
+		{
+			bValid = false;
+		}
+		if ((!bValid)&&(!m_searchString.empty()))
+			return false;
+	}
+	m_bUseRegexForPaths = (IsDlgButtonChecked(*this, IDC_FILEPATTERNREGEX) == BST_CHECKED);
+	if (m_bUseRegexForPaths)
+	{
+		// check if the regex is valid before doing the search
+		bool bValid = true;
+		try
+		{
+			wregex expression = wregex(m_patternregex);
+		}
+		catch (const exception&)
+		{
+			bValid = false;
+		}
+		if (!bValid)
+			return false;
+	}
+
+	m_bAllSize = (IsDlgButtonChecked(*this, IDC_ALLSIZERADIO) == BST_CHECKED);
+	m_regAllSize = (DWORD)m_bAllSize;
+	m_lSize = 0;
+	m_sizeCmp = 0;
+	if (!m_bAllSize)
+	{
+		GetDlgItemText(*this, IDC_SIZEEDIT, buf, MAX_PATH*4);
+		m_lSize = _tstol(buf);
+		m_regSize = m_lSize;
+		m_lSize *= 1024;
+		m_sizeCmp = SendDlgItemMessage(*this, IDC_SIZECOMBO, CB_GETCURSEL, 0, 0);
+		m_regSizeCombo = m_sizeCmp;
+	}
+	m_bIncludeSystem = (IsDlgButtonChecked(*this, IDC_INCLUDESYSTEM) == BST_CHECKED);
+	m_bIncludeHidden = (IsDlgButtonChecked(*this, IDC_INCLUDEHIDDEN) == BST_CHECKED);
+	m_bIncludeSubfolders = (IsDlgButtonChecked(*this, IDC_INCLUDESUBFOLDERS) == BST_CHECKED);
+	m_bCreateBackup = (IsDlgButtonChecked(*this, IDC_CREATEBACKUP) == BST_CHECKED);
+	m_bCaseSensitive = (IsDlgButtonChecked(*this, IDC_CASE_SENSITIVE) == BST_CHECKED);
+
+	m_regIncludeSystem = (DWORD)m_bIncludeSystem;
+	m_regIncludeHidden = (DWORD)m_bIncludeHidden;
+	m_regIncludeSubfolders = (DWORD)m_bIncludeSubfolders;
+	m_regCreateBackup = (DWORD)m_bCreateBackup;
+	m_regCaseSensitive = (DWORD)m_bCaseSensitive;
+
+	return true;
 }
 
 bool CSearchDlg::NameCompareAsc(const CSearchInfo Entry1, const CSearchInfo Entry2)
