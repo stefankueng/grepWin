@@ -143,6 +143,18 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 
 			EnableWindow(GetDlgItem(*this, IDC_ADDTOBOOKMARKS), FALSE);
 
+			bool bText = (IsDlgButtonChecked(*this, IDC_TEXTRADIO) == BST_CHECKED);
+			::EnableWindow(GetDlgItem(*this, IDC_REPLACETEXT), !bText);
+			::EnableWindow(GetDlgItem(*this, IDC_CREATEBACKUP), !bText);
+			if ((!bText)&&(!m_dwThreadRunning)&&(GetWindowTextLength(GetDlgItem(*this, IDC_REPLACETEXT))>0))
+			{
+				::SetDlgItemText(*this, IDOK, _T("&Replace"));
+			}
+			else
+			{
+				::SetDlgItemText(*this, IDOK, _T("&Search"));
+			}
+
 			SetFocus(GetDlgItem(hwndDlg, IDC_SEARCHTEXT));
 
 			m_resizer.Init(hwndDlg);
