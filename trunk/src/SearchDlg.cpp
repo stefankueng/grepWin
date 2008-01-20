@@ -667,23 +667,41 @@ void CSearchDlg::ShowContextMenu(int x, int y)
 
 bool CSearchDlg::PreTranslateMessage(MSG* pMsg)
 {
-	if ((pMsg->message == WM_KEYDOWN)&&(pMsg->wParam == VK_RETURN))
+	if (pMsg->message == WM_KEYDOWN)
 	{
 		HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
-		if (GetFocus() == hListControl)
+		switch (pMsg->wParam)
 		{
-			int selItem = ListView_GetSelectionMark(hListControl);
-			if ((selItem >= 0)&&(selItem < (int)m_items.size()))
+		case VK_RETURN:
 			{
-				SHELLEXECUTEINFO shExInfo = {0};
-				shExInfo.cbSize = sizeof(SHELLEXECUTEINFO);
-				shExInfo.fMask = SEE_MASK_UNICODE;
-				shExInfo.hwnd = *this;
-				shExInfo.lpFile = m_items[selItem].filepath.c_str();
-				shExInfo.nShow = SW_SHOW;
-				ShellExecuteEx(&shExInfo);
+				if (GetFocus() == hListControl)
+				{
+					int selItem = ListView_GetSelectionMark(hListControl);
+					if ((selItem >= 0)&&(selItem < (int)m_items.size()))
+					{
+						SHELLEXECUTEINFO shExInfo = {0};
+						shExInfo.cbSize = sizeof(SHELLEXECUTEINFO);
+						shExInfo.fMask = SEE_MASK_UNICODE;
+						shExInfo.hwnd = *this;
+						shExInfo.lpFile = m_items[selItem].filepath.c_str();
+						shExInfo.nShow = SW_SHOW;
+						ShellExecuteEx(&shExInfo);
+						return true;
+					}
+				}
+			}
+			break;
+		case 'A':
+			{
+				// select all entries
+				int nCount = ListView_GetItemCount(hListControl);
+				for (int i=0; i<nCount; ++i)
+				{
+					ListView_SetItemState(hListControl, i, LVIS_SELECTED, LVIS_SELECTED);
+				}
 				return true;
 			}
+			break;
 		}
 	}
 	return false;
