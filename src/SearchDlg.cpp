@@ -15,6 +15,7 @@
 #include "BookmarksDlg.h"
 #include "AboutDlg.h"
 #include "InfoDlg.h"
+#include "DropFiles.h"
 #include <string>
 #include <iostream>
 #include <fstream>
@@ -720,6 +721,26 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
 			shExInfo.lpFile = m_items[lpNMItemActivate->iItem].filepath.c_str();
 			shExInfo.nShow = SW_SHOW;
 			ShellExecuteEx(&shExInfo);
+		}
+	}
+	if (lpNMItemActivate->hdr.code == LVN_BEGINDRAG)
+	{
+		CDropFiles dropFiles; // class for creating DROPFILES struct
+
+		HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
+		int nCount = ListView_GetItemCount(hListControl);
+		if (nCount == 0)
+			return;
+
+		int iItem = -1;
+		while ((iItem = ListView_GetNextItem(hListControl, iItem, LVNI_SELECTED)) != (-1))
+		{
+			dropFiles.AddFile(m_items[iItem].filepath);
+		}
+
+		if ( dropFiles.GetCount()>0 )
+		{
+			dropFiles.CreateStructure(hListControl);
 		}
 	}
 	if (lpNMItemActivate->hdr.code == LVN_COLUMNCLICK)

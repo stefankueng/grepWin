@@ -219,6 +219,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\DropFiles.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\FileDropTarget.cpp"
 				>
 			</File>
@@ -349,6 +353,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\DropFiles.h"
+				>
+			</File>
+			<File
 				RelativePath=".\FileDropTarget.h"
 				>
 			</File>
@@ -456,7 +464,7 @@
 	<Globals>
 		<Global
 			Name="RESOURCE_FILE"
-			Value="GrepWin.rc"
+			Value="Resources\GrepWin.rc"
 		/>
 	</Globals>
 </VisualStudioProject>
