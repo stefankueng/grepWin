@@ -38,6 +38,8 @@
 				<Registry Root="HKMU" Key="Software\Classes\Folder\shell\grepWin...\command" Value='[INSTALLDIR]grepWin.exe /searchpath:"%1"' Type="string" />
 				<Registry Root="HKMU" Key="Software\Classes\Drive\shell\grepWin..." Action="createKeyAndRemoveKeyOnUninstall" />
 				<Registry Root="HKMU" Key="Software\Classes\Drive\shell\grepWin...\command" Value='[INSTALLDIR]grepWin.exe /searchpath:"%1"' Type="string" />
+				<Registry Root="HKMU" Key="Software\Classes\*\shell\grepWin..." Action="createKeyAndRemoveKeyOnUninstall" />
+				<Registry Root="HKMU" Key="Software\Classes\*\shell\grepWin...\command" Value='[INSTALLDIR]grepWin.exe /searchpath:"%1"' Type="string" />
 				<Shortcut Id="startMenugrepWin" Directory="ProgramMenuDir" Name="grepWin" LongName="grepWin" Target="[INSTALLDIR]grepWin.exe" Description="regular expression search and replace" />
 			</Component>
 			
