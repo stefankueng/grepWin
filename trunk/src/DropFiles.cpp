@@ -81,7 +81,6 @@ STDMETHODIMP FileDataObject::GetData(FORMATETC* pformatetcIn, STGMEDIUM* pmedium
 			HRESULT res = SHCreateStreamOnFile(m_allPaths[pformatetcIn->lindex].c_str(), STGM_READ, &pIStream);
 			if (res == S_OK)
 			{
-				pIStream->AddRef();
 				pmedium->pstm = pIStream;
 				pmedium->tymed = TYMED_ISTREAM;
 				return S_OK;
@@ -100,7 +99,8 @@ STDMETHODIMP FileDataObject::GetData(FORMATETC* pformatetcIn, STGMEDIUM* pmedium
 		int i = 0;
 		for (vector<wstring>::const_iterator it = m_allPaths.begin(); it != m_allPaths.end(); ++it)
 		{
-			_tcscpy_s(files->fgd[i].cFileName, MAX_PATH, it->c_str());
+			wstring name = it->substr(it->find_last_of('\\')+1);
+			_tcscpy_s(files->fgd[i].cFileName, MAX_PATH, name.c_str());
 			files->fgd[i].dwFlags = FD_ATTRIBUTES | FD_PROGRESSUI | FD_FILESIZE | FD_LINKUI;
 			files->fgd[i].dwFileAttributes = FILE_ATTRIBUTE_NORMAL;
 			HANDLE hFile = CreateFile(it->c_str(), FILE_READ_EA, FILE_SHARE_DELETE|FILE_SHARE_READ|FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
@@ -579,7 +579,6 @@ void CDropFiles::CreateStructure(HWND hWnd)
 	DWORD dwEffect;
 	::DoDragDrop(pdobj, pdsrc, DROPEFFECT_MOVE|DROPEFFECT_COPY, &dwEffect);
 	pdsrc->Release();
-	pdobj->Release();
 }
 
 //////////////////////////////////////////////////////////////////////
