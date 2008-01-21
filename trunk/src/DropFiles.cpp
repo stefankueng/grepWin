@@ -71,7 +71,54 @@ STDMETHODIMP FileDataObject::GetData(FORMATETC* pformatetcIn, STGMEDIUM* pmedium
 		return E_INVALIDARG;
 	pmedium->hGlobal = NULL;
 
-	if ((pformatetcIn->tymed & TYMED_ISTREAM) && (pformatetcIn->dwAspect == DVASPECT_CONTENT) && (pformatetcIn->cfFormat == CF_FILECONTENTS))
+	if ((pformatetcIn->tymed & TYMED_HGLOBAL) && (pformatetcIn->dwAspect == DVASPECT_CONTENT) && (pformatetcIn->cfFormat == CF_HDROP))
+	{
+		UINT uBuffSize = 0;
+		int i = 0;
+		for (vector<wstring>::const_iterator it = m_allPaths.begin(); it != m_allPaths.end(); ++it)
+		{
+			uBuffSize += it->size();
+			++i;
+		}
+		uBuffSize = sizeof(DROPFILES) + sizeof(TCHAR) * (uBuffSize + 1);
+
+		HGLOBAL    hgDrop;
+		DROPFILES* pDrop;
+
+		// Allocate memory from the heap for the DROPFILES struct.
+		hgDrop = GlobalAlloc(GHND | GMEM_SHARE, uBuffSize);
+		if (NULL == hgDrop)
+			return E_OUTOFMEMORY;
+		pDrop = (DROPFILES*)GlobalLock(hgDrop);
+
+		if (NULL == pDrop)
+		{
+			GlobalFree(hgDrop);
+			return E_OUTOFMEMORY;
+		}
+		// Fill in the DROPFILES struct.
+		pDrop->pFiles = sizeof(DROPFILES);
+#ifdef _UNICODE
+		// If we're compiling for Unicode, set the Unicode flag in the struct to
+		// indicate it contains Unicode strings.
+		pDrop->fWide = TRUE;
+#endif
+		TCHAR* pszBuff;
+		// Copy all the filenames into memory after
+		// the end of the DROPFILES struct.
+		pszBuff = (TCHAR*) (LPBYTE(pDrop) + sizeof(DROPFILES));
+		i = 0;
+		for (vector<wstring>::const_iterator it = m_allPaths.begin(); it != m_allPaths.end(); ++it)
+		{
+			lstrcpy(pszBuff, it->c_str());
+			pszBuff = 1 + _tcschr(pszBuff, '\0');
+			++i;
+		}
+		GlobalUnlock(hgDrop);
+		pmedium->hGlobal = hgDrop;
+		return S_OK;
+	}
+	else if ((pformatetcIn->tymed & TYMED_ISTREAM) && (pformatetcIn->dwAspect == DVASPECT_CONTENT) && (pformatetcIn->cfFormat == CF_FILECONTENTS))
 	{
 		// supports the IStream format.
 		// The lindex param is the index of the file to return
@@ -227,7 +274,7 @@ STDMETHODIMP FileDataObject::QueryGetData(FORMATETC* pformatetc)
 	}
 	if ((pformatetc->tymed & TYMED_HGLOBAL) &&
 		(pformatetc->dwAspect == DVASPECT_CONTENT) &&
-		((pformatetc->cfFormat == CF_TEXT)||(pformatetc->cfFormat == CF_UNICODETEXT)||(pformatetc->cfFormat == CF_FILEDESCRIPTOR)||(pformatetc->cfFormat == CF_PREFERREDDROPEFFECT)))
+		((pformatetc->cfFormat == CF_HDROP)||(pformatetc->cfFormat == CF_TEXT)||(pformatetc->cfFormat == CF_UNICODETEXT)||(pformatetc->cfFormat == CF_FILEDESCRIPTOR)||(pformatetc->cfFormat == CF_PREFERREDDROPEFFECT)))
 	{
 		return S_OK;
 	}
@@ -429,6 +476,13 @@ void CSVNEnumFormatEtc::Init()
 	m_formats[4].lindex = -1;
 	m_formats[4].ptd = NULL;
 	m_formats[4].tymed = TYMED_HGLOBAL;
+
+	m_formats[5].cfFormat = CF_HDROP;
+	m_formats[5].dwAspect = DVASPECT_CONTENT;
+	m_formats[5].lindex = -1;
+	m_formats[5].ptd = NULL;
+	m_formats[5].tymed = TYMED_HGLOBAL;
+
 }
 
 CSVNEnumFormatEtc::CSVNEnumFormatEtc(const vector<FORMATETC>& vec) : m_cRefCount(0)
@@ -484,18 +538,18 @@ STDMETHODIMP CSVNEnumFormatEtc::Next(ULONG celt, LPFORMATETC lpFormatEtc, ULONG*
 
 	ULONG cReturn = celt;
 
-	if (celt <= 0 || lpFormatEtc == NULL || m_iCur >= 5)
+	if (celt <= 0 || lpFormatEtc == NULL || m_iCur >= 6)
 		return S_FALSE;
 
 	if (pceltFetched == NULL && celt != 1) // pceltFetched can be NULL only for 1 item request
 		return S_FALSE;
 
-	while (m_iCur < (5 + m_vecFormatEtc.size()) && cReturn > 0)
+	while (m_iCur < (6 + m_vecFormatEtc.size()) && cReturn > 0)
 	{
-		if (m_iCur < 5)
+		if (m_iCur < 6)
 			*lpFormatEtc++ = m_formats[m_iCur++];
 		else
-			*lpFormatEtc++ = m_vecFormatEtc[m_iCur++ - 5];
+			*lpFormatEtc++ = m_vecFormatEtc[m_iCur++ - 6];
 		--cReturn;
 	}
 
@@ -507,7 +561,7 @@ STDMETHODIMP CSVNEnumFormatEtc::Next(ULONG celt, LPFORMATETC lpFormatEtc, ULONG*
 
 STDMETHODIMP CSVNEnumFormatEtc::Skip(ULONG celt)
 {
-	if ((m_iCur + int(celt)) >= (5 + m_vecFormatEtc.size()))
+	if ((m_iCur + int(celt)) >= (6 + m_vecFormatEtc.size()))
 		return S_FALSE;
 	m_iCur += celt;
 	return S_OK;
