@@ -399,6 +399,26 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 			}
 		}
 		break;
+	case IDC_SEARCHPATH:
+		{
+			if (msg == EN_CHANGE)
+			{
+				TCHAR buf[MAX_PATH*4] = {0};
+				GetDlgItemText(*this, IDC_SEARCHPATH, buf, MAX_PATH*4);
+				bool bIsDir = PathIsDirectory(buf);
+				EnableWindow(GetDlgItem(*this, IDC_ALLSIZERADIO), bIsDir);
+				EnableWindow(GetDlgItem(*this, IDC_SIZERADIO), bIsDir);
+				EnableWindow(GetDlgItem(*this, IDC_SIZECOMBO), bIsDir);
+				EnableWindow(GetDlgItem(*this, IDC_SIZEEDIT), bIsDir);
+				EnableWindow(GetDlgItem(*this, IDC_INCLUDESYSTEM), bIsDir);
+				EnableWindow(GetDlgItem(*this, IDC_INCLUDEHIDDEN), bIsDir);
+				EnableWindow(GetDlgItem(*this, IDC_INCLUDESUBFOLDERS), bIsDir);
+				EnableWindow(GetDlgItem(*this, IDC_PATTERN), bIsDir);
+				EnableWindow(GetDlgItem(*this, IDC_FILEPATTERNREGEX), bIsDir);
+				EnableWindow(GetDlgItem(*this, IDC_FILEPATTERNTEXT), bIsDir);
+			}
+		}
+		break;
 	case IDC_SEARCHTEXT:
 		{
 			if (msg == EN_CHANGE)
@@ -966,6 +986,9 @@ DWORD CSearchDlg::SearchThread()
 		pBuf++;
 	} while(*pBuf && (*(pBuf-1)));
 
+	bool bAlwaysSearch = false;
+	if ((pathvector.size() == 1)&&(!PathIsDirectory(pathvector[0].c_str())))
+		bAlwaysSearch = true;
 	for (vector<wstring>::const_iterator it = pathvector.begin(); it != pathvector.end(); ++it)
 	{
 		wstring searchpath = *it;
@@ -976,26 +999,44 @@ DWORD CSearchDlg::SearchThread()
 			bool bRecurse = m_bIncludeSubfolders;
 
 			SendMessage(*this, SEARCH_START, 0, 0);
-			while ((fileEnumerator.NextFile(pathbuf, bRecurse, &bIsDirectory))&&(!m_Cancelled))
+			while (((fileEnumerator.NextFile(pathbuf, bRecurse, &bIsDirectory))&&(!m_Cancelled))||(bAlwaysSearch))
 			{
 				if (!bIsDirectory)
 				{
-					const WIN32_FIND_DATA * pFindData = fileEnumerator.GetFileInfo();
-					bool bSearch = ((m_bIncludeHidden)||((pFindData->dwFileAttributes & FILE_ATTRIBUTE_HIDDEN) == 0));
-					bSearch = bSearch && ((m_bIncludeSystem)||((pFindData->dwFileAttributes & FILE_ATTRIBUTE_SYSTEM) == 0));
-					if (!m_bAllSize)
+					bool bSearch = false;
+					DWORD nFileSizeLow = 0;
+					if (bAlwaysSearch)
 					{
-						switch (m_sizeCmp)
+						_tcscpy_s(pathbuf, MAX_PATH*4, pathvector[0].c_str());
+						HANDLE hFile = CreateFile(pathvector[0].c_str(), FILE_READ_EA, FILE_SHARE_DELETE|FILE_SHARE_READ|FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+						if (hFile != INVALID_HANDLE_VALUE)
 						{
-						case 0:	// less than
-							bSearch = bSearch && (pFindData->nFileSizeLow < m_lSize);
-							break;
-						case 1:	// equal
-							bSearch = bSearch && (pFindData->nFileSizeLow == m_lSize);
-							break;
-						case 2:	// greater than
-							bSearch = bSearch && (pFindData->nFileSizeLow > m_lSize);
-							break;
+							LARGE_INTEGER fs;
+							GetFileSizeEx(hFile, &fs); 
+							nFileSizeLow = fs.LowPart;
+							CloseHandle(hFile);
+						}
+					}
+					else
+					{
+						const WIN32_FIND_DATA * pFindData = fileEnumerator.GetFileInfo();
+						bSearch = ((m_bIncludeHidden)||((pFindData->dwFileAttributes & FILE_ATTRIBUTE_HIDDEN) == 0));
+						bSearch = bSearch && ((m_bIncludeSystem)||((pFindData->dwFileAttributes & FILE_ATTRIBUTE_SYSTEM) == 0));
+						nFileSizeLow = pFindData->nFileSizeLow;
+						if (!m_bAllSize)
+						{
+							switch (m_sizeCmp)
+							{
+							case 0:	// less than
+								bSearch = bSearch && (pFindData->nFileSizeLow < m_lSize);
+								break;
+							case 1:	// equal
+								bSearch = bSearch && (pFindData->nFileSizeLow == m_lSize);
+								break;
+							case 2:	// greater than
+								bSearch = bSearch && (pFindData->nFileSizeLow > m_lSize);
+								break;
+							}
 						}
 					}
 					bRecurse = ((m_bIncludeSubfolders)&&(bSearch));
@@ -1037,10 +1078,10 @@ DWORD CSearchDlg::SearchThread()
 					}
 
 					int nFound = -1;
-					if (bSearch && bPattern)
+					if ((bSearch && bPattern)||(bAlwaysSearch))
 					{
 						CSearchInfo sinfo(pathbuf);
-						sinfo.filesize = pFindData->nFileSizeLow;
+						sinfo.filesize = nFileSizeLow;
 						if (m_searchString.empty())
 							SendMessage(*this, SEARCH_FOUND, 0, (LPARAM)&sinfo);
 						else
@@ -1059,6 +1100,7 @@ DWORD CSearchDlg::SearchThread()
 					bSearch = bSearch && ((m_bIncludeSystem)||((pFindData->dwFileAttributes & FILE_ATTRIBUTE_SYSTEM) == 0));
 					bRecurse = ((bIsDirectory)&&(m_bIncludeSubfolders)&&(bSearch));
 				}
+				bAlwaysSearch = false;
 			}
 		}
 	}
