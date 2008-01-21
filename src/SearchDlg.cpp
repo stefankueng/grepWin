@@ -694,13 +694,16 @@ bool CSearchDlg::PreTranslateMessage(MSG* pMsg)
 			break;
 		case 'A':
 			{
-				// select all entries
-				int nCount = ListView_GetItemCount(hListControl);
-				for (int i=0; i<nCount; ++i)
+				if ((GetFocus() == hListControl)&&(GetKeyState(VK_CONTROL)&0x8000))
 				{
-					ListView_SetItemState(hListControl, i, LVIS_SELECTED, LVIS_SELECTED);
+					// select all entries
+					int nCount = ListView_GetItemCount(hListControl);
+					for (int i=0; i<nCount; ++i)
+					{
+						ListView_SetItemState(hListControl, i, LVIS_SELECTED, LVIS_SELECTED);
+					}
+					return true;
 				}
-				return true;
 			}
 			break;
 		}
