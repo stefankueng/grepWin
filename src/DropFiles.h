@@ -141,7 +141,7 @@ private:
 	void						Init();
 private:
 	vector<FORMATETC>			m_vecFormatEtc;
-	FORMATETC					m_formats[5];
+	FORMATETC					m_formats[6];
 	ULONG						m_cRefCount;
 	size_t						m_iCur;
 };
