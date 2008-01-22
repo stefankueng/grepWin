@@ -78,9 +78,10 @@ STDMETHODIMP FileDataObject::GetData(FORMATETC* pformatetcIn, STGMEDIUM* pmedium
 		for (vector<wstring>::const_iterator it = m_allPaths.begin(); it != m_allPaths.end(); ++it)
 		{
 			uBuffSize += it->size();
+			uBuffSize += 1;
 			++i;
 		}
-		uBuffSize = sizeof(DROPFILES) + sizeof(TCHAR) * (uBuffSize + 1);
+		uBuffSize = sizeof(DROPFILES) + sizeof(TCHAR) * uBuffSize;
 
 		HGLOBAL    hgDrop;
 		DROPFILES* pDrop;
@@ -116,6 +117,7 @@ STDMETHODIMP FileDataObject::GetData(FORMATETC* pformatetcIn, STGMEDIUM* pmedium
 		}
 		GlobalUnlock(hgDrop);
 		pmedium->hGlobal = hgDrop;
+		AddRef();
 		return S_OK;
 	}
 	else if ((pformatetcIn->tymed & TYMED_ISTREAM) && (pformatetcIn->dwAspect == DVASPECT_CONTENT) && (pformatetcIn->cfFormat == CF_FILECONTENTS))
