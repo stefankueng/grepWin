@@ -81,13 +81,13 @@ STDMETHODIMP FileDataObject::GetData(FORMATETC* pformatetcIn, STGMEDIUM* pmedium
 			uBuffSize += 1;
 			++i;
 		}
-		uBuffSize = sizeof(DROPFILES) + sizeof(TCHAR) * uBuffSize;
+		uBuffSize = sizeof(DROPFILES) + sizeof(TCHAR) * ( uBuffSize + 1 );
 
 		HGLOBAL    hgDrop;
 		DROPFILES* pDrop;
 
 		// Allocate memory from the heap for the DROPFILES struct.
-		hgDrop = GlobalAlloc(GHND | GMEM_SHARE, uBuffSize);
+		hgDrop = GlobalAlloc(GHND | GMEM_SHARE | GMEM_ZEROINIT, uBuffSize);
 		if (NULL == hgDrop)
 			return E_OUTOFMEMORY;
 		pDrop = (DROPFILES*)GlobalLock(hgDrop);
