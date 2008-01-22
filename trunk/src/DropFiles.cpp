@@ -125,7 +125,7 @@ STDMETHODIMP FileDataObject::GetData(FORMATETC* pformatetcIn, STGMEDIUM* pmedium
 	{
 		// supports the IStream format.
 		// The lindex param is the index of the file to return
-		if (m_allPaths.size() && (pformatetcIn->lindex < (LONG)m_allPaths.size()))
+		if (m_allPaths.size() && (pformatetcIn->lindex >= 0) && (pformatetcIn->lindex < (LONG)m_allPaths.size()))
 		{
 			IStream * pIStream = NULL;
 			HRESULT res = SHCreateStreamOnFile(m_allPaths[pformatetcIn->lindex].c_str(), STGM_READ, &pIStream);
