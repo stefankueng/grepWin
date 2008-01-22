@@ -87,7 +87,7 @@ STDMETHODIMP FileDataObject::GetData(FORMATETC* pformatetcIn, STGMEDIUM* pmedium
 		DROPFILES* pDrop;
 
 		// Allocate memory from the heap for the DROPFILES struct.
-		hgDrop = GlobalAlloc(GHND | GMEM_SHARE | GMEM_ZEROINIT, uBuffSize);
+		hgDrop = GlobalAlloc(GMEM_MOVEABLE | GMEM_SHARE | GMEM_ZEROINIT, uBuffSize);
 		if (NULL == hgDrop)
 			return E_OUTOFMEMORY;
 		pDrop = (DROPFILES*)GlobalLock(hgDrop);
@@ -117,7 +117,8 @@ STDMETHODIMP FileDataObject::GetData(FORMATETC* pformatetcIn, STGMEDIUM* pmedium
 		}
 		GlobalUnlock(hgDrop);
 		pmedium->hGlobal = hgDrop;
-		AddRef();
+		pmedium->tymed = TYMED_HGLOBAL;
+		pmedium->pUnkForRelease = NULL;
 		return S_OK;
 	}
 	else if ((pformatetcIn->tymed & TYMED_ISTREAM) && (pformatetcIn->dwAspect == DVASPECT_CONTENT) && (pformatetcIn->cfFormat == CF_FILECONTENTS))
