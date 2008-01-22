@@ -3,6 +3,7 @@
 #include <ole2.h>
 #include <ShellApi.h>
 #include <ShlObj.h>
+#include "UnicodeUtils.h"
 
 class CIDropTarget : public IDropTarget
 {
@@ -58,6 +59,35 @@ public:
 			if(medium.pstm != NULL)
 			{
 				const int BUF_SIZE = 10000;
+				char buff[BUF_SIZE+1];
+				ULONG cbRead=0;
+				HRESULT hr = medium.pstm->Read(buff, BUF_SIZE, &cbRead);
+				if( SUCCEEDED(hr) && cbRead > 0 && cbRead < BUF_SIZE)
+				{
+					buff[cbRead]=0;
+					LRESULT nLen = ::SendMessage(m_hTargetWnd, WM_GETTEXTLENGTH, 0, 0);
+					::SendMessage(m_hTargetWnd, EM_SETSEL, nLen, -1);
+					std::wstring str = CUnicodeUtils::StdGetUnicode(std::string(buff));
+					::SendMessage(m_hTargetWnd, EM_REPLACESEL, TRUE, (LPARAM)str.c_str());
+				}
+				else
+					for(;(hr==S_OK && cbRead >0) && SUCCEEDED(hr) ;)
+					{
+						buff[cbRead]=0;
+						LRESULT nLen = ::SendMessage(m_hTargetWnd, WM_GETTEXTLENGTH, 0, 0);
+						::SendMessage(m_hTargetWnd, EM_SETSEL, nLen, -1);
+						std::wstring str = CUnicodeUtils::StdGetUnicode(std::string(buff));
+						::SendMessage(m_hTargetWnd, EM_REPLACESEL, TRUE, (LPARAM)str.c_str());
+						cbRead=0;
+						hr = medium.pstm->Read(buff, BUF_SIZE, &cbRead);
+					}
+			}
+		}
+		if(pFmtEtc->cfFormat == CF_UNICODETEXT && medium.tymed == TYMED_ISTREAM)
+		{
+			if(medium.pstm != NULL)
+			{
+				const int BUF_SIZE = 10000;
 				TCHAR buff[BUF_SIZE+1];
 				ULONG cbRead=0;
 				HRESULT hr = medium.pstm->Read(buff, BUF_SIZE, &cbRead);
@@ -82,7 +112,19 @@ public:
 		}
 		if(pFmtEtc->cfFormat == CF_TEXT && medium.tymed == TYMED_HGLOBAL)
 		{
-			TCHAR* pStr = (TCHAR*)GlobalLock(medium.hGlobal);
+			char* pStr = (char*)GlobalLock(medium.hGlobal);
+			if(pStr != NULL)
+			{
+				LRESULT nLen = ::SendMessage(m_hTargetWnd, WM_GETTEXTLENGTH, 0, 0);
+				::SendMessage(m_hTargetWnd, EM_SETSEL, nLen, -1);
+				std::wstring str = CUnicodeUtils::StdGetUnicode(std::string(pStr));
+				::SendMessage(m_hTargetWnd, EM_REPLACESEL, TRUE, (LPARAM)str.c_str());
+			}
+			GlobalUnlock(medium.hGlobal);
+		}
+		if(pFmtEtc->cfFormat == CF_UNICODETEXT && medium.tymed == TYMED_HGLOBAL)
+		{
+			WCHAR* pStr = (WCHAR*)GlobalLock(medium.hGlobal);
 			if(pStr != NULL)
 			{
 				LRESULT nLen = ::SendMessage(m_hTargetWnd, WM_GETTEXTLENGTH, 0, 0);
