@@ -1155,7 +1155,14 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bUseRegex, bool bCaseSensiti
 							sinfo.matchends.push_back(whatc[0].second-textfile.GetFileString().begin());
 						}
 						// update search position:
-						start = whatc[0].second;      
+						if (start == whatc[0].second)
+						{
+							if (start == end)
+								break;
+							start++;
+						}
+						else
+							start = whatc[0].second;
 						// update flags:
 						flags |= match_prev_avail;
 						flags |= match_not_bob;

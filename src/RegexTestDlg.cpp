@@ -166,7 +166,14 @@ void CRegexTestDlg::DoRegex()
 						replaceresult = replaceresult + replaced;
 					}
 					// update search position:
-					start = whatc[0].second;      
+					if (start == whatc[0].second)
+					{
+						if (start == end)
+							break;
+						start++;
+					}
+					else
+						start = whatc[0].second;
 					// update flags:
 					flags |= match_prev_avail;
 					flags |= match_not_bob;
