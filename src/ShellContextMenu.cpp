@@ -36,6 +36,9 @@ BOOL CShellContextMenu::GetContextMenu(void ** ppContextMenu, int & iMenuType)
 	*ppContextMenu = NULL;
 	LPCONTEXTMENU icm1 = NULL;
 	
+	if (m_psfFolder == NULL)
+		return FALSE;
+
 	// first we retrieve the normal IContextMenu interface (every object should have it)
 	m_psfFolder->GetUIObjectOf(NULL, nItems, (LPCITEMIDLIST *) m_pidlArray, IID_IContextMenu, NULL, (void**) &icm1);
 
@@ -212,10 +215,17 @@ void CShellContextMenu::SetObjects(const vector<wstring>& strVector)
 		psfDesktop->ParseDisplayName(NULL, 0, (LPWSTR)strVector[i].c_str(), NULL, &pidl, NULL);
 		m_pidlArray = (LPITEMIDLIST *)realloc (m_pidlArray, (i + 1) * sizeof (LPITEMIDLIST));
 		// get relative pidl via SHBindToParent
-		SHBindToParent(pidl, IID_IShellFolder, (void **) &psfFolder, (LPCITEMIDLIST *) &pidlItem);
-		m_pidlArray[i] = CopyPIDL(pidlItem);	// copy relative pidl to pidlArray
-		lpMalloc->Free(pidl);		// free pidl allocated by ParseDisplayName
-		psfFolder->Release();
+		if (SHBindToParent(pidl, IID_IShellFolder, (void **) &psfFolder, (LPCITEMIDLIST *) &pidlItem) == S_OK)
+		{
+			m_pidlArray[i] = CopyPIDL(pidlItem);	// copy relative pidl to pidlArray
+			lpMalloc->Free(pidl);		// free pidl allocated by ParseDisplayName
+			psfFolder->Release();
+		}
+		else
+		{
+			m_pidlArray[i] = NULL;
+			lpMalloc->Free(pidl);		// free pidl allocated by ParseDisplayName
+		}
 	}
 	lpMalloc->Release ();
 	psfDesktop->Release ();
