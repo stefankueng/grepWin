@@ -75,6 +75,7 @@ private:
 	bool					m_bCreateBackup;
 	bool					m_bCaseSensitive;
 
+	bool					m_bReplace;
 	HANDLE					m_hSearchThread;
 
 	vector<CSearchInfo>		m_items;
