@@ -150,10 +150,12 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			if ((!bText)&&(!m_dwThreadRunning)&&(GetWindowTextLength(GetDlgItem(*this, IDC_REPLACETEXT))>0))
 			{
 				::SetDlgItemText(*this, IDOK, _T("&Replace"));
+				::ShowWindow(GetDlgItem(*this, IDC_REPLACE), SW_HIDE);
 			}
 			else
 			{
 				::SetDlgItemText(*this, IDOK, _T("&Search"));
+				::ShowWindow(GetDlgItem(*this, IDC_REPLACE), SW_SHOW);
 			}
 
 			SetFocus(GetDlgItem(hwndDlg, IDC_SEARCHTEXT));
@@ -188,6 +190,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			m_resizer.AddControl(hwndDlg, IDC_PATTERN, RESIZER_TOPLEFTRIGHT);
 			m_resizer.AddControl(hwndDlg, IDC_FILEPATTERNREGEX, RESIZER_TOPLEFT);
 			m_resizer.AddControl(hwndDlg, IDC_FILEPATTERNTEXT, RESIZER_TOPLEFT);
+			m_resizer.AddControl(hwndDlg, IDC_REPLACE, RESIZER_TOPRIGHT);
 			m_resizer.AddControl(hwndDlg, IDOK, RESIZER_TOPRIGHT);
 			m_resizer.AddControl(hwndDlg, IDC_GROUPSEARCHRESULTS, RESIZER_TOPLEFTBOTTOMRIGHT);
 			m_resizer.AddControl(hwndDlg, IDC_RESULTLIST, RESIZER_TOPLEFTBOTTOMRIGHT);
@@ -270,10 +273,12 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			if (bValid)
 			{
 				::SetDlgItemText(*this, IDOK, _T("&Replace"));
+				::ShowWindow(GetDlgItem(*this, IDC_REPLACE), SW_HIDE);
 			}
 			else
 			{
 				::SetDlgItemText(*this, IDOK, _T("&Search"));
+				::ShowWindow(GetDlgItem(*this, IDC_REPLACE), SW_SHOW);
 			}
 		}
 		break;
@@ -317,6 +322,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 {
 	switch (id)
 	{
+	case IDC_REPLACE:
 	case IDOK:
 		{
 			if (m_dwThreadRunning)
@@ -341,6 +347,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 				InterlockedExchange(&m_dwThreadRunning, TRUE);
 				InterlockedExchange(&m_Cancelled, FALSE);
 				SetDlgItemText(*this, IDOK, _T("&Cancel"));
+				m_bReplace = (id == IDC_REPLACE);
 				// now start the thread which does the searching
 				DWORD dwThreadId = 0;
 				m_hSearchThread = CreateThread( 
@@ -471,10 +478,12 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 				if ((bValid)&&(!m_dwThreadRunning))
 				{
 					::SetDlgItemText(*this, IDOK, _T("&Replace"));
+					::ShowWindow(GetDlgItem(*this, IDC_REPLACE), SW_HIDE);
 				}
 				else
 				{
 					::SetDlgItemText(*this, IDOK, _T("&Search"));
+					::ShowWindow(GetDlgItem(*this, IDC_REPLACE), SW_SHOW);
 				}
 				::EnableWindow(GetDlgItem(*this, IDC_CREATEBACKUP), bValid);
 			}
@@ -512,10 +521,12 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 			if ((!bText)&&(!m_dwThreadRunning)&&(GetWindowTextLength(GetDlgItem(*this, IDC_REPLACETEXT))>0))
 			{
 				::SetDlgItemText(*this, IDOK, _T("&Replace"));
+				::ShowWindow(GetDlgItem(*this, IDC_REPLACE), SW_HIDE);
 			}
 			else
 			{
 				::SetDlgItemText(*this, IDOK, _T("&Search"));
+				::ShowWindow(GetDlgItem(*this, IDC_REPLACE), SW_SHOW);
 			}
 		}
 		break;
@@ -1143,7 +1154,7 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bUseRegex, bool bCaseSensiti
 					ft |= regbase::icase;
 				wregex expression = wregex(localSearchString, ft);
 				match_results<wstring::const_iterator> whatc;
-				if (m_replaceString.empty())
+				if ((m_replaceString.empty())&&(!m_bReplace))
 				{
 					match_flag_type flags = match_default | match_not_dot_newline;
 					while (regex_search(start, end, whatc, expression, flags))   
