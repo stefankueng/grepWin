@@ -100,6 +100,8 @@ bool CTextFile::Load(LPCTSTR path, UnicodeType& type)
 		delete [] pWideBuf;
 	}
 	type = encoding;
+	if (type == BINARY)
+		return true;
 	return CalculateLines();
 }
 
