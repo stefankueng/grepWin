@@ -957,7 +957,14 @@ bool CSearchDlg::MatchesCompareAsc(const CSearchInfo Entry1, const CSearchInfo E
 
 bool CSearchDlg::PathCompareAsc(const CSearchInfo Entry1, const CSearchInfo Entry2)
 {
-	return Entry1.filepath.compare(Entry2.filepath) < 0;
+	wstring name1 = Entry1.filepath.substr(Entry1.filepath.find_last_of('\\')+1);
+	wstring name2 = Entry2.filepath.substr(Entry2.filepath.find_last_of('\\')+1);
+	wstring path1 = Entry1.filepath.substr(0, Entry1.filepath.size()-name1.size()-1);
+	wstring path2 = Entry2.filepath.substr(0, Entry2.filepath.size()-name2.size()-1);
+	int cmp = path1.compare(path2);
+	if (cmp != 0)
+		return cmp < 0;
+	return name1.compare(name2) < 0;
 }
 
 bool CSearchDlg::NameCompareDesc(const CSearchInfo Entry1, const CSearchInfo Entry2)
@@ -979,7 +986,14 @@ bool CSearchDlg::MatchesCompareDesc(const CSearchInfo Entry1, const CSearchInfo 
 
 bool CSearchDlg::PathCompareDesc(const CSearchInfo Entry1, const CSearchInfo Entry2)
 {
-	return Entry1.filepath.compare(Entry2.filepath) > 0;
+	wstring name1 = Entry1.filepath.substr(Entry1.filepath.find_last_of('\\')+1);
+	wstring name2 = Entry2.filepath.substr(Entry2.filepath.find_last_of('\\')+1);
+	wstring path1 = Entry1.filepath.substr(0, Entry1.filepath.size()-name1.size()-1);
+	wstring path2 = Entry2.filepath.substr(0, Entry2.filepath.size()-name2.size()-1);
+	int cmp = path1.compare(path2);
+	if (cmp != 0)
+		return cmp > 0;
+	return name1.compare(name2) > 0;
 }
 
 DWORD CSearchDlg::SearchThread()
