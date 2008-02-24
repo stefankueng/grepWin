@@ -34,7 +34,7 @@ protected:
 	LRESULT					DoCommand(int id, int msg);
 	bool					PreTranslateMessage(MSG* pMsg);
 
-	int						SearchFile(CSearchInfo& sinfo, bool bUseRegex, bool bCaseSensitive, const wstring& searchString);
+	int						SearchFile(CSearchInfo& sinfo, bool bIncludeBinary, bool bUseRegex, bool bCaseSensitive, const wstring& searchString);
 
 	bool					InitResultList();
 	bool					AddFoundEntry(CSearchInfo * pInfo, bool bOnlyListControl = false);
@@ -72,6 +72,7 @@ private:
 	bool					m_bIncludeSystem;
 	bool					m_bIncludeHidden;
 	bool					m_bIncludeSubfolders;
+	bool					m_bIncludeBinary;
 	bool					m_bCreateBackup;
 	bool					m_bCaseSensitive;
 
@@ -100,6 +101,7 @@ private:
 	CRegStdWORD				m_regIncludeSystem;
 	CRegStdWORD				m_regIncludeHidden;
 	CRegStdWORD				m_regIncludeSubfolders;
+	CRegStdWORD				m_regIncludeBinary;
 	CRegStdWORD				m_regCreateBackup;
 	CRegStdWORD				m_regCaseSensitive;
 };

@@ -46,6 +46,7 @@ CSearchDlg::CSearchDlg(HWND hParent) : m_searchedItems(0)
 	, m_regIncludeSystem(_T("Software\\grepWin\\IncludeSystem"))
 	, m_regIncludeHidden(_T("Software\\grepWin\\IncludeHidden"))
 	, m_regIncludeSubfolders(_T("Software\\grepWin\\IncludeSubfolders"), 1)
+	, m_regIncludeBinary(_T("Software\\grepWin\\IncludeBinary"), 1)
 	, m_regCreateBackup(_T("Software\\grepWin\\CreateBackup"))
 	, m_regCaseSensitive(_T("Software\\grepWin\\CaseSensitive"))
 {
@@ -136,6 +137,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			SendDlgItemMessage(hwndDlg, IDC_CREATEBACKUP, BM_SETCHECK, DWORD(m_regCreateBackup) ? BST_CHECKED : BST_UNCHECKED, 0);
 			SendDlgItemMessage(hwndDlg, IDC_INCLUDESYSTEM, BM_SETCHECK, DWORD(m_regIncludeSystem) ? BST_CHECKED : BST_UNCHECKED, 0);
 			SendDlgItemMessage(hwndDlg, IDC_INCLUDEHIDDEN, BM_SETCHECK, DWORD(m_regIncludeHidden) ? BST_CHECKED : BST_UNCHECKED, 0);
+			SendDlgItemMessage(hwndDlg, IDC_INCLUDEBINARY, BM_SETCHECK, DWORD(m_regIncludeBinary) ? BST_CHECKED : BST_UNCHECKED, 0);
 			SendDlgItemMessage(hwndDlg, IDC_CASE_SENSITIVE, BM_SETCHECK, DWORD(m_regCaseSensitive) ? BST_CHECKED : BST_UNCHECKED, 0);
 
 			CheckRadioButton(hwndDlg, IDC_REGEXRADIO, IDC_TEXTRADIO, DWORD(m_regUseRegex) ? IDC_REGEXRADIO : IDC_TEXTRADIO);
@@ -186,6 +188,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			m_resizer.AddControl(hwndDlg, IDC_INCLUDESYSTEM, RESIZER_TOPLEFT);
 			m_resizer.AddControl(hwndDlg, IDC_INCLUDEHIDDEN, RESIZER_TOPLEFT);
 			m_resizer.AddControl(hwndDlg, IDC_INCLUDESUBFOLDERS, RESIZER_TOPLEFT);
+			m_resizer.AddControl(hwndDlg, IDC_INCLUDEBINARY, RESIZER_TOPLEFT);
 			m_resizer.AddControl(hwndDlg, IDC_PATTERNLABEL, RESIZER_TOPLEFT);
 			m_resizer.AddControl(hwndDlg, IDC_PATTERN, RESIZER_TOPLEFTRIGHT);
 			m_resizer.AddControl(hwndDlg, IDC_FILEPATTERNREGEX, RESIZER_TOPLEFT);
@@ -420,6 +423,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 				EnableWindow(GetDlgItem(*this, IDC_INCLUDESYSTEM), bIsDir);
 				EnableWindow(GetDlgItem(*this, IDC_INCLUDEHIDDEN), bIsDir);
 				EnableWindow(GetDlgItem(*this, IDC_INCLUDESUBFOLDERS), bIsDir);
+				EnableWindow(GetDlgItem(*this, IDC_INCLUDEBINARY), bIsDir);
 				EnableWindow(GetDlgItem(*this, IDC_PATTERN), bIsDir);
 				EnableWindow(GetDlgItem(*this, IDC_FILEPATTERNREGEX), bIsDir);
 				EnableWindow(GetDlgItem(*this, IDC_FILEPATTERNTEXT), bIsDir);
@@ -920,12 +924,14 @@ bool CSearchDlg::SaveSettings()
 	m_bIncludeSystem = (IsDlgButtonChecked(*this, IDC_INCLUDESYSTEM) == BST_CHECKED);
 	m_bIncludeHidden = (IsDlgButtonChecked(*this, IDC_INCLUDEHIDDEN) == BST_CHECKED);
 	m_bIncludeSubfolders = (IsDlgButtonChecked(*this, IDC_INCLUDESUBFOLDERS) == BST_CHECKED);
+	m_bIncludeBinary = (IsDlgButtonChecked(*this, IDC_INCLUDEBINARY) == BST_CHECKED);
 	m_bCreateBackup = (IsDlgButtonChecked(*this, IDC_CREATEBACKUP) == BST_CHECKED);
 	m_bCaseSensitive = (IsDlgButtonChecked(*this, IDC_CASE_SENSITIVE) == BST_CHECKED);
 
 	m_regIncludeSystem = (DWORD)m_bIncludeSystem;
 	m_regIncludeHidden = (DWORD)m_bIncludeHidden;
 	m_regIncludeSubfolders = (DWORD)m_bIncludeSubfolders;
+	m_regIncludeBinary = (DWORD)m_bIncludeBinary;
 	m_regCreateBackup = (DWORD)m_bCreateBackup;
 	m_regCaseSensitive = (DWORD)m_bCaseSensitive;
 
@@ -1097,7 +1103,7 @@ DWORD CSearchDlg::SearchThread()
 							SendMessage(*this, SEARCH_FOUND, 0, (LPARAM)&sinfo);
 						else
 						{
-							nFound = SearchFile(sinfo, m_bUseRegex, m_bCaseSensitive, m_searchString);
+							nFound = SearchFile(sinfo, m_bIncludeBinary, m_bUseRegex, m_bCaseSensitive, m_searchString);
 							if (nFound >= 0)
 								SendMessage(*this, SEARCH_FOUND, nFound, (LPARAM)&sinfo);
 						}
@@ -1126,16 +1132,16 @@ DWORD CSearchDlg::SearchThread()
 	return 0L;
 }
 
-int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bUseRegex, bool bCaseSensitive, const wstring& searchString)
+int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bIncludeBinary, bool bUseRegex, bool bCaseSensitive, const wstring& searchString)
 {
 	int nFound = 0;
 	// we keep it simple:
-	// files bigger than 10MB are considered binary. Binary files are searched
+	// files bigger than 30MB are considered binary. Binary files are searched
 	// as if they're ANSI text files.
 	wstring localSearchString = searchString;
 	if (!bUseRegex)
 		localSearchString = _T("\\Q") + searchString + _T("\\E");
-	if (sinfo.filesize < 10*1024*1024)
+	if (sinfo.filesize < 30*1024*1024)
 	{
 		CTextFile textfile;
 
@@ -1143,64 +1149,67 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bUseRegex, bool bCaseSensiti
 		if (textfile.Load(sinfo.filepath.c_str(), type))
 		{
 			sinfo.encoding = type;
-			wstring::const_iterator start, end;
-			start = textfile.GetFileString().begin();
-			end = textfile.GetFileString().end();
-			match_results<wstring::const_iterator> what;
-			try
+			if ((type != CTextFile::BINARY)||(bIncludeBinary))
 			{
-				int ft = regex::normal;
-				if (!bCaseSensitive)
-					ft |= regbase::icase;
-				wregex expression = wregex(localSearchString, ft);
-				match_results<wstring::const_iterator> whatc;
-				if ((m_replaceString.empty())&&(!m_bReplace))
+				wstring::const_iterator start, end;
+				start = textfile.GetFileString().begin();
+				end = textfile.GetFileString().end();
+				match_results<wstring::const_iterator> what;
+				try
 				{
-					match_flag_type flags = match_default | match_not_dot_newline;
-					while (regex_search(start, end, whatc, expression, flags))   
+					int ft = regex::normal;
+					if (!bCaseSensitive)
+						ft |= regbase::icase;
+					wregex expression = wregex(localSearchString, ft);
+					match_results<wstring::const_iterator> whatc;
+					if ((m_replaceString.empty())&&(!m_bReplace))
 					{
-						if (whatc[0].matched)
+						match_flag_type flags = match_default | match_not_dot_newline;
+						while (regex_search(start, end, whatc, expression, flags))   
+						{
+							if (whatc[0].matched)
+							{
+								nFound++;
+								sinfo.matchstarts.push_back(whatc[0].first-textfile.GetFileString().begin());
+								sinfo.matchends.push_back(whatc[0].second-textfile.GetFileString().begin());
+							}
+							// update search position:
+							if (start == whatc[0].second)
+							{
+								if (start == end)
+									break;
+								start++;
+							}
+							else
+								start = whatc[0].second;
+							// update flags:
+							flags |= match_prev_avail;
+							flags |= match_not_bob;
+						}
+					}
+					else
+					{
+						match_flag_type flags = match_default | format_all | match_not_dot_newline;
+						wstring replaced = regex_replace(textfile.GetFileString(), expression, m_replaceString, flags);
+						if (replaced.compare(textfile.GetFileString()))
 						{
 							nFound++;
-							sinfo.matchstarts.push_back(whatc[0].first-textfile.GetFileString().begin());
-							sinfo.matchends.push_back(whatc[0].second-textfile.GetFileString().begin());
+							sinfo.matchstarts.push_back(0);
+							sinfo.matchends.push_back(0);
+							textfile.SetFileContent(replaced);
+							if (m_bCreateBackup)
+							{
+								wstring backupfile = sinfo.filepath + _T(".bak");
+								CopyFile(sinfo.filepath.c_str(), backupfile.c_str(), FALSE);
+							}
+							textfile.Save(sinfo.filepath.c_str());
 						}
-						// update search position:
-						if (start == whatc[0].second)
-						{
-							if (start == end)
-								break;
-							start++;
-						}
-						else
-							start = whatc[0].second;
-						// update flags:
-						flags |= match_prev_avail;
-						flags |= match_not_bob;
 					}
 				}
-				else
+				catch (const exception&)
 				{
-					match_flag_type flags = match_default | format_all | match_not_dot_newline;
-					wstring replaced = regex_replace(textfile.GetFileString(), expression, m_replaceString, flags);
-					if (replaced.compare(textfile.GetFileString()))
-					{
-						nFound++;
-						sinfo.matchstarts.push_back(0);
-						sinfo.matchends.push_back(0);
-						textfile.SetFileContent(replaced);
-						if (m_bCreateBackup)
-						{
-							wstring backupfile = sinfo.filepath + _T(".bak");
-							CopyFile(sinfo.filepath.c_str(), backupfile.c_str(), FALSE);
-						}
-						textfile.Save(sinfo.filepath.c_str());
-					}
+					return -1;
 				}
-			}
-			catch (const exception&)
-			{
-				return -1;
 			}
 		}
 		else
@@ -1209,42 +1218,44 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bUseRegex, bool bCaseSensiti
 	else
 	{
 		// assume binary file
-
-		sinfo.encoding = CTextFile::BINARY;
-		string filepath = CUnicodeUtils::StdGetANSI(sinfo.filepath);
-		string searchfor = CUnicodeUtils::StdGetUTF8(searchString);
-
-		if (!bUseRegex)
+		if (bIncludeBinary)
 		{
-			searchfor = "\\Q";
-			searchfor += CUnicodeUtils::StdGetUTF8(searchString);
-			searchfor += "\\E";
-		}
-		spirit::file_iterator<> start(filepath.c_str());
-		spirit::file_iterator<> fbeg = start;
-		spirit::file_iterator<> end = start.make_end();
+			sinfo.encoding = CTextFile::BINARY;
+			string filepath = CUnicodeUtils::StdGetANSI(sinfo.filepath);
+			string searchfor = CUnicodeUtils::StdGetUTF8(searchString);
 
-		match_results<string::const_iterator> what;
-		match_flag_type flags = match_default | match_not_dot_newline;
-		try
-		{
-			regex expression = regex(searchfor);
-			match_results<spirit::file_iterator<>> whatc;
-			while (regex_search(start, end, whatc, expression, flags))   
+			if (!bUseRegex)
 			{
-				nFound++;
-				sinfo.matchstarts.push_back(whatc[0].first-fbeg);
-				sinfo.matchends.push_back(whatc[0].second-fbeg);
-				// update search position:
-				start = whatc[0].second;
-				// update flags:
-				flags |= match_prev_avail;
-				flags |= match_not_bob;
+				searchfor = "\\Q";
+				searchfor += CUnicodeUtils::StdGetUTF8(searchString);
+				searchfor += "\\E";
 			}
-		}
-		catch (const exception&)
-		{
-			return -1;
+			spirit::file_iterator<> start(filepath.c_str());
+			spirit::file_iterator<> fbeg = start;
+			spirit::file_iterator<> end = start.make_end();
+
+			match_results<string::const_iterator> what;
+			match_flag_type flags = match_default | match_not_dot_newline;
+			try
+			{
+				regex expression = regex(searchfor);
+				match_results<spirit::file_iterator<>> whatc;
+				while (regex_search(start, end, whatc, expression, flags))   
+				{
+					nFound++;
+					sinfo.matchstarts.push_back(whatc[0].first-fbeg);
+					sinfo.matchends.push_back(whatc[0].second-fbeg);
+					// update search position:
+					start = whatc[0].second;
+					// update flags:
+					flags |= match_prev_avail;
+					flags |= match_not_bob;
+				}
+			}
+			catch (const exception&)
+			{
+				return -1;
+			}
 		}
 	}
 
