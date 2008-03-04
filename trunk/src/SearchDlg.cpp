@@ -353,13 +353,16 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 				SetDlgItemText(*this, IDOK, _T("&Cancel"));
 				m_bReplace = (id == IDC_REPLACE);
 
-				TCHAR msgtext[MAX_PATH*4] = {0};
-				_stprintf_s(msgtext, MAX_PATH*4, _T("Are you sure you want to replace\n%s\nwith\n%s\nwithout creating backups?"), 
-					m_searchString.c_str(), m_replaceString.empty() ? _T("an empty string") : m_replaceString.c_str());
-				if (!m_bCreateBackup)
+				if (m_bReplace)
 				{
-					if (::MessageBox(*this, msgtext, _T("grepWin"), MB_ICONQUESTION | MB_YESNO) != IDYES)
-						break;
+					TCHAR msgtext[MAX_PATH*4] = {0};
+					_stprintf_s(msgtext, MAX_PATH*4, _T("Are you sure you want to replace\n%s\nwith\n%s\nwithout creating backups?"), 
+						m_searchString.c_str(), m_replaceString.empty() ? _T("an empty string") : m_replaceString.c_str());
+					if (!m_bCreateBackup)
+					{
+						if (::MessageBox(*this, msgtext, _T("grepWin"), MB_ICONQUESTION | MB_YESNO) != IDYES)
+							break;
+					}
 				}
 
 
