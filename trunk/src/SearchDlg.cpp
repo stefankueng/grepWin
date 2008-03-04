@@ -148,6 +148,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 
 			bool bText = (IsDlgButtonChecked(*this, IDC_TEXTRADIO) == BST_CHECKED);
 			::EnableWindow(GetDlgItem(*this, IDC_REPLACETEXT), !bText);
+			::ShowWindow(GetDlgItem(*this, IDC_REPLACE), bText ? SW_HIDE : SW_SHOW);
 			::EnableWindow(GetDlgItem(*this, IDC_CREATEBACKUP), !bText);
 			if ((!bText)&&(!m_dwThreadRunning)&&(GetWindowTextLength(GetDlgItem(*this, IDC_REPLACETEXT))>0))
 			{
@@ -521,16 +522,15 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 		{
 			bool bText = (IsDlgButtonChecked(*this, IDC_TEXTRADIO) == BST_CHECKED);
 			::EnableWindow(GetDlgItem(*this, IDC_REPLACETEXT), !bText);
+			::ShowWindow(GetDlgItem(*this, IDC_REPLACE), bText ? SW_HIDE : SW_SHOW);
 			::EnableWindow(GetDlgItem(*this, IDC_CREATEBACKUP), !bText);
 			if ((!bText)&&(!m_dwThreadRunning)&&(GetWindowTextLength(GetDlgItem(*this, IDC_REPLACETEXT))>0))
 			{
 				::SetDlgItemText(*this, IDOK, _T("&Replace"));
-				::ShowWindow(GetDlgItem(*this, IDC_REPLACE), SW_HIDE);
 			}
 			else
 			{
 				::SetDlgItemText(*this, IDOK, _T("&Search"));
-				::ShowWindow(GetDlgItem(*this, IDC_REPLACE), SW_SHOW);
 			}
 		}
 		break;
