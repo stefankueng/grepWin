@@ -510,7 +510,6 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 					::SetDlgItemText(*this, IDOK, _T("&Search"));
 					::ShowWindow(GetDlgItem(*this, IDC_REPLACE), SW_SHOW);
 				}
-				::EnableWindow(GetDlgItem(*this, IDC_CREATEBACKUP), bValid);
 			}
 		}
 		break;
