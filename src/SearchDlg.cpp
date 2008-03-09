@@ -429,6 +429,8 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 			if (msg == EN_CHANGE)
 			{
 				TCHAR buf[MAX_PATH*4] = {0};
+				GetDlgItemText(*this, IDC_SEARCHTEXT, buf, MAX_PATH*4);
+				int len = _tcslen(buf);
 				GetDlgItemText(*this, IDC_SEARCHPATH, buf, MAX_PATH*4);
 				bool bIsDir = PathIsDirectory(buf);
 				EnableWindow(GetDlgItem(*this, IDC_ALLSIZERADIO), bIsDir);
@@ -438,7 +440,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 				EnableWindow(GetDlgItem(*this, IDC_INCLUDESYSTEM), bIsDir);
 				EnableWindow(GetDlgItem(*this, IDC_INCLUDEHIDDEN), bIsDir);
 				EnableWindow(GetDlgItem(*this, IDC_INCLUDESUBFOLDERS), bIsDir);
-				EnableWindow(GetDlgItem(*this, IDC_INCLUDEBINARY), bIsDir);
+				EnableWindow(GetDlgItem(*this, IDC_INCLUDEBINARY), bIsDir && len > 0);
 				EnableWindow(GetDlgItem(*this, IDC_PATTERN), bIsDir);
 				EnableWindow(GetDlgItem(*this, IDC_FILEPATTERNREGEX), bIsDir);
 				EnableWindow(GetDlgItem(*this, IDC_FILEPATTERNTEXT), bIsDir);
@@ -484,6 +486,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 					SetDlgItemText(*this, IDC_REGEXOKLABEL, _T(""));
 				}
 				EnableWindow(GetDlgItem(*this, IDC_ADDTOBOOKMARKS), len > 0);				
+				EnableWindow(GetDlgItem(*this, IDC_INCLUDEBINARY), len > 0);				
 			}
 		}
 		break;
