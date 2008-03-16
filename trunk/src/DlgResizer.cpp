@@ -78,7 +78,8 @@ void CDlgResizer::AddControl(HWND hWndDlg, UINT ctrlId, UINT resizeType)
 	ctrlInfo.hWnd = GetDlgItem(hWndDlg, ctrlId);
 	ctrlInfo.resizeType = resizeType;
 	
-	GetClientRect(ctrlInfo.hWnd, &ctrlInfo.origSize);
+	GetWindowRect(ctrlInfo.hWnd, &ctrlInfo.origSize);
+	OffsetRect(&ctrlInfo.origSize, -ctrlInfo.origSize.left, -ctrlInfo.origSize.top);
 	MapWindowPoints(ctrlInfo.hWnd, hWndDlg, (LPPOINT)&ctrlInfo.origSize, 2);
 
 	m_controls.push_back(ctrlInfo);
