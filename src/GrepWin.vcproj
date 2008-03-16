@@ -389,10 +389,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\StExBar\src\RenameDlg.h"
-				>
-			</File>
-			<File
 				RelativePath=".\Resources\resource.h"
 				>
 			</File>
