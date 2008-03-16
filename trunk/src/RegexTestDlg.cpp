@@ -50,7 +50,13 @@ LRESULT CRegexTestDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lP
 			SetFocus(GetDlgItem(hwndDlg, IDC_SEARCHTEXT));
 
 			m_resizer.Init(hwndDlg);
-
+			m_resizer.AddControl(hwndDlg, IDC_TEXTCONTENT, RESIZER_TOPLEFTRIGHT);
+			m_resizer.AddControl(hwndDlg, IDC_SEARCHTEXT, RESIZER_TOPLEFTRIGHT);
+			m_resizer.AddControl(hwndDlg, IDC_REPLACETEXT, RESIZER_TOPLEFTRIGHT);
+			m_resizer.AddControl(hwndDlg, IDC_REGEXMATCH, RESIZER_TOPLEFTRIGHT);
+			m_resizer.AddControl(hwndDlg, IDC_REGEXREPLACED, RESIZER_TOPLEFTBOTTOMRIGHT);
+			m_resizer.AddControl(hwndDlg, IDOK, RESIZER_BOTTOMRIGHT);
+			m_resizer.AddControl(hwndDlg, IDCANCEL, RESIZER_BOTTOMRIGHT);
 		}
 		return FALSE;
 	case WM_COMMAND:
