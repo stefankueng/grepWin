@@ -1045,6 +1045,33 @@ DWORD CSearchDlg::SearchThread()
 		wstring s = wstring(pBuf, pos);
 		if (!s.empty())
 		{
+
+			TCHAR * pBuf2 = new TCHAR[s.size()+1];
+			TCHAR * pBuf = new TCHAR[s.size()+1];
+			TCHAR * prettypath = pBuf;
+			_tcscpy_s(pBuf2, s.size()+1, s.c_str());
+			// skip a possible UNC path start
+			if (*pBuf2 == '\\')
+			{
+				for (int i=0; i<2 && (*pBuf2); ++i)
+					*pBuf++ = *pBuf2++;
+			}
+			while(*pBuf2)
+			{
+				*pBuf = *pBuf2;
+				if (*pBuf2 == '\\')
+				{
+					do 
+					{
+						pBuf2++;
+					} while (*pBuf2 == '\\');
+				}
+				else
+					pBuf2++;
+				pBuf++;
+			}
+			*pBuf = 0;
+			s = prettypath;
 			pathvector.push_back(s);
 		}
 		pBuf += pos;
