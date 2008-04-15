@@ -455,6 +455,8 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 				int len = _tcslen(buf);
 				GetDlgItemText(*this, IDC_SEARCHPATH, buf, MAX_PATH*4);
 				bool bIsDir = PathIsDirectory(buf);
+				if ((!bIsDir) && _tcschr(buf, '|'))
+					bIsDir = true;	// assume directories in case of multiple paths
 				EnableWindow(GetDlgItem(*this, IDC_ALLSIZERADIO), bIsDir);
 				EnableWindow(GetDlgItem(*this, IDC_SIZERADIO), bIsDir);
 				EnableWindow(GetDlgItem(*this, IDC_SIZECOMBO), bIsDir);
