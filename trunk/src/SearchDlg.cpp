@@ -101,10 +101,13 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			// expand a possible 'short' path
 			DWORD ret = 0;
 			ret = ::GetLongPathName(m_searchpath.c_str(), NULL, 0);
-			TCHAR * pathbuf = new TCHAR[ret+2];
-			ret = ::GetLongPathName(m_searchpath.c_str(), pathbuf, ret+1);
-			m_searchpath = wstring(pathbuf, ret);
-			delete pathbuf;
+			if (ret)
+			{
+				TCHAR * pathbuf = new TCHAR[ret+2];
+				ret = ::GetLongPathName(m_searchpath.c_str(), pathbuf, ret+1);
+				m_searchpath = wstring(pathbuf, ret);
+				delete pathbuf;
+			}
 
 			// initialize the controls
 			SetDlgItemText(hwndDlg, IDC_SEARCHPATH, m_searchpath.c_str());
@@ -147,6 +150,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			}
 			else
 				SetDlgItemText(hwndDlg, IDC_SIZEEDIT, _T("2000"));
+
 			SendDlgItemMessage(hwndDlg, IDC_SIZECOMBO, CB_INSERTSTRING, (WPARAM)-1, (LPARAM)_T("less than"));
 			SendDlgItemMessage(hwndDlg, IDC_SIZECOMBO, CB_INSERTSTRING, (WPARAM)-1, (LPARAM)_T("equal to"));
 			SendDlgItemMessage(hwndDlg, IDC_SIZECOMBO, CB_INSERTSTRING, (WPARAM)-1, (LPARAM)_T("greater than"));
