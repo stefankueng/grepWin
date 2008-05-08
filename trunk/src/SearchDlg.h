@@ -67,11 +67,13 @@ private:
 	static bool				SizeCompareAsc(const CSearchInfo Entry1, const CSearchInfo Entry2);
 	static bool				MatchesCompareAsc(const CSearchInfo Entry1, const CSearchInfo Entry2);
 	static bool				PathCompareAsc(const CSearchInfo Entry1, const CSearchInfo Entry2);
+	static bool				EncodingCompareAsc(const CSearchInfo Entry1, const CSearchInfo Entry2);
 
 	static bool				NameCompareDesc(const CSearchInfo Entry1, const CSearchInfo Entry2);
 	static bool				SizeCompareDesc(const CSearchInfo Entry1, const CSearchInfo Entry2);
 	static bool				MatchesCompareDesc(const CSearchInfo Entry1, const CSearchInfo Entry2);
 	static bool				PathCompareDesc(const CSearchInfo Entry1, const CSearchInfo Entry2);
+	static bool				EncodingCompareDesc(const CSearchInfo Entry1, const CSearchInfo Entry2);
 
 private:
 	HWND					m_hParent;

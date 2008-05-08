@@ -850,6 +850,12 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
 			else
 				sort(m_items.begin(), m_items.end(), PathCompareDesc);
 			break;
+		case 4:
+			if (m_bAscending)
+				sort(m_items.begin(), m_items.end(), EncodingCompareAsc);
+			else
+				sort(m_items.begin(), m_items.end(), EncodingCompareDesc);
+			break;
 		}
 
 		HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
@@ -1007,6 +1013,11 @@ bool CSearchDlg::PathCompareAsc(const CSearchInfo Entry1, const CSearchInfo Entr
 	return name1.compare(name2) < 0;
 }
 
+bool CSearchDlg::EncodingCompareAsc(const CSearchInfo Entry1, const CSearchInfo Entry2)
+{
+	return Entry1.encoding < Entry2.encoding;
+}
+
 bool CSearchDlg::NameCompareDesc(const CSearchInfo Entry1, const CSearchInfo Entry2)
 {
 	wstring name1 = Entry1.filepath.substr(Entry1.filepath.find_last_of('\\')+1);
@@ -1034,6 +1045,11 @@ bool CSearchDlg::PathCompareDesc(const CSearchInfo Entry1, const CSearchInfo Ent
 	if (cmp != 0)
 		return cmp > 0;
 	return name1.compare(name2) > 0;
+}
+
+bool CSearchDlg::EncodingCompareDesc(const CSearchInfo Entry1, const CSearchInfo Entry2)
+{
+	return Entry1.encoding > Entry2.encoding;
 }
 
 DWORD CSearchDlg::SearchThread()
