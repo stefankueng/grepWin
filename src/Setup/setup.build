@@ -9,12 +9,14 @@
 			<arg value="-out" />
 			<arg value="..\..\bin\" />
 			<arg value="Setup.wxs" />
+			<arg value="WixUI_Custom.wxs" />
 		</exec>
 		<exec program="light">
 			<arg value="-nologo" />
 			<arg value="-out" />
 			<arg value="..\..\bin\${msifilename}.msi" />
 			<arg value="..\..\bin\Setup.wixobj" />
+			<arg value="..\..\bin\WixUI_Custom.wixobj" />			
 			<arg value="${environment::get-variable('WIXUI')}\WixUI.wixlib" />
 			<arg value="-loc" />
 			<arg value="${environment::get-variable('WIXUI')}\WixUI_en-us.wxl" />
