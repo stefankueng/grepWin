@@ -1299,7 +1299,27 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bIncludeBinary, bool bUseReg
 								wstring backupfile = sinfo.filepath + _T(".bak");
 								CopyFile(sinfo.filepath.c_str(), backupfile.c_str(), FALSE);
 							}
-							textfile.Save(sinfo.filepath.c_str());
+							if (!textfile.Save(sinfo.filepath.c_str()))
+							{
+								// saving the file failed. Find out why...
+								DWORD err = GetLastError();
+								if (err == ERROR_ACCESS_DENIED)
+								{
+									// access denied can happen if the file has the
+									// read-only flag and/or the hidden flag set
+									// those are not situations where we should fail, so
+									// we reset those flags and restore them
+									// again after saving the file
+									DWORD origAttributes = GetFileAttributes(sinfo.filepath.c_str());
+									DWORD newAttributes = origAttributes & (~(FILE_ATTRIBUTE_HIDDEN|FILE_ATTRIBUTE_READONLY|FILE_ATTRIBUTE_SYSTEM));
+									SetFileAttributes(sinfo.filepath.c_str(), newAttributes);
+									bool bRet = textfile.Save(sinfo.filepath.c_str());
+									// restore the attributes
+									SetFileAttributes(sinfo.filepath.c_str(), origAttributes);
+									if (!bRet)
+										return -1;
+								}
+							}
 						}
 					}
 				}
