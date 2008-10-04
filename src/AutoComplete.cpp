@@ -55,7 +55,7 @@ bool CAutoComplete::Init(HWND hEdit)
 			if (m_pac->Init(hEdit, punkSource, NULL, NULL) == S_OK)
 			{
 				m_pac->Enable(TRUE);
-				m_pac->SetOptions(ACO_UPDOWNKEYDROPSLIST|ACO_AUTOSUGGEST|ACO_USETAB);
+				m_pac->SetOptions(ACO_UPDOWNKEYDROPSLIST|ACO_AUTOSUGGEST);
 				return true;
 			}
 		}

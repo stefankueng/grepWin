@@ -356,6 +356,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 			}
 			else
 			{
+				::SetFocus(GetDlgItem(*this, IDOK));
 				if (!SaveSettings())
 					break;
 
