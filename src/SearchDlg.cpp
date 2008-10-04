@@ -66,6 +66,7 @@ CSearchDlg::CSearchDlg(HWND hParent) : m_searchedItems(0)
 	, m_regIncludeBinary(_T("Software\\grepWin\\IncludeBinary"), 1)
 	, m_regCreateBackup(_T("Software\\grepWin\\CreateBackup"))
 	, m_regCaseSensitive(_T("Software\\grepWin\\CaseSensitive"))
+	, m_regDotMatchesNewline(_T("Software\\grepWin\\DotMatchesNewline"))
 	, m_regPattern(_T("Software\\grepWin\\pattern"))
 {
 	m_startTime = GetTickCount();
@@ -97,6 +98,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 
 			AddToolTip(IDC_PATTERN, _T("only files that matches this pattern are searched.\r\nExample: *.cpp;*.h"));
 			AddToolTip(IDC_SEARCHPATH, _T("the path which is searched recursively"));
+			AddToolTip(IDC_DOTMATCHNEWLINE, _T("\\n is matched by '.'"));
 
 			// expand a possible 'short' path
 			DWORD ret = 0;
@@ -161,6 +163,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			SendDlgItemMessage(hwndDlg, IDC_INCLUDEHIDDEN, BM_SETCHECK, DWORD(m_regIncludeHidden) ? BST_CHECKED : BST_UNCHECKED, 0);
 			SendDlgItemMessage(hwndDlg, IDC_INCLUDEBINARY, BM_SETCHECK, DWORD(m_regIncludeBinary) ? BST_CHECKED : BST_UNCHECKED, 0);
 			SendDlgItemMessage(hwndDlg, IDC_CASE_SENSITIVE, BM_SETCHECK, DWORD(m_regCaseSensitive) ? BST_CHECKED : BST_UNCHECKED, 0);
+			SendDlgItemMessage(hwndDlg, IDC_DOTMATCHNEWLINE, BM_SETCHECK, DWORD(m_regDotMatchesNewline) ? BST_CHECKED : BST_UNCHECKED, 0);
 
 			CheckRadioButton(hwndDlg, IDC_REGEXRADIO, IDC_TEXTRADIO, DWORD(m_regUseRegex) ? IDC_REGEXRADIO : IDC_TEXTRADIO);
 			CheckRadioButton(hwndDlg, IDC_ALLSIZERADIO, IDC_SIZERADIO, DWORD(m_regAllSize) ? IDC_ALLSIZERADIO : IDC_SIZERADIO);
@@ -198,6 +201,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			m_resizer.AddControl(hwndDlg, IDC_REPLACEWITHLABEL, RESIZER_TOPLEFT);
 			m_resizer.AddControl(hwndDlg, IDC_REPLACETEXT, RESIZER_TOPLEFTRIGHT);
 			m_resizer.AddControl(hwndDlg, IDC_CASE_SENSITIVE, RESIZER_TOPLEFT);
+			m_resizer.AddControl(hwndDlg, IDC_DOTMATCHNEWLINE, RESIZER_TOPLEFT);
 			m_resizer.AddControl(hwndDlg, IDC_REGEXOKLABEL, RESIZER_TOPRIGHT);
 			m_resizer.AddControl(hwndDlg, IDC_CREATEBACKUP, RESIZER_TOPLEFT);
 			m_resizer.AddControl(hwndDlg, IDC_TESTREGEX, RESIZER_TOPLEFT);
@@ -975,6 +979,7 @@ bool CSearchDlg::SaveSettings()
 	m_bIncludeBinary = (IsDlgButtonChecked(*this, IDC_INCLUDEBINARY) == BST_CHECKED);
 	m_bCreateBackup = (IsDlgButtonChecked(*this, IDC_CREATEBACKUP) == BST_CHECKED);
 	m_bCaseSensitive = (IsDlgButtonChecked(*this, IDC_CASE_SENSITIVE) == BST_CHECKED);
+	m_bDotMatchesNewline = (IsDlgButtonChecked(*this, IDC_DOTMATCHNEWLINE) == BST_CHECKED);
 
 	m_regIncludeSystem = (DWORD)m_bIncludeSystem;
 	m_regIncludeHidden = (DWORD)m_bIncludeHidden;
@@ -982,6 +987,7 @@ bool CSearchDlg::SaveSettings()
 	m_regIncludeBinary = (DWORD)m_bIncludeBinary;
 	m_regCreateBackup = (DWORD)m_bCreateBackup;
 	m_regCaseSensitive = (DWORD)m_bCaseSensitive;
+	m_regDotMatchesNewline = (DWORD)m_bDotMatchesNewline;
 	m_regPattern = m_patternregex;
 
 	return true;
@@ -1203,7 +1209,7 @@ DWORD CSearchDlg::SearchThread()
 							SendMessage(*this, SEARCH_FOUND, 0, (LPARAM)&sinfo);
 						else
 						{
-							nFound = SearchFile(sinfo, m_bIncludeBinary, m_bUseRegex, m_bCaseSensitive, m_searchString);
+							nFound = SearchFile(sinfo, m_bIncludeBinary, m_bUseRegex, m_bCaseSensitive, m_bDotMatchesNewline, m_searchString);
 							if (nFound >= 0)
 								SendMessage(*this, SEARCH_FOUND, nFound, (LPARAM)&sinfo);
 						}
@@ -1232,7 +1238,7 @@ DWORD CSearchDlg::SearchThread()
 	return 0L;
 }
 
-int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bIncludeBinary, bool bUseRegex, bool bCaseSensitive, const wstring& searchString)
+int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bIncludeBinary, bool bUseRegex, bool bCaseSensitive, bool bDotMatchesNewline, const wstring& searchString)
 {
 	int nFound = 0;
 	// we keep it simple:
@@ -1264,7 +1270,9 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bIncludeBinary, bool bUseReg
 					boost::match_results<wstring::const_iterator> whatc;
 					if ((m_replaceString.empty())&&(!m_bReplace))
 					{
-						boost::match_flag_type flags = boost::match_default | boost::match_not_dot_newline;
+						boost::match_flag_type flags = boost::match_default;
+						if (!bDotMatchesNewline)
+							flags |= boost::match_not_dot_newline;
 						while (regex_search(start, end, whatc, expression, flags))   
 						{
 							if (whatc[0].matched)
@@ -1289,7 +1297,9 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bIncludeBinary, bool bUseReg
 					}
 					else
 					{
-						boost::match_flag_type flags = boost::match_default | boost::format_all | boost::match_not_dot_newline;
+						boost::match_flag_type flags = boost::match_default | boost::format_all;
+						if (!bDotMatchesNewline)
+							flags |= boost::match_not_dot_newline;
 						wstring replaced = regex_replace(textfile.GetFileString(), expression, m_replaceString, flags);
 						if (replaced.compare(textfile.GetFileString()))
 						{
@@ -1355,7 +1365,9 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bIncludeBinary, bool bUseReg
 			boost::spirit::file_iterator<> end = start.make_end();
 
 			boost::match_results<string::const_iterator> what;
-			boost::match_flag_type flags = boost::match_default | boost::match_not_dot_newline;
+			boost::match_flag_type flags = boost::match_default;
+			if (!bDotMatchesNewline)
+				flags |= boost::match_not_dot_newline;
 			try
 			{
 				boost::regex expression = boost::regex(searchfor);
