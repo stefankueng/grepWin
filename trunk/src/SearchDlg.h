@@ -52,7 +52,7 @@ protected:
 	LRESULT					DoCommand(int id, int msg);
 	bool					PreTranslateMessage(MSG* pMsg);
 
-	int						SearchFile(CSearchInfo& sinfo, bool bIncludeBinary, bool bUseRegex, bool bCaseSensitive, const wstring& searchString);
+	int						SearchFile(CSearchInfo& sinfo, bool bIncludeBinary, bool bUseRegex, bool bCaseSensitive, bool bDotMatchesNewline, const wstring& searchString);
 
 	bool					InitResultList();
 	bool					AddFoundEntry(CSearchInfo * pInfo, bool bOnlyListControl = false);
@@ -95,6 +95,7 @@ private:
 	bool					m_bIncludeBinary;
 	bool					m_bCreateBackup;
 	bool					m_bCaseSensitive;
+	bool					m_bDotMatchesNewline;
 
 	bool					m_bReplace;
 	HANDLE					m_hSearchThread;
@@ -124,5 +125,6 @@ private:
 	CRegStdWORD				m_regIncludeBinary;
 	CRegStdWORD				m_regCreateBackup;
 	CRegStdWORD				m_regCaseSensitive;
+	CRegStdWORD				m_regDotMatchesNewline;
 	CRegStdString			m_regPattern;
 };
