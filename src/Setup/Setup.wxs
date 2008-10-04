@@ -46,9 +46,9 @@
 		  </Directory>
       </Directory>
 
-    </Directory>
-    <Directory Id="ProgramMenuFolder" Name="PMenu" LongName="Programs">
-      <Directory Id="ProgramMenuDir" Name='grepWin' LongName="grepWin" />
+      <Directory Id="ProgramMenuFolder" Name="PMenu" LongName="Programs">
+        <Directory Id="ProgramMenuDir" Name='grepWin' LongName="grepWin" />
+      </Directory>
     </Directory>
     
     <Feature Id='Complete' Title='grepWin' Description='The complete package.'
