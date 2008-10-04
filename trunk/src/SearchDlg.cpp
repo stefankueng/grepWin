@@ -99,6 +99,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			AddToolTip(IDC_PATTERN, _T("only files that matches this pattern are searched.\r\nExample: *.cpp;*.h"));
 			AddToolTip(IDC_SEARCHPATH, _T("the path which is searched recursively"));
 			AddToolTip(IDC_DOTMATCHNEWLINE, _T("\\n is matched by '.'"));
+			AddToolTip(IDC_SEARCHTEXT, _T("a regular expression used for searching. Press F1 for more info."));
 
 			// expand a possible 'short' path
 			DWORD ret = 0;
