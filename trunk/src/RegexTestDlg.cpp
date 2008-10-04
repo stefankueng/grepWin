@@ -22,7 +22,6 @@
 #include <string>
 
 #include <boost/regex.hpp>
-using namespace boost;
 using namespace std;
 
 
@@ -169,13 +168,13 @@ void CRegexTestDlg::DoRegex()
 			wstring::const_iterator start, end;
 			start = m_textContent.begin();
 			end = m_textContent.end();
-			match_results<wstring::const_iterator> what;
+			boost::match_results<wstring::const_iterator> what;
 			try
 			{
-				wregex expression = wregex(m_searchText);
-				match_results<wstring::const_iterator> whatc;
-				match_flag_type flags = match_default;
-				while (regex_search(start, end, whatc, expression, flags))   
+				boost::wregex expression = boost::wregex(m_searchText);
+				boost::match_results<wstring::const_iterator> whatc;
+				boost::match_flag_type flags = boost::match_default;
+				while (boost::regex_search(start, end, whatc, expression, flags))   
 				{
 					if (!searchresult.empty())
 						searchresult = searchresult + _T("\r\n----------------------------\r\n");
@@ -183,8 +182,8 @@ void CRegexTestDlg::DoRegex()
 					searchresult = searchresult + c;
 					if (!m_searchText.empty())
 					{
-						match_flag_type rflags = match_default|format_all;
-						wstring replaced = regex_replace(c, expression, m_replaceText, rflags);
+						boost::match_flag_type rflags = boost::match_default|boost::format_all;
+						wstring replaced = boost::regex_replace(c, expression, m_replaceText, rflags);
 						if (!replaceresult.empty())
 							replaceresult = replaceresult + _T("\r\n----------------------------\r\n");
 						replaceresult = replaceresult + replaced;
@@ -199,8 +198,8 @@ void CRegexTestDlg::DoRegex()
 					else
 						start = whatc[0].second;
 					// update flags:
-					flags |= match_prev_avail;
-					flags |= match_not_bob;
+					flags |= boost::match_prev_avail;
+					flags |= boost::match_not_bob;
 				}
 			}
 			catch (const exception&)

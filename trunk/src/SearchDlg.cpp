@@ -43,7 +43,6 @@
 
 #include <boost/regex.hpp>
 #include <boost/spirit/iterator/file_iterator.hpp>
-using namespace boost;
 using namespace std;
 
 DWORD WINAPI SearchThreadEntry(LPVOID lpParam);
@@ -454,7 +453,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 				GetDlgItemText(*this, IDC_SEARCHTEXT, buf, MAX_PATH*4);
 				int len = _tcslen(buf);
 				GetDlgItemText(*this, IDC_SEARCHPATH, buf, MAX_PATH*4);
-				bool bIsDir = PathIsDirectory(buf);
+				bool bIsDir = !!PathIsDirectory(buf);
 				if ((!bIsDir) && _tcschr(buf, '|'))
 					bIsDir = true;	// assume directories in case of multiple paths
 				EnableWindow(GetDlgItem(*this, IDC_ALLSIZERADIO), bIsDir);
@@ -486,7 +485,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 					{
 						try
 						{
-							wregex expression = wregex(buf);
+							boost::wregex expression = boost::wregex(buf);
 						}
 						catch (const exception&)
 						{
@@ -928,7 +927,7 @@ bool CSearchDlg::SaveSettings()
 		bool bValid = true;
 		try
 		{
-			wregex expression = wregex(m_searchString);
+			boost::wregex expression = boost::wregex(m_searchString);
 		}
 		catch (const exception&)
 		{
@@ -944,7 +943,7 @@ bool CSearchDlg::SaveSettings()
 		bool bValid = true;
 		try
 		{
-			wregex expression = wregex(m_patternregex);
+			boost::wregex expression = boost::wregex(m_patternregex);
 		}
 		catch (const exception&)
 		{
@@ -1165,9 +1164,9 @@ DWORD CSearchDlg::SearchThread()
 					{
 						try
 						{
-							wregex expression = wregex(m_patternregex, regex::normal|regbase::icase);
-							wcmatch whatc;
-							if (regex_match(pName, whatc, expression))
+							boost::wregex expression = boost::wregex(m_patternregex, boost::regex::normal|boost::regbase::icase);
+							boost::wcmatch whatc;
+							if (boost::regex_match(pName, whatc, expression))
 							{
 								bPattern = true;
 							}
@@ -1251,17 +1250,17 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bIncludeBinary, bool bUseReg
 				wstring::const_iterator start, end;
 				start = textfile.GetFileString().begin();
 				end = textfile.GetFileString().end();
-				match_results<wstring::const_iterator> what;
+				boost::match_results<wstring::const_iterator> what;
 				try
 				{
-					int ft = regex::normal;
+					int ft = boost::regex::normal;
 					if (!bCaseSensitive)
-						ft |= regbase::icase;
-					wregex expression = wregex(localSearchString, ft);
-					match_results<wstring::const_iterator> whatc;
+						ft |= boost::regbase::icase;
+					boost::wregex expression = boost::wregex(localSearchString, ft);
+					boost::match_results<wstring::const_iterator> whatc;
 					if ((m_replaceString.empty())&&(!m_bReplace))
 					{
-						match_flag_type flags = match_default | match_not_dot_newline;
+						boost::match_flag_type flags = boost::match_default | boost::match_not_dot_newline;
 						while (regex_search(start, end, whatc, expression, flags))   
 						{
 							if (whatc[0].matched)
@@ -1280,13 +1279,13 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bIncludeBinary, bool bUseReg
 							else
 								start = whatc[0].second;
 							// update flags:
-							flags |= match_prev_avail;
-							flags |= match_not_bob;
+							flags |= boost::match_prev_avail;
+							flags |= boost::match_not_bob;
 						}
 					}
 					else
 					{
-						match_flag_type flags = match_default | format_all | match_not_dot_newline;
+						boost::match_flag_type flags = boost::match_default | boost::format_all | boost::match_not_dot_newline;
 						wstring replaced = regex_replace(textfile.GetFileString(), expression, m_replaceString, flags);
 						if (replaced.compare(textfile.GetFileString()))
 						{
@@ -1347,17 +1346,17 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bIncludeBinary, bool bUseReg
 				searchfor += CUnicodeUtils::StdGetUTF8(searchString);
 				searchfor += "\\E";
 			}
-			spirit::file_iterator<> start(filepath.c_str());
-			spirit::file_iterator<> fbeg = start;
-			spirit::file_iterator<> end = start.make_end();
+			boost::spirit::file_iterator<> start(filepath.c_str());
+			boost::spirit::file_iterator<> fbeg = start;
+			boost::spirit::file_iterator<> end = start.make_end();
 
-			match_results<string::const_iterator> what;
-			match_flag_type flags = match_default | match_not_dot_newline;
+			boost::match_results<string::const_iterator> what;
+			boost::match_flag_type flags = boost::match_default | boost::match_not_dot_newline;
 			try
 			{
-				regex expression = regex(searchfor);
-				match_results<spirit::file_iterator<>> whatc;
-				while (regex_search(start, end, whatc, expression, flags))   
+				boost::regex expression = boost::regex(searchfor);
+				boost::match_results<boost::spirit::file_iterator<>> whatc;
+				while (boost::regex_search(start, end, whatc, expression, flags))   
 				{
 					nFound++;
 					sinfo.matchstarts.push_back(whatc[0].first-fbeg);
@@ -1365,8 +1364,8 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bIncludeBinary, bool bUseReg
 					// update search position:
 					start = whatc[0].second;
 					// update flags:
-					flags |= match_prev_avail;
-					flags |= match_not_bob;
+					flags |= boost::match_prev_avail;
+					flags |= boost::match_not_bob;
 				}
 			}
 			catch (const exception&)
