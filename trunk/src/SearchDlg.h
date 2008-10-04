@@ -124,4 +124,5 @@ private:
 	CRegStdWORD				m_regIncludeBinary;
 	CRegStdWORD				m_regCreateBackup;
 	CRegStdWORD				m_regCaseSensitive;
+	CRegStdString			m_regPattern;
 };

@@ -66,6 +66,7 @@ CSearchDlg::CSearchDlg(HWND hParent) : m_searchedItems(0)
 	, m_regIncludeBinary(_T("Software\\grepWin\\IncludeBinary"), 1)
 	, m_regCreateBackup(_T("Software\\grepWin\\CreateBackup"))
 	, m_regCaseSensitive(_T("Software\\grepWin\\CaseSensitive"))
+	, m_regPattern(_T("Software\\grepWin\\pattern"))
 {
 	m_startTime = GetTickCount();
 }
@@ -181,6 +182,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 				::SetDlgItemText(*this, IDOK, _T("&Search"));
 				::ShowWindow(GetDlgItem(*this, IDC_REPLACE), SW_SHOW);
 			}
+			SetDlgItemText(*this, IDC_PATTERN, wstring(m_regPattern).c_str());
 
 			SetFocus(GetDlgItem(hwndDlg, IDC_SEARCHTEXT));
 
@@ -980,6 +982,7 @@ bool CSearchDlg::SaveSettings()
 	m_regIncludeBinary = (DWORD)m_bIncludeBinary;
 	m_regCreateBackup = (DWORD)m_bCreateBackup;
 	m_regCaseSensitive = (DWORD)m_bCaseSensitive;
+	m_regPattern = m_patternregex;
 
 	return true;
 }
