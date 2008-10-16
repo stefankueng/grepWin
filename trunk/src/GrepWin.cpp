@@ -19,6 +19,7 @@
 #include "stdafx.h"
 #include "GrepWin.h"
 #include "SearchDlg.h"
+#include "AboutDlg.h"
 #include "CmdLineParser.h"
 
 
@@ -68,10 +69,18 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 	int ret = 0;
 	if (!bQuit)
 	{
-		CSearchDlg searchDlg(NULL);
-		if (parser.HasVal(_T("searchpath")))
-			searchDlg.SetSearchPath(parser.GetVal(_T("searchpath")));
-		ret = searchDlg.DoModal(hInstance, IDD_SEARCHDLG, NULL, IDR_SEARCHDLG);
+		if (parser.HasKey(_T("about"))||parser.HasKey(_T("?"))||parser.HasKey(_T("help")))
+		{
+			CAboutDlg aboutDlg(NULL);
+			ret= aboutDlg.DoModal(hInstance, IDD_ABOUT, NULL, NULL);
+		}
+		else
+		{
+			CSearchDlg searchDlg(NULL);
+			if (parser.HasVal(_T("searchpath")))
+				searchDlg.SetSearchPath(parser.GetVal(_T("searchpath")));
+			ret = searchDlg.DoModal(hInstance, IDD_SEARCHDLG, NULL, IDR_SEARCHDLG);
+		}
 	}
 
 	::CoUninitialize();

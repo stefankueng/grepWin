@@ -190,7 +190,10 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 
 			SetFocus(GetDlgItem(hwndDlg, IDC_SEARCHTEXT));
 
+			m_link.ConvertStaticToHyperlink(hwndDlg, IDC_ABOUTLINK, _T(""));
+
 			m_resizer.Init(hwndDlg);
+			m_resizer.AddControl(hwndDlg, IDC_ABOUTLINK, RESIZER_TOPRIGHT);
 			m_resizer.AddControl(hwndDlg, IDC_GROUPSEARCHIN, RESIZER_TOPLEFTRIGHT);
 			m_resizer.AddControl(hwndDlg, IDC_SEARCHPATH, RESIZER_TOPLEFTRIGHT);
 			m_resizer.AddControl(hwndDlg, IDC_SEARCHPATHBROWSE, RESIZER_TOPRIGHT);
@@ -613,6 +616,12 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 				SetDlgItemText(*this, IDC_REPLACETEXT, m_replaceString.c_str());
 				CheckRadioButton(*this, IDC_REGEXRADIO, IDC_TEXTRADIO, m_bUseRegex ? IDC_REGEXRADIO : IDC_TEXTRADIO);
 			}
+		}
+		break;
+	case IDC_ABOUTLINK:
+		{
+			CAboutDlg dlgAbout(*this);
+			dlgAbout.DoModal(hResource, IDD_ABOUT, *this);
 		}
 		break;
 	}

@@ -23,6 +23,7 @@
 #include "FileDropTarget.h"
 #include "AutoComplete.h"
 #include "Registry.h"
+#include "hyperlink.h"
 #include <string>
 #include <vector>
 
@@ -106,6 +107,7 @@ private:
 	bool					m_bAscending;
 
 	CDlgResizer				m_resizer;
+	CHyperLink				m_link;
 
 	CFileDropTarget *		m_pDropTarget;
 

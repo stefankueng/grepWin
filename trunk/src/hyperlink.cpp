@@ -328,8 +328,11 @@ LRESULT CALLBACK CHyperLink::_HyperlinkProc(HWND hwnd, UINT message,
 						// Fall through
 	case WM_LBUTTONUP:
 		{
-			pHyperLink->Navigate();
-			return 0;
+			if (pHyperLink->m_strURL && _tcslen(pHyperLink->m_strURL))
+			{
+				pHyperLink->Navigate();
+				return 0;
+			}
 		}
 	case WM_SETFOCUS:	// Fall through
 	case WM_KILLFOCUS:
