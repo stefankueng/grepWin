@@ -264,7 +264,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 		{
 			if (m_dwThreadRunning)
 			{
-				SetCursor(LoadCursor(NULL, IDC_WAIT));
+				SetCursor(LoadCursor(NULL, IDC_APPSTARTING));
 				return TRUE;
 			}
 			return FALSE;
@@ -379,7 +379,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 
 				InterlockedExchange(&m_dwThreadRunning, TRUE);
 				InterlockedExchange(&m_Cancelled, FALSE);
-				SetDlgItemText(*this, IDOK, _T("&Cancel"));
+				SetDlgItemText(*this, IDOK, _T("S&top"));
 				m_bReplace = (id == IDC_REPLACE);
 
 				if (m_bReplace)
