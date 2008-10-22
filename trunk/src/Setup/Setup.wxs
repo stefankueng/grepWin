@@ -33,7 +33,7 @@
 						<Registry Root="HKMU" Key="Software\Classes\Directory\shell\grepWin..." Action="createKeyAndRemoveKeyOnUninstall" />
 						<Registry Root="HKMU" Key="Software\Classes\Directory\shell\grepWin...\command" Value='[INSTALLDIR]grepWin.exe /searchpath:"%1"' Type="string" />
 						<Registry Root="HKMU" Key="Software\Classes\Directory\Background\shell\grepWin..." Action="createKeyAndRemoveKeyOnUninstall" />
-						<Registry Root="HKMU" Key="Software\Classes\Directory\Background\shell\grepWin...\command" Value='[INSTALLDIR]grepWin.exe /searchpath:"%1"' Type="string" />
+						<Registry Root="HKMU" Key="Software\Classes\Directory\Background\shell\grepWin...\command" Value='[INSTALLDIR]grepWin.exe /searchpath:"%V"' Type="string" />
 						<Registry Root="HKMU" Key="Software\Classes\Folder\shell\grepWin..." Action="createKeyAndRemoveKeyOnUninstall" />
 						<Registry Root="HKMU" Key="Software\Classes\Folder\shell\grepWin...\command" Value='[INSTALLDIR]grepWin.exe /searchpath:"%1"' Type="string" />
 						<Registry Root="HKMU" Key="Software\Classes\Drive\shell\grepWin..." Action="createKeyAndRemoveKeyOnUninstall" />
