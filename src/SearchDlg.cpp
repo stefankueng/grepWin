@@ -379,11 +379,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 				m_AutoCompleteSearchPatterns.AddEntry(m_searchString.c_str());
 				m_AutoCompleteReplacePatterns.AddEntry(m_replaceString.c_str());
 
-
-				InterlockedExchange(&m_dwThreadRunning, TRUE);
-				InterlockedExchange(&m_Cancelled, FALSE);
-				SetDlgItemText(*this, IDOK, _T("S&top"));
-				m_bReplace = (id == IDC_REPLACE);
+				m_bReplace = ((id == IDC_REPLACE) && (m_replaceString.empty())) || (!m_replaceString.empty());
 
 				if (m_bReplace)
 				{
@@ -397,6 +393,9 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 					}
 				}
 
+				InterlockedExchange(&m_dwThreadRunning, TRUE);
+				InterlockedExchange(&m_Cancelled, FALSE);
+				SetDlgItemText(*this, IDOK, _T("S&top"));
 
 				// now start the thread which does the searching
 				DWORD dwThreadId = 0;
