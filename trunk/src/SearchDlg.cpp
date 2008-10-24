@@ -570,10 +570,11 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 	case IDC_TEXTRADIO:
 		{
 			bool bText = (IsDlgButtonChecked(*this, IDC_TEXTRADIO) == BST_CHECKED);
+			int len = GetWindowTextLength(GetDlgItem(*this, IDC_REPLACETEXT));
 			::EnableWindow(GetDlgItem(*this, IDC_REPLACETEXT), !bText);
-			::ShowWindow(GetDlgItem(*this, IDC_REPLACE), bText ? SW_HIDE : SW_SHOW);
+			::ShowWindow(GetDlgItem(*this, IDC_REPLACE), bText || (len > 0) ? SW_HIDE : SW_SHOW);
 			::EnableWindow(GetDlgItem(*this, IDC_CREATEBACKUP), !bText);
-			if ((!bText)&&(!m_dwThreadRunning)&&(GetWindowTextLength(GetDlgItem(*this, IDC_REPLACETEXT))>0))
+			if ((!bText)&&(!m_dwThreadRunning)&&(len>0))
 			{
 				::SetDlgItemText(*this, IDOK, _T("&Replace"));
 			}
