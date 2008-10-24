@@ -23,6 +23,10 @@
 		<Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR" />
 		<Condition Message='This application only runs on Windows 2000 and later.'>VersionNT &gt;= 500</Condition>
 
+		<Property Id="INSTALLDIR">
+			<RegistrySearch Id="PreviousInstallLocationRegistrySearch" Root="HKCU" Key="Software\grepWin" Name="installDir" Type="raw" />
+		</Property>
+
 		<Directory Id='TARGETDIR' Name='SourceDir'>
 			<Directory Id='ProgramFilesFolder' Name='PFiles'>
 				<Directory Id='INSTALLDIR' Name='grepWin' LongName='grepWin'>
@@ -42,6 +46,7 @@
 						<Registry Root="HKMU" Key="Software\Classes\*\shell\grepWin...\command" Value='[INSTALLDIR]grepWin.exe /searchpath:"%1"' Type="string" />
 						<Shortcut Id="startMenugrepWin" Directory="ProgramMenuDir" Name="grepWin" LongName="grepWin" Target="[INSTALLDIR]grepWin.exe" Description="regular expression search and replace" />
 						<!-- <Shortcut Id="startMenugrepWinAbout" Directory="ProgramMenuDir" Name="about" LongName="About grepWin" Target="[INSTALLDIR]grepWin.exe" Arguments="/about" Description="regular expression search and replace" /> -->
+						<Registry Root="HKMU" Key="Software\grepWin" Name="installDir" Value='[INSTALLDIR]' Type="string" />
 					</Component>
 
 				</Directory>
