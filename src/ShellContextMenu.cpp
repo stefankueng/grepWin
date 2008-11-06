@@ -18,8 +18,9 @@
 //
 #include "stdafx.h"
 #include "ShellContextMenu.h"
+#include "shellapi.h"
 
-#define MIN_ID 1
+#define MIN_ID 3
 #define MAX_ID 10000
 
 IContextMenu2 * g_IContext2 = NULL;
@@ -138,6 +139,11 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
 		m_Menu = CreatePopupMenu();
 	}
 
+	if (m_strVector.size() == 1)
+	{
+		::InsertMenu(m_Menu, 1, MF_BYPOSITION | MF_STRING, 1, _T("Open Containing Folder"));
+		::InsertMenu(m_Menu, 2, MF_SEPARATOR|MF_BYPOSITION, 0, NULL);
+	}
 	// lets fill the our popup menu  
 	pContextMenu->QueryContextMenu(m_Menu, GetMenuItemCount(m_Menu), MIN_ID, MAX_ID, CMF_NORMAL | CMF_EXPLORE);
  
@@ -163,6 +169,30 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
 		InvokeCommand(pContextMenu, idCommand - MIN_ID);	// execute related command
 		idCommand = 0;
 	}
+	else
+	{
+		switch (idCommand)
+		{
+		case 1:
+			{
+				// This is the command line for explorer which tells it to select the given file  
+				wstring sFolder = _T( "/Select," ) + m_strVector[0];
+
+				// Prepare shell execution params  
+				SHELLEXECUTEINFO shExecInfo   = { 0 };
+				shExecInfo.cbSize             = sizeof(shExecInfo);
+				shExecInfo.lpFile             = _T("explorer.exe");
+				shExecInfo.lpParameters       = sFolder.c_str();
+				shExecInfo.nShow              = SW_SHOWNORMAL;
+				shExecInfo.lpVerb             = _T("Open"); // Context menu item      
+				shExecInfo.fMask              = SEE_MASK_INVOKEIDLIST | SEE_MASK_FLAG_DDEWAIT | SEE_MASK_FLAG_NO_UI;      
+
+				// Select file in explorer  
+				ShellExecuteEx(&shExecInfo);
+			}
+			break;
+		}
+	}
 	
 	pContextMenu->Release();
 	g_IContext2 = NULL;
@@ -181,17 +211,6 @@ void CShellContextMenu::InvokeCommand(LPCONTEXTMENU pContextMenu, UINT idCommand
 	
 	pContextMenu->InvokeCommand (&cmi);
 }
-
-
-void CShellContextMenu::SetObjects(LPCTSTR strObject)
-{
-	// only one object is passed
-	vector<wstring> strVector;
-	strVector.push_back(strObject);
-	
-	SetObjects(strVector);
-}
-
 
 void CShellContextMenu::SetObjects(const vector<wstring>& strVector)
 {
@@ -248,78 +267,9 @@ void CShellContextMenu::SetObjects(const vector<wstring>& strVector)
 	lpMalloc->Release ();
 	psfDesktop->Release ();
 
+	m_strVector = strVector;
 	bDelete = TRUE;	// indicates that m_psfFolder should be deleted by CShellContextMenu
 }
-
-// only one full qualified PIDL has been passed
-void CShellContextMenu::SetObjects(LPITEMIDLIST pidl)
-{
-	// free all allocated data
-	if (m_psfFolder && bDelete)
-		m_psfFolder->Release();
-	m_psfFolder = NULL;
-	FreePIDLArray(m_pidlArray);
-	m_pidlArray = NULL;
-
-	// full qualified PIDL is passed so we need
-	// its parent IShellFolder interface and its relative PIDL to that
-	LPITEMIDLIST pidlItem = NULL;
-	SHBindToParent((LPCITEMIDLIST)pidl, IID_IShellFolder, (void **)&m_psfFolder, (LPCITEMIDLIST *)&pidlItem);	
-
-	m_pidlArray = (LPITEMIDLIST *)malloc(sizeof(LPITEMIDLIST));	// allocate only for one element
-	m_pidlArray[0] = CopyPIDL(pidlItem);
-
-
-	// now free pidlItem via IMalloc interface (but not m_psfFolder, that we need later
-	LPMALLOC lpMalloc = NULL;
-	SHGetMalloc(&lpMalloc);
-	lpMalloc->Free(pidlItem);
-	lpMalloc->Release();
-
-	nItems = 1;
-	bDelete = TRUE;	// indicates that m_psfFolder should be deleted by CShellContextMenu
-}
-
-
-// IShellFolder interface with a relative pidl has been passed
-void CShellContextMenu::SetObjects(IShellFolder *psfFolder, LPITEMIDLIST pidlItem)
-{
-	// free all allocated data
-	if (m_psfFolder && bDelete)
-		m_psfFolder->Release();
-	m_psfFolder = NULL;
-	FreePIDLArray(m_pidlArray);
-	m_pidlArray = NULL;
-
-	m_psfFolder = psfFolder;
-
-	m_pidlArray = (LPITEMIDLIST *)malloc(sizeof (LPITEMIDLIST));
-	m_pidlArray[0] = CopyPIDL(pidlItem);
-	
-	nItems = 1;
-	bDelete = FALSE;	// indicates whether m_psfFolder should be deleted by CShellContextMenu
-}
-
-void CShellContextMenu::SetObjects(IShellFolder * psfFolder, LPITEMIDLIST *pidlArray, int nItemCount)
-{
-	// free all allocated data
-	if (m_psfFolder && bDelete)
-		m_psfFolder->Release();
-	m_psfFolder = NULL;
-	FreePIDLArray(m_pidlArray);
-	m_pidlArray = NULL;
-
-	m_psfFolder = psfFolder;
-
-	m_pidlArray = (LPITEMIDLIST *)malloc(nItemCount * sizeof (LPITEMIDLIST));
-
-	for (int i = 0; i < nItemCount; i++)
-		m_pidlArray[i] = CopyPIDL(pidlArray[i]);
-
-	nItems = nItemCount;
-	bDelete = FALSE;	// indicates whether m_psfFolder should be deleted by CShellContextMenu
-}
-
 
 void CShellContextMenu::FreePIDLArray(LPITEMIDLIST *pidlArray)
 {
