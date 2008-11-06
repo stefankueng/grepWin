@@ -30,10 +30,6 @@ class CShellContextMenu
 {
 public:
 	HMENU GetMenu();
-	void SetObjects(IShellFolder * psfFolder, LPITEMIDLIST pidlItem);
-	void SetObjects(IShellFolder * psfFolder, LPITEMIDLIST * pidlArray, int nItemCount);
-	void SetObjects(LPITEMIDLIST pidl);
-	void SetObjects(LPCTSTR strObject);
 	void SetObjects(const vector<wstring>& strVector);
 	UINT ShowContextMenu(HWND hWnd, POINT pt);
 	CShellContextMenu();
@@ -45,7 +41,8 @@ private:
 	HMENU m_Menu;
 	IShellFolder * m_psfFolder;
 	LPITEMIDLIST * m_pidlArray;	
-	
+	vector<wstring> m_strVector;
+
 	void InvokeCommand(LPCONTEXTMENU pContextMenu, UINT idCommand);
 	BOOL GetContextMenu(void ** ppContextMenu, int & iMenuType);
 	static LRESULT CALLBACK HookWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
