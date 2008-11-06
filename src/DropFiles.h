@@ -24,6 +24,8 @@
 
 using namespace std;
 
+#define DRAG_NUMFORMATS	4
+
 /**
  * Use this class to create the DROPFILES structure which is needed to
  * support drag and drop of file names to other applications.
@@ -159,7 +161,7 @@ private:
 	void						Init();
 private:
 	vector<FORMATETC>			m_vecFormatEtc;
-	FORMATETC					m_formats[6];
+	FORMATETC					m_formats[DRAG_NUMFORMATS];
 	ULONG						m_cRefCount;
 	size_t						m_iCur;
 };
