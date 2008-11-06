@@ -208,57 +208,6 @@ STDMETHODIMP FileDataObject::GetData(FORMATETC* pformatetcIn, STGMEDIUM* pmedium
 		pmedium->tymed = TYMED_HGLOBAL;
 		return S_OK;
 	}
-	else if ((pformatetcIn->tymed & TYMED_HGLOBAL) && (pformatetcIn->dwAspect == DVASPECT_CONTENT) && (pformatetcIn->cfFormat == CF_TEXT))
-	{
-		// caller wants text
-		// create the string from the pathlist
-		wstring text;
-		if (m_allPaths.size())
-		{
-			// create a single string where the URLs are separated by newlines
-			for (size_t i=0; i<m_allPaths.size(); ++i)
-			{
-				text += m_allPaths[i].c_str();
-				text += _T("\r\n");
-			}
-		}
-		string texta = CUnicodeUtils::StdGetUTF8(text);
-		pmedium->tymed = TYMED_HGLOBAL;
-		pmedium->hGlobal = GlobalAlloc(GHND, (texta.size()+1)*sizeof(char));
-		if (pmedium->hGlobal)
-		{
-			char* pMem = (char*)GlobalLock(pmedium->hGlobal);
-			strcpy_s(pMem, texta.size()+1, texta.c_str());
-			GlobalUnlock(pmedium->hGlobal);
-		}
-		pmedium->pUnkForRelease = NULL;
-		return S_OK;
-	}
-	else if ((pformatetcIn->tymed & TYMED_HGLOBAL) && (pformatetcIn->dwAspect == DVASPECT_CONTENT) && (pformatetcIn->cfFormat == CF_UNICODETEXT))
-	{
-		// caller wants Unicode text
-		// create the string from the pathlist
-		wstring text;
-		if (m_allPaths.size())
-		{
-			// create a single string where the URLs are separated by newlines
-			for (size_t i=0; i<m_allPaths.size(); ++i)
-			{
-				text += m_allPaths[i].c_str();
-				text += _T("\r\n");
-			}
-		}
-		pmedium->tymed = TYMED_HGLOBAL;
-		pmedium->hGlobal = GlobalAlloc(GHND, (text.size()+1)*sizeof(TCHAR));
-		if (pmedium->hGlobal)
-		{
-			TCHAR* pMem = (TCHAR*)GlobalLock(pmedium->hGlobal);
-			_tcscpy_s(pMem, text.size()+1, text.c_str());
-			GlobalUnlock(pmedium->hGlobal);
-		}
-		pmedium->pUnkForRelease = NULL;
-		return S_OK;
-	}
 
 	for (size_t i=0; i<m_vecFormatEtc.size(); ++i)
 	{
@@ -295,7 +244,7 @@ STDMETHODIMP FileDataObject::QueryGetData(FORMATETC* pformatetc)
 	}
 	if ((pformatetc->tymed & TYMED_HGLOBAL) &&
 		(pformatetc->dwAspect == DVASPECT_CONTENT) &&
-		((pformatetc->cfFormat == CF_HDROP)||(pformatetc->cfFormat == CF_TEXT)||(pformatetc->cfFormat == CF_UNICODETEXT)||(pformatetc->cfFormat == CF_FILEDESCRIPTOR)||(pformatetc->cfFormat == CF_PREFERREDDROPEFFECT)))
+		((pformatetc->cfFormat == CF_HDROP)||(pformatetc->cfFormat == CF_FILEDESCRIPTOR)||(pformatetc->cfFormat == CF_PREFERREDDROPEFFECT)))
 	{
 		return S_OK;
 	}
@@ -468,41 +417,29 @@ HRESULT STDMETHODCALLTYPE FileDataObject::EndOperation(HRESULT /*hResult*/, IBin
 
 void CSVNEnumFormatEtc::Init()
 {
-	m_formats[0].cfFormat = CF_UNICODETEXT;
+	m_formats[0].cfFormat = CF_FILECONTENTS;
 	m_formats[0].dwAspect = DVASPECT_CONTENT;
 	m_formats[0].lindex = -1;
 	m_formats[0].ptd = NULL;
-	m_formats[0].tymed = TYMED_HGLOBAL;
+	m_formats[0].tymed = TYMED_ISTREAM;
 
-	m_formats[1].cfFormat = CF_TEXT;
+	m_formats[1].cfFormat = CF_FILEDESCRIPTOR;
 	m_formats[1].dwAspect = DVASPECT_CONTENT;
 	m_formats[1].lindex = -1;
 	m_formats[1].ptd = NULL;
 	m_formats[1].tymed = TYMED_HGLOBAL;
 
-	m_formats[2].cfFormat = CF_FILECONTENTS;
+	m_formats[2].cfFormat = CF_PREFERREDDROPEFFECT;
 	m_formats[2].dwAspect = DVASPECT_CONTENT;
 	m_formats[2].lindex = -1;
 	m_formats[2].ptd = NULL;
-	m_formats[2].tymed = TYMED_ISTREAM;
+	m_formats[2].tymed = TYMED_HGLOBAL;
 
-	m_formats[3].cfFormat = CF_FILEDESCRIPTOR;
+	m_formats[3].cfFormat = CF_HDROP;
 	m_formats[3].dwAspect = DVASPECT_CONTENT;
 	m_formats[3].lindex = -1;
 	m_formats[3].ptd = NULL;
 	m_formats[3].tymed = TYMED_HGLOBAL;
-
-	m_formats[4].cfFormat = CF_PREFERREDDROPEFFECT;
-	m_formats[4].dwAspect = DVASPECT_CONTENT;
-	m_formats[4].lindex = -1;
-	m_formats[4].ptd = NULL;
-	m_formats[4].tymed = TYMED_HGLOBAL;
-
-	m_formats[5].cfFormat = CF_HDROP;
-	m_formats[5].dwAspect = DVASPECT_CONTENT;
-	m_formats[5].lindex = -1;
-	m_formats[5].ptd = NULL;
-	m_formats[5].tymed = TYMED_HGLOBAL;
 
 }
 
@@ -559,18 +496,18 @@ STDMETHODIMP CSVNEnumFormatEtc::Next(ULONG celt, LPFORMATETC lpFormatEtc, ULONG*
 
 	ULONG cReturn = celt;
 
-	if (celt <= 0 || lpFormatEtc == NULL || m_iCur >= 6)
+	if (celt <= 0 || lpFormatEtc == NULL || m_iCur >= DRAG_NUMFORMATS)
 		return S_FALSE;
 
 	if (pceltFetched == NULL && celt != 1) // pceltFetched can be NULL only for 1 item request
 		return S_FALSE;
 
-	while (m_iCur < (6 + m_vecFormatEtc.size()) && cReturn > 0)
+	while (m_iCur < (DRAG_NUMFORMATS + m_vecFormatEtc.size()) && cReturn > 0)
 	{
-		if (m_iCur < 6)
+		if (m_iCur < DRAG_NUMFORMATS)
 			*lpFormatEtc++ = m_formats[m_iCur++];
 		else
-			*lpFormatEtc++ = m_vecFormatEtc[m_iCur++ - 6];
+			*lpFormatEtc++ = m_vecFormatEtc[m_iCur++ - DRAG_NUMFORMATS];
 		--cReturn;
 	}
 
@@ -582,7 +519,7 @@ STDMETHODIMP CSVNEnumFormatEtc::Next(ULONG celt, LPFORMATETC lpFormatEtc, ULONG*
 
 STDMETHODIMP CSVNEnumFormatEtc::Skip(ULONG celt)
 {
-	if ((m_iCur + int(celt)) >= (6 + m_vecFormatEtc.size()))
+	if ((m_iCur + int(celt)) >= (DRAG_NUMFORMATS + m_vecFormatEtc.size()))
 		return S_FALSE;
 	m_iCur += celt;
 	return S_OK;
