@@ -128,7 +128,7 @@ void CDlgResizer::DoResize(int width, int height)
 		}
 		hdwp = DeferWindowPos(hdwp, m_controls[i].hWnd, NULL, newpos.left, newpos.top,
 			newpos.right-newpos.left, newpos.bottom-newpos.top,
-			SWP_NOZORDER|SWP_SHOWWINDOW);
+			SWP_NOZORDER);
 	}
 	EndDeferWindowPos(hdwp);
 }
