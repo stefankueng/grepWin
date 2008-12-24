@@ -4,7 +4,7 @@
 	UpgradeCode="C8EC878C-5B8A-4208-9670-64313B180089"
 	Name='grepWin'
 	Id='????????-????-????-????-????????????'
-	Language='1031'
+	Language='1033'
 	Codepage='1252'
 	Version='1.3.0'
 	Manufacturer='Stefans Tools'>
@@ -12,7 +12,7 @@
 		<Package Id='????????-????-????-????-????????????' Keywords='Installer'
 		  Description="Stefans grepWin"
 		  Comments='http://tools.tortoisesvn.net' Manufacturer='Stefans Tools'
-		  InstallerVersion='200' Languages='1031' Compressed='yes' SummaryCodepage='1252' />
+		  InstallerVersion='200' Languages='1033' Compressed='yes' SummaryCodepage='1252' />
 
 		<Upgrade Id="C8EC878C-5B8A-4208-9670-64313B180089" >
 			<!-- flag is set if the install will trigger an upgrade of an existing install -->
