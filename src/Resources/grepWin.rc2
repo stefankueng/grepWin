@@ -35,7 +35,7 @@ BEGIN
             VALUE "FileDescription", "grepWin"
             VALUE "FileVersion", STRFILEVER
             VALUE "InternalName", "grepWin.exe"
-            VALUE "LegalCopyright", "Copyright (C) 2007"
+            VALUE "LegalCopyright", "Copyright (C) 2007-2009"
             VALUE "OriginalFilename", "grepWin.exe"
             VALUE "ProductName", "grepWin"
             VALUE "ProductVersion", STRPRODUCTVER
