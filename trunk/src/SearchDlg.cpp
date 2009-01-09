@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008 - Stefan Kueng
+// Copyright (C) 2007-2009 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -230,6 +230,35 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			m_resizer.AddControl(hwndDlg, IDC_GROUPSEARCHRESULTS, RESIZER_TOPLEFTBOTTOMRIGHT);
 			m_resizer.AddControl(hwndDlg, IDC_RESULTLIST, RESIZER_TOPLEFTBOTTOMRIGHT);
 			m_resizer.AddControl(hwndDlg, IDC_SEARCHINFOLABEL, RESIZER_BOTTOMLEFTRIGHT);
+
+
+
+			CRegStdWORD regXY(_T("Software\\grepWin\\XY"));
+			if (DWORD(regXY))
+			{
+				CRegStdWORD regWHWindow(_T("Software\\grepWin\\WHWindow"));
+				if (DWORD(regWHWindow))
+				{
+					// x,y position and width/height are valid
+					//
+					// check whether the rectangle is at least partly
+					// visible in at least one monitor
+					RECT rc = {0};
+					rc.left = HIWORD(DWORD(regXY));
+					rc.top = LOWORD(DWORD(regXY));
+					rc.right = HIWORD(DWORD(regWHWindow)) + rc.left;
+					rc.bottom = LOWORD(DWORD(regWHWindow)) + rc.top;
+					if (MonitorFromRect(&rc, MONITOR_DEFAULTTONULL))
+					{
+						SetWindowPos(*this, HWND_TOP, rc.left, rc.top, HIWORD(DWORD(regWHWindow)), LOWORD(DWORD(regWHWindow)), SWP_SHOWWINDOW);
+					}
+				}
+			}
+
+			CRegStdWORD regMaximized(_T("Software\\grepWin\\Maximized"));
+			if( DWORD(regMaximized) )
+				ShowWindow(*this, SW_MAXIMIZE);				
+
 		}
 		return FALSE;
 	case WM_COMMAND:
@@ -628,6 +657,17 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 	return 1;
 }
 
+void CSearchDlg::SaveWndPosition()
+{
+	RECT rc;
+	::GetWindowRect(*this, &rc);
+
+	CRegStdWORD regXY(_T("Software\\grepWin\\XY"));
+	regXY = MAKELONG(rc.top, rc.left);
+	CRegStdWORD regWHWindow(_T("Software\\grepWin\\WHWindow"));
+	regWHWindow = MAKELONG(rc.bottom-rc.top, rc.right-rc.left);
+}
+
 void CSearchDlg::UpdateInfoLabel()
 {
 	TCHAR buf[1024] = {0};
@@ -999,6 +1039,8 @@ bool CSearchDlg::SaveSettings()
 	m_regCaseSensitive = (DWORD)m_bCaseSensitive;
 	m_regDotMatchesNewline = (DWORD)m_bDotMatchesNewline;
 	m_regPattern = m_patternregex;
+
+	SaveWndPosition();
 
 	return true;
 }
