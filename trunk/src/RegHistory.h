@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008 - Stefan Kueng
+// Copyright (C) 2007-2009 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -42,6 +42,8 @@ public:
 	bool AddEntry(LPCTSTR szText);
 	/// Removes the entry at index \c pos.
 	void RemoveEntry(int pos);
+	/// Removes the entry with text \c str
+	void RemoveEntry(LPCTSTR str);
 	/// Sets the maximum number of items in the history. Default is 25.
 	void SetMaxHistoryItems(int nMax) {m_nMaxHistoryItems = nMax;}
 	/// Returns the number of items in the history.

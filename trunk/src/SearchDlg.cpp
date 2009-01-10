@@ -787,6 +787,13 @@ bool CSearchDlg::PreTranslateMessage(MSG* pMsg)
 				}
 			}
 			break;
+		case VK_DELETE:
+			{
+				m_AutoCompleteFilePatterns.RemoveSelected();
+				m_AutoCompleteSearchPatterns.RemoveSelected();
+				m_AutoCompleteReplacePatterns.RemoveSelected();
+			}
+			break;
 		}
 	}
 	return false;
