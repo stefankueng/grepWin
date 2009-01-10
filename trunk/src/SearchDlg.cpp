@@ -174,18 +174,10 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 
 			bool bText = (IsDlgButtonChecked(*this, IDC_TEXTRADIO) == BST_CHECKED);
 			::EnableWindow(GetDlgItem(*this, IDC_REPLACETEXT), !bText);
-			::ShowWindow(GetDlgItem(*this, IDC_REPLACE), bText ? SW_HIDE : SW_SHOW);
+			::EnableWindow(GetDlgItem(*this, IDC_REPLACE), !bText);
 			::EnableWindow(GetDlgItem(*this, IDC_CREATEBACKUP), !bText);
-			if ((!bText)&&(!m_dwThreadRunning)&&(GetWindowTextLength(GetDlgItem(*this, IDC_REPLACETEXT))>0))
-			{
-				::SetDlgItemText(*this, IDOK, _T("&Replace"));
-				::ShowWindow(GetDlgItem(*this, IDC_REPLACE), SW_HIDE);
-			}
-			else
-			{
-				::SetDlgItemText(*this, IDOK, _T("&Search"));
-				::ShowWindow(GetDlgItem(*this, IDC_REPLACE), SW_SHOW);
-			}
+			::SetDlgItemText(*this, IDOK, _T("&Search"));
+
 			SetDlgItemText(*this, IDC_PATTERN, wstring(m_regPattern).c_str());
 
 			SetFocus(GetDlgItem(hwndDlg, IDC_SEARCHTEXT));
@@ -330,20 +322,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			ListView_SetColumnWidth(hListControl, 2, LVSCW_AUTOSIZE_USEHEADER);
 			ListView_SetColumnWidth(hListControl, 3, LVSCW_AUTOSIZE_USEHEADER);
 			UpdateInfoLabel();
-
-			TCHAR buf[4] = {0};
-			GetDlgItemText(*this, IDC_REPLACETEXT, buf, 4);
-			bool bValid = (_tcslen(buf)>0);
-			if (bValid)
-			{
-				::SetDlgItemText(*this, IDOK, _T("&Replace"));
-				::ShowWindow(GetDlgItem(*this, IDC_REPLACE), SW_HIDE);
-			}
-			else
-			{
-				::SetDlgItemText(*this, IDOK, _T("&Search"));
-				::ShowWindow(GetDlgItem(*this, IDC_REPLACE), SW_SHOW);
-			}
+			::SetDlgItemText(*this, IDOK, _T("&Search"));
 		}
 		break;
 	case WM_HELP:
@@ -408,7 +387,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 				m_AutoCompleteSearchPatterns.AddEntry(m_searchString.c_str());
 				m_AutoCompleteReplacePatterns.AddEntry(m_replaceString.c_str());
 
-				m_bReplace = ((id == IDC_REPLACE) && (m_replaceString.empty())) || (!m_replaceString.empty());
+				m_bReplace = id == IDC_REPLACE;
 
 				if (m_bReplace)
 				{
@@ -552,26 +531,6 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 			}
 		}
 		break;
-	case IDC_REPLACETEXT:
-		{
-			if (msg == EN_CHANGE)
-			{
-				TCHAR buf[MAX_PATH*4] = {0};
-				GetDlgItemText(*this, IDC_REPLACETEXT, buf, MAX_PATH*4);
-				bool bValid = (_tcslen(buf)>0);
-				if ((bValid)&&(!m_dwThreadRunning))
-				{
-					::SetDlgItemText(*this, IDOK, _T("&Replace"));
-					::ShowWindow(GetDlgItem(*this, IDC_REPLACE), SW_HIDE);
-				}
-				else
-				{
-					::SetDlgItemText(*this, IDOK, _T("&Search"));
-					::ShowWindow(GetDlgItem(*this, IDC_REPLACE), SW_SHOW);
-				}
-			}
-		}
-		break;
 	case IDC_SIZEEDIT:
 		{
 			if (msg == EN_CHANGE)
@@ -599,18 +558,9 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 	case IDC_TEXTRADIO:
 		{
 			bool bText = (IsDlgButtonChecked(*this, IDC_TEXTRADIO) == BST_CHECKED);
-			int len = GetWindowTextLength(GetDlgItem(*this, IDC_REPLACETEXT));
 			::EnableWindow(GetDlgItem(*this, IDC_REPLACETEXT), !bText);
-			::ShowWindow(GetDlgItem(*this, IDC_REPLACE), bText || (len > 0) ? SW_HIDE : SW_SHOW);
+			::EnableWindow(GetDlgItem(*this, IDC_REPLACE), !bText);
 			::EnableWindow(GetDlgItem(*this, IDC_CREATEBACKUP), !bText);
-			if ((!bText)&&(!m_dwThreadRunning)&&(len>0))
-			{
-				::SetDlgItemText(*this, IDOK, _T("&Replace"));
-			}
-			else
-			{
-				::SetDlgItemText(*this, IDOK, _T("&Search"));
-			}
 		}
 		break;
 	case IDC_ADDTOBOOKMARKS:
