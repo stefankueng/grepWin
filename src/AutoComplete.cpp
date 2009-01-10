@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008 - Stefan Kueng
+// Copyright (C) 2007-2009 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -22,6 +22,7 @@
 CAutoComplete::CAutoComplete(void)
 	: m_pcacs(NULL)
 	, m_pac(NULL)
+	, m_pdrop(NULL)
 {
 }
 
@@ -30,13 +31,17 @@ CAutoComplete::~CAutoComplete(void)
 	if (m_pac)
 		m_pac->Release();
 	if (m_pcacs)
-	{
 		m_pcacs->Release();
-	}
+	if (m_pdrop)
+		m_pdrop->Release();
 }
 
 bool CAutoComplete::Init(HWND hEdit)
 {
+	if (m_pac)
+		m_pac->Release();
+	if (m_pdrop)
+		m_pdrop->Release();
 	if (CoCreateInstance(CLSID_AutoComplete, 
 		NULL, 
 		CLSCTX_INPROC_SERVER,
@@ -56,6 +61,10 @@ bool CAutoComplete::Init(HWND hEdit)
 			{
 				m_pac->Enable(TRUE);
 				m_pac->SetOptions(ACO_UPDOWNKEYDROPSLIST|ACO_AUTOSUGGEST);
+				if (m_pac->QueryInterface(IID_IAutoCompleteDropDown, (void **)&m_pdrop) != S_OK)
+				{
+					m_pdrop = NULL;
+				}
 				return true;
 			}
 		}
@@ -79,21 +88,76 @@ bool CAutoComplete::Enable(bool bEnable)
 	return false;
 }
 
+bool CAutoComplete::AddEntry(LPCTSTR szText)
+{
+	bool bRet = CRegHistory::AddEntry(szText);
+	if (m_pcacs)
+		m_pcacs->Init(m_arEntries);
+	if (m_pdrop)
+		m_pdrop->ResetEnumerator();
+	return bRet;
+}
+
+bool CAutoComplete::RemoveSelected()
+{
+	if (m_pdrop == NULL)
+		return false;
+	if (m_pcacs == NULL)
+		return false;
+
+	DWORD flags;
+	LPWSTR string = 0;
+	if (m_pdrop->GetDropDownStatus(&flags, &string) == S_OK)
+	{
+		if (flags & ACDD_VISIBLE)
+		{
+			RemoveEntry(string);
+			// need to save the history now, otherwise adding a new
+			// entry with AddEntry() will reload the history from the
+			// registry, and our removed item would get restored
+			Save();
+			if (string)
+				CoTaskMemFree(string);
+			m_pcacs->Init(m_arEntries);
+			m_pdrop->ResetEnumerator();
+		}
+		else
+		{
+			if (string)
+				CoTaskMemFree(string);
+			return false;
+		}
+	}
+	return true;
+}
+
 CAutoCompleteEnum::CAutoCompleteEnum(const vector<wstring>& vec) 
 	: m_cRefCount(0)
 	, m_iCur(0)
 {
-	for (size_t i = 0; i < vec.size(); ++i)
-		m_vecStrings.push_back(vec[i]);
+	Init(vec);
 }
 
 CAutoCompleteEnum::CAutoCompleteEnum(const vector<wstring*>& vec) 
 	: m_cRefCount(0)
 	, m_iCur(0)
 {
+	Init(vec);
+}
+
+void CAutoCompleteEnum::Init(const vector<wstring>& vec)
+{
+	m_vecStrings.clear();
+	for (size_t i = 0; i < vec.size(); ++i)
+		m_vecStrings.push_back(vec[i]);
+}
+void CAutoCompleteEnum::Init(const vector<wstring*>& vec)
+{
+	m_vecStrings.clear();
 	for (size_t i = 0; i < vec.size(); ++i)
 		m_vecStrings.push_back(*vec[i]);
 }
+
 
 STDMETHODIMP  CAutoCompleteEnum::QueryInterface(REFIID refiid, void** ppv)
 {

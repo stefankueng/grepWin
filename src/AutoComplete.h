@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008 - Stefan Kueng
+// Copyright (C) 2007-2009 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -21,6 +21,7 @@
 #include <vector>
 #include <ShlDisp.h>
 #include <ShlGuid.h>
+#include <ShObjIdl.h >
 
 #include "RegHistory.h"
 
@@ -45,6 +46,8 @@ public:
 	STDMETHOD(Reset)(void);
 	STDMETHOD(Clone)(IEnumString**);
 
+	void Init(const vector<wstring*>& vec);
+	void Init(const vector<wstring>& vec);
 private:
 	vector<wstring>				m_vecStrings;
 	ULONG						m_cRefCount;
@@ -61,8 +64,12 @@ public:
 
 	bool		Init(HWND hEdit);
 	bool		Enable(bool bEnable);
+	bool		AddEntry(LPCTSTR szText);
+
+	bool		RemoveSelected();
 private:
 	CAutoCompleteEnum *			m_pcacs;
 	IAutoComplete2 *			m_pac;
+	IAutoCompleteDropDown *		m_pdrop;
 
 };
