@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008 - Stefan Kueng
+// Copyright (C) 2007-2009 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -18,6 +18,7 @@
 //
 #include "StdAfx.h"
 #include "TextFile.h"
+#include "maxpath.h"
 
 CTextFile::CTextFile(void) : pFileBuf(NULL)
 	, filelen(0)
@@ -54,13 +55,18 @@ bool CTextFile::Load(LPCTSTR path, UnicodeType& type)
 	if (pFileBuf)
 		delete [] pFileBuf;
 	pFileBuf = NULL;
+	TCHAR pathbuf[MAX_PATH_NEW] = {0};
 	HANDLE hFile = INVALID_HANDLE_VALUE;
 	int retrycounter = 0;
+
+	_tcscpy_s(pathbuf, MAX_PATH_NEW, _T("\\\\?\\"));
+	_tcscat_s(pathbuf, MAX_PATH_NEW, path);
+
 	do 
 	{
 		if (retrycounter)
 			Sleep(20);
-		hFile = CreateFile(path, GENERIC_READ, FILE_SHARE_READ,
+		hFile = CreateFile(pathbuf, GENERIC_READ, FILE_SHARE_READ,
 			NULL, OPEN_EXISTING, FILE_FLAG_SEQUENTIAL_SCAN, NULL);
 		retrycounter++;
 	} while (hFile == INVALID_HANDLE_VALUE && retrycounter < 5);
