@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008 - Stefan Kueng
+// Copyright (C) 2007-2009 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -19,6 +19,7 @@
 #include "stdafx.h"
 #include "DropFiles.h"
 #include "UnicodeUtils.h"
+#include "maxpath.h"
 
 
 CLIPFORMAT CF_FILECONTENTS = (CLIPFORMAT)RegisterClipboardFormat(CFSTR_FILECONTENTS);
@@ -168,7 +169,7 @@ STDMETHODIMP FileDataObject::GetData(FORMATETC* pformatetcIn, STGMEDIUM* pmedium
 		for (vector<wstring>::const_iterator it = m_allPaths.begin(); it != m_allPaths.end(); ++it)
 		{
 			wstring name = it->substr(it->find_last_of('\\')+1);
-			_tcscpy_s(files->fgd[i].cFileName, MAX_PATH, name.c_str());
+			_tcscpy_s(files->fgd[i].cFileName, MAX_PATH_NEW, name.c_str());
 			files->fgd[i].dwFlags = FD_ATTRIBUTES | FD_PROGRESSUI | FD_FILESIZE | FD_LINKUI;
 			files->fgd[i].dwFileAttributes = FILE_ATTRIBUTE_NORMAL;
 			HANDLE hFile = CreateFile(it->c_str(), FILE_READ_EA, FILE_SHARE_DELETE|FILE_SHARE_READ|FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);

@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008 - Stefan Kueng
+// Copyright (C) 2007-2009 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -18,6 +18,7 @@
 //
 #include "stdafx.h"
 #include "InfoDlg.h"
+#include "maxpath.h"
 
 #include <mshtmhst.h>
 
@@ -50,13 +51,13 @@ BOOL CInfoDlg::ShowDialog(UINT idAboutHTMLID, HINSTANCE hInstance)
 		pfnShowHTMLDialog =     (SHOWHTMLDIALOGFN*)GetProcAddress(hinstMSHTML, "ShowHTMLDialog");
 		if(pfnShowHTMLDialog)
 		{
-			LPTSTR lpszModule = new TCHAR[_MAX_PATH];
+			LPTSTR lpszModule = new TCHAR[MAX_PATH_NEW];
 			//Get The Application Path
-			if (GetModuleFileName(hInstance, lpszModule, _MAX_PATH))
+			if (GetModuleFileName(hInstance, lpszModule, MAX_PATH_NEW))
 			{
 				//Add the IE Res protocol
-				TCHAR strResourceURL[MAX_PATH*4];
-				_stprintf_s(strResourceURL, MAX_PATH*4, _T("res://%s/%d"), lpszModule, idAboutHTMLID);
+				TCHAR strResourceURL[MAX_PATH_NEW];
+				_stprintf_s(strResourceURL, MAX_PATH_NEW, _T("res://%s/%d"), lpszModule, idAboutHTMLID);
 				int iLength = _tcslen(strResourceURL);
 			    LPWSTR lpWideCharStr = NULL;
 				lpWideCharStr =  new wchar_t[iLength+1];

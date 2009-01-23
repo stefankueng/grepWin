@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008 - Stefan Kueng
+// Copyright (C) 2007-2009 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -18,6 +18,7 @@
 //
 #include "StdAfx.h"
 #include "Bookmarks.h"
+#include "maxpath.h"
 #include <shlobj.h>
 
 CBookmarks::CBookmarks(void)
@@ -30,7 +31,7 @@ CBookmarks::~CBookmarks(void)
 
 void CBookmarks::Load()
 {
-	TCHAR path[MAX_PATH] = {0};
+	TCHAR path[MAX_PATH_NEW] = {0};
 	SHGetFolderPath(NULL, CSIDL_APPDATA, NULL, SHGFP_TYPE_CURRENT, path);
 	m_iniPath = path;
 	m_iniPath += _T("\\grepWin");
@@ -41,7 +42,7 @@ void CBookmarks::Load()
 
 void CBookmarks::Save()
 {
-	TCHAR path[MAX_PATH] = {0};
+	TCHAR path[MAX_PATH_NEW] = {0};
 	SHGetFolderPath(NULL, CSIDL_APPDATA, NULL, SHGFP_TYPE_CURRENT, path);
 	m_iniPath = path;
 	m_iniPath += _T("\\grepWin");

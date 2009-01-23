@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008 - Stefan Kueng
+// Copyright (C) 2007-2009 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -19,6 +19,7 @@
 #include "StdAfx.h"
 #include <windowsx.h>
 #include "BrowseFolder.h"
+#include "maxpath.h"
 
 BOOL CBrowseFolder::m_bCheck = FALSE;
 BOOL CBrowseFolder::m_bCheck2 = FALSE;
@@ -86,8 +87,8 @@ CBrowseFolder::retVal CBrowseFolder::Show(HWND parent, std::wstring& path, const
 
 	if (ret != CANCEL) 
 	{
-		TCHAR buf[MAX_PATH] = {0};
-		if (!SHGetPathFromIDList(itemIDList, buf))		// MAX_PATH ok. Explorer can't handle paths longer than MAX_PATH.
+		TCHAR buf[MAX_PATH_NEW] = {0};
+		if (!SHGetPathFromIDList(itemIDList, buf))
 			ret = NOPATH;
 
 		path = buf;
@@ -262,7 +263,7 @@ int CBrowseFolder::BrowseCallBackProc(HWND hwnd, UINT uMsg, LPARAM lParam, LPARA
 	if (uMsg == BFFM_SELCHANGED)
 	{
 		// Set the status window to the currently selected path.
-		TCHAR szDir[MAX_PATH];
+		TCHAR szDir[MAX_PATH_NEW];
 		if (SHGetPathFromIDList((LPITEMIDLIST)lParam, szDir))
 		{
 			SendMessage(hwnd,BFFM_SETSTATUSTEXT, 0, (LPARAM)szDir);

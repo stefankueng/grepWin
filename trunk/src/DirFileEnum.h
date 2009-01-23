@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008 - Stefan Kueng
+// Copyright (C) 2007-2009 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -17,6 +17,8 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 #pragma once
+
+#include "maxpath.h"
 
 /**
  * Enumerates over a directory tree, non-recursively.
@@ -59,7 +61,7 @@ protected:
     * ("C:" is different from "C:\", and "C:filename" is
     * legal anyway.)
     */
-   TCHAR m_szPathPrefix[MAX_PATH];
+   TCHAR m_szPathPrefix[MAX_PATH_NEW];
 
    /**
     * The file data returned by FindFirstFile()/FindNextFile().
@@ -173,7 +175,7 @@ public:
     */
    inline void GetFileName(LPTSTR szFileName) const
    {
-	   _tcscpy_s(szFileName, MAX_PATH, m_FindFileData.cFileName);
+	   _tcscpy_s(szFileName, MAX_PATH_NEW, m_FindFileData.cFileName);
    }
 
    const WIN32_FIND_DATA * GetFileFindData() const {return &m_FindFileData;}
@@ -184,8 +186,8 @@ public:
     */
    inline void GetFilePath(LPTSTR szPath) const
    {
-	   _tcscpy_s(szPath, MAX_PATH, m_szPathPrefix);
-	   _tcscat_s(szPath, MAX_PATH, m_FindFileData.cFileName);
+	   _tcscpy_s(szPath, MAX_PATH_NEW, m_szPathPrefix);
+	   _tcscat_s(szPath, MAX_PATH_NEW, m_FindFileData.cFileName);
    }
 
    /**

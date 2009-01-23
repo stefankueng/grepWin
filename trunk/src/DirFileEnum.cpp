@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008 - Stefan Kueng
+// Copyright (C) 2007-2009 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -24,7 +24,7 @@ CSimpleFileFind::CSimpleFileFind(LPCTSTR szPath, LPCTSTR pPattern) :
 m_dError(ERROR_SUCCESS),
 m_bFirst(TRUE)
 {
-	_tcscpy_s(m_szPathPrefix, MAX_PATH, szPath);
+	_tcscpy_s(m_szPathPrefix, MAX_PATH_NEW, szPath);
 	// Add a trailing \ to m_sPathPrefix if it is missing.
 	// Do not add one to "C:" since "C:" and "C:\" are different.
 	{
@@ -34,14 +34,14 @@ m_bFirst(TRUE)
 			TCHAR ch = szPath[len-1];
 			if (ch != '\\' && (ch != ':' || len != 2)) 
 		 {
-			 _tcscat_s(m_szPathPrefix, MAX_PATH, _T("\\"));
+			 _tcscat_s(m_szPathPrefix, MAX_PATH_NEW, _T("\\"));
 			}
 		}
 	}
 
-	TCHAR patternpath[MAX_PATH];
-	_tcscpy_s(patternpath, MAX_PATH, m_szPathPrefix);
-	_tcscat_s(patternpath, MAX_PATH, pPattern);
+	TCHAR patternpath[MAX_PATH_NEW];
+	_tcscpy_s(patternpath, MAX_PATH_NEW, m_szPathPrefix);
+	_tcscat_s(patternpath, MAX_PATH_NEW, pPattern);
 	m_hFindFile = ::FindFirstFile(patternpath, &m_FindFileData); 
 	if (m_hFindFile == INVALID_HANDLE_VALUE) 
 	{
@@ -170,7 +170,7 @@ BOOL CDirFileEnum::NextFile(LPTSTR szResult, bool bRecurse, bool* pbIsDirectory)
 	} 
 	else if (bRecurse && m_seStack && m_seStack->IsDirectory()) 
 	{
-		TCHAR path[MAX_PATH];
+		TCHAR path[MAX_PATH_NEW];
 		m_seStack->GetFilePath(path);
 		PushStack(path);
 	}
