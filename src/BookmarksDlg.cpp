@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008 - Stefan Kueng
+// Copyright (C) 2007-2009 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -18,6 +18,7 @@
 //
 #include "StdAfx.h"
 #include "Resource.h"
+#include "maxpath.h"
 #include "BookmarksDlg.h"
 #include <string>
 
@@ -123,12 +124,12 @@ LRESULT CBookmarksDlg::DoCommand(int id, int /*msg*/)
 			int iItem = ListView_GetNextItem(GetDlgItem(*this, IDC_BOOKMARKS), -1, LVNI_SELECTED);
 			if (iItem >= 0)
 			{
-				TCHAR buf[MAX_PATH*4] = {0};
+				TCHAR buf[MAX_PATH_NEW] = {0};
 				LVITEM lv = {0};
 				lv.iItem = iItem;
 				lv.mask = LVIF_TEXT;
 				lv.pszText = buf;
-				lv.cchTextMax = MAX_PATH*4;
+				lv.cchTextMax = MAX_PATH_NEW;
 				ListView_GetItem(GetDlgItem(*this, IDC_BOOKMARKS), &lv);
 				m_searchString = m_bookmarks.GetValue(buf, _T("searchString"), _T(""));
 				m_replaceString = m_bookmarks.GetValue(buf, _T("replaceString"), _T(""));
@@ -144,12 +145,12 @@ LRESULT CBookmarksDlg::DoCommand(int id, int /*msg*/)
 			int iItem = ListView_GetNextItem(GetDlgItem(*this, IDC_BOOKMARKS), -1, LVNI_SELECTED);
 			if (iItem >= 0)
 			{
-				TCHAR buf[MAX_PATH*4] = {0};
+				TCHAR buf[MAX_PATH_NEW] = {0};
 				LVITEM lv = {0};
 				lv.iItem = iItem;
 				lv.mask = LVIF_TEXT;
 				lv.pszText = buf;
-				lv.cchTextMax = MAX_PATH*4;
+				lv.cchTextMax = MAX_PATH_NEW;
 				ListView_GetItem(GetDlgItem(*this, IDC_BOOKMARKS), &lv);
 				m_bookmarks.RemoveBookmark(buf);
 				ListView_DeleteItem(GetDlgItem(*this, IDC_BOOKMARKS), iItem);

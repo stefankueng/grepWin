@@ -451,12 +451,12 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 		break;
 	case IDC_SEARCHPATHBROWSE:
 		{
-			TCHAR path[MAX_PATH*4] = {0};
+			TCHAR path[MAX_PATH_NEW] = {0};
 			CBrowseFolder browse;
 
 			GetDlgItemText(*this, IDC_SEARCHPATH, path, MAX_PATH*4);
 			browse.SetInfo(_T("Select path to search"));
-			if (browse.Show(*this, path, MAX_PATH*4, m_searchpath.c_str()) == CBrowseFolder::OK)
+			if (browse.Show(*this, path, MAX_PATH_NEW, m_searchpath.c_str()) == CBrowseFolder::OK)
 			{
 				SetDlgItemText(*this, IDC_SEARCHPATH, path);
 				m_searchpath = path;
@@ -681,15 +681,15 @@ bool CSearchDlg::AddFoundEntry(CSearchInfo * pInfo, bool bOnlyListControl)
 	{
 		lv.iItem = ret;
 		lv.iSubItem = 1;
-		TCHAR sb[MAX_PATH*4] = {0};
+		TCHAR sb[MAX_PATH_NEW] = {0};
 		StrFormatByteSizeW(pInfo->filesize, sb, 20);
 		lv.pszText = sb;
 		ListView_SetItem(hListControl, &lv);
 		lv.iSubItem = 2;
-		_stprintf_s(sb, MAX_PATH*4, _T("%ld"), pInfo->matchstarts.size());
+		_stprintf_s(sb, MAX_PATH_NEW, _T("%ld"), pInfo->matchstarts.size());
 		ListView_SetItem(hListControl, &lv);
 		lv.iSubItem = 3;
-		_tcscpy_s(sb, MAX_PATH*4, pInfo->filepath.substr(0, pInfo->filepath.size()-name.size()-1).c_str());
+		_tcscpy_s(sb, MAX_PATH_NEW, pInfo->filepath.substr(0, pInfo->filepath.size()-name.size()-1).c_str());
 		ListView_SetItem(hListControl, &lv);
 		lv.iSubItem = 4;
 		switch (pInfo->encoding)
@@ -1072,7 +1072,7 @@ bool CSearchDlg::EncodingCompareDesc(const CSearchInfo Entry1, const CSearchInfo
 
 DWORD CSearchDlg::SearchThread()
 {
-	TCHAR pathbuf[MAX_PATH*4] = {0};
+	TCHAR pathbuf[MAX_PATH_NEW] = {0};
 
 	// split the path string into single paths and
 	// add them to an array
@@ -1139,7 +1139,7 @@ DWORD CSearchDlg::SearchThread()
 					DWORD nFileSizeLow = 0;
 					if (bAlwaysSearch)
 					{
-						_tcscpy_s(pathbuf, MAX_PATH*4, pathvector[0].c_str());
+						_tcscpy_s(pathbuf, MAX_PATH_NEW, pathvector[0].c_str());
 						HANDLE hFile = CreateFile(pathvector[0].c_str(), FILE_READ_EA, FILE_SHARE_DELETE|FILE_SHARE_READ|FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 						if (hFile != INVALID_HANDLE_VALUE)
 						{

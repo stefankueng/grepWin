@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008 - Stefan Kueng
+// Copyright (C) 2007-2009 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -22,6 +22,7 @@
 #include <ShellApi.h>
 #include <ShlObj.h>
 #include "UnicodeUtils.h"
+#include "maxpath.h"
 
 class CIDropTarget : public IDropTarget
 {
@@ -156,7 +157,7 @@ public:
 			HDROP hDrop = (HDROP)GlobalLock(medium.hGlobal);
 			if(hDrop != NULL)
 			{
-				TCHAR szFileName[MAX_PATH];
+				TCHAR szFileName[MAX_PATH_NEW];
 
 				UINT cFiles = DragQueryFile(hDrop, 0xFFFFFFFF, NULL, 0); 
 				for(UINT i = 0; i < cFiles; ++i)
