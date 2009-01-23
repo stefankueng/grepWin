@@ -1,0 +1,51 @@
+First, you need to install the compiler package.
+
+- You need VS.NET2008
+  If you want to build the msi make sure the "Tools for Redistributing
+  Applications" are installed.
+
+Next you need to install some utilities/programs:
+- Boost 1.36 or later     : http://www.boost.org/
+- TortoiseSVN or SubWCRev : http://tortoisesvn.net
+- WiX(*)                  : http://wix.sourceforge.net
+- NAnt(*)                 : http://nant.sourceforge.net
+
+(*) Add the paths of the binaries to the PATH environment variable
+    You may have to logoff/logon to make the new environment variables take effect!
+
+Note: if you're not using TortoiseSVN, you have to install SubWCRev (which is part
+of TortoiseSVN) anyway, but it is also available separately from here:
+http://sourceforge.net/project/showfiles.php?group_id=138498&package_id=281312
+
+
+Now you're almost ready. Only a few more steps to do:
+- Checkout the grepWin sources from the Subversion repository 
+- Make a copy of the file default.build.user.tmpl in the grepWin root folder and
+  rename that copy to default.build.user. Then adjust the paths as mentioned
+  in that file.
+
+
+Building packages
+
+  Hint: before you can start building grepWin, you need to call the vsvars32.bat
+  file which is located in %VS90COMNTOOLS%. 
+  
+  > nant
+  will compile grepWin
+
+  > nant setup
+  will compile grepWin and create the msi installer
+  
+  If you encounter any build errors, you can run nant again like this:
+
+  > nant setup -l:buildlog.txt
+
+  which will create a build log file which you can use to analyse where
+  exactly the build failed.
+
+
+  After the script finished, the packages can be found in .\bin .
+  
+Once grepWin has been built with the NAnt script, you can build it again
+with VS2008 alone.
+

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <!-- use this file to set the paths to the required tools
-     TortoiseSVN needs to build everything.
+     grepWin needs to build everything.
      
      first make a copy of this file and rename the copy to
      default.build.user
@@ -14,13 +14,9 @@
 
 <project name="ToolPaths" default="env">
 
-<!-- ====================================================================== -->
-<!-- These two targets have to exist in doc.build.user                      -->
-<!-- ====================================================================== -->
-
-	<target name="VSNET" description="Checks if the env variables for VS.NET2005 are set">
+	<target name="VSNET" description="Checks if the env variables for VS.NET2008 are set">
 		<if test="${not environment::variable-exists('VCINSTALLDIR')}">
-			<fail>You must first call "%VS80COMNTOOLS%\vsvars32.bat"</fail>
+			<fail>You must first call "%VS90COMNTOOLS%\vsvars32.bat"</fail>
 		</if>
 		<!-- Uncomment the line below to allow limited building using VC Express instead of VS.NET. -->
 		<!-- <property name="buildtool" value="vcexpress.exe" /> -->
