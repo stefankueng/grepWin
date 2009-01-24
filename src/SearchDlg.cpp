@@ -1277,7 +1277,7 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bIncludeBinary, bool bUseReg
 						ft |= boost::regbase::icase;
 					boost::wregex expression = boost::wregex(localSearchString, ft);
 					boost::match_results<wstring::const_iterator> whatc;
-					if ((m_replaceString.empty())&&(!m_bReplace))
+					if (!m_bReplace)
 					{
 						boost::match_flag_type flags = boost::match_default;
 						if (!bDotMatchesNewline)
