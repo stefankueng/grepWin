@@ -133,6 +133,8 @@ LRESULT CBookmarksDlg::DoCommand(int id, int /*msg*/)
 				ListView_GetItem(GetDlgItem(*this, IDC_BOOKMARKS), &lv);
 				m_searchString = m_bookmarks.GetValue(buf, _T("searchString"), _T(""));
 				m_replaceString = m_bookmarks.GetValue(buf, _T("replaceString"), _T(""));
+				RemoveQuotes(m_searchString);
+				RemoveQuotes(m_replaceString);
 				m_bUseRegex = _tcscmp(m_bookmarks.GetValue(buf, _T("useregex"), _T("false")), _T("true")) == 0;
 			}
 		}
@@ -191,6 +193,8 @@ void CBookmarksDlg::InitBookmarks()
 	{
 		wstring searchString = m_bookmarks.GetValue(*it, _T("searchString"), _T(""));
 		wstring replaceString = m_bookmarks.GetValue(*it, _T("replaceString"), _T(""));
+		RemoveQuotes(searchString);
+		RemoveQuotes(replaceString);
 
 		LVITEM lv = {0};
 		lv.mask = LVIF_TEXT;
@@ -221,4 +225,18 @@ void CBookmarksDlg::InitBookmarks()
 	ListView_SetColumnWidth(hListControl, 0, LVSCW_AUTOSIZE_USEHEADER);
 	ListView_SetColumnWidth(hListControl, 1, LVSCW_AUTOSIZE_USEHEADER);
 	ListView_SetColumnWidth(hListControl, 2, LVSCW_AUTOSIZE_USEHEADER);
+}
+
+void CBookmarksDlg::RemoveQuotes(wstring& str)
+{
+	if (str.size())
+	{
+		if (str[0] == '"')
+			str = str.substr(1);
+		if (str.size())
+		{
+			if (str[str.size()-1] == '"')
+				str = str.substr(0, str.size()-1);
+		}
+	}
 }

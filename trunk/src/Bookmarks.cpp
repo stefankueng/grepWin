@@ -56,8 +56,15 @@ void CBookmarks::Save()
 
 void CBookmarks::AddBookmark(const wstring& name, const wstring& search, const wstring& replace, bool bRegex)
 {
-	SetValue(name.c_str(), _T("searchString"), search.c_str());
-	SetValue(name.c_str(), _T("replaceString"), replace.c_str());
+	wstring val = _T("\"");
+	val += search;
+	val += _T("\"");
+	SetValue(name.c_str(), _T("searchString"), val.c_str());
+
+	val = _T("\"");
+	val += replace;
+	val += _T("\"");
+	SetValue(name.c_str(), _T("replaceString"), val.c_str());
 	SetValue(name.c_str(), _T("useregex"), bRegex ? _T("true") : _T("false"));
 }
 
