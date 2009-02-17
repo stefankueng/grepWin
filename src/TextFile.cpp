@@ -59,8 +59,18 @@ bool CTextFile::Load(LPCTSTR path, UnicodeType& type)
 	HANDLE hFile = INVALID_HANDLE_VALUE;
 	int retrycounter = 0;
 
-	_tcscpy_s(pathbuf, MAX_PATH_NEW, _T("\\\\?\\"));
-	_tcscat_s(pathbuf, MAX_PATH_NEW, path);
+	if ((_tcslen(path) > 2 )&&(path[0] == '\\')&&(path[1] == '\\'))
+	{
+		// UNC path
+		_tcscpy_s(pathbuf, MAX_PATH_NEW, _T("\\\\?\\UNC"));
+		_tcscat_s(pathbuf, MAX_PATH_NEW, &path[1]);
+	}
+	else
+	{
+		// 'normal' path
+		_tcscpy_s(pathbuf, MAX_PATH_NEW, _T("\\\\?\\"));
+		_tcscat_s(pathbuf, MAX_PATH_NEW, path);
+	}
 
 	do 
 	{
