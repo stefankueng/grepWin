@@ -141,8 +141,17 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			HMENU hSysMenu = GetSystemMenu(hwndDlg, FALSE);
 			if (hSysMenu)
 			{
-				AppendMenu(hSysMenu, MF_SEPARATOR, NULL, NULL);
-				AppendMenu(hSysMenu, MF_STRING, ID_ABOUTBOX, _T("&About grepWin..."));
+                int menuItemsCount = GetMenuItemCount(hSysMenu);
+                if (menuItemsCount > 2)
+                {
+                    InsertMenu(hSysMenu, menuItemsCount - 2, MF_STRING | MF_BYPOSITION, ID_ABOUTBOX, _T("&About grepWin..."));
+                    InsertMenu(hSysMenu, menuItemsCount - 2, MF_SEPARATOR | MF_BYPOSITION, NULL, NULL);
+                } 
+                else
+                {
+                    AppendMenu(hSysMenu, MF_SEPARATOR, NULL, NULL);
+                    AppendMenu(hSysMenu, MF_STRING, ID_ABOUTBOX, _T("&About grepWin..."));
+                }
 			}
 
 			TCHAR buf[MAX_PATH] = {0};
