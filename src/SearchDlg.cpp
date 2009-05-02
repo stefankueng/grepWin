@@ -68,6 +68,7 @@ CSearchDlg::CSearchDlg(HWND hParent) : m_searchedItems(0)
 	, m_regCaseSensitive(_T("Software\\grepWin\\CaseSensitive"))
 	, m_regDotMatchesNewline(_T("Software\\grepWin\\DotMatchesNewline"))
 	, m_regPattern(_T("Software\\grepWin\\pattern"))
+	, m_regSearchPath(_T("Software\\grepWin\\searchpath"))
 {
 	m_startTime = GetTickCount();
 }
@@ -101,6 +102,10 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			AddToolTip(IDC_DOTMATCHNEWLINE, _T("\\n is matched by '.'"));
 			AddToolTip(IDC_SEARCHTEXT, _T("a regular expression used for searching. Press F1 for more info."));
 
+			if (m_searchpath.empty())
+			{
+				m_searchpath = wstring(m_regSearchPath);
+			}
 			// expand a possible 'short' path
 			DWORD ret = 0;
 			ret = ::GetLongPathName(m_searchpath.c_str(), NULL, 0);
@@ -943,7 +948,7 @@ bool CSearchDlg::SaveSettings()
 
 	if (m_searchpath.empty())
 		return false;
-
+	m_regSearchPath = m_searchpath;
 	m_bUseRegex = (IsDlgButtonChecked(*this, IDC_REGEXRADIO) == BST_CHECKED);
 	m_regUseRegex = (DWORD)m_bUseRegex;
 	if (m_bUseRegex)

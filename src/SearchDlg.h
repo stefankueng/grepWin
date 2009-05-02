@@ -131,4 +131,5 @@ private:
 	CRegStdWORD				m_regCaseSensitive;
 	CRegStdWORD				m_regDotMatchesNewline;
 	CRegStdString			m_regPattern;
+	CRegStdString			m_regSearchPath;
 };
