@@ -307,12 +307,14 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 		{
 			m_totalitems = 0;
 			m_searchedItems = 0;
+			m_totalmatches = 0;
 			UpdateInfoLabel();
 		}
 		break;
 	case SEARCH_FOUND:
 		if ((wParam != 0)||(m_searchString.empty()))
 			AddFoundEntry((CSearchInfo*)lParam);
+		m_totalmatches += ((CSearchInfo*)lParam)->matchstarts.size();
 		UpdateInfoLabel();
 		break;
 	case SEARCH_PROGRESS:
@@ -630,8 +632,8 @@ void CSearchDlg::SaveWndPosition()
 void CSearchDlg::UpdateInfoLabel()
 {
 	TCHAR buf[1024] = {0};
-	_stprintf_s(buf, 1024, _T("Searched %ld files, skipped %ld files. Found %ld files which match the search parameters."),
-		m_searchedItems, m_totalitems-m_searchedItems, m_items.size());
+	_stprintf_s(buf, 1024, _T("Searched %ld files, skipped %ld files. Found %ld matches in %ld files."),
+		m_searchedItems, m_totalitems-m_searchedItems, m_totalmatches, m_items.size());
 	SetDlgItemText(*this, IDC_SEARCHINFOLABEL, buf);
 }
 

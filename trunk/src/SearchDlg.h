@@ -105,6 +105,7 @@ private:
 	vector<CSearchInfo>		m_items;
 	int						m_totalitems;
 	int						m_searchedItems;
+	int						m_totalmatches;
 	bool					m_bAscending;
 
 	CDlgResizer				m_resizer;
