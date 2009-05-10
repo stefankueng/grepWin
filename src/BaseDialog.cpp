@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008 - Stefan Kueng
+// Copyright (C) 2007-2009 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -89,9 +89,12 @@ void CDialog::InitDialog(HWND hwndDlg, UINT iconID)
 {
 	HWND hwndOwner; 
 	RECT rc, rcDlg, rcOwner;
+	WINDOWPLACEMENT placement;
+	placement.length = sizeof(WINDOWPLACEMENT);
 
 	hwndOwner = ::GetParent(hwndDlg);
-	if (hwndOwner == NULL)
+	GetWindowPlacement(hwndOwner, &placement);
+	if ((hwndOwner == NULL)||(placement.showCmd == SW_SHOWMINIMIZED)||(placement.showCmd == SW_SHOWMINNOACTIVE))
 		hwndOwner = ::GetDesktopWindow();
 
 	GetWindowRect(hwndOwner, &rcOwner); 
@@ -102,7 +105,7 @@ void CDialog::InitDialog(HWND hwndDlg, UINT iconID)
 	OffsetRect(&rc, -rc.left, -rc.top); 
 	OffsetRect(&rc, -rcDlg.right, -rcDlg.bottom); 
 
-	SetWindowPos(hwndDlg, HWND_TOP, rcOwner.left + (rc.right / 2), rcOwner.top + (rc.bottom / 2), 0, 0,	SWP_NOSIZE); 
+	SetWindowPos(hwndDlg, HWND_TOP, rcOwner.left + (rc.right / 2), rcOwner.top + (rc.bottom / 2), 0, 0,	SWP_NOSIZE|SWP_SHOWWINDOW); 
 	HICON hIcon = (HICON)::LoadImage(hResource, MAKEINTRESOURCE(iconID), IMAGE_ICON, 0, 0, LR_DEFAULTSIZE|LR_SHARED);
 	::SendMessage(hwndDlg, WM_SETICON, ICON_BIG, (LPARAM)hIcon);
 	::SendMessage(hwndDlg, WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
