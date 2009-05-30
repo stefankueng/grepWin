@@ -4,6 +4,14 @@
 	<target name="setup">
 		<property name="verstring" value="${environment::get-variable('MajorVersion')}.${environment::get-variable('MinorVersion')}.${environment::get-variable('MicroVersion')}" />
 		<property name="msifilename" value="grepWin-${verstring}" />
+		<!-- sign all release binaries -->
+		<if test="${file::exists('..\..\signinfo.txt')}">
+			<exec program="signtool">
+				<arg value="sign" />
+				<arg value="${signinfo}" />
+				<arg value="..\..\bin\release\GrepWin.exe" />
+			</exec>
+		</if>
 		<exec program="candle">
 			<arg value="-nologo" />
 			<arg value="-out" />
@@ -16,7 +24,7 @@
 			<arg value="-out" />
 			<arg value="..\..\bin\${msifilename}.msi" />
 			<arg value="..\..\bin\Setup.wixobj" />
-			<arg value="..\..\bin\WixUI_Custom.wixobj" />			
+			<arg value="..\..\bin\WixUI_Custom.wixobj" />
 			<arg value="${environment::get-variable('WIXUI')}\WixUI.wixlib" />
 			<arg value="-loc" />
 			<arg value="${environment::get-variable('WIXUI')}\WixUI_en-us.wxl" />
@@ -26,5 +34,12 @@
 				<include name="..\..\bin\*.wixobj" />
 			</fileset>
 		</delete>
+		<if test="${file::exists('..\..\signinfo.txt')}">
+			<exec program="signtool">
+				<arg value="sign" />
+				<arg value="${signinfo}" />
+				<arg value="..\..\bin\${msifilename}.msi" />
+			</exec>
+		</if>
 	</target>
 </project>

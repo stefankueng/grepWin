@@ -2,13 +2,18 @@
 <project name="grepWin" default="grepWin">
 
 	<include buildfile="default.build.user" />
-	
+
 	<property name="configuration" value="release" />
 	<property name="platform" value="win32" />
-	
-<!-- ====================================================================== -->
-<!-- Configuration targets													-->
-<!-- ====================================================================== -->
+	<!-- the signinfo.txt file has to contain one line with parameters for signtool.exe,
+	     for example:
+		 /t "url/to/timestamp/server" /q
+	-->
+	<loadfile file="signinfo.txt" property="signinfo" failonerror="false" />
+
+	<!-- ====================================================================== -->
+	<!-- Configuration targets													-->
+	<!-- ====================================================================== -->
 	<target name="debug">
 		<description>
 			Sets the environment up to build the debug versions.
@@ -16,9 +21,9 @@
 		<property name="configuration" value="debug" />
 	</target>
 
-<!-- ====================================================================== -->
-<!-- Project targets														-->
-<!-- ====================================================================== -->
+	<!-- ====================================================================== -->
+	<!-- Project targets														-->
+	<!-- ====================================================================== -->
 	<target name="clean" depends="VSNET">
 		<description>
 			Cleans every subproject.
@@ -29,7 +34,7 @@
 			<arg value="${configuration}|${platform}" />
 		</exec>
 	</target>
-	
+
 	<target name="VersionInfo" depends="VSNET,env">
 		<description>
 			Sets the version information as properties, env variables
@@ -53,7 +58,7 @@
 		</loadfile>
 		<echo file="src\version.h" message="${versionheaderfile}" />
 	</target>
-	
+
 	<target name="grepWin" depends="VersionInfo">
 		<description>
 			Builds grepWin.

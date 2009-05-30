@@ -8,7 +8,7 @@
 			<arg value="version.build.in" />
 			<arg value="version.build" />
 		</exec>
-		
+
 		<nant target="setversioninfo">
 			<buildfiles>
 				<include name="version.build" />
