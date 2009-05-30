@@ -446,13 +446,33 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="Scripts"
+			>
+			<File
+				RelativePath="..\default.build"
+				>
+			</File>
+			<File
+				RelativePath=".\Setup\setup.build"
+				>
+			</File>
+			<File
+				RelativePath=".\Setup\Setup.wxs"
+				>
+			</File>
+			<File
+				RelativePath="..\version.build.in"
+				>
+			</File>
+			<File
+				RelativePath="..\versioninfo.build"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath=".\Resources\infodlg.htm"
 			DeploymentContent="true"
-			>
-		</File>
-		<File
-			RelativePath=".\Setup\Setup.wxs"
 			>
 		</File>
 	</Files>
