@@ -53,7 +53,7 @@ protected:
 	LRESULT					DoCommand(int id, int msg);
 	bool					PreTranslateMessage(MSG* pMsg);
 
-	int						SearchFile(CSearchInfo& sinfo, bool bIncludeBinary, bool bUseRegex, bool bCaseSensitive, bool bDotMatchesNewline, const wstring& searchString);
+	int						SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bIncludeBinary, bool bUseRegex, bool bCaseSensitive, bool bDotMatchesNewline, const wstring& searchString);
 
 	bool					InitResultList();
 	bool					AddFoundEntry(CSearchInfo * pInfo, bool bOnlyListControl = false);
