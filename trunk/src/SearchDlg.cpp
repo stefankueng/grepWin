@@ -1231,7 +1231,10 @@ DWORD CSearchDlg::SearchThread()
 						CSearchInfo sinfo(pathbuf);
 						sinfo.filesize = nFileSizeLow;
 						if (m_searchString.empty())
-							SendMessage(*this, SEARCH_FOUND, 0, (LPARAM)&sinfo);
+						{
+							SendMessage(*this, SEARCH_FOUND, 1, (LPARAM)&sinfo);
+							nFound = 1;
+						}
 						else
 						{
 							nFound = SearchFile(sinfo, m_bIncludeBinary, m_bUseRegex, m_bCaseSensitive, m_bDotMatchesNewline, m_searchString);
@@ -1239,7 +1242,7 @@ DWORD CSearchDlg::SearchThread()
 								SendMessage(*this, SEARCH_FOUND, nFound, (LPARAM)&sinfo);
 						}
 					}
-					SendMessage(*this, SEARCH_PROGRESS, bSearch && bPattern && (nFound >= 0), 0);
+					SendMessage(*this, SEARCH_PROGRESS, ((bSearch && bPattern)||bAlwaysSearch) && (nFound >= 0), 0);
 				}
 				else
 				{
