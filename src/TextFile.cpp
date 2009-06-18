@@ -196,76 +196,76 @@ CTextFile::UnicodeType CTextFile::CheckUnicodeType(BYTE * pBuffer, int cb)
 {
 	if (cb < 2)
 		return ANSI;
-	UINT16 * pVal = (UINT16 *)pBuffer;
-	UINT8 * pVal2 = (UINT8 *)(pVal+1);
+	UINT16 * pVal16 = (UINT16 *)pBuffer;
+	UINT8 * pVal8 = (UINT8 *)(pVal16+1);
 	// scan the whole buffer for a 0x0000 sequence
 	// if found, we assume a binary file
 	bool bNull = false;
 	for (int i=0; i<(cb-2); i=i+2)
 	{
-		if (0x0000 == *pVal++)
+		if (0x0000 == *pVal16++)
 			return BINARY;
-		if (0x00 == *pVal2++)
+		if (0x00 == *pVal8++)
 			bNull = true;
-		if (0x00 == *pVal2++)
+		if (0x00 == *pVal8++)
 			bNull = true;
 	}
 	if ((bNull)&&((cb % 2)==0))
 		return UNICODE_LE;
-	pVal = (UINT16 *)pBuffer;
-	pVal2 = (UINT8 *)(pVal+1);
-	if (*pVal == 0xFEFF)
+	pVal16 = (UINT16 *)pBuffer;
+	pVal8 = (UINT8 *)(pVal16+1);
+	if (*pVal16 == 0xFEFF)
 		return UNICODE_LE;
 	if (cb < 3)
 		return ANSI;
-	if (*pVal == 0xBBEF)
+	if (*pVal16 == 0xBBEF)
 	{
-		if (*pVal2 == 0xBF)
+		if (*pVal8 == 0xBF)
 			return UTF8;
 	}
 	// check for illegal UTF8 chars
-	pVal2 = (UINT8 *)pBuffer;
+	pVal8 = (UINT8 *)pBuffer;
 	for (int i=0; i<cb; ++i)
 	{
-		if ((*pVal2 == 0xC0)||(*pVal2 == 0xC1)||(*pVal2 >= 0xF5))
+		if ((*pVal8 == 0xC0)||(*pVal8 == 0xC1)||(*pVal8 >= 0xF5))
 			return ANSI;
-		pVal2++;
+		pVal8++;
 	}
-	pVal2 = (UINT8 *)pBuffer;
+	pVal8 = (UINT8 *)pBuffer;
 	bool bUTF8 = false;
 	for (int i=0; i<(cb-4); ++i)
 	{
-		if ((*pVal2 & 0xE0)==0xC0)
+		if ((*pVal8 & 0xE0)==0xC0)
 		{
-			pVal2++;i++;
-			if ((*pVal2 & 0xC0)!=0x80)
+			pVal8++;i++;
+			if ((*pVal8 & 0xC0)!=0x80)
 				return ANSI;
 			bUTF8 = true;
 		}
-		if ((*pVal2 & 0xF0)==0xE0)
+		if ((*pVal8 & 0xF0)==0xE0)
 		{
-			pVal2++;i++;
-			if ((*pVal2 & 0xC0)!=0x80)
+			pVal8++;i++;
+			if ((*pVal8 & 0xC0)!=0x80)
 				return ANSI;
-			pVal2++;i++;
-			if ((*pVal2 & 0xC0)!=0x80)
+			pVal8++;i++;
+			if ((*pVal8 & 0xC0)!=0x80)
 				return ANSI;
 			bUTF8 = true;
 		}
-		if ((*pVal2 & 0xF8)==0xF0)
+		if ((*pVal8 & 0xF8)==0xF0)
 		{
-			pVal2++;i++;
-			if ((*pVal2 & 0xC0)!=0x80)
+			pVal8++;i++;
+			if ((*pVal8 & 0xC0)!=0x80)
 				return ANSI;
-			pVal2++;i++;
-			if ((*pVal2 & 0xC0)!=0x80)
+			pVal8++;i++;
+			if ((*pVal8 & 0xC0)!=0x80)
 				return ANSI;
-			pVal2++;i++;
-			if ((*pVal2 & 0xC0)!=0x80)
+			pVal8++;i++;
+			if ((*pVal8 & 0xC0)!=0x80)
 				return ANSI;
 			bUTF8 = true;
 		}
-		pVal2++;
+		pVal8++;
 	}
 	if (bUTF8)
 		return UTF8;
