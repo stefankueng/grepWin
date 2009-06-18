@@ -1237,7 +1237,7 @@ DWORD CSearchDlg::SearchThread()
 						}
 						else
 						{
-							nFound = SearchFile(sinfo, m_bIncludeBinary, m_bUseRegex, m_bCaseSensitive, m_bDotMatchesNewline, m_searchString);
+							nFound = SearchFile(sinfo, bAlwaysSearch, m_bIncludeBinary, m_bUseRegex, m_bCaseSensitive, m_bDotMatchesNewline, m_searchString);
 							if (nFound >= 0)
 								SendMessage(*this, SEARCH_FOUND, nFound, (LPARAM)&sinfo);
 						}
@@ -1266,7 +1266,7 @@ DWORD CSearchDlg::SearchThread()
 	return 0L;
 }
 
-int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bIncludeBinary, bool bUseRegex, bool bCaseSensitive, bool bDotMatchesNewline, const wstring& searchString)
+int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bIncludeBinary, bool bUseRegex, bool bCaseSensitive, bool bDotMatchesNewline, const wstring& searchString)
 {
 	int nFound = 0;
 	// we keep it simple:
@@ -1283,7 +1283,7 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bIncludeBinary, bool bUseReg
 		if (textfile.Load(sinfo.filepath.c_str(), type))
 		{
 			sinfo.encoding = type;
-			if ((type != CTextFile::BINARY)||(bIncludeBinary))
+			if ((type != CTextFile::BINARY)||(bIncludeBinary)||bSearchAlways)
 			{
 				wstring::const_iterator start, end;
 				start = textfile.GetFileString().begin();
@@ -1376,7 +1376,7 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bIncludeBinary, bool bUseReg
 	else
 	{
 		// assume binary file
-		if (bIncludeBinary)
+		if (bIncludeBinary||bSearchAlways)
 		{
 			sinfo.encoding = CTextFile::BINARY;
 			string filepath = CUnicodeUtils::StdGetANSI(sinfo.filepath);
