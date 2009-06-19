@@ -96,6 +96,7 @@ private:
 	bool					m_bIncludeSubfolders;
 	bool					m_bIncludeBinary;
 	bool					m_bCreateBackup;
+	bool					m_bUTF8;
 	bool					m_bCaseSensitive;
 	bool					m_bDotMatchesNewline;
 
@@ -128,6 +129,7 @@ private:
 	CRegStdWORD				m_regIncludeSubfolders;
 	CRegStdWORD				m_regIncludeBinary;
 	CRegStdWORD				m_regCreateBackup;
+	CRegStdWORD				m_regUTF8;
 	CRegStdWORD				m_regCaseSensitive;
 	CRegStdWORD				m_regDotMatchesNewline;
 	CRegStdString			m_regPattern;

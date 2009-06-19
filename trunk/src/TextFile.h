@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008 - Stefan Kueng
+// Copyright (C) 2007-2009 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -43,7 +43,7 @@ public:
 	/**
 	 * Loads a file from the specified \c path.
 	 */
-	bool			Load(LPCTSTR path, UnicodeType& type);
+	bool			Load(LPCTSTR path, UnicodeType& type, bool bUTF8);
 
 	/**
 	 * Saves the file contents to disk at \c path.
