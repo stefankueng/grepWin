@@ -9,11 +9,9 @@
 #define IDD_REGEXTEST                   130
 #define IDD_NAME                        131
 #define IDD_BOOKMARKS                   132
-#define IDR_MENU1                       133
 #define IDC_BKPOPUP                     133
 #define IDR_INFODLG                     134
 #define IDD_ABOUT                       135
-#define IDR_ACCELERATOR1                136
 #define IDR_SEARCHDLG                   136
 #define IDC_SEARCHTEXT                  1000
 #define IDC_REGEXRADIO                  1001
@@ -47,9 +45,7 @@
 #define IDC_REGEXREPLACED               1032
 #define IDC_NAME                        1037
 #define IDC_PATTERNLABEL                1039
-#define IDC_EDIT1                       1040
 #define IDC_PATTERN                     1040
-#define IDC_CHECK1                      1042
 #define IDC_CASE_SENSITIVE              1042
 #define IDC_VERSIONINFO                 1043
 #define IDC_DATE                        1044
@@ -57,11 +53,9 @@
 #define IDC_FILEPATTERNREGEX            1046
 #define IDC_FILEPATTERNTEXT             1048
 #define IDC_REPLACE                     1049
-#define IDC_CHECK2                      1050
 #define IDC_INCLUDEBINARY               1050
 #define IDC_DOTMATCHNEWLINE             1051
 #define IDC_ABOUTLINK                   1052
-#define IDC_CHECK3                      1053
 #define IDC_UTF8                        1053
 #define ID_REMOVEBOOKMARK               32771
 #define IDC_STATIC                      -1
