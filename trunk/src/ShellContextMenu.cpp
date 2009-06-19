@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008 - Stefan Kueng
+// Copyright (C) 2007-2009 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -184,7 +184,7 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
 				shExecInfo.lpFile             = _T("explorer.exe");
 				shExecInfo.lpParameters       = sFolder.c_str();
 				shExecInfo.nShow              = SW_SHOWNORMAL;
-				shExecInfo.lpVerb             = _T("Open"); // Context menu item      
+				shExecInfo.lpVerb             = _T("open"); // Context menu item      
 				shExecInfo.fMask              = SEE_MASK_INVOKEIDLIST | SEE_MASK_FLAG_DDEWAIT | SEE_MASK_FLAG_NO_UI;      
 
 				// Select file in explorer  
