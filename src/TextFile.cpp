@@ -49,7 +49,7 @@ bool CTextFile::Save(LPCTSTR path)
 	return true;
 }
 
-bool CTextFile::Load(LPCTSTR path, UnicodeType& type)
+bool CTextFile::Load(LPCTSTR path, UnicodeType& type, bool bUTF8)
 {
 	LARGE_INTEGER lint;
 	if (pFileBuf)
@@ -111,7 +111,10 @@ bool CTextFile::Load(LPCTSTR path, UnicodeType& type)
 
 	// we have the file read into memory, now we have to find out what
 	// kind of text file we have here.
-	encoding = CheckUnicodeType(pFileBuf, bytesread);
+	if (bUTF8)
+		encoding = UTF8;
+	else
+		encoding = CheckUnicodeType(pFileBuf, bytesread);
 
 	if (encoding == UNICODE_LE)
 		textcontent = wstring((wchar_t*)pFileBuf, bytesread/sizeof(wchar_t));

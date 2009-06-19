@@ -65,6 +65,7 @@ CSearchDlg::CSearchDlg(HWND hParent) : m_searchedItems(0)
 	, m_regIncludeSubfolders(_T("Software\\grepWin\\IncludeSubfolders"), 1)
 	, m_regIncludeBinary(_T("Software\\grepWin\\IncludeBinary"), 1)
 	, m_regCreateBackup(_T("Software\\grepWin\\CreateBackup"))
+	, m_regUTF8(_T("Software\\grepWin\\UTF8"))
 	, m_regCaseSensitive(_T("Software\\grepWin\\CaseSensitive"))
 	, m_regDotMatchesNewline(_T("Software\\grepWin\\DotMatchesNewline"))
 	, m_regPattern(_T("Software\\grepWin\\pattern"))
@@ -174,6 +175,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			SendDlgItemMessage(hwndDlg, IDC_SIZECOMBO, CB_SETCURSEL, DWORD(m_regSizeCombo), 0);
 			SendDlgItemMessage(hwndDlg, IDC_INCLUDESUBFOLDERS, BM_SETCHECK, DWORD(m_regIncludeSubfolders) ? BST_CHECKED : BST_UNCHECKED, 0);
 			SendDlgItemMessage(hwndDlg, IDC_CREATEBACKUP, BM_SETCHECK, DWORD(m_regCreateBackup) ? BST_CHECKED : BST_UNCHECKED, 0);
+			SendDlgItemMessage(hwndDlg, IDC_UTF8, BM_SETCHECK, DWORD(m_regUTF8) ? BST_CHECKED : BST_UNCHECKED, 0);
 			SendDlgItemMessage(hwndDlg, IDC_INCLUDESYSTEM, BM_SETCHECK, DWORD(m_regIncludeSystem) ? BST_CHECKED : BST_UNCHECKED, 0);
 			SendDlgItemMessage(hwndDlg, IDC_INCLUDEHIDDEN, BM_SETCHECK, DWORD(m_regIncludeHidden) ? BST_CHECKED : BST_UNCHECKED, 0);
 			SendDlgItemMessage(hwndDlg, IDC_INCLUDEBINARY, BM_SETCHECK, DWORD(m_regIncludeBinary) ? BST_CHECKED : BST_UNCHECKED, 0);
@@ -214,6 +216,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			m_resizer.AddControl(hwndDlg, IDC_DOTMATCHNEWLINE, RESIZER_TOPLEFT);
 			m_resizer.AddControl(hwndDlg, IDC_REGEXOKLABEL, RESIZER_TOPRIGHT);
 			m_resizer.AddControl(hwndDlg, IDC_CREATEBACKUP, RESIZER_TOPLEFT);
+			m_resizer.AddControl(hwndDlg, IDC_UTF8, RESIZER_TOPLEFT);
 			m_resizer.AddControl(hwndDlg, IDC_TESTREGEX, RESIZER_TOPLEFT);
 			m_resizer.AddControl(hwndDlg, IDC_ADDTOBOOKMARKS, RESIZER_TOPRIGHT);
 			m_resizer.AddControl(hwndDlg, IDC_BOOKMARKS, RESIZER_TOPRIGHT);
@@ -1001,6 +1004,7 @@ bool CSearchDlg::SaveSettings()
 	m_bIncludeSubfolders = (IsDlgButtonChecked(*this, IDC_INCLUDESUBFOLDERS) == BST_CHECKED);
 	m_bIncludeBinary = (IsDlgButtonChecked(*this, IDC_INCLUDEBINARY) == BST_CHECKED);
 	m_bCreateBackup = (IsDlgButtonChecked(*this, IDC_CREATEBACKUP) == BST_CHECKED);
+	m_bUTF8 = (IsDlgButtonChecked(*this, IDC_UTF8) == BST_CHECKED);
 	m_bCaseSensitive = (IsDlgButtonChecked(*this, IDC_CASE_SENSITIVE) == BST_CHECKED);
 	m_bDotMatchesNewline = (IsDlgButtonChecked(*this, IDC_DOTMATCHNEWLINE) == BST_CHECKED);
 
@@ -1009,6 +1013,7 @@ bool CSearchDlg::SaveSettings()
 	m_regIncludeSubfolders = (DWORD)m_bIncludeSubfolders;
 	m_regIncludeBinary = (DWORD)m_bIncludeBinary;
 	m_regCreateBackup = (DWORD)m_bCreateBackup;
+	m_regUTF8 = (DWORD)m_bUTF8;
 	m_regCaseSensitive = (DWORD)m_bCaseSensitive;
 	m_regDotMatchesNewline = (DWORD)m_bDotMatchesNewline;
 	m_regPattern = m_patternregex;
@@ -1280,7 +1285,7 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
 		CTextFile textfile;
 
 		CTextFile::UnicodeType type = CTextFile::AUTOTYPE;
-		if (textfile.Load(sinfo.filepath.c_str(), type))
+		if (textfile.Load(sinfo.filepath.c_str(), type, m_bUTF8))
 		{
 			sinfo.encoding = type;
 			if ((type != CTextFile::BINARY)||(bIncludeBinary)||bSearchAlways)
