@@ -1286,7 +1286,7 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
 	wstring localSearchString = searchString;
 	if (!bUseRegex)
 		localSearchString = _T("\\Q") + searchString + _T("\\E");
-	if (sinfo.filesize < 30*1024*1024)
+	if ((sinfo.filesize < 30*1024*1024)||(m_bReplace))
 	{
 		CTextFile textfile;
 
