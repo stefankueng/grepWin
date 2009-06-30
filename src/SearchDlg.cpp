@@ -68,7 +68,9 @@ CSearchDlg::CSearchDlg(HWND hParent) : m_searchedItems(0)
 	, m_regUTF8(_T("Software\\grepWin\\UTF8"))
 	, m_regCaseSensitive(_T("Software\\grepWin\\CaseSensitive"))
 	, m_regDotMatchesNewline(_T("Software\\grepWin\\DotMatchesNewline"))
+	, m_regUseRegexForPaths(_T("Software\\grepWin\\UseFileMatchRegex"))
 	, m_regPattern(_T("Software\\grepWin\\pattern"))
+	, m_regExcludeDirsPattern(_T("Software\\grepWin\\ExcludeDirsPattern"))
 	, m_regSearchPath(_T("Software\\grepWin\\searchpath"))
 {
 	m_startTime = GetTickCount();
@@ -98,8 +100,9 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 		{
 			InitDialog(hwndDlg, IDI_GREPWIN);
 
-			AddToolTip(IDC_PATTERN, _T("only files that matches this pattern are searched.\r\nExample: *.cpp;*.h"));
-			AddToolTip(IDC_SEARCHPATH, _T("the path which is searched recursively"));
+			AddToolTip(IDC_PATTERN, _T("only files that match this pattern are searched.\r\nExample: *.cpp;*.h"));
+			AddToolTip(IDC_EXCLUDEDIRSPATTERN, _T("you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."));
+			AddToolTip(IDC_SEARCHPATH, _T("the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"));
 			AddToolTip(IDC_DOTMATCHNEWLINE, _T("\\n is matched by '.'"));
 			AddToolTip(IDC_SEARCHTEXT, _T("a regular expression used for searching. Press F1 for more info."));
 
@@ -138,6 +141,8 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 
 			m_AutoCompleteFilePatterns.Load(_T("Software\\grepWin\\History"), _T("FilePattern"));
 			m_AutoCompleteFilePatterns.Init(GetDlgItem(hwndDlg, IDC_PATTERN));
+			m_AutoCompleteExcludeDirsPatterns.Load(_T("Software\\grepWin\\History"), _T("ExcludeDirsPattern"));
+			m_AutoCompleteExcludeDirsPatterns.Init(GetDlgItem(hwndDlg, IDC_EXCLUDEDIRSPATTERN));
 			m_AutoCompleteSearchPatterns.Load(_T("Software\\grepWin\\History"), _T("SearchPattern"));
 			m_AutoCompleteSearchPatterns.Init(GetDlgItem(hwndDlg, IDC_SEARCHTEXT));
 			m_AutoCompleteReplacePatterns.Load(_T("Software\\grepWin\\History"), _T("ReplacePattern"));
@@ -184,9 +189,10 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 
 			CheckRadioButton(hwndDlg, IDC_REGEXRADIO, IDC_TEXTRADIO, DWORD(m_regUseRegex) ? IDC_REGEXRADIO : IDC_TEXTRADIO);
 			CheckRadioButton(hwndDlg, IDC_ALLSIZERADIO, IDC_SIZERADIO, DWORD(m_regAllSize) ? IDC_ALLSIZERADIO : IDC_SIZERADIO);
-			CheckRadioButton(hwndDlg, IDC_FILEPATTERNREGEX, IDC_FILEPATTERNTEXT, IDC_FILEPATTERNTEXT);
+			CheckRadioButton(hwndDlg, IDC_FILEPATTERNREGEX, IDC_FILEPATTERNTEXT, DWORD(m_regUseRegexForPaths) ? IDC_FILEPATTERNREGEX : IDC_FILEPATTERNTEXT);
 
 			EnableWindow(GetDlgItem(*this, IDC_ADDTOBOOKMARKS), FALSE);
+			EnableWindow(GetDlgItem(*this, IDC_EXCLUDEDIRSPATTERN), DWORD(m_regIncludeSubfolders));
 
 			bool bText = (IsDlgButtonChecked(*this, IDC_TEXTRADIO) == BST_CHECKED);
 			::EnableWindow(GetDlgItem(*this, IDC_REPLACETEXT), !bText);
@@ -195,6 +201,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			::SetDlgItemText(*this, IDOK, _T("&Search"));
 
 			SetDlgItemText(*this, IDC_PATTERN, wstring(m_regPattern).c_str());
+			SetDlgItemText(*this, IDC_EXCLUDEDIRSPATTERN, wstring(m_regExcludeDirsPattern).c_str());
 
 			SetFocus(GetDlgItem(hwndDlg, IDC_SEARCHTEXT));
 
@@ -230,10 +237,16 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			m_resizer.AddControl(hwndDlg, IDC_INCLUDEHIDDEN, RESIZER_TOPLEFT);
 			m_resizer.AddControl(hwndDlg, IDC_INCLUDESUBFOLDERS, RESIZER_TOPLEFT);
 			m_resizer.AddControl(hwndDlg, IDC_INCLUDEBINARY, RESIZER_TOPLEFT);
+
 			m_resizer.AddControl(hwndDlg, IDC_PATTERNLABEL, RESIZER_TOPLEFT);
 			m_resizer.AddControl(hwndDlg, IDC_PATTERN, RESIZER_TOPLEFTRIGHT);
+
+			m_resizer.AddControl(hwndDlg, IDC_EXCLUDE_DIRS_PATTERNLABEL, RESIZER_TOPLEFT);
+			m_resizer.AddControl(hwndDlg, IDC_EXCLUDEDIRSPATTERN, RESIZER_TOPLEFTRIGHT);
+
 			m_resizer.AddControl(hwndDlg, IDC_FILEPATTERNREGEX, RESIZER_TOPLEFT);
 			m_resizer.AddControl(hwndDlg, IDC_FILEPATTERNTEXT, RESIZER_TOPLEFT);
+
 			m_resizer.AddControl(hwndDlg, IDC_REPLACE, RESIZER_TOPRIGHT);
 			m_resizer.AddControl(hwndDlg, IDOK, RESIZER_TOPRIGHT);
 			m_resizer.AddControl(hwndDlg, IDC_GROUPSEARCHRESULTS, RESIZER_TOPLEFTBOTTOMRIGHT);
@@ -403,6 +416,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 				InitResultList();
 
 				m_AutoCompleteFilePatterns.AddEntry(m_patternregex.c_str());
+				m_AutoCompleteExcludeDirsPatterns.AddEntry(m_excludedirspatternregex.c_str());
 				m_AutoCompleteSearchPatterns.AddEntry(m_searchString.c_str());
 				m_AutoCompleteReplacePatterns.AddEntry(m_replaceString.c_str());
 
@@ -508,8 +522,18 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 				EnableWindow(GetDlgItem(*this, IDC_INCLUDESUBFOLDERS), bIsDir);
 				EnableWindow(GetDlgItem(*this, IDC_INCLUDEBINARY), bIsDir && len > 0);
 				EnableWindow(GetDlgItem(*this, IDC_PATTERN), bIsDir);
+				EnableWindow(GetDlgItem(*this, IDC_EXCLUDEDIRSPATTERN), bIsDir);
 				EnableWindow(GetDlgItem(*this, IDC_FILEPATTERNREGEX), bIsDir);
 				EnableWindow(GetDlgItem(*this, IDC_FILEPATTERNTEXT), bIsDir);
+			}
+		}
+		break;
+	case IDC_INCLUDESUBFOLDERS:
+		{
+			if (msg == BN_CLICKED)
+			{
+				bool bIncludeSubfolders = (IsDlgButtonChecked(*this, IDC_INCLUDESUBFOLDERS) == BST_CHECKED);
+				EnableWindow(GetDlgItem(*this, IDC_EXCLUDEDIRSPATTERN), bIncludeSubfolders);
 			}
 		}
 		break;
@@ -925,18 +949,41 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
 	}
 }
 
+bool grepWin_is_regex_valid(const wstring& m_searchString)
+{
+	// check if the regex is valid
+	bool bValid = true;
+	try
+	{
+		boost::wregex expression = boost::wregex(m_searchString);
+	}
+	catch (const exception&)
+	{
+		bValid = false;
+	}
+	return bValid;
+}
+
 bool CSearchDlg::SaveSettings()
 {
 	// get all the information we need from the dialog
 	TCHAR buf[MAX_PATH*4] = {0};
+
 	GetDlgItemText(*this, IDC_SEARCHPATH, buf, MAX_PATH*4);
 	m_searchpath = buf;
+
 	GetDlgItemText(*this, IDC_SEARCHTEXT, buf, MAX_PATH*4);
 	m_searchString = buf;
+
 	GetDlgItemText(*this, IDC_REPLACETEXT, buf, MAX_PATH*4);
 	m_replaceString = buf;
+
 	GetDlgItemText(*this, IDC_PATTERN, buf, MAX_PATH*4);
 	m_patternregex = buf;
+
+	GetDlgItemText(*this, IDC_EXCLUDEDIRSPATTERN, buf, MAX_PATH*4);
+	m_excludedirspatternregex = buf;
+	
 	// split the pattern string into single patterns and
 	// add them to an array
 	TCHAR * pBuf = buf;
@@ -963,33 +1010,26 @@ bool CSearchDlg::SaveSettings()
 	if (m_bUseRegex)
 	{
 		// check if the regex is valid before doing the search
-		bool bValid = true;
-		try
+		if( !grepWin_is_regex_valid(m_searchString) && !m_searchString.empty() )
 		{
-			boost::wregex expression = boost::wregex(m_searchString);
-		}
-		catch (const exception&)
-		{
-			bValid = false;
-		}
-		if ((!bValid)&&(!m_searchString.empty()))
 			return false;
+		}
 	}
 	m_bUseRegexForPaths = (IsDlgButtonChecked(*this, IDC_FILEPATTERNREGEX) == BST_CHECKED);
+	m_regUseRegexForPaths = (DWORD)m_bUseRegexForPaths;
 	if (m_bUseRegexForPaths)
 	{
 		// check if the regex is valid before doing the search
-		bool bValid = true;
-		try
+		if( !grepWin_is_regex_valid(m_patternregex) && !m_patternregex.empty() )
 		{
-			boost::wregex expression = boost::wregex(m_patternregex);
-		}
-		catch (const exception&)
-		{
-			bValid = false;
-		}
-		if (!bValid)
 			return false;
+		}
+	}
+
+	// check if the Exclude Dirs regex is valid before doing the search
+	if( !grepWin_is_regex_valid(m_excludedirspatternregex) && !m_excludedirspatternregex.empty() )
+	{
+		return false;
 	}
 
 	m_bAllSize = (IsDlgButtonChecked(*this, IDC_ALLSIZERADIO) == BST_CHECKED);
@@ -1023,6 +1063,7 @@ bool CSearchDlg::SaveSettings()
 	m_regCaseSensitive = (DWORD)m_bCaseSensitive;
 	m_regDotMatchesNewline = (DWORD)m_bDotMatchesNewline;
 	m_regPattern = m_patternregex;
+	m_regExcludeDirsPattern = m_excludedirspatternregex;
 
 	SaveWndPosition();
 
@@ -1095,6 +1136,24 @@ bool CSearchDlg::PathCompareDesc(const CSearchInfo Entry1, const CSearchInfo Ent
 bool CSearchDlg::EncodingCompareDesc(const CSearchInfo Entry1, const CSearchInfo Entry2)
 {
 	return Entry1.encoding > Entry2.encoding;
+}
+
+bool grepWin_match_i(const wstring& the_regex, const TCHAR *pText)
+{
+	try
+	{
+		boost::wregex expression = boost::wregex(the_regex, boost::regex::normal|boost::regbase::icase);
+		boost::wcmatch whatc;
+		if (boost::regex_match(pText, whatc, expression))
+		{
+			return true;
+		}
+	}
+	catch (const exception&)
+	{
+
+	}
+	return false;
 }
 
 DWORD CSearchDlg::SearchThread()
@@ -1208,18 +1267,9 @@ DWORD CSearchDlg::SearchThread()
                         pName++;    // skip the last '\\' char
 					if (m_bUseRegexForPaths)
 					{
-						try
+						if( grepWin_match_i(m_patternregex, pName) )
 						{
-							boost::wregex expression = boost::wregex(m_patternregex, boost::regex::normal|boost::regbase::icase);
-							boost::wcmatch whatc;
-							if (boost::regex_match(pName, whatc, expression))
-							{
-								bPattern = true;
-							}
-						}
-						catch (const exception&)
-						{
-
+							bPattern = true;
 						}
 					}
 					else
@@ -1260,6 +1310,8 @@ DWORD CSearchDlg::SearchThread()
 					const WIN32_FIND_DATA * pFindData = fileEnumerator.GetFileInfo();
 					bool bSearch = ((m_bIncludeHidden)||((pFindData->dwFileAttributes & FILE_ATTRIBUTE_HIDDEN) == 0));
 					bSearch = bSearch && ((m_bIncludeSystem)||((pFindData->dwFileAttributes & FILE_ATTRIBUTE_SYSTEM) == 0));
+					bool bExcludeDir = bSearch && m_excludedirspatternregex.size() && grepWin_match_i(m_excludedirspatternregex, pFindData->cFileName);
+					bSearch = bSearch && !bExcludeDir;
 					bRecurse = ((bIsDirectory)&&(m_bIncludeSubfolders)&&(bSearch));
 				}
 				bAlwaysSearch = false;
