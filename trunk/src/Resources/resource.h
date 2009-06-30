@@ -46,8 +46,10 @@
 #define IDC_NAME                        1037
 #define IDC_PATTERNLABEL                1039
 #define IDC_PATTERN                     1040
+#define IDC_EXCLUDE_DIRS_PATTERNLABEL   1041
 #define IDC_CASE_SENSITIVE              1042
 #define IDC_VERSIONINFO                 1043
+#define IDC_EXCLUDEDIRSPATTERN          1043
 #define IDC_DATE                        1044
 #define IDC_WEBLINK                     1045
 #define IDC_FILEPATTERNREGEX            1046

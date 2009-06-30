@@ -86,6 +86,7 @@ private:
 	wstring					m_replaceString;
 	vector<wstring>			m_patterns;
 	wstring					m_patternregex;
+	wstring					m_excludedirspatternregex;
 	bool					m_bUseRegex;
 	bool					m_bUseRegexForPaths;
 	bool					m_bAllSize;
@@ -118,6 +119,7 @@ private:
 	static UINT				GREPWIN_STARTUPMSG;
 
 	CAutoComplete			m_AutoCompleteFilePatterns;
+	CAutoComplete			m_AutoCompleteExcludeDirsPatterns;
 	CAutoComplete			m_AutoCompleteSearchPatterns;
 	CAutoComplete			m_AutoCompleteReplacePatterns;
 	CRegStdWORD				m_regUseRegex;
@@ -132,6 +134,8 @@ private:
 	CRegStdWORD				m_regUTF8;
 	CRegStdWORD				m_regCaseSensitive;
 	CRegStdWORD				m_regDotMatchesNewline;
+	CRegStdWORD				m_regUseRegexForPaths;
 	CRegStdString			m_regPattern;
+	CRegStdString			m_regExcludeDirsPattern;
 	CRegStdString			m_regSearchPath;
 };
