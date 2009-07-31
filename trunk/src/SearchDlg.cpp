@@ -42,7 +42,7 @@
 #include <Commdlg.h>
 
 #include <boost/regex.hpp>
-#include <boost/spirit/iterator/file_iterator.hpp>
+#include <boost/spirit/include/classic_file_iterator.hpp>
 using namespace std;
 
 DWORD WINAPI SearchThreadEntry(LPVOID lpParam);
@@ -1451,9 +1451,9 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
 				searchfor += CUnicodeUtils::StdGetUTF8(searchString);
 				searchfor += "\\E";
 			}
-			boost::spirit::file_iterator<> start(filepath.c_str());
-			boost::spirit::file_iterator<> fbeg = start;
-			boost::spirit::file_iterator<> end = start.make_end();
+			boost::spirit::classic::file_iterator<> start(filepath.c_str());
+			boost::spirit::classic::file_iterator<> fbeg = start;
+			boost::spirit::classic::file_iterator<> end = start.make_end();
 
 			boost::match_results<string::const_iterator> what;
 			boost::match_flag_type flags = boost::match_default;
@@ -1462,7 +1462,7 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
 			try
 			{
 				boost::regex expression = boost::regex(searchfor);
-				boost::match_results<boost::spirit::file_iterator<>> whatc;
+				boost::match_results<boost::spirit::classic::file_iterator<>> whatc;
 				while (boost::regex_search(start, end, whatc, expression, flags))   
 				{
 					nFound++;
