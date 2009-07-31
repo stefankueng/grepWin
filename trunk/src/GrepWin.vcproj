@@ -469,6 +469,10 @@
 				RelativePath="..\versioninfo.build"
 				>
 			</File>
+			<File
+				RelativePath=".\Setup\WixUI_Custom.wxs"
+				>
+			</File>
 		</Filter>
 		<File
 			RelativePath=".\Resources\infodlg.htm"
