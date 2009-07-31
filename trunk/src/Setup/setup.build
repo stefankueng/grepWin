@@ -1,45 +1,46 @@
 <?xml version="1.0"?>
 <project name="setup" default="setup">
 
-	<target name="setup">
-		<property name="verstring" value="${environment::get-variable('MajorVersion')}.${environment::get-variable('MinorVersion')}.${environment::get-variable('MicroVersion')}" />
-		<property name="msifilename" value="grepWin-${verstring}" />
-		<!-- sign all release binaries -->
-		<if test="${file::exists('..\..\signinfo.txt')}">
-			<exec program="signtool">
-				<arg value="sign" />
-				<arg value="${signinfo}" />
-				<arg value="..\..\bin\release\GrepWin.exe" />
-			</exec>
-		</if>
-		<exec program="candle">
-			<arg value="-nologo" />
-			<arg value="-out" />
-			<arg value="..\..\bin\" />
-			<arg value="Setup.wxs" />
-			<arg value="WixUI_Custom.wxs" />
-		</exec>
-		<exec program="light">
-			<arg value="-nologo" />
-			<arg value="-out" />
-			<arg value="..\..\bin\${msifilename}.msi" />
-			<arg value="..\..\bin\Setup.wixobj" />
-			<arg value="..\..\bin\WixUI_Custom.wixobj" />
-			<arg value="${environment::get-variable('WIXUI')}\WixUI.wixlib" />
-			<arg value="-loc" />
-			<arg value="${environment::get-variable('WIXUI')}\WixUI_en-us.wxl" />
-		</exec>
-		<delete>
-			<fileset>
-				<include name="..\..\bin\*.wixobj" />
-			</fileset>
-		</delete>
-		<if test="${file::exists('..\..\signinfo.txt')}">
-			<exec program="signtool">
-				<arg value="sign" />
-				<arg value="${signinfo}" />
-				<arg value="..\..\bin\${msifilename}.msi" />
-			</exec>
-		</if>
-	</target>
+  <target name="setup">
+    <property name="verstring" value="${environment::get-variable('MajorVersion')}.${environment::get-variable('MinorVersion')}.${environment::get-variable('MicroVersion')}" />
+    <property name="msifilename" value="grepWin-${verstring}" />
+    <!-- sign all release binaries -->
+    <if test="${file::exists('..\..\signinfo.txt')}">
+      <exec program="signtool">
+        <arg value="sign" />
+        <arg value="${signinfo}" />
+        <arg value="..\..\bin\release\GrepWin.exe" />
+      </exec>
+    </if>
+    <exec program="candle">
+      <arg value="-nologo" />
+      <arg value="-out" />
+      <arg value="..\..\bin\" />
+      <arg value="Setup.wxs" />
+      <arg value="WixUI_Custom.wxs" />
+    </exec>
+    <exec program="light">
+      <arg value="-nologo" />
+      <arg value="-ext" />
+      <arg value="WixUIExtension" />
+      <arg value="-cultures:en-us" />
+      <arg value="-out" />
+      <arg value="..\..\bin\${msifilename}.msi" />
+      <arg value="..\..\bin\Setup.wixobj" />
+      <arg value="..\..\bin\WixUI_Custom.wixobj" />
+    </exec>
+    <delete>
+      <fileset>
+        <include name="..\..\bin\*.wixobj" />
+        <include name="..\..\bin\*.wixpdb" />
+      </fileset>
+    </delete>
+    <if test="${file::exists('..\..\signinfo.txt')}">
+      <exec program="signtool">
+        <arg value="sign" />
+        <arg value="${signinfo}" />
+        <arg value="..\..\bin\${msifilename}.msi" />
+      </exec>
+    </if>
+  </target>
 </project>
