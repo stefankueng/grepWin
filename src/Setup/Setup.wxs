@@ -1,77 +1,85 @@
 <?xml version='1.0' encoding='windows-1252'?>
-<Wix xmlns='http://schemas.microsoft.com/wix/2003/01/wi'>
-	<Product
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
+  <Product
 	UpgradeCode="C8EC878C-5B8A-4208-9670-64313B180089"
 	Name='grepWin'
-	Id='????????-????-????-????-????????????'
+	Id='*'
 	Language='1033'
 	Codepage='1252'
 	Version='1.3.4'
 	Manufacturer='Stefans Tools'>
 
-		<Package Id='????????-????-????-????-????????????' Keywords='Installer'
+    <Package Id='*' Keywords='Installer'
 		  Description="Stefans grepWin"
 		  Comments='http://tools.tortoisesvn.net' Manufacturer='Stefans Tools'
 		  InstallerVersion='200' Languages='1033' Compressed='yes' SummaryCodepage='1252' />
 
-		<Upgrade Id="C8EC878C-5B8A-4208-9670-64313B180089" >
-			<!-- flag is set if the install will trigger an upgrade of an existing install -->
-			<UpgradeVersion Property="PREVIOUSVERSIONSINSTALLED" Maximum="1.3.4" IncludeMaximum="no" />
-		</Upgrade>
+    <Upgrade Id="C8EC878C-5B8A-4208-9670-64313B180089" >
+      <!-- flag is set if the install will trigger an upgrade of an existing install -->
+      <UpgradeVersion Property="PREVIOUSVERSIONSINSTALLED" Maximum="1.3.4" IncludeMaximum="no" />
+    </Upgrade>
 
-		<Media Id='1' Cabinet='grepWin.cab' EmbedCab='yes' />
-		<Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR" />
-		<Condition Message='This application only runs on Windows 2000 and later.'>VersionNT &gt;= 500</Condition>
+    <Media Id='1' Cabinet='grepWin.cab' EmbedCab='yes' />
+    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR" />
+    <Condition Message='This application only runs on Windows 2000 and later.'>VersionNT &gt;= 500</Condition>
 
-		<Property Id="INSTALLDIR">
-			<RegistrySearch Id="PreviousInstallLocationRegistrySearch" Root="HKCU" Key="Software\grepWin" Name="installDir" Type="raw" />
-		</Property>
+    <Property Id="INSTALLDIR">
+      <RegistrySearch Id="PreviousInstallLocationRegistrySearch" Root="HKCU" Key="Software\grepWin" Name="installDir" Type="raw" />
+    </Property>
 
-		<Directory Id='TARGETDIR' Name='SourceDir'>
-			<Directory Id='ProgramFilesFolder' Name='PFiles'>
-				<Directory Id='INSTALLDIR' Name='grepWin' LongName='grepWin'>
+    <Directory Id='TARGETDIR' Name='SourceDir'>
+      <Directory Id='ProgramFilesFolder' Name='PFiles'>
+        <Directory Id='INSTALLDIR' Name='grepWin'>
 
-					<Component Id='MainEXE' Guid='A9818B4B-B626-4455-AA31-588EAFAFA213'>
-						<File Id='grepWin.EXE' Name='grepWin.exe' LongName='grepWin.exe' DiskId='1' Source='../../bin/release/grepWin.exe' Vital='yes'>
-						</File>
-						<Registry Root="HKMU" Key="Software\Classes\Directory\shell\grepWin..." Action="createKeyAndRemoveKeyOnUninstall" />
-						<Registry Root="HKMU" Key="Software\Classes\Directory\shell\grepWin...\command" Value='[INSTALLDIR]grepWin.exe /searchpath:"%1"' Type="string" />
-						<Registry Root="HKMU" Key="Software\Classes\Directory\Background\shell\grepWin..." Action="createKeyAndRemoveKeyOnUninstall" />
-						<Registry Root="HKMU" Key="Software\Classes\Directory\Background\shell\grepWin...\command" Value='[INSTALLDIR]grepWin.exe /searchpath:"%V"' Type="string" />
-						<Registry Root="HKMU" Key="Software\Classes\Folder\shell\grepWin..." Action="createKeyAndRemoveKeyOnUninstall" />
-						<Registry Root="HKMU" Key="Software\Classes\Folder\shell\grepWin...\command" Value='[INSTALLDIR]grepWin.exe /searchpath:"%1"' Type="string" />
-						<Registry Root="HKMU" Key="Software\Classes\Drive\shell\grepWin..." Action="createKeyAndRemoveKeyOnUninstall" />
-						<Registry Root="HKMU" Key="Software\Classes\Drive\shell\grepWin...\command" Value='[INSTALLDIR]grepWin.exe /searchpath:"%1"' Type="string" />
-						<Registry Root="HKMU" Key="Software\Classes\*\shell\grepWin..." Action="createKeyAndRemoveKeyOnUninstall" />
-						<Registry Root="HKMU" Key="Software\Classes\*\shell\grepWin...\command" Value='[INSTALLDIR]grepWin.exe /searchpath:"%1"' Type="string" />
-						<Shortcut Id="startMenugrepWin" Directory="ProgramMenuDir" Name="grepWin" LongName="grepWin" Target="[INSTALLDIR]grepWin.exe" Description="regular expression search and replace" />
-						<!-- <Shortcut Id="startMenugrepWinAbout" Directory="ProgramMenuDir" Name="about" LongName="About grepWin" Target="[INSTALLDIR]grepWin.exe" Arguments="/about" Description="regular expression search and replace" /> -->
-						<Registry Root="HKMU" Key="Software\grepWin" Name="installDir" Value='[INSTALLDIR]' Type="string" />
-					</Component>
+          <Component Id='MainEXE' Guid='A9818B4B-B626-4455-AA31-588EAFAFA213'>
+            <File Id='grepWin.EXE' Name='grepWin.exe' DiskId='1' Source='../../bin/release/grepWin.exe' Vital='yes'>
+            </File>
+            <RegistryKey Root="HKLM" Key="Software\Classes\Directory\shell\grepWin..." Action="createAndRemoveOnUninstall" />
+            <RegistryValue Root="HKLM" Key="Software\Classes\Directory\shell\grepWin...\command" Value='[INSTALLDIR]grepWin.exe /searchpath:"%1"' Type="string" />
+            <RegistryKey Root="HKLM" Key="Software\Classes\Directory\Background\shell\grepWin..." Action="createAndRemoveOnUninstall" />
+            <RegistryValue Root="HKLM" Key="Software\Classes\Directory\Background\shell\grepWin...\command" Value='[INSTALLDIR]grepWin.exe /searchpath:"%V"' Type="string" />
+            <RegistryKey Root="HKLM" Key="Software\Classes\Folder\shell\grepWin..." Action="createAndRemoveOnUninstall" />
+            <RegistryValue Root="HKLM" Key="Software\Classes\Folder\shell\grepWin...\command" Value='[INSTALLDIR]grepWin.exe /searchpath:"%1"' Type="string" />
+            <RegistryKey Root="HKLM" Key="Software\Classes\Drive\shell\grepWin..." Action="createAndRemoveOnUninstall" />
+            <RegistryValue Root="HKLM" Key="Software\Classes\Drive\shell\grepWin...\command" Value='[INSTALLDIR]grepWin.exe /searchpath:"%1"' Type="string" />
+            <RegistryKey Root="HKLM" Key="Software\Classes\*\shell\grepWin..." Action="createAndRemoveOnUninstall" />
+            <RegistryValue Root="HKLM" Key="Software\Classes\*\shell\grepWin...\command" Value='[INSTALLDIR]grepWin.exe /searchpath:"%1"' Type="string" />
+            <RegistryValue Root="HKLM" Key="Software\grepWin" Name="installDir" Value='[INSTALLDIR]' Type="string" />
+          </Component>
 
-				</Directory>
-			</Directory>
+        </Directory>
+        <Directory Id="ProgramMenuFolder" Name="Programs">
+          <Directory Id="ProgramMenuDir" Name="grepWin" />
+        </Directory>
+      </Directory>
 
-			<Directory Id="ProgramMenuFolder" Name="PMenu" LongName="Programs">
-				<Directory Id="ProgramMenuDir" Name='grepWin' LongName="grepWin" />
-			</Directory>
-		</Directory>
+    </Directory>
+    <DirectoryRef Id="ProgramMenuDir">
+      <Component Id="StartMenuShortCut" Guid='83F25E6F-0EE0-4ca8-BF92-FCAD9709037E'>
+        <Shortcut Id="startMenugrepWin" Directory="ProgramMenuDir" Name="grepWin" Target="[INSTALLDIR]grepWin.exe" Description="regular expression search" />
+        <RemoveFolder Id="ProgramMenuDir" On="uninstall"/>
+        <RegistryValue Root="HKCU" Key="Software\grepWin" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+      </Component>
+    </DirectoryRef>
 
-		<Feature Id='Complete' Title='grepWin' Description='The complete package.'
+    <Feature Id='Complete' Title='grepWin' Description='The complete package.'
 		  Display='expand' Level='1' ConfigurableDirectory='INSTALLDIR'>
-			<Feature Id='MainEXE' Title='Program' Description='The main executable.' Level='1'>
-				<ComponentRef Id='MainEXE' />
-			</Feature>
-		</Feature>
+      <Feature Id='MainEXE' Title='Program' Description='The main executable.' Level='1'>
+        <ComponentRef Id='MainEXE' />
+        <ComponentRef Id='StartMenuShortCut' />
+      </Feature>
+    </Feature>
 
-		<UIRef Id="WixUI_Custom" />
-		<UIRef Id="WixUI_ErrorProgressText" />
+    <UIRef Id="WixUI_InstallDir" />
+    <WixVariable Id="WixUILicenseRtf" Value="License.rtf" />
+    <WixVariable Id="WixUIBannerBmp" Value="Banner.jpg" />
+    <WixVariable Id="WixUIDialogBmp" Value="Dialog.jpg" />
 
-		<InstallExecuteSequence>
-			<AppSearch Sequence="1"></AppSearch>
-			<LaunchConditions After="AppSearch" />
-			<RemoveExistingProducts After="InstallValidate"><![CDATA[PREVIOUSVERSIONSINSTALLED]]></RemoveExistingProducts>
-		</InstallExecuteSequence>
+    <InstallExecuteSequence>
+      <AppSearch Sequence="1"></AppSearch>
+      <LaunchConditions After="AppSearch" />
+      <RemoveExistingProducts After="InstallValidate"><![CDATA[PREVIOUSVERSIONSINSTALLED]]></RemoveExistingProducts>
+    </InstallExecuteSequence>
 
-	</Product>
+  </Product>
 </Wix>
