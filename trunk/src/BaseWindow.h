@@ -19,7 +19,6 @@
 #pragma once
 #include <string>
 
-using namespace std;
 
 /**
  * Loads a string from the application resources.
@@ -57,6 +56,13 @@ public:
 		sWindowTitle = sTitle;
 	};
 
+	void SetRegistryPath(const std::wstring& sPath)
+	{
+		size_t slashPos = sPath.find_last_of('\\');
+		sRegistryPath = sPath.substr(0, slashPos);
+		sRegistryValue = sPath.substr(slashPos+1);
+	}
+
 	/**
 	 * Sets the transparency of the window.
 	 * \remark note that this also sets the WS_EX_LAYERED style!
@@ -77,11 +83,15 @@ protected:
 	bool bWindowClosed;
 	std::wstring sClassName;
 	std::wstring sWindowTitle;
+	std::wstring sRegistryPath;
+	std::wstring sRegistryValue;
+	bool bWindowRestored;
 
 	//constructor 
 	CWindow(HINSTANCE hInst, CONST WNDCLASSEX* wcx = NULL) : m_hwnd(NULL)
 		, hResource(NULL)
 		, bWindowClosed(FALSE)
+		, bWindowRestored(false)
 	{
 		hResource = hInst; 
 		if (wcx != NULL)
