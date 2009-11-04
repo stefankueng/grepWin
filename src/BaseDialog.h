@@ -55,7 +55,7 @@ protected:
 private:
 	bool		m_bPseudoModal;
 	bool		m_bPseudoEnded;
-	int			m_iPseudoRet;
+	INT_PTR		m_iPseudoRet;
 	HWND		m_hToolTips;
 };
 
