@@ -477,7 +477,10 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 			GetDlgItemText(*this, IDC_REPLACETEXT, buf, MAX_PATH*4);
 			m_replaceString = buf;
 
+			SaveSettings();
 			CRegexTestDlg dlg(*this);
+			dlg.bCaseSensitive = m_bCaseSensitive;
+			dlg.bDotMatchesNewline = m_bDotMatchesNewline;
 			dlg.SetStrings(m_searchString, m_replaceString);
 			if (dlg.DoModal(hResource, IDD_REGEXTEST, *this) == IDOK)
 			{

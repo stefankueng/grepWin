@@ -171,9 +171,14 @@ void CRegexTestDlg::DoRegex()
 			boost::match_results<wstring::const_iterator> what;
 			try
 			{
-				boost::wregex expression = boost::wregex(m_searchText);
+				int ft = boost::regex::normal;
+				if (!bCaseSensitive)
+					ft |= boost::regbase::icase;
+				boost::wregex expression = boost::wregex(m_searchText, ft);
 				boost::match_results<wstring::const_iterator> whatc;
 				boost::match_flag_type flags = boost::match_default;
+				if (!bDotMatchesNewline)
+					flags |= boost::match_not_dot_newline;
 				while (boost::regex_search(start, end, whatc, expression, flags))   
 				{
 					if (!searchresult.empty())
@@ -183,6 +188,8 @@ void CRegexTestDlg::DoRegex()
 					if (!m_searchText.empty())
 					{
 						boost::match_flag_type rflags = boost::match_default|boost::format_all;
+						if (!bDotMatchesNewline)
+							rflags |= boost::match_not_dot_newline;
 						wstring replaced = boost::regex_replace(c, expression, m_replaceText, rflags);
 						if (!replaceresult.empty())
 							replaceresult = replaceresult + _T("\r\n----------------------------\r\n");
