@@ -126,6 +126,7 @@ private:
 	CAutoComplete			m_AutoCompleteExcludeDirsPatterns;
 	CAutoComplete			m_AutoCompleteSearchPatterns;
 	CAutoComplete			m_AutoCompleteReplacePatterns;
+	CAutoComplete			m_AutoCompleteSearchPaths;
 	CRegStdWORD				m_regUseRegex;
 	CRegStdWORD				m_regAllSize;
 	CRegStdWORD				m_regSize;
