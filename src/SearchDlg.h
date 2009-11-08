@@ -47,7 +47,10 @@ public:
 
 	DWORD					SearchThread();
 	void					SetSearchPath(const wstring& path) {m_searchpath = path;}
-
+	void					SetSearchString(const wstring& search) {m_searchString = search;}
+	void					SetFileMask(const wstring& mask, bool reg) {m_patternregex = mask; m_bUseRegexForPaths = reg;} 
+	void					SetExcludeFileMask(const wstring& mask) {m_excludedirspatternregex = mask;} 
+	void					SetExecute(bool execute) {m_bExecuteImmediately = execute;}
 protected:
 	LRESULT CALLBACK		DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 	LRESULT					DoCommand(int id, int msg);
@@ -100,6 +103,7 @@ private:
 	bool					m_bUTF8;
 	bool					m_bCaseSensitive;
 	bool					m_bDotMatchesNewline;
+	bool					m_bExecuteImmediately;
 
 	bool					m_bReplace;
 	HANDLE					m_hSearchThread;
