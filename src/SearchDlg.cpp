@@ -151,6 +151,8 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			m_AutoCompleteSearchPatterns.Init(GetDlgItem(hwndDlg, IDC_SEARCHTEXT));
 			m_AutoCompleteReplacePatterns.Load(_T("Software\\grepWin\\History"), _T("ReplacePattern"));
 			m_AutoCompleteReplacePatterns.Init(GetDlgItem(hwndDlg, IDC_REPLACETEXT));
+			m_AutoCompleteSearchPaths.Load(_T("Software\\grepWin\\History"), _T("SearchPaths"));
+			m_AutoCompleteSearchPaths.Init(GetDlgItem(hwndDlg, IDC_SEARCHPATH));
 
 			// add an "About" entry to the system menu
 			HMENU hSysMenu = GetSystemMenu(hwndDlg, FALSE);
@@ -426,6 +428,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 				m_AutoCompleteExcludeDirsPatterns.AddEntry(m_excludedirspatternregex.c_str());
 				m_AutoCompleteSearchPatterns.AddEntry(m_searchString.c_str());
 				m_AutoCompleteReplacePatterns.AddEntry(m_replaceString.c_str());
+				m_AutoCompleteSearchPaths.AddEntry(m_searchpath.c_str());
 
 				m_bReplace = id == IDC_REPLACE;
 
@@ -472,6 +475,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 			m_AutoCompleteFilePatterns.Save();
 			m_AutoCompleteSearchPatterns.Save();
 			m_AutoCompleteReplacePatterns.Save();
+			m_AutoCompleteSearchPaths.Save();
 			EndDialog(*this, id);
 		}
 		break;
@@ -851,6 +855,7 @@ bool CSearchDlg::PreTranslateMessage(MSG* pMsg)
 				m_AutoCompleteFilePatterns.RemoveSelected();
 				m_AutoCompleteSearchPatterns.RemoveSelected();
 				m_AutoCompleteReplacePatterns.RemoveSelected();
+				m_AutoCompleteSearchPaths.RemoveSelected();
 			}
 			break;
 		}
