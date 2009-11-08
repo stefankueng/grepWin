@@ -870,6 +870,7 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
 			shExInfo.hwnd = *this;
 			shExInfo.lpFile = m_items[lpNMItemActivate->iItem].filepath.c_str();
 			shExInfo.nShow = SW_SHOW;
+			shExInfo.lpVerb = _T("edit");
 			ShellExecuteEx(&shExInfo);
 		}
 	}
