@@ -56,6 +56,7 @@ CSearchDlg::CSearchDlg(HWND hParent) : m_searchedItems(0)
 	, m_bAscending(true)
 	, m_pDropTarget(NULL)
 	, m_hParent(hParent)
+	, m_bExecuteImmediately(false)
 	, m_regUseRegex(_T("Software\\grepWin\\UseRegex"), 1)
 	, m_regAllSize(_T("Software\\grepWin\\AllSize"))
 	, m_regSize(_T("Software\\grepWin\\Size"), 2000)
@@ -123,6 +124,9 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 
 			// initialize the controls
 			SetDlgItemText(hwndDlg, IDC_SEARCHPATH, m_searchpath.c_str());
+			SetDlgItemText(hwndDlg, IDC_SEARCHTEXT, m_searchString.c_str());
+			SetDlgItemText(hwndDlg, IDC_EXCLUDEDIRSPATTERN, m_excludedirspatternregex.c_str());
+			SetDlgItemText(hwndDlg, IDC_PATTERN, m_patternregex.c_str());
 
 			// the path edit control should work as a drop target for files and folders
 			HWND hSearchPath = GetDlgItem(hwndDlg, IDC_SEARCHPATH);
@@ -189,7 +193,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 
 			CheckRadioButton(hwndDlg, IDC_REGEXRADIO, IDC_TEXTRADIO, DWORD(m_regUseRegex) ? IDC_REGEXRADIO : IDC_TEXTRADIO);
 			CheckRadioButton(hwndDlg, IDC_ALLSIZERADIO, IDC_SIZERADIO, DWORD(m_regAllSize) ? IDC_ALLSIZERADIO : IDC_SIZERADIO);
-			CheckRadioButton(hwndDlg, IDC_FILEPATTERNREGEX, IDC_FILEPATTERNTEXT, DWORD(m_regUseRegexForPaths) ? IDC_FILEPATTERNREGEX : IDC_FILEPATTERNTEXT);
+			CheckRadioButton(hwndDlg, IDC_FILEPATTERNREGEX, IDC_FILEPATTERNTEXT, DWORD(m_regUseRegexForPaths)||m_bUseRegexForPaths ? IDC_FILEPATTERNREGEX : IDC_FILEPATTERNTEXT);
 
 			EnableWindow(GetDlgItem(*this, IDC_ADDTOBOOKMARKS), FALSE);
 			EnableWindow(GetDlgItem(*this, IDC_EXCLUDEDIRSPATTERN), DWORD(m_regIncludeSubfolders));
@@ -279,8 +283,11 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 
 			CRegStdWORD regMaximized(_T("Software\\grepWin\\Maximized"));
 			if( DWORD(regMaximized) )
-				ShowWindow(*this, SW_MAXIMIZE);				
-
+				ShowWindow(*this, SW_MAXIMIZE);
+			if (m_bExecuteImmediately)
+			{
+				DoCommand(IDOK, 0);
+			}
 		}
 		return FALSE;
 	case WM_COMMAND:
@@ -981,11 +988,11 @@ bool CSearchDlg::SaveSettings()
 	GetDlgItemText(*this, IDC_REPLACETEXT, buf, MAX_PATH*4);
 	m_replaceString = buf;
 
-	GetDlgItemText(*this, IDC_PATTERN, buf, MAX_PATH*4);
-	m_patternregex = buf;
-
 	GetDlgItemText(*this, IDC_EXCLUDEDIRSPATTERN, buf, MAX_PATH*4);
 	m_excludedirspatternregex = buf;
+
+	GetDlgItemText(*this, IDC_PATTERN, buf, MAX_PATH*4);
+	m_patternregex = buf;
 	
 	// split the pattern string into single patterns and
 	// add them to an array

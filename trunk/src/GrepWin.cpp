@@ -79,6 +79,16 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 			CSearchDlg searchDlg(NULL);
 			if (parser.HasVal(_T("searchpath")))
 				searchDlg.SetSearchPath(parser.GetVal(_T("searchpath")));
+			if (parser.HasVal(_T("searchfor")))
+				searchDlg.SetSearchString(parser.GetVal(_T("searchfor")));
+			if (parser.HasVal(_T("filemaskregex")))
+				searchDlg.SetFileMask(parser.GetVal(_T("filemaskregex")), true);
+			if (parser.HasVal(_T("filemaskregex")))
+				searchDlg.SetFileMask(parser.GetVal(_T("filemask")), false);
+			if (parser.HasVal(_T("filemaskexclude")))
+				searchDlg.SetExcludeFileMask(parser.GetVal(_T("filemaskexclude")));
+			if (parser.HasKey(_T("execute")))
+				searchDlg.SetExecute(true);
 			ret = searchDlg.DoModal(hInstance, IDD_SEARCHDLG, NULL, IDR_SEARCHDLG);
 		}
 	}
