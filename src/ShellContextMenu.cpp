@@ -19,8 +19,9 @@
 #include "stdafx.h"
 #include "ShellContextMenu.h"
 #include "shellapi.h"
+#include "StringUtils.h"
 
-#define MIN_ID 3
+#define MIN_ID 5
 #define MAX_ID 10000
 
 IContextMenu2 * g_IContext2 = NULL;
@@ -142,7 +143,15 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
 	if (m_strVector.size() == 1)
 	{
 		::InsertMenu(m_Menu, 1, MF_BYPOSITION | MF_STRING, 1, _T("Open Containing Folder"));
-		::InsertMenu(m_Menu, 2, MF_SEPARATOR|MF_BYPOSITION, 0, NULL);
+		::InsertMenu(m_Menu, 2, MF_BYPOSITION | MF_STRING, 2, _T("Copy path(s) to clipboard"));
+		::InsertMenu(m_Menu, 3, MF_BYPOSITION | MF_STRING, 3, _T("Copy filename(s) to clipboard"));
+		::InsertMenu(m_Menu, 4, MF_SEPARATOR|MF_BYPOSITION, 0, NULL);
+	}
+	else if (m_strVector.size() > 1)
+	{
+		::InsertMenu(m_Menu, 2, MF_BYPOSITION | MF_STRING, 2, _T("Copy path(s) to clipboard"));
+		::InsertMenu(m_Menu, 3, MF_BYPOSITION | MF_STRING, 3, _T("Copy filename(s) to clipboard"));
+		::InsertMenu(m_Menu, 4, MF_SEPARATOR|MF_BYPOSITION, 0, NULL);
 	}
 	// lets fill the our popup menu  
 	pContextMenu->QueryContextMenu(m_Menu, GetMenuItemCount(m_Menu), MIN_ID, MAX_ID, CMF_NORMAL | CMF_EXPLORE);
@@ -189,6 +198,32 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
 
 				// Select file in explorer  
 				ShellExecuteEx(&shExecInfo);
+			}
+			break;
+		case 2:
+			{
+				wstring pathnames;
+				for (vector<wstring>::const_iterator it = m_strVector.begin(); it != m_strVector.end(); ++it)
+				{
+					if (pathnames.size())
+						pathnames += _T("\r\n");
+					pathnames += *it;
+				}
+				WriteAsciiStringToClipboard(pathnames.c_str(), hWnd);
+			}
+			break;
+		case 3:
+			{
+				wstring pathnames;
+				for (vector<wstring>::const_iterator it = m_strVector.begin(); it != m_strVector.end(); ++it)
+				{
+					if (pathnames.size())
+						pathnames += _T("\r\n");
+					wstring p = *it;
+					p = p.substr(p.find_last_of('\\')+1);
+					pathnames += p;
+				}
+				WriteAsciiStringToClipboard(pathnames.c_str(), hWnd);
 			}
 			break;
 		}

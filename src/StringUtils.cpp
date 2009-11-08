@@ -105,3 +105,48 @@ int wcswildcmp(const wchar_t *wild, const wchar_t *string)
 	return !*wild;
 }
 
+bool WriteAsciiStringToClipboard(const wchar_t * sClipdata, HWND hOwningWnd)
+{
+	if (OpenClipboard(hOwningWnd))
+	{
+		EmptyClipboard();
+		HGLOBAL hClipboardData;
+		size_t sLen = _tcslen(sClipdata);
+		hClipboardData = GlobalAlloc(GMEM_DDESHARE, (sLen+1)*sizeof(wchar_t));
+		if (hClipboardData)
+		{
+			wchar_t * pchData;
+			pchData = (wchar_t*)GlobalLock(hClipboardData);
+			if (pchData)
+			{
+				_tcscpy_s(pchData, sLen+1, sClipdata);
+				if (GlobalUnlock(hClipboardData))
+				{
+					if (SetClipboardData(CF_UNICODETEXT, hClipboardData)==NULL)
+					{
+						CloseClipboard();
+						return true;
+					}
+				}
+				else
+				{
+					CloseClipboard();
+					return false;
+				}
+			}
+			else
+			{
+				CloseClipboard();
+				return false;
+			}
+		}
+		else
+		{
+			CloseClipboard();
+			return false;
+		}
+		CloseClipboard();
+		return false;
+	}
+	return false;
+}

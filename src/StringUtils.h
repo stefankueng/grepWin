@@ -49,4 +49,5 @@
 int strwildcmp(const char * wild, const char * string);
 int wcswildcmp(const wchar_t * wild, const wchar_t * string);
 
+bool WriteAsciiStringToClipboard(const wchar_t * sClipdata, HWND hOwningWnd);
 
