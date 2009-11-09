@@ -83,7 +83,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 				searchDlg.SetSearchString(parser.GetVal(_T("searchfor")));
 			if (parser.HasVal(_T("filemaskregex")))
 				searchDlg.SetFileMask(parser.GetVal(_T("filemaskregex")), true);
-			if (parser.HasVal(_T("filemaskregex")))
+			if (parser.HasVal(_T("filemask")))
 				searchDlg.SetFileMask(parser.GetVal(_T("filemask")), false);
 			if (parser.HasVal(_T("filemaskexclude")))
 				searchDlg.SetExcludeFileMask(parser.GetVal(_T("filemaskexclude")));
