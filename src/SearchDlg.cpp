@@ -123,6 +123,13 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 				delete pathbuf;
 			}
 
+			if (m_patternregex.size() == 0)
+			{
+				m_patternregex = wstring(m_regPattern);
+				m_bUseRegexForPaths = DWORD(m_regUseRegexForPaths);
+			}
+			if (m_excludedirspatternregex.size() == 0)
+				m_excludedirspatternregex = wstring(m_regExcludeDirsPattern);
 			// initialize the controls
 			SetDlgItemText(hwndDlg, IDC_SEARCHPATH, m_searchpath.c_str());
 			SetDlgItemText(hwndDlg, IDC_SEARCHTEXT, m_searchString.c_str());
@@ -196,7 +203,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 
 			CheckRadioButton(hwndDlg, IDC_REGEXRADIO, IDC_TEXTRADIO, DWORD(m_regUseRegex) ? IDC_REGEXRADIO : IDC_TEXTRADIO);
 			CheckRadioButton(hwndDlg, IDC_ALLSIZERADIO, IDC_SIZERADIO, DWORD(m_regAllSize) ? IDC_ALLSIZERADIO : IDC_SIZERADIO);
-			CheckRadioButton(hwndDlg, IDC_FILEPATTERNREGEX, IDC_FILEPATTERNTEXT, DWORD(m_regUseRegexForPaths)||m_bUseRegexForPaths ? IDC_FILEPATTERNREGEX : IDC_FILEPATTERNTEXT);
+			CheckRadioButton(hwndDlg, IDC_FILEPATTERNREGEX, IDC_FILEPATTERNTEXT, m_bUseRegexForPaths ? IDC_FILEPATTERNREGEX : IDC_FILEPATTERNTEXT);
 
 			EnableWindow(GetDlgItem(*this, IDC_ADDTOBOOKMARKS), FALSE);
 			EnableWindow(GetDlgItem(*this, IDC_EXCLUDEDIRSPATTERN), DWORD(m_regIncludeSubfolders));
@@ -206,9 +213,6 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			::EnableWindow(GetDlgItem(*this, IDC_REPLACE), !bText);
 			::EnableWindow(GetDlgItem(*this, IDC_CREATEBACKUP), !bText);
 			::SetDlgItemText(*this, IDOK, _T("&Search"));
-
-			SetDlgItemText(*this, IDC_PATTERN, wstring(m_regPattern).c_str());
-			SetDlgItemText(*this, IDC_EXCLUDEDIRSPATTERN, wstring(m_regExcludeDirsPattern).c_str());
 
 			SetFocus(GetDlgItem(hwndDlg, IDC_SEARCHTEXT));
 
