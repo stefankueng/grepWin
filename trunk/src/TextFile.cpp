@@ -117,14 +117,26 @@ bool CTextFile::Load(LPCTSTR path, UnicodeType& type, bool bUTF8)
 		encoding = CheckUnicodeType(pFileBuf, bytesread);
 
 	if (encoding == UNICODE_LE)
-		textcontent = wstring((wchar_t*)pFileBuf, bytesread/sizeof(wchar_t));
+	{
+		if (*(char*)pFileBuf == 0xFF)
+			// remove the BOM
+			textcontent = wstring(((wchar_t*)pFileBuf+1), bytesread/sizeof(wchar_t));
+		else
+			textcontent = wstring((wchar_t*)pFileBuf, bytesread/sizeof(wchar_t));
+	}
 	else if (encoding == UTF8)
 	{
 		int ret = MultiByteToWideChar(CP_UTF8, 0, (LPCSTR)pFileBuf, bytesread, NULL, 0);
 		wchar_t * pWideBuf = new wchar_t[ret];
 		int ret2 = MultiByteToWideChar(CP_UTF8, 0, (LPCSTR)pFileBuf, bytesread, pWideBuf, ret);
 		if (ret2 == ret)
-			textcontent = wstring(pWideBuf, ret);
+		{
+			if (*pWideBuf == 0xFEFF)
+				// remove the BOM
+				textcontent = wstring(pWideBuf+1, ret);
+			else
+				textcontent = wstring(pWideBuf, ret);
+		}
 		delete [] pWideBuf;
 	}
 	else //if (encoding == ANSI)
