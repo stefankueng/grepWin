@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2009 - Stefan Kueng
+// Copyright (C) 2007, 2009 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -18,7 +18,7 @@
 //
 #pragma once
 #include <string>
-
+#include "AeroGlass.h"
 
 /**
  * A base window class.
@@ -33,14 +33,25 @@ public:
     HWND    Create(HINSTANCE hInstance, int resID, HWND hWndParent);
 	BOOL	EndDialog(HWND hDlg, INT_PTR nResult);
 	void	AddToolTip(UINT ctrlID, LPTSTR text);
+	bool	IsCursorOverWindowBorder();
+	/**
+	 * Wrapper around the CWnd::EnableWindow() method, but
+	 * makes sure that a control that has the focus is not disabled
+	 * before the focus is passed on to the next control.
+	 */
+	bool	DialogEnableWindow(UINT nID, bool bEnable);
+	void	OnCompositionChanged();
+	void	ExtendFrameIntoClientArea(UINT leftControl, UINT topControl, UINT rightControl, UINT botomControl);
 
 	virtual LRESULT CALLBACK DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) = 0;
 	virtual bool PreTranslateMessage(MSG* pMsg);
 
 	operator HWND() {return m_hwnd;}
 protected:
-	HINSTANCE hResource;
-	HWND m_hwnd;
+	HINSTANCE		hResource;
+	HWND			m_hwnd;
+	CDwmApiImpl		m_Dwm;
+	MARGINS			m_margins;
 
 	void InitDialog(HWND hwndDlg, UINT iconID);
 
