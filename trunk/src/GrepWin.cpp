@@ -47,6 +47,8 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 		|ICC_UPDOWN_CLASS|ICC_USEREX_CLASSES|ICC_WIN95_CLASSES;
 	InitCommonControlsEx(&icex);
 
+	HMODULE hRichEdt = LoadLibrary(_T("Riched20.dll"));
+
 	CCmdLineParser parser(lpCmdLine);
 
 	bool bQuit = false;
@@ -95,6 +97,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 
 	::CoUninitialize();
 	::OleUninitialize();
+	FreeLibrary(hRichEdt);
 	return ret;
 }
 
