@@ -20,6 +20,7 @@
 #include "basedialog.h"
 #include "DlgResizer.h"
 #include "Bookmarks.h"
+#include "AeroControls.h"
 #include <string>
 
 using namespace std;
@@ -53,4 +54,5 @@ private:
 	bool					m_bUseRegex;
 
 	CDlgResizer				m_resizer;
+	AeroControlBase			m_aerocontrols;
 };

@@ -19,6 +19,7 @@
 #pragma once
 #include "basedialog.h"
 #include "DlgResizer.h"
+#include "AeroControls.h"
 #include <string>
 
 using namespace std;
@@ -43,4 +44,5 @@ private:
 	wstring					m_name;
 
 	CDlgResizer				m_resizer;
+	AeroControlBase			m_aerocontrols;
 };
