@@ -20,7 +20,7 @@
 #include "Resource.h"
 #include "RegexTestDlg.h"
 #include <string>
-
+#include <Richedit.h>
 #include <boost/regex.hpp>
 using namespace std;
 
@@ -56,6 +56,10 @@ LRESULT CRegexTestDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lP
 			m_resizer.AddControl(hwndDlg, IDC_REGEXREPLACED, RESIZER_TOPLEFTBOTTOMRIGHT);
 			m_resizer.AddControl(hwndDlg, IDOK, RESIZER_BOTTOMRIGHT);
 			m_resizer.AddControl(hwndDlg, IDCANCEL, RESIZER_BOTTOMRIGHT);
+
+			SendMessage(GetDlgItem(*this, IDC_TEXTCONTENT), EM_SETEVENTMASK, 0, ENM_CHANGE);
+			SendMessage(GetDlgItem(*this, IDC_TEXTCONTENT), EM_EXLIMITTEXT, 0, 200*1024);
+			SendMessage(GetDlgItem(*this, IDC_REGEXREPLACED), EM_EXLIMITTEXT, 0, 200*1024);
 		}
 		return FALSE;
 	case WM_COMMAND:
@@ -179,22 +183,18 @@ void CRegexTestDlg::DoRegex()
 				boost::match_flag_type flags = boost::match_default;
 				if (!bDotMatchesNewline)
 					flags |= boost::match_not_dot_newline;
+
+				boost::match_flag_type rflags = boost::match_default|boost::format_all;
+				if (!bDotMatchesNewline)
+					rflags |= boost::match_not_dot_newline;
+				replaceresult = regex_replace(m_textContent, expression, m_replaceText, rflags);
+
 				while (boost::regex_search(start, end, whatc, expression, flags))   
 				{
 					if (!searchresult.empty())
 						searchresult = searchresult + _T("\r\n----------------------------\r\n");
 					wstring c(whatc[0].first, whatc[0].second);
 					searchresult = searchresult + c;
-					if (!m_searchText.empty())
-					{
-						boost::match_flag_type rflags = boost::match_default|boost::format_all;
-						if (!bDotMatchesNewline)
-							rflags |= boost::match_not_dot_newline;
-						wstring replaced = boost::regex_replace(c, expression, m_replaceText, rflags);
-						if (!replaceresult.empty())
-							replaceresult = replaceresult + _T("\r\n----------------------------\r\n");
-						replaceresult = replaceresult + replaced;
-					}
 					// update search position:
 					if (start == whatc[0].second)
 					{
