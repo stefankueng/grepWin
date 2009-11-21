@@ -67,6 +67,7 @@ protected:
 	void					UpdateSearchButton();
 	bool					SaveSettings();
 	void					SaveWndPosition();
+	void					formatDate(TCHAR date_native[], FILETIME& filetime, bool force_short_fmt);
 
 private:
 	static bool				NameCompareAsc(const CSearchInfo Entry1, const CSearchInfo Entry2);
@@ -74,12 +75,14 @@ private:
 	static bool				MatchesCompareAsc(const CSearchInfo Entry1, const CSearchInfo Entry2);
 	static bool				PathCompareAsc(const CSearchInfo Entry1, const CSearchInfo Entry2);
 	static bool				EncodingCompareAsc(const CSearchInfo Entry1, const CSearchInfo Entry2);
+	static bool				ModifiedTimeCompareAsc(const CSearchInfo Entry1, const CSearchInfo Entry2);
 
 	static bool				NameCompareDesc(const CSearchInfo Entry1, const CSearchInfo Entry2);
 	static bool				SizeCompareDesc(const CSearchInfo Entry1, const CSearchInfo Entry2);
 	static bool				MatchesCompareDesc(const CSearchInfo Entry1, const CSearchInfo Entry2);
 	static bool				PathCompareDesc(const CSearchInfo Entry1, const CSearchInfo Entry2);
 	static bool				EncodingCompareDesc(const CSearchInfo Entry1, const CSearchInfo Entry2);
+	static bool				ModifiedTimeCompareDesc(const CSearchInfo Entry1, const CSearchInfo Entry2);
 
 private:
 	HWND					m_hParent;

@@ -36,4 +36,5 @@ public:
 	vector<DWORD>		matchstarts;	
 	vector<DWORD>		matchends;
 	CTextFile::UnicodeType	encoding;
+	FILETIME			modifiedtime;
 };
