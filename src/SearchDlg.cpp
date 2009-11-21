@@ -45,6 +45,8 @@
 #include <boost/spirit/include/classic_file_iterator.hpp>
 using namespace std;
 
+#define GREPWIN_DATEBUFFER 100
+
 DWORD WINAPI SearchThreadEntry(LPVOID lpParam);
 
 UINT CSearchDlg::GREPWIN_STARTUPMSG = RegisterWindowMessage(_T("grepWin_StartupMessage"));
@@ -294,6 +296,8 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 
 			ExtendFrameIntoClientArea(0, IDC_GROUPSEARCHIN, 0, 0);
 			m_aerocontrols.SubclassControl(GetDlgItem(*this, IDC_ABOUTLINK));
+			if (m_Dwm.IsDwmCompositionEnabled())
+				m_resizer.ShowSizeGrip(false);
 
 			if (m_bExecuteImmediately)
 			{
@@ -724,12 +728,15 @@ bool CSearchDlg::InitResultList()
 	ListView_InsertColumn(hListControl, 3, &lvc);
 	lvc.pszText = _T("Encoding");
 	ListView_InsertColumn(hListControl, 4, &lvc);
+	lvc.pszText = _T("Date modified");
+	ListView_InsertColumn(hListControl, 5, &lvc);
 
 	ListView_SetColumnWidth(hListControl, 0, 300);
 	ListView_SetColumnWidth(hListControl, 1, 50);
 	ListView_SetColumnWidth(hListControl, 2, LVSCW_AUTOSIZE_USEHEADER);
 	ListView_SetColumnWidth(hListControl, 3, LVSCW_AUTOSIZE_USEHEADER);
 	ListView_SetColumnWidth(hListControl, 4, LVSCW_AUTOSIZE_USEHEADER);
+	ListView_SetColumnWidth(hListControl, 5, LVSCW_AUTOSIZE_USEHEADER);
 
 	m_items.clear();
 
@@ -782,6 +789,9 @@ bool CSearchDlg::AddFoundEntry(CSearchInfo * pInfo, bool bOnlyListControl)
 			_tcscpy_s(sb, MAX_PATH*4, _T(""));
 			break;
 		}
+		ListView_SetItem(hListControl, &lv);
+		lv.iSubItem = 5;
+		formatDate(sb, pInfo->modifiedtime, true);
 		ListView_SetItem(hListControl, &lv);
 	}
 	if ((ret != -1)&&(!bOnlyListControl))
@@ -942,6 +952,12 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
 				sort(m_items.begin(), m_items.end(), EncodingCompareAsc);
 			else
 				sort(m_items.begin(), m_items.end(), EncodingCompareDesc);
+			break;
+		case 5:
+			if (m_bAscending)
+				sort(m_items.begin(), m_items.end(), ModifiedTimeCompareAsc);
+			else
+				sort(m_items.begin(), m_items.end(), ModifiedTimeCompareDesc);
 			break;
 		}
 
@@ -1129,6 +1145,11 @@ bool CSearchDlg::EncodingCompareAsc(const CSearchInfo Entry1, const CSearchInfo 
 	return Entry1.encoding < Entry2.encoding;
 }
 
+bool CSearchDlg::ModifiedTimeCompareAsc(const CSearchInfo Entry1, const CSearchInfo Entry2)
+{
+	return CompareFileTime(&Entry1.modifiedtime, &Entry2.modifiedtime) < 0;
+}
+
 bool CSearchDlg::NameCompareDesc(const CSearchInfo Entry1, const CSearchInfo Entry2)
 {
 	wstring name1 = Entry1.filepath.substr(Entry1.filepath.find_last_of('\\')+1);
@@ -1161,6 +1182,11 @@ bool CSearchDlg::PathCompareDesc(const CSearchInfo Entry1, const CSearchInfo Ent
 bool CSearchDlg::EncodingCompareDesc(const CSearchInfo Entry1, const CSearchInfo Entry2)
 {
 	return Entry1.encoding > Entry2.encoding;
+}
+
+bool CSearchDlg::ModifiedTimeCompareDesc(const CSearchInfo Entry1, const CSearchInfo Entry2)
+{
+	return CompareFileTime(&Entry1.modifiedtime, &Entry2.modifiedtime) < 0;
 }
 
 bool grepWin_match_i(const wstring& the_regex, const TCHAR *pText)
@@ -1292,7 +1318,7 @@ DWORD CSearchDlg::SearchThread()
                         pName++;    // skip the last '\\' char
 					if (m_bUseRegexForPaths)
 					{
-						if( grepWin_match_i(m_patternregex, pName) )
+						if ( (m_patterns.size()==0) || grepWin_match_i(m_patternregex, pName) )
 						{
 							bPattern = true;
 						}
@@ -1316,6 +1342,8 @@ DWORD CSearchDlg::SearchThread()
 					{
 						CSearchInfo sinfo(pathbuf);
 						sinfo.filesize = nFileSizeLow;
+						const WIN32_FIND_DATA * pFindData = fileEnumerator.GetFileInfo();
+						sinfo.modifiedtime = pFindData->ftLastWriteTime;
 						if (m_searchString.empty())
 						{
 							SendMessage(*this, SEARCH_FOUND, 1, (LPARAM)&sinfo);
@@ -1516,4 +1544,35 @@ DWORD WINAPI SearchThreadEntry(LPVOID lpParam)
 	if (pThis)
 		return pThis->SearchThread();
 	return 0L;
+}
+
+void CSearchDlg::formatDate(TCHAR date_native[], FILETIME& filetime, bool force_short_fmt)
+{
+	date_native[0] = '\0';
+
+	// Convert UTC to local time
+	SYSTEMTIME systemtime;
+	FileTimeToSystemTime(&filetime,&systemtime);
+
+	static TIME_ZONE_INFORMATION timeZone = {-1};
+	if (timeZone.Bias == -1)
+		GetTimeZoneInformation (&timeZone);
+
+	SYSTEMTIME localsystime;
+	SystemTimeToTzSpecificLocalTime(&timeZone, &systemtime,&localsystime);
+
+	TCHAR timebuf[GREPWIN_DATEBUFFER] = {0};
+	TCHAR datebuf[GREPWIN_DATEBUFFER] = {0};
+
+	LCID locale = MAKELCID(MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), SORT_DEFAULT);
+
+	/// reusing this instance is vital for \ref formatDate performance
+
+	DWORD flags = force_short_fmt ? DATE_SHORTDATE : DATE_LONGDATE;
+
+	GetDateFormat(locale, flags, &localsystime, NULL, datebuf, GREPWIN_DATEBUFFER);
+	GetTimeFormat(locale, 0, &localsystime, NULL, timebuf, GREPWIN_DATEBUFFER);
+	_tcsncat_s(date_native, GREPWIN_DATEBUFFER, datebuf, GREPWIN_DATEBUFFER);
+	_tcsncat_s(date_native, GREPWIN_DATEBUFFER, _T(" "), GREPWIN_DATEBUFFER);
+	_tcsncat_s(date_native, GREPWIN_DATEBUFFER, timebuf, GREPWIN_DATEBUFFER);
 }
