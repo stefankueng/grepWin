@@ -48,6 +48,12 @@ LRESULT CNameDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 			m_resizer.Init(hwndDlg);
 
+			ExtendFrameIntoClientArea(IDC_NAME, IDC_NAME, IDC_NAME, IDC_NAME);
+			m_aerocontrols.SubclassControl(GetDlgItem(*this, IDOK));
+			m_aerocontrols.SubclassControl(GetDlgItem(*this, IDCANCEL));
+			m_aerocontrols.SubclassControl(GetDlgItem(*this, IDC_INFOLABEL));
+			if (m_Dwm.IsDwmCompositionEnabled())
+				m_resizer.ShowSizeGrip(false);
 		}
 		return FALSE;
 	case WM_COMMAND:
