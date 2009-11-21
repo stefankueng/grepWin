@@ -126,7 +126,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			if (m_patternregex.size() == 0)
 			{
 				m_patternregex = wstring(m_regPattern);
-				m_bUseRegexForPaths = DWORD(m_regUseRegexForPaths);
+				m_bUseRegexForPaths = !!DWORD(m_regUseRegexForPaths);
 			}
 			if (m_excludedirspatternregex.size() == 0)
 				m_excludedirspatternregex = wstring(m_regExcludeDirsPattern);
@@ -205,13 +205,13 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			CheckRadioButton(hwndDlg, IDC_ALLSIZERADIO, IDC_SIZERADIO, DWORD(m_regAllSize) ? IDC_ALLSIZERADIO : IDC_SIZERADIO);
 			CheckRadioButton(hwndDlg, IDC_FILEPATTERNREGEX, IDC_FILEPATTERNTEXT, m_bUseRegexForPaths ? IDC_FILEPATTERNREGEX : IDC_FILEPATTERNTEXT);
 
-			EnableWindow(GetDlgItem(*this, IDC_ADDTOBOOKMARKS), FALSE);
-			EnableWindow(GetDlgItem(*this, IDC_EXCLUDEDIRSPATTERN), DWORD(m_regIncludeSubfolders));
+			DialogEnableWindow(IDC_ADDTOBOOKMARKS, FALSE);
+			DialogEnableWindow(IDC_EXCLUDEDIRSPATTERN, !!DWORD(m_regIncludeSubfolders));
 
 			bool bText = (IsDlgButtonChecked(*this, IDC_TEXTRADIO) == BST_CHECKED);
-			::EnableWindow(GetDlgItem(*this, IDC_REPLACETEXT), !bText);
-			::EnableWindow(GetDlgItem(*this, IDC_REPLACE), !bText);
-			::EnableWindow(GetDlgItem(*this, IDC_CREATEBACKUP), !bText);
+			DialogEnableWindow(IDC_REPLACETEXT, !bText);
+			DialogEnableWindow(IDC_REPLACE, !bText);
+			DialogEnableWindow(IDC_CREATEBACKUP, !bText);
 			::SetDlgItemText(*this, IDOK, _T("&Search"));
 
 			SetFocus(GetDlgItem(hwndDlg, IDC_SEARCHTEXT));
@@ -291,6 +291,10 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			CRegStdWORD regMaximized(_T("Software\\grepWin\\Maximized"));
 			if( DWORD(regMaximized) )
 				ShowWindow(*this, SW_MAXIMIZE);
+
+			ExtendFrameIntoClientArea(0, IDC_GROUPSEARCHIN, 0, 0);
+			m_aerocontrols.SubclassControl(GetDlgItem(*this, IDC_ABOUTLINK));
+
 			if (m_bExecuteImmediately)
 			{
 				DoCommand(IDOK, 0);
@@ -532,18 +536,18 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 				bool bIsDir = !!PathIsDirectory(buf);
 				if ((!bIsDir) && _tcschr(buf, '|'))
 					bIsDir = true;	// assume directories in case of multiple paths
-				EnableWindow(GetDlgItem(*this, IDC_ALLSIZERADIO), bIsDir);
-				EnableWindow(GetDlgItem(*this, IDC_SIZERADIO), bIsDir);
-				EnableWindow(GetDlgItem(*this, IDC_SIZECOMBO), bIsDir);
-				EnableWindow(GetDlgItem(*this, IDC_SIZEEDIT), bIsDir);
-				EnableWindow(GetDlgItem(*this, IDC_INCLUDESYSTEM), bIsDir);
-				EnableWindow(GetDlgItem(*this, IDC_INCLUDEHIDDEN), bIsDir);
-				EnableWindow(GetDlgItem(*this, IDC_INCLUDESUBFOLDERS), bIsDir);
-				EnableWindow(GetDlgItem(*this, IDC_INCLUDEBINARY), bIsDir && len > 0);
-				EnableWindow(GetDlgItem(*this, IDC_PATTERN), bIsDir);
-				EnableWindow(GetDlgItem(*this, IDC_EXCLUDEDIRSPATTERN), bIsDir);
-				EnableWindow(GetDlgItem(*this, IDC_FILEPATTERNREGEX), bIsDir);
-				EnableWindow(GetDlgItem(*this, IDC_FILEPATTERNTEXT), bIsDir);
+				DialogEnableWindow(IDC_ALLSIZERADIO, bIsDir);
+				DialogEnableWindow(IDC_SIZERADIO, bIsDir);
+				DialogEnableWindow(IDC_SIZECOMBO, bIsDir);
+				DialogEnableWindow(IDC_SIZEEDIT, bIsDir);
+				DialogEnableWindow(IDC_INCLUDESYSTEM, bIsDir);
+				DialogEnableWindow(IDC_INCLUDEHIDDEN, bIsDir);
+				DialogEnableWindow(IDC_INCLUDESUBFOLDERS, bIsDir);
+				DialogEnableWindow(IDC_INCLUDEBINARY, bIsDir && len > 0);
+				DialogEnableWindow(IDC_PATTERN, bIsDir);
+				DialogEnableWindow(IDC_EXCLUDEDIRSPATTERN, bIsDir);
+				DialogEnableWindow(IDC_FILEPATTERNREGEX, bIsDir);
+				DialogEnableWindow(IDC_FILEPATTERNTEXT, bIsDir);
 			}
 		}
 		break;
@@ -552,7 +556,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 			if (msg == BN_CLICKED)
 			{
 				bool bIncludeSubfolders = (IsDlgButtonChecked(*this, IDC_INCLUDESUBFOLDERS) == BST_CHECKED);
-				EnableWindow(GetDlgItem(*this, IDC_EXCLUDEDIRSPATTERN), bIncludeSubfolders);
+				DialogEnableWindow(IDC_EXCLUDEDIRSPATTERN, bIncludeSubfolders);
 			}
 		}
 		break;
@@ -594,8 +598,8 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 				{
 					SetDlgItemText(*this, IDC_REGEXOKLABEL, _T(""));
 				}
-				EnableWindow(GetDlgItem(*this, IDC_ADDTOBOOKMARKS), len > 0);				
-				EnableWindow(GetDlgItem(*this, IDC_INCLUDEBINARY), len > 0);				
+				DialogEnableWindow(IDC_ADDTOBOOKMARKS, len > 0);				
+				DialogEnableWindow(IDC_INCLUDEBINARY, len > 0);				
 			}
 		}
 		break;
@@ -626,9 +630,9 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 	case IDC_TEXTRADIO:
 		{
 			bool bText = (IsDlgButtonChecked(*this, IDC_TEXTRADIO) == BST_CHECKED);
-			::EnableWindow(GetDlgItem(*this, IDC_REPLACETEXT), !bText);
-			::EnableWindow(GetDlgItem(*this, IDC_REPLACE), !bText);
-			::EnableWindow(GetDlgItem(*this, IDC_CREATEBACKUP), !bText);
+			DialogEnableWindow(IDC_REPLACETEXT, !bText);
+			DialogEnableWindow(IDC_REPLACE, !bText);
+			DialogEnableWindow(IDC_CREATEBACKUP, !bText);
 		}
 		break;
 	case IDC_ADDTOBOOKMARKS:

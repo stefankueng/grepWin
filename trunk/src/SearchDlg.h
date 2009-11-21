@@ -24,6 +24,7 @@
 #include "AutoComplete.h"
 #include "Registry.h"
 #include "hyperlink.h"
+#include "AeroControls.h"
 #include <string>
 #include <vector>
 
@@ -118,6 +119,7 @@ private:
 	CHyperLink				m_link;
 
 	CFileDropTarget *		m_pDropTarget;
+	AeroControlBase			m_aerocontrols;
 
 	DWORD					m_startTime;
 	static UINT				GREPWIN_STARTUPMSG;

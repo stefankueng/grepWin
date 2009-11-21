@@ -178,6 +178,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\AeroControls.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\AeroGlass.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\AutoComplete.cpp"
 				>
 			</File>
@@ -309,6 +317,14 @@
 			>
 			<File
 				RelativePath=".\AboutDlg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\AeroControls.h"
+				>
+			</File>
+			<File
+				RelativePath=".\AeroGlass.h"
 				>
 			</File>
 			<File
