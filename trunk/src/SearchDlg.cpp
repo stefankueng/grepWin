@@ -1384,34 +1384,31 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
 						ft |= boost::regbase::icase;
 					boost::wregex expression = boost::wregex(localSearchString, ft);
 					boost::match_results<wstring::const_iterator> whatc;
-					if (!m_bReplace)
+					boost::match_flag_type flags = boost::match_default;
+					if (!bDotMatchesNewline)
+						flags |= boost::match_not_dot_newline;
+					while (regex_search(start, end, whatc, expression, flags))   
 					{
-						boost::match_flag_type flags = boost::match_default;
-						if (!bDotMatchesNewline)
-							flags |= boost::match_not_dot_newline;
-						while (regex_search(start, end, whatc, expression, flags))   
+						if (whatc[0].matched)
 						{
-							if (whatc[0].matched)
-							{
-								nFound++;
-								sinfo.matchstarts.push_back(whatc[0].first-textfile.GetFileString().begin());
-								sinfo.matchends.push_back(whatc[0].second-textfile.GetFileString().begin());
-							}
-							// update search position:
-							if (start == whatc[0].second)
-							{
-								if (start == end)
-									break;
-								start++;
-							}
-							else
-								start = whatc[0].second;
-							// update flags:
-							flags |= boost::match_prev_avail;
-							flags |= boost::match_not_bob;
+							nFound++;
+							sinfo.matchstarts.push_back(whatc[0].first-textfile.GetFileString().begin());
+							sinfo.matchends.push_back(whatc[0].second-textfile.GetFileString().begin());
 						}
+						// update search position:
+						if (start == whatc[0].second)
+						{
+							if (start == end)
+								break;
+							start++;
+						}
+						else
+							start = whatc[0].second;
+						// update flags:
+						flags |= boost::match_prev_avail;
+						flags |= boost::match_not_bob;
 					}
-					else
+					if (m_bReplace)
 					{
 						boost::match_flag_type flags = boost::match_default | boost::format_all;
 						if (!bDotMatchesNewline)
@@ -1419,9 +1416,6 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
 						wstring replaced = regex_replace(textfile.GetFileString(), expression, m_replaceString, flags);
 						if (replaced.compare(textfile.GetFileString()))
 						{
-							nFound++;
-							sinfo.matchstarts.push_back(0);
-							sinfo.matchends.push_back(0);
 							textfile.SetFileContent(replaced);
 							if (m_bCreateBackup)
 							{
