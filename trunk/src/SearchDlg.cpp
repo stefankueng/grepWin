@@ -1568,17 +1568,31 @@ int CSearchDlg::CheckRegex()
 		if (len)
 		{
 			if (bValid)
+			{
 				SetDlgItemText(*this, IDC_REGEXOKLABEL, _T("regex ok"));
+				DialogEnableWindow(IDOK, true);
+				DialogEnableWindow(IDC_REPLACE, true);
+			}
 			else
+			{
 				SetDlgItemText(*this, IDC_REGEXOKLABEL, _T("invalid regex!"));
+				DialogEnableWindow(IDOK, false);
+				DialogEnableWindow(IDC_REPLACE, false);
+			}
 		}
 		else
 		{
 			SetDlgItemText(*this, IDC_REGEXOKLABEL, _T(""));
+			DialogEnableWindow(IDOK, true);
+			DialogEnableWindow(IDC_REPLACE, true);
 		}
 	}
 	else
+	{
 		SetDlgItemText(*this, IDC_REGEXOKLABEL, _T(""));
+		DialogEnableWindow(IDOK, true);
+		DialogEnableWindow(IDC_REPLACE, true);
+	}
 
 	return len;
 }
