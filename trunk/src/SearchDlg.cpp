@@ -1408,7 +1408,7 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
 						flags |= boost::match_prev_avail;
 						flags |= boost::match_not_bob;
 					}
-					if (m_bReplace)
+					if ((m_bReplace)&&(nFound))
 					{
 						boost::match_flag_type flags = boost::match_default | boost::format_all;
 						if (!bDotMatchesNewline)
