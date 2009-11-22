@@ -355,7 +355,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 		}
 		break;
 	case SEARCH_FOUND:
-		if ((wParam != 0)||(m_searchString.empty()))
+		if ((wParam != 0)||(m_searchString.empty())||((CSearchInfo*)lParam)->readerror)
 			AddFoundEntry((CSearchInfo*)lParam);
 		m_totalmatches += ((CSearchInfo*)lParam)->matchstarts.size();
 		UpdateInfoLabel();
@@ -733,7 +733,10 @@ bool CSearchDlg::AddFoundEntry(CSearchInfo * pInfo, bool bOnlyListControl)
 		lv.pszText = sb;
 		ListView_SetItem(hListControl, &lv);
 		lv.iSubItem = 2;
-		_stprintf_s(sb, MAX_PATH_NEW, _T("%ld"), pInfo->matchstarts.size());
+		if (pInfo->readerror)
+			_tcscpy_s(sb, MAX_PATH_NEW, _T("read error"));
+		else
+			_stprintf_s(sb, MAX_PATH_NEW, _T("%ld"), pInfo->matchstarts.size());
 		ListView_SetItem(hListControl, &lv);
 		lv.iSubItem = 3;
 		_tcscpy_s(sb, MAX_PATH_NEW, pInfo->filepath.substr(0, pInfo->filepath.size()-name.size()-1).c_str());
@@ -1367,6 +1370,7 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
 		if (textfile.Load(sinfo.filepath.c_str(), type, m_bUTF8))
 		{
 			sinfo.encoding = type;
+			sinfo.readerror = false;
 			if ((type != CTextFile::BINARY)||(bIncludeBinary)||bSearchAlways)
 			{
 				wstring::const_iterator start, end;
@@ -1455,7 +1459,10 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
 			}
 		}
 		else
-			return -1;
+		{
+			sinfo.readerror = true;
+			return 0;
+		}
 	}
 	else
 	{
