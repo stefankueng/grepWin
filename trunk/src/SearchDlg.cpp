@@ -568,40 +568,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 		{
 			if (msg == EN_CHANGE)
 			{
-				TCHAR buf[MAX_PATH*4] = {0};
-				GetDlgItemText(*this, IDC_SEARCHTEXT, buf, MAX_PATH*4);
-				int len = _tcslen(buf);
-				if (IsDlgButtonChecked(*this, IDC_REGEXRADIO) == BST_CHECKED)
-				{
-					// check if the regex is valid
-					bool bValid = true;
-					if (len)
-					{
-						try
-						{
-							boost::wregex expression = boost::wregex(buf);
-						}
-						catch (const exception&)
-						{
-							bValid = false;
-						}
-					}
-					if (len)
-					{
-						if (bValid)
-							SetDlgItemText(*this, IDC_REGEXOKLABEL, _T("regex ok"));
-						else
-							SetDlgItemText(*this, IDC_REGEXOKLABEL, _T("invalid regex!"));
-					}
-					else
-					{
-						SetDlgItemText(*this, IDC_REGEXOKLABEL, _T(""));
-					}
-				}
-				else
-				{
-					SetDlgItemText(*this, IDC_REGEXOKLABEL, _T(""));
-				}
+				int len = CheckRegex();
 				DialogEnableWindow(IDC_ADDTOBOOKMARKS, len > 0);				
 				DialogEnableWindow(IDC_INCLUDEBINARY, len > 0);				
 			}
@@ -637,6 +604,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 			DialogEnableWindow(IDC_REPLACETEXT, !bText);
 			DialogEnableWindow(IDC_REPLACE, !bText);
 			DialogEnableWindow(IDC_CREATEBACKUP, !bText);
+			CheckRegex();
 		}
 		break;
 	case IDC_ADDTOBOOKMARKS:
@@ -1575,4 +1543,42 @@ void CSearchDlg::formatDate(TCHAR date_native[], FILETIME& filetime, bool force_
 	_tcsncat_s(date_native, GREPWIN_DATEBUFFER, datebuf, GREPWIN_DATEBUFFER);
 	_tcsncat_s(date_native, GREPWIN_DATEBUFFER, _T(" "), GREPWIN_DATEBUFFER);
 	_tcsncat_s(date_native, GREPWIN_DATEBUFFER, timebuf, GREPWIN_DATEBUFFER);
+}
+
+int CSearchDlg::CheckRegex()
+{
+	TCHAR buf[MAX_PATH*4] = {0};
+	GetDlgItemText(*this, IDC_SEARCHTEXT, buf, MAX_PATH*4);
+	int len = _tcslen(buf);
+	if (IsDlgButtonChecked(*this, IDC_REGEXRADIO) == BST_CHECKED)
+	{
+		// check if the regex is valid
+		bool bValid = true;
+		if (len)
+		{
+			try
+			{
+				boost::wregex expression = boost::wregex(buf);
+			}
+			catch (const exception&)
+			{
+				bValid = false;
+			}
+		}
+		if (len)
+		{
+			if (bValid)
+				SetDlgItemText(*this, IDC_REGEXOKLABEL, _T("regex ok"));
+			else
+				SetDlgItemText(*this, IDC_REGEXOKLABEL, _T("invalid regex!"));
+		}
+		else
+		{
+			SetDlgItemText(*this, IDC_REGEXOKLABEL, _T(""));
+		}
+	}
+	else
+		SetDlgItemText(*this, IDC_REGEXOKLABEL, _T(""));
+
+	return len;
 }
