@@ -20,6 +20,17 @@
 #include "SearchInfo.h"
 
 CSearchInfo::CSearchInfo(void)
+	: filesize(0)
+	, readerror(false)
+	, folder(false)
+{
+}
+
+CSearchInfo::CSearchInfo(const wstring& path)
+	: filepath(path)
+	, filesize(0)
+	, readerror(false)
+	, folder(false)
 {
 }
 
