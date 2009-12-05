@@ -69,6 +69,7 @@ protected:
 	void					SaveWndPosition();
 	void					formatDate(TCHAR date_native[], FILETIME& filetime, bool force_short_fmt);
 	int						CheckRegex();
+	bool					MatchPath(LPCTSTR pathbuf);
 
 private:
 	static bool				NameCompareAsc(const CSearchInfo Entry1, const CSearchInfo Entry2);

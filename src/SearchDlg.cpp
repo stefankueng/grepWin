@@ -720,7 +720,7 @@ bool CSearchDlg::AddFoundEntry(CSearchInfo * pInfo, bool bOnlyListControl)
 	wstring name = pInfo->filepath.substr(pInfo->filepath.find_last_of('\\')+1);
 	_tcscpy_s(pBuf, pInfo->filepath.size()+1, name.c_str());
 	lv.pszText = pBuf;
-	lv.iImage = CSysImageList::GetInstance().GetFileIconIndex(pInfo->filepath);
+	lv.iImage = pInfo->folder ? CSysImageList::GetInstance().GetDirIconIndex() : CSysImageList::GetInstance().GetFileIconIndex(pInfo->filepath);
 	lv.iItem = ListView_GetItemCount(hListControl);
 	int ret = ListView_InsertItem(hListControl, &lv);
 	delete [] pBuf;
@@ -729,7 +729,8 @@ bool CSearchDlg::AddFoundEntry(CSearchInfo * pInfo, bool bOnlyListControl)
 		lv.iItem = ret;
 		lv.iSubItem = 1;
 		TCHAR sb[MAX_PATH_NEW] = {0};
-		StrFormatByteSizeW(pInfo->filesize, sb, 20);
+		if (!pInfo->folder)
+			StrFormatByteSizeW(pInfo->filesize, sb, 20);
 		lv.pszText = sb;
 		ListView_SetItem(hListControl, &lv);
 		lv.iSubItem = 2;
@@ -1280,33 +1281,7 @@ DWORD CSearchDlg::SearchThread()
 						}
 					}
 					bRecurse = ((m_bIncludeSubfolders)&&(bSearch));
-					bool bPattern = false;
-                    // find start of pathname
-                    const TCHAR * pName = _tcsrchr(pathbuf, '\\');
-                    if (pName == NULL)
-                        pName = pathbuf;
-                    else
-                        pName++;    // skip the last '\\' char
-					if (m_bUseRegexForPaths)
-					{
-						if ( (m_patterns.size()==0) || grepWin_match_i(m_patternregex, pName) )
-						{
-							bPattern = true;
-						}
-					}
-					else
-					{
-						if (m_patterns.size())
-						{
-							wstring fname = pName;
-							std::transform(fname.begin(), fname.end(), fname.begin(), (int(*)(int)) std::tolower);
-
-							for (vector<wstring>::const_iterator it = m_patterns.begin(); it != m_patterns.end(); ++it)
-								bPattern = bPattern || wcswildcmp(it->c_str(), fname.c_str());
-						}
-						else
-							bPattern = true;
-					}
+					bool bPattern = MatchPath(pathbuf);
 
 					int nFound = -1;
 					if ((bSearch && bPattern)||(bAlwaysSearch))
@@ -1337,6 +1312,18 @@ DWORD CSearchDlg::SearchThread()
 					bool bExcludeDir = bSearch && m_excludedirspatternregex.size() && grepWin_match_i(m_excludedirspatternregex, pFindData->cFileName);
 					bSearch = bSearch && !bExcludeDir;
 					bRecurse = ((bIsDirectory)&&(m_bIncludeSubfolders)&&(bSearch));
+					if (m_searchString.empty() && m_replaceString.empty())
+					{
+						// if there's no search and replace string, include folders in the 'matched' list if they
+						// match the specified file pattern
+						if (MatchPath(pathbuf))
+						{
+							CSearchInfo sinfo(pathbuf);
+							sinfo.modifiedtime = pFindData->ftLastWriteTime;
+							sinfo.folder = true;
+							SendMessage(*this, SEARCH_FOUND, 1, (LPARAM)&sinfo);
+						}
+					}
 				}
 				bAlwaysSearch = false;
 			}
@@ -1351,6 +1338,38 @@ DWORD CSearchDlg::SearchThread()
 	SetCursorPos(pt.x, pt.y);
 
 	return 0L;
+}
+
+bool CSearchDlg::MatchPath(LPCTSTR pathbuf)
+{
+	bool bPattern = false;
+	// find start of pathname
+	const TCHAR * pName = _tcsrchr(pathbuf, '\\');
+	if (pName == NULL)
+		pName = pathbuf;
+	else
+		pName++;    // skip the last '\\' char
+	if (m_bUseRegexForPaths)
+	{
+		if ( (m_patterns.size()==0) || grepWin_match_i(m_patternregex, pName) )
+		{
+			bPattern = true;
+		}
+	}
+	else
+	{
+		if (m_patterns.size())
+		{
+			wstring fname = pName;
+			std::transform(fname.begin(), fname.end(), fname.begin(), (int(*)(int)) std::tolower);
+
+			for (vector<wstring>::const_iterator it = m_patterns.begin(); it != m_patterns.end(); ++it)
+				bPattern = bPattern || wcswildcmp(it->c_str(), fname.c_str());
+		}
+		else
+			bPattern = true;
+	}
+	return bPattern;
 }
 
 int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bIncludeBinary, bool bUseRegex, bool bCaseSensitive, bool bDotMatchesNewline, const wstring& searchString)

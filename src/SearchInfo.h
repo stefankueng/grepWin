@@ -28,7 +28,7 @@ class CSearchInfo
 {
 public:
 	CSearchInfo(void);
-	CSearchInfo(const wstring& path) : filepath(path) {};
+	CSearchInfo(const wstring& path);
 	~CSearchInfo(void);
 
 	wstring				filepath;
@@ -38,4 +38,5 @@ public:
 	CTextFile::UnicodeType	encoding;
 	FILETIME			modifiedtime;
 	bool				readerror;
+	bool				folder;
 };
