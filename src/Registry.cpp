@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008 - Stefan Kueng
+// Copyright (C) 2007-2009 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -570,6 +570,25 @@ bool CRegistryKey::getSubKeys(CStringList& subkeys)
 #endif
 
 /////////////////////////////////////////////////////////////////////
+
+DWORD CRegStdBase::removeKey() 
+{ 
+	RegOpenKeyEx(m_base, m_path.c_str(), 0, KEY_WRITE, &m_hKey); 
+	LSTATUS ret = SHDeleteKey(m_base, m_path.c_str()); 
+	RegCloseKey(m_hKey); 
+	m_hKey = NULL;
+	return ret;
+}
+
+LONG CRegStdBase::removeValue() 
+{ 
+	RegOpenKeyEx(m_base, m_path.c_str(), 0, KEY_WRITE, &m_hKey); 
+	LONG ret = RegDeleteValue(m_hKey, m_key.c_str()); 
+	RegCloseKey(m_hKey); 
+	m_hKey = NULL;
+	return ret;
+}
+
 
 CRegStdString::CRegStdString(void)
 {

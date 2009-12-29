@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008 - Stefan Kueng
+// Copyright (C) 2007-2009 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -38,14 +38,14 @@ public:	//methods
 	 * HKCU\Software\Company\Product key in the registry.
 	 * \return ERROR_SUCCESS or an nonzero errorcode. Use FormatMessage() to get an error description.
 	 */
-	DWORD removeKey() { RegOpenKeyEx(m_base, m_path.c_str(), 0, KEY_WRITE, &m_hKey); return SHDeleteKey(m_base, m_path.c_str()); }
+	DWORD removeKey();
 	/**
 	 * Removes the value of the registry object. If you set the registry entry to
 	 * be HKCU\Software\Company\Product\key\value there will only be
 	 * HKCU\Software\Company\Product\key\ in the registry.
 	 * \return ERROR_SUCCESS or an nonzero errorcode. Use FormatMessage() to get an error description.
 	 */
-	LONG removeValue() { RegOpenKeyEx(m_base, m_path.c_str(), 0, KEY_WRITE, &m_hKey); return RegDeleteValue(m_hKey, m_key.c_str()); }
+	LONG removeValue();
 
 	stdstring getErrorString()
 	{
