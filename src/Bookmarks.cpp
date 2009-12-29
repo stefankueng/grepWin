@@ -19,6 +19,7 @@
 #include "StdAfx.h"
 #include "Bookmarks.h"
 #include "maxpath.h"
+#include "CmdLineParser.h"
 #include <shlobj.h>
 
 CBookmarks::CBookmarks(void)
@@ -32,9 +33,19 @@ CBookmarks::~CBookmarks(void)
 void CBookmarks::Load()
 {
 	TCHAR path[MAX_PATH_NEW] = {0};
-	SHGetFolderPath(NULL, CSIDL_APPDATA, NULL, SHGFP_TYPE_CURRENT, path);
-	m_iniPath = path;
-	m_iniPath += _T("\\grepWin");
+	GetModuleFileName(NULL, path, MAX_PATH_NEW);
+	CCmdLineParser parser(GetCommandLine());
+	if ((_tcsstr(path, _T("portable")))||(parser.HasKey(_T("portable"))))
+	{
+		m_iniPath = path;
+		m_iniPath = m_iniPath.substr(0, m_iniPath.rfind('\\'));
+	}
+	else
+	{
+		SHGetFolderPath(NULL, CSIDL_APPDATA, NULL, SHGFP_TYPE_CURRENT, path);
+		m_iniPath = path;
+		m_iniPath += _T("\\grepWin");
+	}
 	CreateDirectory(m_iniPath.c_str(), NULL);
 	m_iniPath += _T("\\bookmarks");
 	LoadFile(m_iniPath.c_str());
@@ -43,9 +54,19 @@ void CBookmarks::Load()
 void CBookmarks::Save()
 {
 	TCHAR path[MAX_PATH_NEW] = {0};
-	SHGetFolderPath(NULL, CSIDL_APPDATA, NULL, SHGFP_TYPE_CURRENT, path);
-	m_iniPath = path;
-	m_iniPath += _T("\\grepWin");
+	GetModuleFileName(NULL, path, MAX_PATH_NEW);
+	CCmdLineParser parser(GetCommandLine());
+	if ((_tcsstr(path, _T("portable")))||(parser.HasKey(_T("portable"))))
+	{
+		m_iniPath = path;
+		m_iniPath = m_iniPath.substr(0, m_iniPath.rfind('\\'));
+	}
+	else
+	{
+		SHGetFolderPath(NULL, CSIDL_APPDATA, NULL, SHGFP_TYPE_CURRENT, path);
+		m_iniPath = path;
+		m_iniPath += _T("\\grepWin");
+	}
 	CreateDirectory(m_iniPath.c_str(), NULL);
 	m_iniPath += _T("\\bookmarks");
 	FILE * pFile = NULL;
