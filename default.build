@@ -79,7 +79,8 @@
 				<include name="src\Setup\setup.build" />
 			</buildfiles>
 		</nant>
-	</target>
+    <copy file="bin\release\grepWin.exe" tofile="bin\grepWin_portable.exe" />
+  </target>
 
 	<target name="msi" depends="VersionInfo">
 		<description>
