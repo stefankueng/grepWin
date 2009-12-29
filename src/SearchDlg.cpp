@@ -860,13 +860,30 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
 	{
 		if (lpNMItemActivate->iItem >= 0)
 		{
+			wstring verb = _T("open");
+			wstring ext = m_items[lpNMItemActivate->iItem].filepath.substr(m_items[lpNMItemActivate->iItem].filepath.rfind('.'));
+
+			// some scripting languages (e.g. python) will execute the document
+			// instead of open it. Try to identify these cases.
+			DWORD buflen = 0;
+			AssocQueryString(ASSOCF_INIT_DEFAULTTOSTAR, ASSOCSTR_COMMAND, ext.c_str(), _T("open"), NULL, &buflen);
+			TCHAR * cmdbuf = new TCHAR[buflen + 1];
+			AssocQueryString(ASSOCF_INIT_DEFAULTTOSTAR, ASSOCSTR_COMMAND, ext.c_str(), _T("open"), cmdbuf, &buflen);
+			wstring application = cmdbuf;
+			delete [] cmdbuf;
+			if (   (application.find(_T("%2")) != wstring::npos)
+				|| (application.find(_T("%*")) != wstring::npos))
+			{
+				verb = _T("edit");
+			}
+
 			SHELLEXECUTEINFO shExInfo = {0};
 			shExInfo.cbSize = sizeof(SHELLEXECUTEINFO);
 			shExInfo.fMask = SEE_MASK_UNICODE;
 			shExInfo.hwnd = *this;
 			shExInfo.lpFile = m_items[lpNMItemActivate->iItem].filepath.c_str();
 			shExInfo.nShow = SW_SHOW;
-			shExInfo.lpVerb = _T("edit");
+			shExInfo.lpVerb = verb.c_str();
 			ShellExecuteEx(&shExInfo);
 		}
 	}
