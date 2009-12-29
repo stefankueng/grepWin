@@ -120,7 +120,7 @@ bool CTextFile::Load(LPCTSTR path, UnicodeType& type, bool bUTF8)
 	{
 		if (*(char*)pFileBuf == 0xFF)
 			// remove the BOM
-			textcontent = wstring(((wchar_t*)pFileBuf+1), bytesread/sizeof(wchar_t));
+			textcontent = wstring(((wchar_t*)pFileBuf+1), (bytesread/sizeof(wchar_t))-1);
 		else
 			textcontent = wstring((wchar_t*)pFileBuf, bytesread/sizeof(wchar_t));
 	}
@@ -133,7 +133,7 @@ bool CTextFile::Load(LPCTSTR path, UnicodeType& type, bool bUTF8)
 		{
 			if (*pWideBuf == 0xFEFF)
 				// remove the BOM
-				textcontent = wstring(pWideBuf+1, ret);
+				textcontent = wstring(pWideBuf+1, ret-1);
 			else
 				textcontent = wstring(pWideBuf, ret);
 		}
