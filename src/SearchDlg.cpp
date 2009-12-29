@@ -268,31 +268,12 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 
 
 
-			CRegStdWORD regXY(_T("Software\\grepWin\\XY"));
-			if (DWORD(regXY))
-			{
-				CRegStdWORD regWHWindow(_T("Software\\grepWin\\WHWindow"));
-				if (DWORD(regWHWindow))
-				{
-					// x,y position and width/height are valid
-					//
-					// check whether the rectangle is at least partly
-					// visible in at least one monitor
-					RECT rc = {0};
-					rc.left = HIWORD(DWORD(regXY));
-					rc.top = LOWORD(DWORD(regXY));
-					rc.right = HIWORD(DWORD(regWHWindow)) + rc.left;
-					rc.bottom = LOWORD(DWORD(regWHWindow)) + rc.top;
-					if (MonitorFromRect(&rc, MONITOR_DEFAULTTONULL))
-					{
-						SetWindowPos(*this, HWND_TOP, rc.left, rc.top, HIWORD(DWORD(regWHWindow)), LOWORD(DWORD(regWHWindow)), SWP_SHOWWINDOW);
-					}
-				}
-			}
-
-			CRegStdWORD regMaximized(_T("Software\\grepWin\\Maximized"));
-			if( DWORD(regMaximized) )
-				ShowWindow(*this, SW_MAXIMIZE);
+			WINDOWPLACEMENT wpl = {0};
+			DWORD size = sizeof(wpl);
+			if (SHGetValue(HKEY_CURRENT_USER, _T("Software\\grepWin"), _T("windowpos"), REG_NONE, &wpl, &size) == ERROR_SUCCESS)
+				SetWindowPlacement(*this, &wpl);
+			else
+				ShowWindow(*this, SW_SHOW);
 
 			ExtendFrameIntoClientArea(0, IDC_GROUPSEARCHIN, 0, 0);
 			m_aerocontrols.SubclassControl(GetDlgItem(*this, IDC_ABOUTLINK));
@@ -653,13 +634,10 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 
 void CSearchDlg::SaveWndPosition()
 {
-	RECT rc;
-	::GetWindowRect(*this, &rc);
-
-	CRegStdWORD regXY(_T("Software\\grepWin\\XY"));
-	regXY = MAKELONG(rc.top, rc.left);
-	CRegStdWORD regWHWindow(_T("Software\\grepWin\\WHWindow"));
-	regWHWindow = MAKELONG(rc.bottom-rc.top, rc.right-rc.left);
+	WINDOWPLACEMENT wpl = {0};
+	wpl.length = sizeof(WINDOWPLACEMENT);
+	GetWindowPlacement(*this, &wpl);
+	SHSetValue(HKEY_CURRENT_USER, _T("Software\\grepWin"), _T("windowpos"), REG_NONE, &wpl, sizeof(wpl));
 }
 
 void CSearchDlg::UpdateInfoLabel()
