@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2009 - Stefan Kueng
+// Copyright (C) 2007-2010 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -839,7 +839,11 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
 		if (lpNMItemActivate->iItem >= 0)
 		{
 			wstring verb = _T("open");
-			wstring ext = m_items[lpNMItemActivate->iItem].filepath.substr(m_items[lpNMItemActivate->iItem].filepath.rfind('.'));
+			CSearchInfo inf = m_items[lpNMItemActivate->iItem];
+			size_t dotPos = inf.filepath.rfind('.');
+			wstring ext;
+			if (dotPos != wstring::npos)
+				ext = inf.filepath.substr(dotPos);
 
 			// some scripting languages (e.g. python) will execute the document
 			// instead of open it. Try to identify these cases.
@@ -859,7 +863,7 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
 			shExInfo.cbSize = sizeof(SHELLEXECUTEINFO);
 			shExInfo.fMask = SEE_MASK_UNICODE;
 			shExInfo.hwnd = *this;
-			shExInfo.lpFile = m_items[lpNMItemActivate->iItem].filepath.c_str();
+			shExInfo.lpFile = inf.filepath.c_str();
 			shExInfo.nShow = SW_SHOW;
 			shExInfo.lpVerb = verb.c_str();
 			ShellExecuteEx(&shExInfo);
