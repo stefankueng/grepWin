@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008 - Stefan Kueng
+// Copyright (C) 2007-2008, 2010 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -41,7 +41,7 @@ LRESULT CAboutDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
 		{
 			InitDialog(hwndDlg, IDI_GREPWIN);
 			TCHAR buf[MAX_PATH] = {0};
-			_stprintf_s(buf, MAX_PATH, _T("grepWin °æ±¾ºÅ %ld.%ld.%ld.%ld"), 1,1,1,1);//CM_VERMAJOR, CM_VERMINOR, CM_VERMICRO, CM_VERBUILD);
+			_stprintf_s(buf, MAX_PATH, _T("grepWin version %ld.%ld.%ld.%ld"), CM_VERMAJOR, CM_VERMINOR, CM_VERMICRO, CM_VERBUILD);
 			SetDlgItemText(*this, IDC_VERSIONINFO, buf);
 			SetDlgItemText(*this, IDC_DATE, _T(CM_VERDATE));
 			m_link.ConvertStaticToHyperlink(hwndDlg, IDC_WEBLINK, _T("http://tools.tortoisesvn.net"));
@@ -67,4 +67,3 @@ LRESULT CAboutDlg::DoCommand(int id, int /*msg*/)
 	}
 	return 1;
 }
-
