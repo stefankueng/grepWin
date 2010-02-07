@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2009 - Stefan Kueng
+// Copyright (C) 2007-2010 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -183,11 +183,11 @@ void CBookmarksDlg::InitBookmarks()
 	lvc.mask = LVCF_TEXT;
 	lvc.fmt = LVCFMT_LEFT;
 	lvc.cx = -1;
-	lvc.pszText = _T("Ãû³Æ");
+	lvc.pszText = _T("Name");
 	ListView_InsertColumn(hListControl, 0, &lvc);
-	lvc.pszText = _T("Æ¥Åä");
+	lvc.pszText = _T("Search string");
 	ListView_InsertColumn(hListControl, 1, &lvc);
-	lvc.pszText = _T("Ìæ»»");
+	lvc.pszText = _T("Replace string");
 	ListView_InsertColumn(hListControl, 2, &lvc);
 
 

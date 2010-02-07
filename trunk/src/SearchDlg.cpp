@@ -104,11 +104,11 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 		{
 			InitDialog(hwndDlg, IDI_GREPWIN);
 
-			AddToolTip(IDC_PATTERN, _T("仅搜索这种模式的文件。\r\n例如: *.cpp;*.h"));
-			AddToolTip(IDC_EXCLUDEDIRSPATTERN, _T("您可以排除某些目录。例如，CVS 和 images：\r\n可以这样: ^(CVS|images)$\r\n注意：'.svn' 文件夹在 Windows 中是 '隐藏的'，一般不会去搜索。"));
-			AddToolTip(IDC_SEARCHPATH, _T("以递归方式搜索该目录。\r\n请使用 | 符号分隔多个选项。\r\n例如：c:\\temp|d:\\logs"));
-			AddToolTip(IDC_DOTMATCHNEWLINE, _T(".点号匹配\\n"));
-			AddToolTip(IDC_SEARCHTEXT, _T("请输入待搜索的正则表达式。可按 F1 调出帮助窗口。"));
+			AddToolTip(IDC_PATTERN, _T("only files that match this pattern are searched.\r\nExample: *.cpp;*.h"));
+			AddToolTip(IDC_EXCLUDEDIRSPATTERN, _T("you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."));
+			AddToolTip(IDC_SEARCHPATH, _T("the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"));
+			AddToolTip(IDC_DOTMATCHNEWLINE, _T("\\n is matched by '.'"));
+			AddToolTip(IDC_SEARCHTEXT, _T("a regular expression used for searching. Press F1 for more info."));
 
 			if (m_searchpath.empty())
 			{
@@ -190,9 +190,9 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			else
 				SetDlgItemText(hwndDlg, IDC_SIZEEDIT, _T("2000"));
 
-			SendDlgItemMessage(hwndDlg, IDC_SIZECOMBO, CB_INSERTSTRING, (WPARAM)-1, (LPARAM)_T("小于"));
-			SendDlgItemMessage(hwndDlg, IDC_SIZECOMBO, CB_INSERTSTRING, (WPARAM)-1, (LPARAM)_T("等于"));
-			SendDlgItemMessage(hwndDlg, IDC_SIZECOMBO, CB_INSERTSTRING, (WPARAM)-1, (LPARAM)_T("大于"));
+			SendDlgItemMessage(hwndDlg, IDC_SIZECOMBO, CB_INSERTSTRING, (WPARAM)-1, (LPARAM)_T("less than"));
+			SendDlgItemMessage(hwndDlg, IDC_SIZECOMBO, CB_INSERTSTRING, (WPARAM)-1, (LPARAM)_T("equal to"));
+			SendDlgItemMessage(hwndDlg, IDC_SIZECOMBO, CB_INSERTSTRING, (WPARAM)-1, (LPARAM)_T("greater than"));
 			SendDlgItemMessage(hwndDlg, IDC_SIZECOMBO, CB_SETCURSEL, DWORD(m_regSizeCombo), 0);
 			SendDlgItemMessage(hwndDlg, IDC_INCLUDESUBFOLDERS, BM_SETCHECK, DWORD(m_regIncludeSubfolders) ? BST_CHECKED : BST_UNCHECKED, 0);
 			SendDlgItemMessage(hwndDlg, IDC_CREATEBACKUP, BM_SETCHECK, DWORD(m_regCreateBackup) ? BST_CHECKED : BST_UNCHECKED, 0);
@@ -502,7 +502,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 			CBrowseFolder browse;
 
 			GetDlgItemText(*this, IDC_SEARCHPATH, path, MAX_PATH*4);
-			browse.SetInfo(_T("选择搜索路径"));
+			browse.SetInfo(_T("Select path to search"));
 			if (browse.Show(*this, path, MAX_PATH_NEW, m_searchpath.c_str()) == CBrowseFolder::OK)
 			{
 				SetDlgItemText(*this, IDC_SEARCHPATH, path);
@@ -643,8 +643,8 @@ void CSearchDlg::SaveWndPosition()
 void CSearchDlg::UpdateInfoLabel()
 {
 	TCHAR buf[1024] = {0};
-	_stprintf_s(buf, 1024, _T("搜索了 %ld 个文件，忽略了 %ld 个文件。在%ld 个文件中搜索到 %ld 个匹配 。"),
-		m_searchedItems, m_totalitems-m_searchedItems, m_items.size(),m_totalmatches);
+	_stprintf_s(buf, 1024, _T("Searched %ld files, skipped %ld files. Found %ld matches in %ld files."),
+		m_searchedItems, m_totalitems-m_searchedItems, m_totalmatches, m_items.size());
 	SetDlgItemText(*this, IDC_SEARCHINFOLABEL, buf);
 }
 
@@ -664,17 +664,17 @@ bool CSearchDlg::InitResultList()
 	lvc.mask = LVCF_TEXT;
 	lvc.fmt = LVCFMT_LEFT;
 	lvc.cx = -1;
-	lvc.pszText = _T("文件名");
+	lvc.pszText = _T("Name");
 	ListView_InsertColumn(hListControl, 0, &lvc);
-	lvc.pszText = _T("大小");
+	lvc.pszText = _T("Size");
 	ListView_InsertColumn(hListControl, 1, &lvc);
-	lvc.pszText = _T("匹配次数");
+	lvc.pszText = _T("Matches");
 	ListView_InsertColumn(hListControl, 2, &lvc);
-	lvc.pszText = _T("路径");
+	lvc.pszText = _T("Path");
 	ListView_InsertColumn(hListControl, 3, &lvc);
-	lvc.pszText = _T("编码方式");
+	lvc.pszText = _T("Encoding");
 	ListView_InsertColumn(hListControl, 4, &lvc);
-	lvc.pszText = _T("修改日期");
+	lvc.pszText = _T("Date modified");
 	ListView_InsertColumn(hListControl, 5, &lvc);
 
 	ListView_SetColumnWidth(hListControl, 0, 300);
