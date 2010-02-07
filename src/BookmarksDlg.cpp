@@ -183,11 +183,11 @@ void CBookmarksDlg::InitBookmarks()
 	lvc.mask = LVCF_TEXT;
 	lvc.fmt = LVCFMT_LEFT;
 	lvc.cx = -1;
-	lvc.pszText = _T("Name");
+	lvc.pszText = _T("Ãû³Æ");
 	ListView_InsertColumn(hListControl, 0, &lvc);
-	lvc.pszText = _T("Search string");
+	lvc.pszText = _T("Æ¥Åä");
 	ListView_InsertColumn(hListControl, 1, &lvc);
-	lvc.pszText = _T("Replace string");
+	lvc.pszText = _T("Ìæ»»");
 	ListView_InsertColumn(hListControl, 2, &lvc);
 
 
