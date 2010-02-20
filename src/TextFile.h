@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2009 - Stefan Kueng
+// Copyright (C) 2007-2010 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -63,6 +63,11 @@ public:
 	 * Returns the line number from a given character position inside the file.
 	 */
 	long			LineFromPosition(long pos) const;
+
+	/**
+	 * Returns the line from a given line number
+	 */
+	wstring			GetLineString(long lineNumber) const;
 
 	/**
 	 * Returns the file content as a text string.
