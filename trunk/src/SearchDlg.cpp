@@ -1157,7 +1157,7 @@ bool CSearchDlg::EncodingCompareDesc(const CSearchInfo Entry1, const CSearchInfo
 
 bool CSearchDlg::ModifiedTimeCompareDesc(const CSearchInfo Entry1, const CSearchInfo Entry2)
 {
-	return CompareFileTime(&Entry1.modifiedtime, &Entry2.modifiedtime) < 0;
+	return CompareFileTime(&Entry1.modifiedtime, &Entry2.modifiedtime) > 0;
 }
 
 bool grepWin_match_i(const wstring& the_regex, const TCHAR *pText)
