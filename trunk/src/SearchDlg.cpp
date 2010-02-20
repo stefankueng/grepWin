@@ -102,8 +102,6 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 	{
 	case WM_INITDIALOG:
 		{
-			InitDialog(hwndDlg, IDI_GREPWIN);
-
 			AddToolTip(IDC_PATTERN, _T("only files that match this pattern are searched.\r\nExample: *.cpp;*.h"));
 			AddToolTip(IDC_EXCLUDEDIRSPATTERN, _T("you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."));
 			AddToolTip(IDC_SEARCHPATH, _T("the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"));
@@ -266,7 +264,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			m_resizer.AddControl(hwndDlg, IDC_RESULTLIST, RESIZER_TOPLEFTBOTTOMRIGHT);
 			m_resizer.AddControl(hwndDlg, IDC_SEARCHINFOLABEL, RESIZER_BOTTOMLEFTRIGHT);
 
-
+			InitDialog(hwndDlg, IDI_GREPWIN);
 
 			WINDOWPLACEMENT wpl = {0};
 			DWORD size = sizeof(wpl);
