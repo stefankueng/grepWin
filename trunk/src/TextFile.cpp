@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2009 - Stefan Kueng
+// Copyright (C) 2007-2010 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -337,6 +337,26 @@ long CTextFile::LineFromPosition(long pos) const
 		if (pos <= long(*it))
 			break;
 	}
+	return line;
+}
+
+wstring CTextFile::GetLineString(long lineNumber) const
+{
+	if ((lineNumber-2) >= (long)linepositions.size())
+		return wstring();
+	if (lineNumber <= 0)
+		return wstring();
+
+	long startpos = 0;
+	if (lineNumber > 1)
+		startpos = linepositions[lineNumber-2];
+	size_t endpos = textcontent.find(_T("\n"), startpos+1);
+	wstring line;
+	if (endpos != wstring::npos)
+		line = wstring(textcontent.begin()+startpos, textcontent.begin() + endpos);
+	else
+		line = wstring(textcontent.begin()+startpos, textcontent.end());
+
 	return line;
 }
 
