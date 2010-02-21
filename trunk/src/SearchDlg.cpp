@@ -213,6 +213,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			DialogEnableWindow(IDC_REPLACE, !bText);
 			DialogEnableWindow(IDC_CREATEBACKUP, !bText);
 			::SetDlgItemText(*this, IDOK, _T("&Search"));
+			CheckRadioButton(*this, IDC_RESULTFILES, IDC_RESULTCONTENT, IDC_RESULTFILES);
 
 			SetFocus(GetDlgItem(hwndDlg, IDC_SEARCHTEXT));
 
@@ -262,6 +263,8 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			m_resizer.AddControl(hwndDlg, IDOK, RESIZER_TOPRIGHT);
 			m_resizer.AddControl(hwndDlg, IDC_GROUPSEARCHRESULTS, RESIZER_TOPLEFTBOTTOMRIGHT);
 			m_resizer.AddControl(hwndDlg, IDC_RESULTLIST, RESIZER_TOPLEFTBOTTOMRIGHT);
+			m_resizer.AddControl(hwndDlg, IDC_RESULTFILES, RESIZER_BOTTOMRIGHT);
+			m_resizer.AddControl(hwndDlg, IDC_RESULTCONTENT, RESIZER_BOTTOMRIGHT);
 			m_resizer.AddControl(hwndDlg, IDC_SEARCHINFOLABEL, RESIZER_BOTTOMLEFTRIGHT);
 
 			InitDialog(hwndDlg, IDI_GREPWIN);
@@ -336,7 +339,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 	case SEARCH_FOUND:
 		if ((wParam != 0)||(m_searchString.empty())||((CSearchInfo*)lParam)->readerror)
 			AddFoundEntry((CSearchInfo*)lParam);
-		m_totalmatches += ((CSearchInfo*)lParam)->matchstarts.size();
+		m_totalmatches += ((CSearchInfo*)lParam)->matchlinesnumbers.size();
 		UpdateInfoLabel();
 		break;
 	case SEARCH_PROGRESS:
@@ -349,13 +352,11 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 		break;
 	case SEARCH_END:
 		{
-			HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
-			ListView_SetColumnWidth(hListControl, 0, LVSCW_AUTOSIZE_USEHEADER);
-			ListView_SetColumnWidth(hListControl, 1, LVSCW_AUTOSIZE_USEHEADER);
-			ListView_SetColumnWidth(hListControl, 2, LVSCW_AUTOSIZE_USEHEADER);
-			ListView_SetColumnWidth(hListControl, 3, LVSCW_AUTOSIZE_USEHEADER);
+			AutoSizeAllColumns();
 			UpdateInfoLabel();
 			::SetDlgItemText(*this, IDOK, _T("&Search"));
+			DialogEnableWindow(IDC_RESULTFILES, true);
+			DialogEnableWindow(IDC_RESULTCONTENT, true);
 		}
 		break;
 	case WM_HELP:
@@ -414,7 +415,11 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 				m_searchedItems = 0;
 				m_totalitems = 0;
 
+				m_items.clear();
+				CheckRadioButton(*this, IDC_RESULTFILES, IDC_RESULTCONTENT, IDC_RESULTFILES);
 				InitResultList();
+				DialogEnableWindow(IDC_RESULTFILES, false);
+				DialogEnableWindow(IDC_RESULTCONTENT, false);
 
 				m_AutoCompleteFilePatterns.AddEntry(m_patternregex.c_str());
 				m_AutoCompleteExcludeDirsPatterns.AddEntry(m_excludedirspatternregex.c_str());
@@ -620,6 +625,13 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 			}
 		}
 		break;
+	case IDC_RESULTFILES:
+	case IDC_RESULTCONTENT:
+		{
+			InitResultList();
+			FillResultList();
+		}
+		break;
 	case IDC_ABOUTLINK:
 		{
 			CAboutDlg dlgAbout(*this);
@@ -649,6 +661,7 @@ void CSearchDlg::UpdateInfoLabel()
 bool CSearchDlg::InitResultList()
 {
 	HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
+	bool filelist = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);	
 	DWORD exStyle = LVS_EX_DOUBLEBUFFER;
 	ListView_DeleteAllItems(hListControl);
 
@@ -664,16 +677,19 @@ bool CSearchDlg::InitResultList()
 	lvc.cx = -1;
 	lvc.pszText = _T("Name");
 	ListView_InsertColumn(hListControl, 0, &lvc);
-	lvc.pszText = _T("Size");
+	lvc.pszText = filelist ? _T("Size") : _T("Line");
 	ListView_InsertColumn(hListControl, 1, &lvc);
-	lvc.pszText = _T("Matches");
+	lvc.pszText = filelist ? _T("Matches") : _T("Text");
 	ListView_InsertColumn(hListControl, 2, &lvc);
-	lvc.pszText = _T("Path");
-	ListView_InsertColumn(hListControl, 3, &lvc);
-	lvc.pszText = _T("Encoding");
-	ListView_InsertColumn(hListControl, 4, &lvc);
-	lvc.pszText = _T("Date modified");
-	ListView_InsertColumn(hListControl, 5, &lvc);
+	if (filelist)
+	{
+		lvc.pszText = _T("Path");
+		ListView_InsertColumn(hListControl, 3, &lvc);
+		lvc.pszText = _T("Encoding");
+		ListView_InsertColumn(hListControl, 4, &lvc);
+		lvc.pszText = _T("Date modified");
+		ListView_InsertColumn(hListControl, 5, &lvc);
+	}
 
 	ListView_SetColumnWidth(hListControl, 0, 300);
 	ListView_SetColumnWidth(hListControl, 1, 50);
@@ -682,8 +698,6 @@ bool CSearchDlg::InitResultList()
 	ListView_SetColumnWidth(hListControl, 4, LVSCW_AUTOSIZE_USEHEADER);
 	ListView_SetColumnWidth(hListControl, 5, LVSCW_AUTOSIZE_USEHEADER);
 
-	m_items.clear();
-
 	return true;
 }
 
@@ -691,17 +705,19 @@ bool CSearchDlg::AddFoundEntry(CSearchInfo * pInfo, bool bOnlyListControl)
 {
 	HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
 	LVITEM lv = {0};
-	lv.mask = LVIF_TEXT | LVIF_IMAGE;
+	lv.mask = LVIF_TEXT | LVIF_IMAGE | LVIF_PARAM;
 	TCHAR * pBuf = new TCHAR[pInfo->filepath.size()+1];
 	wstring name = pInfo->filepath.substr(pInfo->filepath.find_last_of('\\')+1);
 	_tcscpy_s(pBuf, pInfo->filepath.size()+1, name.c_str());
 	lv.pszText = pBuf;
 	lv.iImage = pInfo->folder ? CSysImageList::GetInstance().GetDirIconIndex() : CSysImageList::GetInstance().GetFileIconIndex(pInfo->filepath);
 	lv.iItem = ListView_GetItemCount(hListControl);
+	lv.lParam = lv.iItem;
 	int ret = ListView_InsertItem(hListControl, &lv);
 	delete [] pBuf;
 	if (ret >= 0)
 	{
+		lv.mask = LVIF_TEXT;
 		lv.iItem = ret;
 		lv.iSubItem = 1;
 		TCHAR sb[MAX_PATH_NEW] = {0};
@@ -713,7 +729,7 @@ bool CSearchDlg::AddFoundEntry(CSearchInfo * pInfo, bool bOnlyListControl)
 		if (pInfo->readerror)
 			_tcscpy_s(sb, MAX_PATH_NEW, _T("read error"));
 		else
-			_stprintf_s(sb, MAX_PATH_NEW, _T("%ld"), pInfo->matchstarts.size());
+			_stprintf_s(sb, MAX_PATH_NEW, _T("%ld"), pInfo->matchlinesnumbers.size());
 		ListView_SetItem(hListControl, &lv);
 		lv.iSubItem = 3;
 		_tcscpy_s(sb, MAX_PATH_NEW, pInfo->filepath.substr(0, pInfo->filepath.size()-name.size()-1).c_str());
@@ -743,9 +759,150 @@ bool CSearchDlg::AddFoundEntry(CSearchInfo * pInfo, bool bOnlyListControl)
 		ListView_SetItem(hListControl, &lv);
 	}
 	if ((ret != -1)&&(!bOnlyListControl))
+	{
 		m_items.push_back(*pInfo);
+	}
 
 	return (ret != -1);
+}
+
+void CSearchDlg::FillResultList()
+{
+	bool filelist = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);	
+	HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
+
+	ListView_DeleteAllItems(hListControl);
+
+	int index = 0;
+	int fileIndex = 0;
+	for (vector<CSearchInfo>::const_iterator pInfo = m_items.begin(); pInfo != m_items.end(); ++pInfo)
+	{
+		if (filelist)
+		{
+			LVITEM lv = {0};
+			lv.mask = LVIF_TEXT | LVIF_IMAGE | LVIF_PARAM;
+			TCHAR * pBuf = new TCHAR[pInfo->filepath.size()+1];
+			wstring name = pInfo->filepath.substr(pInfo->filepath.find_last_of('\\')+1);
+			_tcscpy_s(pBuf, pInfo->filepath.size()+1, name.c_str());
+			lv.pszText = pBuf;
+			lv.iImage = pInfo->folder ? CSysImageList::GetInstance().GetDirIconIndex() : CSysImageList::GetInstance().GetFileIconIndex(pInfo->filepath);
+			lv.iItem = index;
+			lv.lParam = fileIndex;
+			int ret = ListView_InsertItem(hListControl, &lv);
+			delete [] pBuf;
+			if (ret >= 0)
+			{
+				lv.mask = LVIF_TEXT;
+				lv.iItem = ret;
+
+				lv.iSubItem = 1;
+				TCHAR sb[MAX_PATH_NEW] = {0};
+				if (!pInfo->folder)
+					StrFormatByteSizeW(pInfo->filesize, sb, 20);
+				lv.pszText = sb;
+				ListView_SetItem(hListControl, &lv);
+
+				lv.iSubItem = 2;
+				if (pInfo->readerror)
+					_tcscpy_s(sb, MAX_PATH_NEW, _T("read error"));
+				else
+					_stprintf_s(sb, MAX_PATH_NEW, _T("%ld"), pInfo->matchlinesnumbers.size());
+				ListView_SetItem(hListControl, &lv);
+
+				lv.iSubItem = 3;
+				_tcscpy_s(sb, MAX_PATH_NEW, pInfo->filepath.substr(0, pInfo->filepath.size()-name.size()-1).c_str());
+				ListView_SetItem(hListControl, &lv);
+
+				lv.iSubItem = 4;
+				switch (pInfo->encoding)
+				{
+				case CTextFile::ANSI:
+					_tcscpy_s(sb, MAX_PATH*4, _T("ANSI"));
+					break;
+				case CTextFile::UNICODE_LE:
+					_tcscpy_s(sb, MAX_PATH*4, _T("UNICODE"));
+					break;
+				case CTextFile::UTF8:
+					_tcscpy_s(sb, MAX_PATH*4, _T("UTF8"));
+					break;
+				case CTextFile::BINARY:
+					_tcscpy_s(sb, MAX_PATH*4, _T("BINARY"));
+					break;
+				default:
+					_tcscpy_s(sb, MAX_PATH*4, _T(""));
+					break;
+				}
+				ListView_SetItem(hListControl, &lv);
+
+				lv.iSubItem = 5;
+				formatDate(sb, pInfo->modifiedtime, true);
+				ListView_SetItem(hListControl, &lv);
+				index++;
+			}
+		}
+		else
+		{
+			// file contents
+			if (pInfo->encoding == CTextFile::BINARY)
+			{
+				LVITEM lv = {0};
+				lv.mask = LVIF_TEXT | LVIF_IMAGE | LVIF_PARAM;
+				TCHAR * pBuf = new TCHAR[pInfo->filepath.size()+1];
+				wstring name = pInfo->filepath.substr(pInfo->filepath.find_last_of('\\')+1);
+				_tcscpy_s(pBuf, pInfo->filepath.size()+1, name.c_str());
+				lv.pszText = pBuf;
+				lv.iImage = pInfo->folder ? CSysImageList::GetInstance().GetDirIconIndex() : CSysImageList::GetInstance().GetFileIconIndex(pInfo->filepath);
+				lv.iItem = index++;
+				lv.lParam = fileIndex;
+				int ret = ListView_InsertItem(hListControl, &lv);
+				delete [] pBuf;
+				if (ret >= 0)
+				{
+					lv.mask = LVIF_TEXT;
+					lv.iItem = ret;
+
+					lv.iSubItem = 1;
+					lv.pszText = _T("binary");
+					ListView_SetItem(hListControl, &lv);
+				}
+			}
+			else
+			{
+				for (size_t subIndex = 0; subIndex < pInfo->matchlinesnumbers.size(); ++subIndex)
+				{
+					LVITEM lv = {0};
+					lv.mask = LVIF_TEXT | LVIF_IMAGE | LVIF_PARAM;
+					TCHAR * pBuf = new TCHAR[pInfo->filepath.size()+1];
+					wstring name = pInfo->filepath.substr(pInfo->filepath.find_last_of('\\')+1);
+					_tcscpy_s(pBuf, pInfo->filepath.size()+1, name.c_str());
+					lv.pszText = pBuf;
+					lv.iImage = pInfo->folder ? CSysImageList::GetInstance().GetDirIconIndex() : CSysImageList::GetInstance().GetFileIconIndex(pInfo->filepath);
+					lv.iItem = index;
+					lv.lParam = fileIndex;
+					int ret = ListView_InsertItem(hListControl, &lv);
+					delete [] pBuf;
+					if (ret >= 0)
+					{
+						lv.mask = LVIF_TEXT;
+						lv.iItem = ret;
+
+						lv.iSubItem = 1;
+						TCHAR sb[MAX_PATH_NEW] = {0};
+						_stprintf_s(sb, MAX_PATH_NEW, _T("%ld"), pInfo->matchlinesnumbers[subIndex]);
+						lv.pszText = sb;
+						ListView_SetItem(hListControl, &lv);
+
+						lv.iSubItem = 2;
+						lv.pszText = (LPWSTR)pInfo->matchlines[subIndex].c_str();
+						ListView_SetItem(hListControl, &lv);
+						index++;
+					}
+				}
+			}
+		}
+		fileIndex++;
+	}
+	AutoSizeAllColumns();
 }
 
 void CSearchDlg::ShowContextMenu(int x, int y)
@@ -758,7 +915,7 @@ void CSearchDlg::ShowContextMenu(int x, int y)
 	int iItem = -1;
 	vector<wstring> paths;
 	while ((iItem = ListView_GetNextItem(hListControl, iItem, LVNI_SELECTED)) != (-1))
-		paths.push_back(m_items[iItem].filepath);
+		paths.push_back(m_items[GetSelectedListIndex(iItem)].filepath);
 
 	if (paths.size() == 0)
 		return;
@@ -789,6 +946,7 @@ bool CSearchDlg::PreTranslateMessage(MSG* pMsg)
 				if (GetFocus() == hListControl)
 				{
 					int selItem = ListView_GetSelectionMark(hListControl);
+					selItem = GetSelectedListIndex(selItem);
 					if ((selItem >= 0)&&(selItem < (int)m_items.size()))
 					{
 						SHELLEXECUTEINFO shExInfo = {0};
@@ -837,7 +995,8 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
 		if (lpNMItemActivate->iItem >= 0)
 		{
 			wstring verb = _T("open");
-			CSearchInfo inf = m_items[lpNMItemActivate->iItem];
+			int iItem = GetSelectedListIndex(lpNMItemActivate->iItem);
+			CSearchInfo inf = m_items[iItem];
 			size_t dotPos = inf.filepath.rfind('.');
 			wstring ext;
 			if (dotPos != wstring::npos)
@@ -856,15 +1015,102 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
 			{
 				verb = _T("edit");
 			}
+			// normalize application path
+			DWORD len = ExpandEnvironmentStrings (application.c_str(), NULL, 0);
+			cmdbuf = new TCHAR[len+1];
+			ExpandEnvironmentStrings (application.c_str(), cmdbuf, len);
+			application = cmdbuf;
+			delete [] cmdbuf;
 
-			SHELLEXECUTEINFO shExInfo = {0};
-			shExInfo.cbSize = sizeof(SHELLEXECUTEINFO);
-			shExInfo.fMask = SEE_MASK_UNICODE;
-			shExInfo.hwnd = *this;
-			shExInfo.lpFile = inf.filepath.c_str();
-			shExInfo.nShow = SW_SHOW;
-			shExInfo.lpVerb = verb.c_str();
-			ShellExecuteEx(&shExInfo);
+			// resolve parameters
+			if (application.find(_T("%1")) == wstring::npos)
+				application += _T(" %1");
+
+
+			bool filelist = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);	
+			wstring linenumberparam;
+			if (!filelist)
+			{
+				HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
+				TCHAR textlinebuf[MAX_PATH] = {0};
+				LVITEM lv = {0};
+				lv.iItem = lpNMItemActivate->iItem;
+				lv.iSubItem = 1;	// line number
+				lv.mask = LVIF_TEXT;
+				lv.pszText = textlinebuf;
+				lv.cchTextMax = MAX_PATH;
+				if (ListView_GetItem(hListControl, &lv))
+				{
+					wstring appname = application;
+					std::transform(appname.begin(), appname.end(), appname.begin(), std::tolower);
+
+					// now find out if the application which opens the file is known to us
+					// and if it has a 'linenumber' switch to jump directly to a specific
+					// line number.
+					if (appname.find(_T("notepad++.exe")) != wstring::npos)
+					{
+						// notepad++
+						TCHAR buf[MAX_PATH] = {0};
+						_stprintf_s(buf, MAX_PATH, _T("-n%s"), textlinebuf);
+						linenumberparam = buf;
+					}
+					else if (appname.find(_T("xemacs.exe")) != wstring::npos)
+					{
+						// XEmacs
+						TCHAR buf[MAX_PATH] = {0};
+						_stprintf_s(buf, MAX_PATH, _T("+%s"), textlinebuf);
+						linenumberparam = buf;
+					}
+					else if (appname.find(_T("ultraedit.exe")) != wstring::npos)
+					{
+						// UltraEdit
+						TCHAR buf[MAX_PATH] = {0};
+						_stprintf_s(buf, MAX_PATH, _T("-l%s"), textlinebuf);
+						linenumberparam = buf;
+					}
+					else if (appname.find(_T("codewright.exe")) != wstring::npos)
+					{
+						// CodeWright
+						TCHAR buf[MAX_PATH] = {0};
+						_stprintf_s(buf, MAX_PATH, _T("-G%s"), textlinebuf);
+						linenumberparam = buf;
+					}
+				}
+			}
+
+			// replace "%1" with %1
+			wstring tag = _T("\"%1\"");
+			wstring repl = _T("%1");
+			wstring::iterator it_begin = search(application.begin(), application.end(), tag.begin(), tag.end());
+			if (it_begin != application.end())
+			{
+				wstring::iterator it_end= it_begin + tag.size();
+				application.replace(it_begin, it_end, repl);
+			}
+			// replace %1 with "path/of/selected/file"
+			tag = _T("%1");
+			repl = _T("\"") + inf.filepath + _T("\"");
+			it_begin = search(application.begin(), application.end(), tag.begin(), tag.end());
+			if (it_begin != application.end())
+			{
+				wstring::iterator it_end= it_begin + tag.size();
+				application.replace(it_begin, it_end, repl);
+			}
+			if (linenumberparam.size())
+			{
+				application += _T(" ");
+				application += linenumberparam;
+			}
+
+			STARTUPINFO startupInfo;
+			PROCESS_INFORMATION processInfo;
+			memset(&startupInfo, 0, sizeof(STARTUPINFO));
+			startupInfo.cb = sizeof(STARTUPINFO);
+
+			memset(&processInfo, 0, sizeof(PROCESS_INFORMATION));
+			CreateProcess(NULL, const_cast<TCHAR*>(application.c_str()), NULL, NULL, FALSE, 0, 0, NULL, &startupInfo, &processInfo);
+			CloseHandle(processInfo.hThread);
+			CloseHandle(processInfo.hProcess);
 		}
 	}
 	if (lpNMItemActivate->hdr.code == LVN_BEGINDRAG)
@@ -879,7 +1125,7 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
 		int iItem = -1;
 		while ((iItem = ListView_GetNextItem(hListControl, iItem, LVNI_SELECTED)) != (-1))
 		{
-			dropFiles.AddFile(m_items[iItem].filepath);
+			dropFiles.AddFile(m_items[GetSelectedListIndex(iItem)].filepath);
 		}
 
 		if ( dropFiles.GetCount()>0 )
@@ -889,6 +1135,9 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
 	}
 	if (lpNMItemActivate->hdr.code == LVN_COLUMNCLICK)
 	{
+		bool filelist = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);	
+		if (!filelist)
+			return;		// no sorting for the result view
 		m_bAscending = !m_bAscending;
 		switch (lpNMItemActivate->iSubItem)
 		{
@@ -937,11 +1186,7 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
 			AddFoundEntry(&(*it), true);
 		}
 
-		ListView_SetColumnWidth(hListControl, 0, LVSCW_AUTOSIZE_USEHEADER);
-		ListView_SetColumnWidth(hListControl, 1, LVSCW_AUTOSIZE_USEHEADER);
-		ListView_SetColumnWidth(hListControl, 2, LVSCW_AUTOSIZE_USEHEADER);
-		ListView_SetColumnWidth(hListControl, 3, LVSCW_AUTOSIZE_USEHEADER);
-
+		AutoSizeAllColumns();
 		HDITEM hd = {0};
 		hd.mask = HDI_FORMAT;
 		HWND hHeader = ListView_GetHeader(hListControl);
@@ -1094,7 +1339,7 @@ bool CSearchDlg::SizeCompareAsc(const CSearchInfo Entry1, const CSearchInfo Entr
 
 bool CSearchDlg::MatchesCompareAsc(const CSearchInfo Entry1, const CSearchInfo Entry2)
 {
-	return Entry1.matchends.size() < Entry2.matchends.size();
+	return Entry1.matchlinesnumbers.size() < Entry2.matchlinesnumbers.size();
 }
 
 bool CSearchDlg::PathCompareAsc(const CSearchInfo Entry1, const CSearchInfo Entry2)
@@ -1133,7 +1378,7 @@ bool CSearchDlg::SizeCompareDesc(const CSearchInfo Entry1, const CSearchInfo Ent
 
 bool CSearchDlg::MatchesCompareDesc(const CSearchInfo Entry1, const CSearchInfo Entry2)
 {
-	return Entry1.matchends.size() > Entry2.matchends.size();
+	return Entry1.matchlinesnumbers.size() > Entry2.matchlinesnumbers.size();
 }
 
 bool CSearchDlg::PathCompareDesc(const CSearchInfo Entry1, const CSearchInfo Entry2)
@@ -1408,8 +1653,13 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
 						if (whatc[0].matched)
 						{
 							nFound++;
-							sinfo.matchstarts.push_back(whatc[0].first-textfile.GetFileString().begin());
-							sinfo.matchends.push_back(whatc[0].second-textfile.GetFileString().begin());
+							long linestart = textfile.LineFromPosition(whatc[0].first-textfile.GetFileString().begin());
+							long lineend = textfile.LineFromPosition(whatc[0].second-textfile.GetFileString().begin());
+							for (long l = linestart; l <= lineend; ++l)
+							{
+								sinfo.matchlines.push_back(textfile.GetLineString(l));
+								sinfo.matchlinesnumbers.push_back(l);
+							}
 						}
 						// update search position:
 						if (start == whatc[0].second)
@@ -1504,8 +1754,7 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
 				while (boost::regex_search(start, end, whatc, expression, flags))   
 				{
 					nFound++;
-					sinfo.matchstarts.push_back(whatc[0].first-fbeg);
-					sinfo.matchends.push_back(whatc[0].second-fbeg);
+					sinfo.matchlinesnumbers.push_back(whatc[0].first-fbeg);
 					// update search position:
 					start = whatc[0].second;
 					// update flags:
@@ -1531,7 +1780,7 @@ DWORD WINAPI SearchThreadEntry(LPVOID lpParam)
 	return 0L;
 }
 
-void CSearchDlg::formatDate(TCHAR date_native[], FILETIME& filetime, bool force_short_fmt)
+void CSearchDlg::formatDate(TCHAR date_native[], const FILETIME& filetime, bool force_short_fmt)
 {
 	date_native[0] = '\0';
 
@@ -1612,4 +1861,26 @@ int CSearchDlg::CheckRegex()
 	}
 
 	return len;
+}
+
+void CSearchDlg::AutoSizeAllColumns()
+{
+	HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
+	ListView_SetColumnWidth(hListControl, 0, LVSCW_AUTOSIZE_USEHEADER);
+	ListView_SetColumnWidth(hListControl, 1, LVSCW_AUTOSIZE_USEHEADER);
+	ListView_SetColumnWidth(hListControl, 2, LVSCW_AUTOSIZE_USEHEADER);
+	ListView_SetColumnWidth(hListControl, 3, LVSCW_AUTOSIZE_USEHEADER);
+}
+
+int CSearchDlg::GetSelectedListIndex(int index)
+{
+	HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
+	int iItem = -1;
+	LVITEM lv = {0};
+	lv.iItem = index;
+	lv.mask = LVIF_PARAM;
+	if (ListView_GetItem(hListControl, &lv))
+		iItem = lv.lParam;
+	
+	return iItem;
 }

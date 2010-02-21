@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2009 - Stefan Kueng
+// Copyright (C) 2007-2010 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -60,6 +60,7 @@ protected:
 	int						SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bIncludeBinary, bool bUseRegex, bool bCaseSensitive, bool bDotMatchesNewline, const wstring& searchString);
 
 	bool					InitResultList();
+	void					FillResultList();
 	bool					AddFoundEntry(CSearchInfo * pInfo, bool bOnlyListControl = false);
 	void					ShowContextMenu(int x, int y);
 	void					DoListNotify(LPNMITEMACTIVATE lpNMItemActivate);
@@ -67,9 +68,11 @@ protected:
 	void					UpdateSearchButton();
 	bool					SaveSettings();
 	void					SaveWndPosition();
-	void					formatDate(TCHAR date_native[], FILETIME& filetime, bool force_short_fmt);
+	void					formatDate(TCHAR date_native[], const FILETIME& filetime, bool force_short_fmt);
 	int						CheckRegex();
 	bool					MatchPath(LPCTSTR pathbuf);
+	void					AutoSizeAllColumns();
+	int						GetSelectedListIndex(int index);
 
 private:
 	static bool				NameCompareAsc(const CSearchInfo Entry1, const CSearchInfo Entry2);
@@ -119,6 +122,7 @@ private:
 	int						m_searchedItems;
 	int						m_totalmatches;
 	bool					m_bAscending;
+	wstring					m_resultString;
 
 	CDlgResizer				m_resizer;
 	CHyperLink				m_link;
