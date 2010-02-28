@@ -1061,7 +1061,7 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
 						_stprintf_s(buf, MAX_PATH, _T("+%s"), textlinebuf);
 						linenumberparam = buf;
 					}
-					else if (appname.find(_T("ultraedit.exe")) != wstring::npos)
+					else if (appname.find(_T("uedit32.exe")) != wstring::npos)
 					{
 						// UltraEdit
 						TCHAR buf[MAX_PATH] = {0};
