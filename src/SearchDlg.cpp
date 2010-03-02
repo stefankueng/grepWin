@@ -1075,6 +1075,13 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
 						_stprintf_s(buf, MAX_PATH, _T("-G%s"), textlinebuf);
 						linenumberparam = buf;
 					}
+					else if (appname.find(_T("notepad2.exe")) != wstring::npos)
+					{
+						// Notepad2
+						TCHAR buf[MAX_PATH] = {0};
+						_stprintf_s(buf, MAX_PATH, _T("/G %s"), textlinebuf);
+						linenumberparam = buf;
+					}
 				}
 			}
 
