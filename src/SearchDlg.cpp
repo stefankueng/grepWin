@@ -893,7 +893,11 @@ void CSearchDlg::FillResultList()
 						ListView_SetItem(hListControl, &lv);
 
 						lv.iSubItem = 2;
-						lv.pszText = (LPWSTR)pInfo->matchlines[subIndex].c_str();
+						wstring line = pInfo->matchlines[subIndex];
+						std::replace(line.begin(), line.end(), '\t', ' ');
+						std::replace(line.begin(), line.end(), '\n', ' ');
+						std::replace(line.begin(), line.end(), '\r', ' ');
+						lv.pszText = (LPWSTR)line.c_str();
 						ListView_SetItem(hListControl, &lv);
 						index++;
 					}
