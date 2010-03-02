@@ -662,7 +662,7 @@ bool CSearchDlg::InitResultList()
 {
 	HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
 	bool filelist = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);	
-	DWORD exStyle = LVS_EX_DOUBLEBUFFER;
+	DWORD exStyle = LVS_EX_DOUBLEBUFFER|LVS_EX_INFOTIP;
 	ListView_DeleteAllItems(hListControl);
 
 	int c = Header_GetItemCount(ListView_GetHeader(hListControl))-1;
@@ -1208,6 +1208,17 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
 		hd.fmt |= (m_bAscending ? HDF_SORTUP : HDF_SORTDOWN);
 		Header_SetItem(hHeader, lpNMItemActivate->iSubItem, &hd);
 
+	}
+	if (lpNMItemActivate->hdr.code == LVN_GETINFOTIP)
+	{
+		NMLVGETINFOTIP *pInfoTip = reinterpret_cast<NMLVGETINFOTIP*>(lpNMItemActivate);
+
+		// Which item number?
+		size_t itemid = pInfoTip->iItem;
+		int iItem = GetSelectedListIndex(itemid);
+		CSearchInfo inf = m_items[iItem];
+		// By default, clear text buffer.
+		lstrcpyn(pInfoTip->pszText,inf.filepath.c_str(), pInfoTip->cchTextMax);
 	}
 }
 
