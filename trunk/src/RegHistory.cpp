@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2009 - Stefan Kueng
+// Copyright (C) 2007-2010 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -89,7 +89,7 @@ int CRegHistory::Load(LPCTSTR lpszSection, LPCTSTR lpszKeyPrefix)
 		//keys are of form <lpszKeyPrefix><entrynumber>
 		TCHAR sKey[4096] = {0};
 		_stprintf_s(sKey, 4096, _T("%s\\%s%d"), lpszSection, lpszKeyPrefix, n++);
-		sText = (std::wstring)CRegStdString(sKey);
+		sText = (LPCTSTR)CRegStdString(sKey);
 		if (!sText.empty())
 		{
 			m_arEntries.push_back(sText);
