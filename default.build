@@ -3,6 +3,12 @@
 
 	<include buildfile="default.build.user" />
 
+    <!-- default: we build with VS2008 -->
+    <property name="studioversion" value="2008"/>
+
+    <!-- build with VS2010, if there is a 10.0 in the VC path -->
+    <property name="studioversion" value="2010" if="${string::contains (environment::get-variable('VCINSTALLDIR'), '10.0')}"/>
+
 	<property name="configuration" value="release" />
 	<property name="platform" value="win32" />
 	<!-- the signinfo.txt file has to contain one line with parameters for signtool.exe,
@@ -10,6 +16,9 @@
 		 /t "url/to/timestamp/server" /q
 	-->
 	<loadfile file="signinfo.txt" property="signinfo" failonerror="false" />
+
+    <property name="solutionname" value="GrepWin.sln" if="${studioversion == '2008'}"/>
+    <property name="solutionname" value="GrepWin-VS10.sln" if="${studioversion == '2010'}"/>
 
 	<!-- ====================================================================== -->
 	<!-- Configuration targets													-->
@@ -29,7 +38,7 @@
 			Cleans every subproject.
 		</description>
 		<exec program="devenv.com" >
-			<arg value="grepWin.sln" />
+			<arg value="${solutionname}" />
 			<arg value="/clean" />
 			<arg value="${configuration}|${platform}" />
 		</exec>
@@ -64,7 +73,7 @@
 			Builds grepWin.
 		</description>
 		<exec program="devenv.com" >
-			<arg value="grepWin.sln" />
+			<arg value="${solutionname}" />
 			<arg value="/rebuild" />
 			<arg value="${configuration}|${platform}" />
 		</exec>
