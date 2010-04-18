@@ -128,4 +128,5 @@ private:
 	vector<size_t>	linepositions;
 	UnicodeType		encoding;
 	wstring			filename;
+    bool            hasBOM;
 };

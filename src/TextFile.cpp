@@ -22,6 +22,7 @@
 
 CTextFile::CTextFile(void) : pFileBuf(NULL)
 	, filelen(0)
+    , hasBOM(false)
 {
 }
 
@@ -119,8 +120,11 @@ bool CTextFile::Load(LPCTSTR path, UnicodeType& type, bool bUTF8)
 	if (encoding == UNICODE_LE)
 	{
 		if (*(char*)pFileBuf == 0xFF)
-			// remove the BOM
-			textcontent = wstring(((wchar_t*)pFileBuf+1), (bytesread/sizeof(wchar_t))-1);
+        {
+            // remove the BOM
+            textcontent = wstring(((wchar_t*)pFileBuf+1), (bytesread/sizeof(wchar_t))-1);
+            hasBOM = true;
+        }
 		else
 			textcontent = wstring((wchar_t*)pFileBuf, bytesread/sizeof(wchar_t));
 	}
@@ -132,8 +136,11 @@ bool CTextFile::Load(LPCTSTR path, UnicodeType& type, bool bUTF8)
 		if (ret2 == ret)
 		{
 			if (*pWideBuf == 0xFEFF)
-				// remove the BOM
-				textcontent = wstring(pWideBuf+1, ret-1);
+            {
+                // remove the BOM
+                textcontent = wstring(pWideBuf+1, ret-1);
+                hasBOM = true;
+            }
 			else
 				textcontent = wstring(pWideBuf, ret);
 		}
@@ -160,24 +167,52 @@ void CTextFile::SetFileContent(const wstring& content)
 		delete [] pFileBuf;
 	pFileBuf = NULL;
 	filelen = 0;
-	if (encoding == UNICODE_LE)
+
+    if (encoding == UNICODE_LE)
 	{
-		pFileBuf = new BYTE[content.size()*sizeof(wchar_t)];
-		memcpy(pFileBuf, content.c_str(), content.size()*sizeof(wchar_t));
-		filelen = content.size()*sizeof(wchar_t);
+        if (hasBOM)
+        {
+            pFileBuf = new BYTE[(content.size()+2)*sizeof(wchar_t)];
+            memcpy(pFileBuf, _T("\xFE\xFF"), 2*sizeof(wchar_t));
+            memcpy(pFileBuf+4, content.c_str(), content.size()*sizeof(wchar_t));
+            filelen = (content.size()+2)*sizeof(wchar_t);
+        }
+        else
+        {
+            pFileBuf = new BYTE[content.size()*sizeof(wchar_t)];
+            memcpy(pFileBuf, content.c_str(), content.size()*sizeof(wchar_t));
+            filelen = content.size()*sizeof(wchar_t);
+        }
 	}
 	else if (encoding == UTF8)
 	{
-		int ret = WideCharToMultiByte(CP_UTF8, 0, content.c_str(), -1, NULL, 0, NULL, NULL);
-		pFileBuf = new BYTE[ret];
-		int ret2 = WideCharToMultiByte(CP_UTF8, 0, content.c_str(), -1, (LPSTR)pFileBuf, ret, NULL, NULL);
-		filelen = ret2-1;
-		if (ret2 != ret)
-		{
-			delete [] pFileBuf;
-			pFileBuf = NULL;
-			filelen = 0;
-		}
+        if (hasBOM)
+        {
+            int ret = WideCharToMultiByte(CP_UTF8, 0, content.c_str(), -1, NULL, 0, NULL, NULL);
+            pFileBuf = new BYTE[ret+3];
+            memcpy(pFileBuf, "\xEF\xBB\xBF", 3);
+            int ret2 = WideCharToMultiByte(CP_UTF8, 0, content.c_str(), -1, (LPSTR)pFileBuf+3, ret, NULL, NULL);
+            filelen = ret2+2;
+            if (ret2 != ret)
+            {
+                delete [] pFileBuf;
+                pFileBuf = NULL;
+                filelen = 0;
+            }
+        }
+        else
+        {
+            int ret = WideCharToMultiByte(CP_UTF8, 0, content.c_str(), -1, NULL, 0, NULL, NULL);
+            pFileBuf = new BYTE[ret];
+            int ret2 = WideCharToMultiByte(CP_UTF8, 0, content.c_str(), -1, (LPSTR)pFileBuf, ret, NULL, NULL);
+            filelen = ret2-1;
+            if (ret2 != ret)
+            {
+                delete [] pFileBuf;
+                pFileBuf = NULL;
+                filelen = 0;
+            }
+        }
 	}
 	else if ((encoding == ANSI)||(encoding == BINARY))
 	{
