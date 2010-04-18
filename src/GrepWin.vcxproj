@@ -1,0 +1,187 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Template|Win32">
+      <Configuration>Template</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{0049F8CF-1BEC-4E6E-B457-0187A33AD522}</ProjectGuid>
+    <RootNamespace>GrepWin</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\bin\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\obj\$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\bin\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\obj\$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">C:\Boost\include\boost-1_42;$(IncludePath)</IncludePath>
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">C:\Boost\include\boost-1_42;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>Resources;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>Resources;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="AboutDlg.cpp" />
+    <ClCompile Include="AeroControls.cpp" />
+    <ClCompile Include="AeroGlass.cpp" />
+    <ClCompile Include="AutoComplete.cpp" />
+    <ClCompile Include="BaseDialog.cpp" />
+    <ClCompile Include="BaseWindow.cpp" />
+    <ClCompile Include="Bookmarks.cpp" />
+    <ClCompile Include="BookmarksDlg.cpp" />
+    <ClCompile Include="BrowseFolder.cpp" />
+    <ClCompile Include="CmdLineParser.cpp" />
+    <ClCompile Include="Debug.cpp" />
+    <ClCompile Include="DirFileEnum.cpp" />
+    <ClCompile Include="DlgResizer.cpp" />
+    <ClCompile Include="DropFiles.cpp" />
+    <ClCompile Include="FileDropTarget.cpp" />
+    <ClCompile Include="GrepWin.cpp" />
+    <ClCompile Include="hyperlink.cpp" />
+    <ClCompile Include="InfoDlg.cpp" />
+    <ClCompile Include="NameDlg.cpp" />
+    <ClCompile Include="RegexTestDlg.cpp" />
+    <ClCompile Include="RegHistory.cpp" />
+    <ClCompile Include="Registry.cpp" />
+    <ClCompile Include="SearchDlg.cpp" />
+    <ClCompile Include="SearchInfo.cpp" />
+    <ClCompile Include="ShellContextMenu.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="StringUtils.cpp" />
+    <ClCompile Include="SysImageList.cpp" />
+    <ClCompile Include="TextFile.cpp" />
+    <ClCompile Include="UnicodeUtils.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AboutDlg.h" />
+    <ClInclude Include="AeroControls.h" />
+    <ClInclude Include="AeroGlass.h" />
+    <ClInclude Include="AutoComplete.h" />
+    <ClInclude Include="BaseDialog.h" />
+    <ClInclude Include="BaseWindow.h" />
+    <ClInclude Include="Bookmarks.h" />
+    <ClInclude Include="BookmarksDlg.h" />
+    <ClInclude Include="BrowseFolder.h" />
+    <ClInclude Include="CmdLineParser.h" />
+    <ClInclude Include="Debug.h" />
+    <ClInclude Include="DirFileEnum.h" />
+    <ClInclude Include="DlgResizer.h" />
+    <ClInclude Include="DropFiles.h" />
+    <ClInclude Include="FileDropTarget.h" />
+    <ClInclude Include="GrepWin.h" />
+    <ClInclude Include="hyperlink.h" />
+    <ClInclude Include="InfoDlg.h" />
+    <ClInclude Include="NameDlg.h" />
+    <ClInclude Include="RegexTestDlg.h" />
+    <ClInclude Include="RegHistory.h" />
+    <ClInclude Include="Registry.h" />
+    <ClInclude Include="Resources\resource.h" />
+    <ClInclude Include="SearchDlg.h" />
+    <ClInclude Include="SearchInfo.h" />
+    <ClInclude Include="ShellContextMenu.h" />
+    <ClInclude Include="SimpleIni.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="StringUtils.h" />
+    <ClInclude Include="SysImageList.h" />
+    <ClInclude Include="TextFile.h" />
+    <ClInclude Include="UnicodeUtils.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\GrepWin.ico" />
+    <None Include="Resources\small.ico" />
+    <None Include="..\default.build" />
+    <None Include="Setup\setup.build" />
+    <None Include="Setup\Setup.wxs" />
+    <None Include="..\version.build.in" />
+    <None Include="..\versioninfo.build" />
+    <None Include="Setup\WixUI_Custom.wxs" />
+    <None Include="Resources\infodlg.htm">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resources\GrepWin.rc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties RESOURCE_FILE="Resources\GrepWin.rc" />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>
