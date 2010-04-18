@@ -1200,7 +1200,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::AddEntry(
 
     // create the key entry
     if (iKey == keyval.end() || m_bAllowMultiKey) {
-        iKey = keyval.insert(typename TKeyVal::value_type(a_pKey, 0));
+        iKey = keyval.insert(typename TKeyVal::value_type(a_pKey, (const SI_CHAR *)0));
         bInserted = true;
     }
     iKey->second = a_pValue;
