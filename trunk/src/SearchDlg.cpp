@@ -416,7 +416,6 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 				m_totalitems = 0;
 
 				m_items.clear();
-				CheckRadioButton(*this, IDC_RESULTFILES, IDC_RESULTCONTENT, IDC_RESULTFILES);
 				InitResultList();
 				DialogEnableWindow(IDC_RESULTFILES, false);
 				DialogEnableWindow(IDC_RESULTCONTENT, false);
@@ -703,65 +702,130 @@ bool CSearchDlg::InitResultList()
 
 bool CSearchDlg::AddFoundEntry(CSearchInfo * pInfo, bool bOnlyListControl)
 {
+    bool filelist = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);	
 	HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
 	LVITEM lv = {0};
-	lv.mask = LVIF_TEXT | LVIF_IMAGE | LVIF_PARAM;
-	TCHAR * pBuf = new TCHAR[pInfo->filepath.size()+1];
-	wstring name = pInfo->filepath.substr(pInfo->filepath.find_last_of('\\')+1);
-	_tcscpy_s(pBuf, pInfo->filepath.size()+1, name.c_str());
-	lv.pszText = pBuf;
-	lv.iImage = pInfo->folder ? CSysImageList::GetInstance().GetDirIconIndex() : CSysImageList::GetInstance().GetFileIconIndex(pInfo->filepath);
 	lv.iItem = ListView_GetItemCount(hListControl);
-	lv.lParam = lv.iItem;
-	int ret = ListView_InsertItem(hListControl, &lv);
-	delete [] pBuf;
-	if (ret >= 0)
-	{
-		lv.mask = LVIF_TEXT;
-		lv.iItem = ret;
-		lv.iSubItem = 1;
-		TCHAR sb[MAX_PATH_NEW] = {0};
-		if (!pInfo->folder)
-			StrFormatByteSizeW(pInfo->filesize, sb, 20);
-		lv.pszText = sb;
-		ListView_SetItem(hListControl, &lv);
-		lv.iSubItem = 2;
-		if (pInfo->readerror)
-			_tcscpy_s(sb, MAX_PATH_NEW, _T("read error"));
-		else
-			_stprintf_s(sb, MAX_PATH_NEW, _T("%ld"), pInfo->matchlinesnumbers.size());
-		ListView_SetItem(hListControl, &lv);
-		lv.iSubItem = 3;
-		_tcscpy_s(sb, MAX_PATH_NEW, pInfo->filepath.substr(0, pInfo->filepath.size()-name.size()-1).c_str());
-		ListView_SetItem(hListControl, &lv);
-		lv.iSubItem = 4;
-		switch (pInfo->encoding)
-		{
-		case CTextFile::ANSI:
-			_tcscpy_s(sb, MAX_PATH*4, _T("ANSI"));
-			break;
-		case CTextFile::UNICODE_LE:
-			_tcscpy_s(sb, MAX_PATH*4, _T("UNICODE"));
-			break;
-		case CTextFile::UTF8:
-			_tcscpy_s(sb, MAX_PATH*4, _T("UTF8"));
-			break;
-		case CTextFile::BINARY:
-			_tcscpy_s(sb, MAX_PATH*4, _T("BINARY"));
-			break;
-		default:
-			_tcscpy_s(sb, MAX_PATH*4, _T(""));
-			break;
-		}
-		ListView_SetItem(hListControl, &lv);
-		lv.iSubItem = 5;
-		formatDate(sb, pInfo->modifiedtime, true);
-		ListView_SetItem(hListControl, &lv);
-	}
-	if ((ret != -1)&&(!bOnlyListControl))
-	{
-		m_items.push_back(*pInfo);
-	}
+    lv.lParam = lv.iItem;
+    int ret = 0;
+    if (filelist)
+    {
+        TCHAR * pBuf = new TCHAR[pInfo->filepath.size()+1];
+        wstring name = pInfo->filepath.substr(pInfo->filepath.find_last_of('\\')+1);
+        _tcscpy_s(pBuf, pInfo->filepath.size()+1, name.c_str());
+        lv.pszText = pBuf;
+        lv.mask = LVIF_TEXT | LVIF_IMAGE | LVIF_PARAM;
+        lv.iImage = pInfo->folder ? CSysImageList::GetInstance().GetDirIconIndex() : CSysImageList::GetInstance().GetFileIconIndex(pInfo->filepath);
+        ret = ListView_InsertItem(hListControl, &lv);
+        delete [] pBuf;
+
+        lv.mask = LVIF_TEXT;
+        lv.iItem = ret;
+        lv.iSubItem = 1;
+        TCHAR sb[MAX_PATH_NEW] = {0};
+        if (!pInfo->folder)
+            StrFormatByteSizeW(pInfo->filesize, sb, 20);
+        lv.pszText = sb;
+        ListView_SetItem(hListControl, &lv);
+        lv.iSubItem = 2;
+        if (pInfo->readerror)
+            _tcscpy_s(sb, MAX_PATH_NEW, _T("read error"));
+        else
+            _stprintf_s(sb, MAX_PATH_NEW, _T("%ld"), pInfo->matchlinesnumbers.size());
+        ListView_SetItem(hListControl, &lv);
+        lv.iSubItem = 3;
+        _tcscpy_s(sb, MAX_PATH_NEW, pInfo->filepath.substr(0, pInfo->filepath.size()-name.size()-1).c_str());
+        ListView_SetItem(hListControl, &lv);
+        lv.iSubItem = 4;
+        switch (pInfo->encoding)
+        {
+        case CTextFile::ANSI:
+            _tcscpy_s(sb, MAX_PATH*4, _T("ANSI"));
+            break;
+        case CTextFile::UNICODE_LE:
+            _tcscpy_s(sb, MAX_PATH*4, _T("UNICODE"));
+            break;
+        case CTextFile::UTF8:
+            _tcscpy_s(sb, MAX_PATH*4, _T("UTF8"));
+            break;
+        case CTextFile::BINARY:
+            _tcscpy_s(sb, MAX_PATH*4, _T("BINARY"));
+            break;
+        default:
+            _tcscpy_s(sb, MAX_PATH*4, _T(""));
+            break;
+        }
+        ListView_SetItem(hListControl, &lv);
+        lv.iSubItem = 5;
+        formatDate(sb, pInfo->modifiedtime, true);
+        ListView_SetItem(hListControl, &lv);
+
+        if ((ret != -1)&&(!bOnlyListControl))
+        {
+            m_items.push_back(*pInfo);
+        }
+    }
+    else
+    {
+        // file contents
+        if (pInfo->encoding == CTextFile::BINARY)
+        {
+            lv.mask = LVIF_TEXT | LVIF_IMAGE | LVIF_PARAM;
+            TCHAR * pBuf = new TCHAR[pInfo->filepath.size()+1];
+            wstring name = pInfo->filepath.substr(pInfo->filepath.find_last_of('\\')+1);
+            _tcscpy_s(pBuf, pInfo->filepath.size()+1, name.c_str());
+            lv.pszText = pBuf;
+            lv.iImage = pInfo->folder ? CSysImageList::GetInstance().GetDirIconIndex() : CSysImageList::GetInstance().GetFileIconIndex(pInfo->filepath);
+            ret = ListView_InsertItem(hListControl, &lv);
+            delete [] pBuf;
+            if (ret >= 0)
+            {
+                lv.mask = LVIF_TEXT;
+                lv.iItem = ret;
+
+                lv.iSubItem = 1;
+                lv.pszText = _T("binary");
+                ListView_SetItem(hListControl, &lv);
+            }
+        }
+        else
+        {
+            int fileIndex = lv.iItem;
+            for (size_t subIndex = 0; subIndex < pInfo->matchlinesnumbers.size(); ++subIndex)
+            {
+                lv.mask = LVIF_TEXT | LVIF_IMAGE | LVIF_PARAM;
+                TCHAR * pBuf = new TCHAR[pInfo->filepath.size()+1];
+                wstring name = pInfo->filepath.substr(pInfo->filepath.find_last_of('\\')+1);
+                _tcscpy_s(pBuf, pInfo->filepath.size()+1, name.c_str());
+                lv.pszText = pBuf;
+                lv.iImage = pInfo->folder ? CSysImageList::GetInstance().GetDirIconIndex() : CSysImageList::GetInstance().GetFileIconIndex(pInfo->filepath);
+                lv.iItem = ListView_GetItemCount(hListControl);
+                lv.iSubItem = 0;
+                lv.lParam = fileIndex;
+                ret = ListView_InsertItem(hListControl, &lv);
+                delete [] pBuf;
+                if (ret >= 0)
+                {
+                    lv.mask = LVIF_TEXT;
+                    lv.iItem = ret;
+
+                    lv.iSubItem = 1;
+                    TCHAR sb[MAX_PATH_NEW] = {0};
+                    _stprintf_s(sb, MAX_PATH_NEW, _T("%ld"), pInfo->matchlinesnumbers[subIndex]);
+                    lv.pszText = sb;
+                    ListView_SetItem(hListControl, &lv);
+
+                    lv.iSubItem = 2;
+                    wstring line = pInfo->matchlines[subIndex];
+                    std::replace(line.begin(), line.end(), '\t', ' ');
+                    std::replace(line.begin(), line.end(), '\n', ' ');
+                    std::replace(line.begin(), line.end(), '\r', ' ');
+                    lv.pszText = (LPWSTR)line.c_str();
+                    ListView_SetItem(hListControl, &lv);
+                }
+            }
+        }
+    }
 
 	return (ret != -1);
 }
