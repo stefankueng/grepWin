@@ -325,6 +325,7 @@ bool CTextFile::CalculateLines()
 		}
 		++pos;
 	}
+    linepositions.push_back(pos);
 	return true;
 }
 
