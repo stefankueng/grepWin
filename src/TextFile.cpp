@@ -216,9 +216,9 @@ void CTextFile::SetFileContent(const wstring& content)
 	}
 	else if ((encoding == ANSI)||(encoding == BINARY))
 	{
-		int ret = WideCharToMultiByte(CP_ACP, 0, content.c_str(), content.size(), NULL, 0, NULL, NULL);
+        int ret = WideCharToMultiByte(CP_ACP, 0, content.c_str(), content.size()+1, NULL, 0, NULL, NULL);
 		pFileBuf = new BYTE[ret];
-		int ret2 = WideCharToMultiByte(CP_ACP, 0, content.c_str(), content.size(), (LPSTR)pFileBuf, ret, NULL, NULL);
+		int ret2 = WideCharToMultiByte(CP_ACP, 0, content.c_str(), content.size()+1, (LPSTR)pFileBuf, ret, NULL, NULL);
 		filelen = ret2-1;
 		if (ret2 != ret)
 		{
