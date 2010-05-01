@@ -706,7 +706,7 @@ bool CSearchDlg::AddFoundEntry(CSearchInfo * pInfo, bool bOnlyListControl)
 	HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
 	LVITEM lv = {0};
 	lv.iItem = ListView_GetItemCount(hListControl);
-    lv.lParam = lv.iItem;
+    lv.lParam = m_items.size();
     int ret = 0;
     if (filelist)
     {
@@ -759,11 +759,6 @@ bool CSearchDlg::AddFoundEntry(CSearchInfo * pInfo, bool bOnlyListControl)
         lv.iSubItem = 5;
         formatDate(sb, pInfo->modifiedtime, true);
         ListView_SetItem(hListControl, &lv);
-
-        if ((ret != -1)&&(!bOnlyListControl))
-        {
-            m_items.push_back(*pInfo);
-        }
     }
     else
     {
@@ -790,7 +785,6 @@ bool CSearchDlg::AddFoundEntry(CSearchInfo * pInfo, bool bOnlyListControl)
         }
         else
         {
-            int fileIndex = lv.iItem;
             for (size_t subIndex = 0; subIndex < pInfo->matchlinesnumbers.size(); ++subIndex)
             {
                 lv.mask = LVIF_TEXT | LVIF_IMAGE | LVIF_PARAM;
@@ -801,7 +795,7 @@ bool CSearchDlg::AddFoundEntry(CSearchInfo * pInfo, bool bOnlyListControl)
                 lv.iImage = pInfo->folder ? CSysImageList::GetInstance().GetDirIconIndex() : CSysImageList::GetInstance().GetFileIconIndex(pInfo->filepath);
                 lv.iItem = ListView_GetItemCount(hListControl);
                 lv.iSubItem = 0;
-                lv.lParam = fileIndex;
+                lv.lParam = m_items.size();
                 ret = ListView_InsertItem(hListControl, &lv);
                 delete [] pBuf;
                 if (ret >= 0)
@@ -825,6 +819,10 @@ bool CSearchDlg::AddFoundEntry(CSearchInfo * pInfo, bool bOnlyListControl)
                 }
             }
         }
+    }
+    if ((ret != -1)&&(!bOnlyListControl))
+    {
+        m_items.push_back(*pInfo);
     }
 
 	return (ret != -1);
@@ -1284,9 +1282,12 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
 		// Which item number?
 		size_t itemid = pInfoTip->iItem;
 		int iItem = GetSelectedListIndex(itemid);
-		CSearchInfo inf = m_items[iItem];
-		// By default, clear text buffer.
-		lstrcpyn(pInfoTip->pszText,inf.filepath.c_str(), pInfoTip->cchTextMax);
+        pInfoTip->pszText[0] = 0;
+        if ((int)m_items.size() > iItem)
+        {
+            CSearchInfo inf = m_items[iItem];
+            lstrcpyn(pInfoTip->pszText,inf.filepath.c_str(), pInfoTip->cchTextMax);
+        }
 	}
 }
 
