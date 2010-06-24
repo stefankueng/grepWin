@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008 - Stefan Kueng
+// Copyright (C) 2007-2008, 2010 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -24,7 +24,7 @@
 
 using namespace std;
 
-#define DRAG_NUMFORMATS	4
+#define DRAG_NUMFORMATS	2
 
 /**
  * Use this class to create the DROPFILES structure which is needed to
@@ -58,27 +58,109 @@ protected:
 	vector<wstring> m_arFiles;
 };
 
+class CDragSourceNotify : IDropSourceNotify
+{
+private:
+    LONG refCount;
+
+public:
+
+    CDragSourceNotify(void)
+    {
+        refCount = 0;
+    }
+
+    ~CDragSourceNotify(void)
+    {
+    }
+
+    HRESULT STDMETHODCALLTYPE QueryInterface(REFIID riid, void** ppvObject)
+    {
+        if(!ppvObject) {
+            return E_POINTER;
+        }
+
+        if(riid == IID_IUnknown) {
+            *ppvObject = (IUnknown*) dynamic_cast<IDropSourceNotify*>(this);
+        } else if(riid == IID_IDropSourceNotify) {
+            *ppvObject = dynamic_cast<IDropSourceNotify*>(this);
+        } else {
+            *ppvObject = NULL;
+            return E_NOINTERFACE;
+        }
+
+        AddRef();
+        return S_OK;
+    }
+
+    ULONG STDMETHODCALLTYPE AddRef(void)
+    {
+        return InterlockedIncrement(&refCount);
+    }
+
+    ULONG STDMETHODCALLTYPE Release(void)
+    {
+        ULONG ret = InterlockedDecrement(&refCount);
+        if(!ret) {
+            delete this;
+        }
+        return ret;
+    }
+
+    HRESULT STDMETHODCALLTYPE DragEnterTarget(HWND /*hWndTarget*/)
+    {
+        return S_OK;
+    }
+
+    HRESULT STDMETHODCALLTYPE DragLeaveTarget(void)
+    {
+        return S_OK;
+    }
+
+};
+
 class CIDropSource : public IDropSource
 {
-	long m_cRefCount;
+    long m_cRefCount;
 public:
-	bool m_bDropped;
+    bool m_bDropped;
+    IDataObject * m_pIDataObj;
+    CDragSourceNotify* pDragSourceNotify;
 
-	CIDropSource::CIDropSource():m_cRefCount(0),m_bDropped(false) {}
-	//IUnknown
-	virtual HRESULT STDMETHODCALLTYPE QueryInterface(
-		/* [in] */ REFIID riid,
-		/* [iid_is][out] */ void __RPC_FAR *__RPC_FAR *ppvObject);        
-	virtual ULONG STDMETHODCALLTYPE AddRef( void);
-	virtual ULONG STDMETHODCALLTYPE Release( void);
-	//IDropSource
-	virtual HRESULT STDMETHODCALLTYPE QueryContinueDrag( 
-		/* [in] */ BOOL fEscapePressed,
-		/* [in] */ DWORD grfKeyState);
 
-	virtual HRESULT STDMETHODCALLTYPE GiveFeedback( 
-		/* [in] */ DWORD dwEffect);
+    CIDropSource::CIDropSource():m_cRefCount(0),m_bDropped(false),m_pIDataObj(NULL)
+    {
+        pDragSourceNotify = new CDragSourceNotify();
+        pDragSourceNotify->AddRef();
+    }
+    CIDropSource::~CIDropSource()
+    {
+        if (m_pIDataObj)
+        {
+            m_pIDataObj->Release();
+            m_pIDataObj = NULL;
+        }
+        if (pDragSourceNotify)
+        {
+            pDragSourceNotify->Release();
+            pDragSourceNotify = NULL;
+        }
+    }
+    //IUnknown
+    virtual HRESULT STDMETHODCALLTYPE QueryInterface(
+        /* [in] */ REFIID riid,
+        /* [iid_is][out] */ void __RPC_FAR *__RPC_FAR *ppvObject);
+    virtual ULONG STDMETHODCALLTYPE AddRef( void);
+    virtual ULONG STDMETHODCALLTYPE Release( void);
+    //IDropSource
+    virtual HRESULT STDMETHODCALLTYPE QueryContinueDrag(
+        /* [in] */ BOOL fEscapePressed,
+        /* [in] */ DWORD grfKeyState);
+
+    virtual HRESULT STDMETHODCALLTYPE GiveFeedback(
+        /* [in] */ DWORD dwEffect);
 };
+
 
 
 extern 	CLIPFORMAT	CF_FILECONTENTS;
@@ -122,6 +204,8 @@ public:
 	virtual HRESULT STDMETHODCALLTYPE StartOperation(IBindCtx* pbcReserved);
 	virtual HRESULT STDMETHODCALLTYPE InOperation(BOOL* pfInAsyncOp);	
 	virtual HRESULT STDMETHODCALLTYPE EndOperation(HRESULT hResult, IBindCtx* pbcReserved, DWORD dwEffects);
+
+    virtual HRESULT STDMETHODCALLTYPE SetDropDescription(DROPIMAGETYPE image, LPCTSTR format, LPCTSTR insert);
 
 private:
 	void CopyMedium(STGMEDIUM* pMedDest, STGMEDIUM* pMedSrc, FORMATETC* pFmtSrc);
@@ -168,54 +252,79 @@ private:
 
 class CDragSourceHelper
 {
-	IDragSourceHelper* pDragSourceHelper;
+    IDragSourceHelper2* pDragSourceHelper2;
+    IDragSourceHelper* pDragSourceHelper;
+
 public:
-	CDragSourceHelper()
-	{
-		if(FAILED(CoCreateInstance(CLSID_DragDropHelper,
-			NULL,
-			CLSCTX_INPROC_SERVER,
-			IID_IDragSourceHelper,
-			(void**)&pDragSourceHelper)))
-			pDragSourceHelper = NULL;
-	}
-	virtual ~CDragSourceHelper()
-	{
-		if( pDragSourceHelper!= NULL )
-		{
-			pDragSourceHelper->Release();
-			pDragSourceHelper=NULL;
-		}
-	}
+    CDragSourceHelper()
+    {
+        pDragSourceHelper = NULL;
+        pDragSourceHelper2 = NULL;
+        if(FAILED(CoCreateInstance(CLSID_DragDropHelper,
+            NULL,
+            CLSCTX_INPROC_SERVER,
+            IID_IDragSourceHelper2,
+            (void**)&pDragSourceHelper2)))
+        {
+            pDragSourceHelper2 = NULL;
+            if(FAILED(CoCreateInstance(CLSID_DragDropHelper,
+                NULL,
+                CLSCTX_INPROC_SERVER,
+                IID_IDragSourceHelper,
+                (void**)&pDragSourceHelper)))
+                pDragSourceHelper = NULL;
+        }
+    }
+    virtual ~CDragSourceHelper()
+    {
+        if( pDragSourceHelper2!= NULL )
+        {
+            pDragSourceHelper2->Release();
+            pDragSourceHelper2=NULL;
+        }
+        if( pDragSourceHelper!= NULL )
+        {
+            pDragSourceHelper->Release();
+            pDragSourceHelper=NULL;
+        }
+    }
 
-	// IDragSourceHelper
-	HRESULT InitializeFromBitmap(HBITMAP hBitmap, 
-		POINT& pt,	// cursor position in client coords of the window
-		RECT& rc,	// selected item's bounding rect
-		IDataObject* pDataObject,
-		COLORREF crColorKey=GetSysColor(COLOR_WINDOW)// color of the window used for transparent effect.
-		)
-	{
-		if(pDragSourceHelper == NULL)
-			return E_FAIL;
+    // IDragSourceHelper
+    HRESULT InitializeFromBitmap(HBITMAP hBitmap,
+        POINT& pt,  // cursor position in client coords of the window
+        RECT& rc,   // selected item's bounding rect
+        IDataObject* pDataObject,
+        BOOL allowDropDescription=TRUE,
+        COLORREF crColorKey=GetSysColor(COLOR_WINDOW)// color of the window used for transparent effect.
+        )
+    {
+        if((pDragSourceHelper == NULL)&&(pDragSourceHelper2 == NULL))
+            return E_FAIL;
 
-		SHDRAGIMAGE di;
-		BITMAP      bm;
-		GetObject(hBitmap, sizeof(bm), &bm);
-		di.sizeDragImage.cx = bm.bmWidth;
-		di.sizeDragImage.cy = bm.bmHeight;
-		di.hbmpDragImage = hBitmap;
-		di.crColorKey = crColorKey; 
-		di.ptOffset.x = pt.x - rc.left;
-		di.ptOffset.y = pt.y - rc.top;
-		return pDragSourceHelper->InitializeFromBitmap(&di, pDataObject);
-	}
-	HRESULT InitializeFromWindow(HWND hwnd, POINT& pt,IDataObject* pDataObject)
-	{		
-		if(pDragSourceHelper == NULL)
-			return E_FAIL;
-		return pDragSourceHelper->InitializeFromWindow(hwnd, &pt, pDataObject);
-	}
+        if ((allowDropDescription)&&(pDragSourceHelper2))
+            pDragSourceHelper2->SetFlags(DSH_ALLOWDROPDESCRIPTIONTEXT);
+
+        SHDRAGIMAGE di;
+        BITMAP      bm;
+        GetObject(hBitmap, sizeof(bm), &bm);
+        di.sizeDragImage.cx = bm.bmWidth;
+        di.sizeDragImage.cy = bm.bmHeight;
+        di.hbmpDragImage = hBitmap;
+        di.crColorKey = crColorKey;
+        di.ptOffset.x = pt.x - rc.left;
+        di.ptOffset.y = pt.y - rc.top;
+        if (pDragSourceHelper2)
+            return pDragSourceHelper2->InitializeFromBitmap(&di, pDataObject);
+        return pDragSourceHelper->InitializeFromBitmap(&di, pDataObject);
+    }
+    HRESULT InitializeFromWindow(HWND hwnd, POINT& pt, IDataObject* pDataObject, BOOL allowDropDescription=TRUE)
+    {
+        if((pDragSourceHelper == NULL)&&(pDragSourceHelper2 == NULL))
+            return E_FAIL;
+        if ((allowDropDescription)&&(pDragSourceHelper2))
+            pDragSourceHelper2->SetFlags(DSH_ALLOWDROPDESCRIPTIONTEXT);
+        if (pDragSourceHelper2)
+            return pDragSourceHelper2->InitializeFromWindow(hwnd, &pt, pDataObject);
+        return pDragSourceHelper->InitializeFromWindow(hwnd, &pt, pDataObject);
+    }
 };
-
-
