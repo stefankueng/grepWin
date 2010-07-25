@@ -706,7 +706,8 @@ bool CSearchDlg::AddFoundEntry(CSearchInfo * pInfo, bool bOnlyListControl)
 	HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
 	LVITEM lv = {0};
 	lv.iItem = ListView_GetItemCount(hListControl);
-    lv.lParam = m_items.size();
+    LPARAM nEntryCount = filelist ? lv.iItem : m_items.size();
+    lv.lParam = nEntryCount;
     int ret = 0;
     if (filelist)
     {
@@ -795,7 +796,7 @@ bool CSearchDlg::AddFoundEntry(CSearchInfo * pInfo, bool bOnlyListControl)
                 lv.iImage = pInfo->folder ? CSysImageList::GetInstance().GetDirIconIndex() : CSysImageList::GetInstance().GetFileIconIndex(pInfo->filepath);
                 lv.iItem = ListView_GetItemCount(hListControl);
                 lv.iSubItem = 0;
-                lv.lParam = m_items.size();
+                lv.lParam = nEntryCount;
                 ret = ListView_InsertItem(hListControl, &lv);
                 delete [] pBuf;
                 if (ret >= 0)
