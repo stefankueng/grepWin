@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Include Id="VersionNumberInclude">
+  <?define MajorVersion="$MajorVersion$" ?>
+  <?define MinorVersion="$MinorVersion$" ?>
+  <?define MicroVersion="$MicroVersion$" ?>
+  <?define BuildVersion="$WCREV$" ?>
+</Include>
