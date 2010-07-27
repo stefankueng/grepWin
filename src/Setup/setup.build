@@ -1,7 +1,30 @@
 <?xml version="1.0"?>
 <project name="setup" default="setup">
 
-  <target name="setup">
+  <target name="VersionInfo">
+    <description>
+      Sets the version information as properties, env variables
+      and sets up the different version specific files.
+    </description>
+    <nant target="versioninfo">
+      <buildfiles>
+        <include name="..\..\versioninfo.build" />
+      </buildfiles>
+    </nant>
+    <loadfile file="VersionNumberInclude.in.wxi" property="versionwixfile">
+      <filterchain>
+        <replacetokens begintoken="$" endtoken="$">
+          <token key="MajorVersion" value="${environment::get-variable('MajorVersion')}" />
+          <token key="MinorVersion" value="${environment::get-variable('MinorVersion')}" />
+          <token key="MicroVersion" value="${environment::get-variable('Microversion')}" />
+          <token key="WCREV" value="${environment::get-variable('WCREV')}" />
+        </replacetokens>
+      </filterchain>
+    </loadfile>
+    <echo file="VersionNumberInclude.wxi" message="${versionwixfile}" />
+  </target>
+
+  <target name="setup" depends="VersionInfo">
     <property name="verstring" value="${environment::get-variable('MajorVersion')}.${environment::get-variable('MinorVersion')}.${environment::get-variable('MicroVersion')}" />
     <property name="msifilename" value="grepWin-${verstring}" />
     <!-- sign all release binaries -->
