@@ -6,7 +6,7 @@
 #define CM_VERMAJOR             $MajorVersion$
 #define CM_VERMINOR             $MinorVersion$
 #define CM_VERMICRO             $MicroVersion$
-#define CM_VERBUILD			    $WCREV$
-#define CM_VERDATE			    "$WCDATE$"
+#define CM_VERBUILD             $WCREV$
+#define CM_VERDATE              "$WCDATE$"
 
 
