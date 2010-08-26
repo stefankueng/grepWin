@@ -33,25 +33,25 @@ using namespace std;
 class CAutoCompleteEnum : public IEnumString
 {
 public:
-	CAutoCompleteEnum(const vector<wstring*>& vec);
-	CAutoCompleteEnum(const vector<wstring>& vec);
-	//IUnknown members
-	STDMETHOD(QueryInterface)(REFIID, void**);
-	STDMETHOD_(ULONG, AddRef)(void);
-	STDMETHOD_(ULONG, Release)(void);
+    CAutoCompleteEnum(const vector<wstring*>& vec);
+    CAutoCompleteEnum(const vector<wstring>& vec);
+    //IUnknown members
+    STDMETHOD(QueryInterface)(REFIID, void**);
+    STDMETHOD_(ULONG, AddRef)(void);
+    STDMETHOD_(ULONG, Release)(void);
 
-	//IEnumString members
-	STDMETHOD(Next)(ULONG, LPOLESTR*, ULONG*);
-	STDMETHOD(Skip)(ULONG);
-	STDMETHOD(Reset)(void);
-	STDMETHOD(Clone)(IEnumString**);
+    //IEnumString members
+    STDMETHOD(Next)(ULONG, LPOLESTR*, ULONG*);
+    STDMETHOD(Skip)(ULONG);
+    STDMETHOD(Reset)(void);
+    STDMETHOD(Clone)(IEnumString**);
 
-	void Init(const vector<wstring*>& vec);
-	void Init(const vector<wstring>& vec);
+    void Init(const vector<wstring*>& vec);
+    void Init(const vector<wstring>& vec);
 private:
-	vector<wstring>				m_vecStrings;
-	ULONG						m_cRefCount;
-	size_t						m_iCur;
+    vector<wstring>             m_vecStrings;
+    ULONG                       m_cRefCount;
+    size_t                      m_iCur;
 };
 
 
@@ -59,17 +59,17 @@ private:
 class CAutoComplete : public CRegHistory
 {
 public:
-	CAutoComplete(void);
-	~CAutoComplete(void);
+    CAutoComplete(void);
+    ~CAutoComplete(void);
 
-	bool		Init(HWND hEdit);
-	bool		Enable(bool bEnable);
-	bool		AddEntry(LPCTSTR szText);
+    bool        Init(HWND hEdit);
+    bool        Enable(bool bEnable);
+    bool        AddEntry(LPCTSTR szText);
 
-	bool		RemoveSelected();
+    bool        RemoveSelected();
 private:
-	CAutoCompleteEnum *			m_pcacs;
-	IAutoComplete2 *			m_pac;
-	IAutoCompleteDropDown *		m_pdrop;
+    CAutoCompleteEnum *         m_pcacs;
+    IAutoComplete2 *            m_pac;
+    IAutoCompleteDropDown *     m_pdrop;
 
 };

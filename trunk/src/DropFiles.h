@@ -24,7 +24,7 @@
 
 using namespace std;
 
-#define DRAG_NUMFORMATS	2
+#define DRAG_NUMFORMATS 2
 
 /**
  * Use this class to create the DROPFILES structure which is needed to
@@ -33,29 +33,29 @@ using namespace std;
 class CDropFiles
 {
 public:
-	CDropFiles();
-	~CDropFiles();
+    CDropFiles();
+    ~CDropFiles();
 
-	/**
-	 * Add a file with an absolute file name. This file will later be
-	 * included the DROPFILES structure.
-	 */
-	void AddFile(const wstring& sFile);
+    /**
+     * Add a file with an absolute file name. This file will later be
+     * included the DROPFILES structure.
+     */
+    void AddFile(const wstring& sFile);
 
-	/**
-	 * Returns the number of files which have been added
-	 */
-	size_t GetCount();
+    /**
+     * Returns the number of files which have been added
+     */
+    size_t GetCount();
 
-	/**
-	 * Call this method when dragging begins. It will fill
-	 * the DROPFILES structure with the files previously
-	 * added with AddFile(...)
-	 */
-	void CreateStructure(HWND hWnd);
+    /**
+     * Call this method when dragging begins. It will fill
+     * the DROPFILES structure with the files previously
+     * added with AddFile(...)
+     */
+    void CreateStructure(HWND hWnd);
 
 protected:
-	vector<wstring> m_arFiles;
+    vector<wstring> m_arFiles;
 };
 
 class CDragSourceNotify : IDropSourceNotify
@@ -163,9 +163,9 @@ public:
 
 
 
-extern 	CLIPFORMAT	CF_FILECONTENTS;
-extern	CLIPFORMAT	CF_FILEDESCRIPTOR;
-extern	CLIPFORMAT	CF_PREFERREDDROPEFFECT;
+extern  CLIPFORMAT  CF_FILECONTENTS;
+extern  CLIPFORMAT  CF_FILEDESCRIPTOR;
+extern  CLIPFORMAT  CF_PREFERREDDROPEFFECT;
 
 /**
  * Represents a path as an IDataObject.
@@ -175,50 +175,50 @@ extern	CLIPFORMAT	CF_PREFERREDDROPEFFECT;
 class FileDataObject : public IDataObject, public IAsyncOperation
 {
 public:
-	/**
-	 * Constructs the FileDataObject.
-	 * \param paths    a list of paths.
-	 */
-	FileDataObject(const vector<wstring>& paths);
-	~FileDataObject();
+    /**
+     * Constructs the FileDataObject.
+     * \param paths    a list of paths.
+     */
+    FileDataObject(const vector<wstring>& paths);
+    ~FileDataObject();
 
-	//IUnknown
-	virtual HRESULT STDMETHODCALLTYPE QueryInterface(REFIID riid, void** ppvObject);        
-	virtual ULONG STDMETHODCALLTYPE AddRef(void);
-	virtual ULONG STDMETHODCALLTYPE Release(void);
+    //IUnknown
+    virtual HRESULT STDMETHODCALLTYPE QueryInterface(REFIID riid, void** ppvObject);
+    virtual ULONG STDMETHODCALLTYPE AddRef(void);
+    virtual ULONG STDMETHODCALLTYPE Release(void);
 
-	//IDataObject
-	virtual HRESULT STDMETHODCALLTYPE GetData(FORMATETC* pformatetcIn, STGMEDIUM* pmedium);
-	virtual HRESULT STDMETHODCALLTYPE GetDataHere(FORMATETC* pformatetc, STGMEDIUM* pmedium);
-	virtual HRESULT STDMETHODCALLTYPE QueryGetData(FORMATETC* pformatetc);
-	virtual HRESULT STDMETHODCALLTYPE GetCanonicalFormatEtc(FORMATETC* pformatectIn, FORMATETC* pformatetcOut);
-	virtual HRESULT STDMETHODCALLTYPE SetData(FORMATETC* pformatetc, STGMEDIUM* pmedium, BOOL fRelease);
-	virtual HRESULT STDMETHODCALLTYPE EnumFormatEtc(DWORD dwDirection, IEnumFORMATETC** ppenumFormatEtc);
-	virtual HRESULT STDMETHODCALLTYPE DAdvise(FORMATETC* pformatetc, DWORD advf, IAdviseSink* pAdvSink, DWORD* pdwConnection);
-	virtual HRESULT STDMETHODCALLTYPE DUnadvise(DWORD dwConnection);
-	virtual HRESULT STDMETHODCALLTYPE EnumDAdvise(IEnumSTATDATA** ppenumAdvise);
+    //IDataObject
+    virtual HRESULT STDMETHODCALLTYPE GetData(FORMATETC* pformatetcIn, STGMEDIUM* pmedium);
+    virtual HRESULT STDMETHODCALLTYPE GetDataHere(FORMATETC* pformatetc, STGMEDIUM* pmedium);
+    virtual HRESULT STDMETHODCALLTYPE QueryGetData(FORMATETC* pformatetc);
+    virtual HRESULT STDMETHODCALLTYPE GetCanonicalFormatEtc(FORMATETC* pformatectIn, FORMATETC* pformatetcOut);
+    virtual HRESULT STDMETHODCALLTYPE SetData(FORMATETC* pformatetc, STGMEDIUM* pmedium, BOOL fRelease);
+    virtual HRESULT STDMETHODCALLTYPE EnumFormatEtc(DWORD dwDirection, IEnumFORMATETC** ppenumFormatEtc);
+    virtual HRESULT STDMETHODCALLTYPE DAdvise(FORMATETC* pformatetc, DWORD advf, IAdviseSink* pAdvSink, DWORD* pdwConnection);
+    virtual HRESULT STDMETHODCALLTYPE DUnadvise(DWORD dwConnection);
+    virtual HRESULT STDMETHODCALLTYPE EnumDAdvise(IEnumSTATDATA** ppenumAdvise);
 
-	//IAsyncOperation
-	virtual HRESULT STDMETHODCALLTYPE SetAsyncMode(BOOL fDoOpAsync);	
-	virtual HRESULT STDMETHODCALLTYPE GetAsyncMode(BOOL* pfIsOpAsync);
-	virtual HRESULT STDMETHODCALLTYPE StartOperation(IBindCtx* pbcReserved);
-	virtual HRESULT STDMETHODCALLTYPE InOperation(BOOL* pfInAsyncOp);	
-	virtual HRESULT STDMETHODCALLTYPE EndOperation(HRESULT hResult, IBindCtx* pbcReserved, DWORD dwEffects);
+    //IAsyncOperation
+    virtual HRESULT STDMETHODCALLTYPE SetAsyncMode(BOOL fDoOpAsync);
+    virtual HRESULT STDMETHODCALLTYPE GetAsyncMode(BOOL* pfIsOpAsync);
+    virtual HRESULT STDMETHODCALLTYPE StartOperation(IBindCtx* pbcReserved);
+    virtual HRESULT STDMETHODCALLTYPE InOperation(BOOL* pfInAsyncOp);
+    virtual HRESULT STDMETHODCALLTYPE EndOperation(HRESULT hResult, IBindCtx* pbcReserved, DWORD dwEffects);
 
     virtual HRESULT STDMETHODCALLTYPE SetDropDescription(DROPIMAGETYPE image, LPCTSTR format, LPCTSTR insert);
 
 private:
-	void CopyMedium(STGMEDIUM* pMedDest, STGMEDIUM* pMedSrc, FORMATETC* pFmtSrc);
+    void CopyMedium(STGMEDIUM* pMedDest, STGMEDIUM* pMedSrc, FORMATETC* pFmtSrc);
 
 private:
 
 private:
-	vector<wstring>				m_allPaths;
-	long						m_cRefCount;
-	BOOL						m_bInOperation;
-	BOOL						m_bIsAsync;
-	vector<FORMATETC*>			m_vecFormatEtc;
-	vector<STGMEDIUM*>			m_vecStgMedium;
+    vector<wstring>             m_allPaths;
+    long                        m_cRefCount;
+    BOOL                        m_bInOperation;
+    BOOL                        m_bIsAsync;
+    vector<FORMATETC*>          m_vecFormatEtc;
+    vector<STGMEDIUM*>          m_vecStgMedium;
 };
 
 
@@ -229,25 +229,25 @@ private:
 class CSVNEnumFormatEtc : public IEnumFORMATETC
 {
 public:
-	CSVNEnumFormatEtc(const vector<FORMATETC*>& vec);
-	CSVNEnumFormatEtc(const vector<FORMATETC>& vec);
-	//IUnknown members
-	STDMETHOD(QueryInterface)(REFIID, void**);
-	STDMETHOD_(ULONG, AddRef)(void);
-	STDMETHOD_(ULONG, Release)(void);
+    CSVNEnumFormatEtc(const vector<FORMATETC*>& vec);
+    CSVNEnumFormatEtc(const vector<FORMATETC>& vec);
+    //IUnknown members
+    STDMETHOD(QueryInterface)(REFIID, void**);
+    STDMETHOD_(ULONG, AddRef)(void);
+    STDMETHOD_(ULONG, Release)(void);
 
-	//IEnumFORMATETC members
-	STDMETHOD(Next)(ULONG, LPFORMATETC, ULONG*);
-	STDMETHOD(Skip)(ULONG);
-	STDMETHOD(Reset)(void);
-	STDMETHOD(Clone)(IEnumFORMATETC**);
+    //IEnumFORMATETC members
+    STDMETHOD(Next)(ULONG, LPFORMATETC, ULONG*);
+    STDMETHOD(Skip)(ULONG);
+    STDMETHOD(Reset)(void);
+    STDMETHOD(Clone)(IEnumFORMATETC**);
 private:
-	void						Init();
+    void                        Init();
 private:
-	vector<FORMATETC>			m_vecFormatEtc;
-	FORMATETC					m_formats[DRAG_NUMFORMATS];
-	ULONG						m_cRefCount;
-	size_t						m_iCur;
+    vector<FORMATETC>           m_vecFormatEtc;
+    FORMATETC                   m_formats[DRAG_NUMFORMATS];
+    ULONG                       m_cRefCount;
+    size_t                      m_iCur;
 };
 
 class CDragSourceHelper

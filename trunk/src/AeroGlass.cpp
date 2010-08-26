@@ -30,70 +30,70 @@ CDwmApiImpl::CDwmApiImpl(void):m_hDwmApiLib(NULL)
 
 BOOL CDwmApiImpl::Initialize(void)
 {
-	if(m_hDwmApiLib)
-	{
-		SetLastError(ERROR_ALREADY_INITIALIZED);
-		return FALSE;
-	}
+    if(m_hDwmApiLib)
+    {
+        SetLastError(ERROR_ALREADY_INITIALIZED);
+        return FALSE;
+    }
 
-	m_hDwmApiLib = LoadLibraryW(L"dwmapi.dll");
-	return IsInitialized();
+    m_hDwmApiLib = LoadLibraryW(L"dwmapi.dll");
+    return IsInitialized();
 }
 
 BOOL CDwmApiImpl::IsInitialized(void)
 {
-	return (NULL!=m_hDwmApiLib);
+    return (NULL!=m_hDwmApiLib);
 }
 
 CDwmApiImpl::~CDwmApiImpl(void)
 {
-	if(IsInitialized())
-	{
-		FreeLibrary(m_hDwmApiLib);
-		m_hDwmApiLib = NULL;
-	}
+    if(IsInitialized())
+    {
+        FreeLibrary(m_hDwmApiLib);
+        m_hDwmApiLib = NULL;
+    }
 }
 
 HRESULT CDwmApiImpl::DwmExtendFrameIntoClientArea(HWND hWnd,const MARGINS* pMarInset)
 {
-	if(!IsInitialized())
-	{
-		return OLE_E_BLANK;
-	}
-	DWM_EXTEND_FRAME_INTO_CLIENT_AREA pfnDwmExtendFrameIntoClientArea = (DWM_EXTEND_FRAME_INTO_CLIENT_AREA)GetProcAddress(m_hDwmApiLib, "DwmExtendFrameIntoClientArea");
-	if(!pfnDwmExtendFrameIntoClientArea)
-		return HRESULT_FROM_WIN32(GetLastError());
+    if(!IsInitialized())
+    {
+        return OLE_E_BLANK;
+    }
+    DWM_EXTEND_FRAME_INTO_CLIENT_AREA pfnDwmExtendFrameIntoClientArea = (DWM_EXTEND_FRAME_INTO_CLIENT_AREA)GetProcAddress(m_hDwmApiLib, "DwmExtendFrameIntoClientArea");
+    if(!pfnDwmExtendFrameIntoClientArea)
+        return HRESULT_FROM_WIN32(GetLastError());
 
-	return pfnDwmExtendFrameIntoClientArea(hWnd, pMarInset);
+    return pfnDwmExtendFrameIntoClientArea(hWnd, pMarInset);
 }
 
 BOOL CDwmApiImpl::IsDwmCompositionEnabled(void)
 {
-	if(!IsInitialized())
-	{
-		SetLastError((DWORD)OLE_E_BLANK);
-		return FALSE;
-	}
-	DWM_IS_COMPOSITION_ENABLED pfnDwmIsCompositionEnabled = (DWM_IS_COMPOSITION_ENABLED)GetProcAddress(m_hDwmApiLib, "DwmIsCompositionEnabled");
-	if(!pfnDwmIsCompositionEnabled)
-		return FALSE;
-	BOOL bEnabled = FALSE;
-	HRESULT hRes = pfnDwmIsCompositionEnabled(&bEnabled);
-	return SUCCEEDED(hRes) && bEnabled;
+    if(!IsInitialized())
+    {
+        SetLastError((DWORD)OLE_E_BLANK);
+        return FALSE;
+    }
+    DWM_IS_COMPOSITION_ENABLED pfnDwmIsCompositionEnabled = (DWM_IS_COMPOSITION_ENABLED)GetProcAddress(m_hDwmApiLib, "DwmIsCompositionEnabled");
+    if(!pfnDwmIsCompositionEnabled)
+        return FALSE;
+    BOOL bEnabled = FALSE;
+    HRESULT hRes = pfnDwmIsCompositionEnabled(&bEnabled);
+    return SUCCEEDED(hRes) && bEnabled;
 }
 
 HRESULT CDwmApiImpl::DwmEnableComposition(UINT uCompositionAction)
 {
-	if(!IsInitialized())
-	{
-		SetLastError((DWORD)OLE_E_BLANK);
-		return FALSE;
-	}
-	DWM_ENABLE_COMPOSITION pfnDwmEnableComposition = (DWM_ENABLE_COMPOSITION)GetProcAddress(m_hDwmApiLib, "DwmEnableComposition");
-	if(!pfnDwmEnableComposition)
-		return HRESULT_FROM_WIN32(GetLastError());
+    if(!IsInitialized())
+    {
+        SetLastError((DWORD)OLE_E_BLANK);
+        return FALSE;
+    }
+    DWM_ENABLE_COMPOSITION pfnDwmEnableComposition = (DWM_ENABLE_COMPOSITION)GetProcAddress(m_hDwmApiLib, "DwmEnableComposition");
+    if(!pfnDwmEnableComposition)
+        return HRESULT_FROM_WIN32(GetLastError());
 
-	return pfnDwmEnableComposition(uCompositionAction);
+    return pfnDwmEnableComposition(uCompositionAction);
 }
 
 CUxThemeAeroImpl::CUxThemeAeroImpl(void) : m_hUxThemeLib(NULL)
@@ -102,14 +102,14 @@ CUxThemeAeroImpl::CUxThemeAeroImpl(void) : m_hUxThemeLib(NULL)
 
 BOOL CUxThemeAeroImpl::Initialize(void)
 {
-	if(m_hUxThemeLib)
-	{
-		SetLastError(ERROR_ALREADY_INITIALIZED);
-		return FALSE;
-	}
+    if(m_hUxThemeLib)
+    {
+        SetLastError(ERROR_ALREADY_INITIALIZED);
+        return FALSE;
+    }
 
-	m_hUxThemeLib = LoadLibraryW(L"uxtheme.dll");
-	return IsInitialized();
+    m_hUxThemeLib = LoadLibraryW(L"uxtheme.dll");
+    return IsInitialized();
 }
 
 typedef HRESULT (__stdcall *BUFFERED_PAINT_INIT)(VOID);
@@ -137,358 +137,358 @@ typedef HRESULT (__stdcall *GET_THEME_RECT)(HTHEME hTheme, int iPartId, int iSta
 
 BOOL CUxThemeAeroImpl::IsInitialized(void)
 {
-	return (NULL!=m_hUxThemeLib);
+    return (NULL!=m_hUxThemeLib);
 }
 
 CUxThemeAeroImpl::~CUxThemeAeroImpl(void)
 {
-	if(IsInitialized())
-	{
-		FreeLibrary(m_hUxThemeLib);
-		m_hUxThemeLib = NULL;
-	}
+    if(IsInitialized())
+    {
+        FreeLibrary(m_hUxThemeLib);
+        m_hUxThemeLib = NULL;
+    }
 }
 
 HRESULT CUxThemeAeroImpl::BufferedPaintInit(void)
 {
-	if(!IsInitialized())
-	{
-		return OLE_E_BLANK;
-	}
-	BUFFERED_PAINT_INIT pfnBufferedPaintInit = (BUFFERED_PAINT_INIT)GetProcAddress(m_hUxThemeLib, "BufferedPaintInit");
-	if(!pfnBufferedPaintInit)
-		return HRESULT_FROM_WIN32(GetLastError());
+    if(!IsInitialized())
+    {
+        return OLE_E_BLANK;
+    }
+    BUFFERED_PAINT_INIT pfnBufferedPaintInit = (BUFFERED_PAINT_INIT)GetProcAddress(m_hUxThemeLib, "BufferedPaintInit");
+    if(!pfnBufferedPaintInit)
+        return HRESULT_FROM_WIN32(GetLastError());
 
-	return pfnBufferedPaintInit();
+    return pfnBufferedPaintInit();
 }
 
 HRESULT CUxThemeAeroImpl::BufferedPaintUnInit(void)
 {
-	if(!IsInitialized())
-	{
-		return OLE_E_BLANK;
-	}
-	BUFFERED_PAINT_INIT pfnBufferedPaintUnInit = (BUFFERED_PAINT_INIT)GetProcAddress(m_hUxThemeLib, "BufferedPaintUnInit");
-	if(!pfnBufferedPaintUnInit)
-		return HRESULT_FROM_WIN32(GetLastError());
+    if(!IsInitialized())
+    {
+        return OLE_E_BLANK;
+    }
+    BUFFERED_PAINT_INIT pfnBufferedPaintUnInit = (BUFFERED_PAINT_INIT)GetProcAddress(m_hUxThemeLib, "BufferedPaintUnInit");
+    if(!pfnBufferedPaintUnInit)
+        return HRESULT_FROM_WIN32(GetLastError());
 
-	return pfnBufferedPaintUnInit();
+    return pfnBufferedPaintUnInit();
 }
 
 HTHEME CUxThemeAeroImpl::OpenThemeData(HWND hwnd, LPCWSTR pszClassList)
 {
-	if(!IsInitialized())
-	{
-		SetLastError((DWORD)OLE_E_BLANK);
-		return NULL;
-	}
-	OPEN_THEME_DATA pfnOpenThemeData = (OPEN_THEME_DATA)GetProcAddress(m_hUxThemeLib, "OpenThemeData");
-	if(!pfnOpenThemeData)
-		return NULL;
+    if(!IsInitialized())
+    {
+        SetLastError((DWORD)OLE_E_BLANK);
+        return NULL;
+    }
+    OPEN_THEME_DATA pfnOpenThemeData = (OPEN_THEME_DATA)GetProcAddress(m_hUxThemeLib, "OpenThemeData");
+    if(!pfnOpenThemeData)
+        return NULL;
 
-	return pfnOpenThemeData(hwnd, pszClassList);
+    return pfnOpenThemeData(hwnd, pszClassList);
 }
 
 HRESULT CUxThemeAeroImpl::CloseThemeData(HTHEME hTheme)
 {
-	if(!IsInitialized())
-	{
-		return OLE_E_BLANK;
-	}
-	CLOSE_THEME_DATA pfnCloseThemeData = (CLOSE_THEME_DATA)GetProcAddress(m_hUxThemeLib, "CloseThemeData");
-	if(!pfnCloseThemeData)
-		return HRESULT_FROM_WIN32(GetLastError());
+    if(!IsInitialized())
+    {
+        return OLE_E_BLANK;
+    }
+    CLOSE_THEME_DATA pfnCloseThemeData = (CLOSE_THEME_DATA)GetProcAddress(m_hUxThemeLib, "CloseThemeData");
+    if(!pfnCloseThemeData)
+        return HRESULT_FROM_WIN32(GetLastError());
 
-	return pfnCloseThemeData(hTheme);
+    return pfnCloseThemeData(hTheme);
 }
 
 HANDLE CUxThemeAeroImpl::BeginBufferedPaint(HDC hdcTarget, const RECT* prcTarget, BP_BUFFERFORMAT dwFormat, BP_PAINTPARAMS *pPaintParams, HDC *phdc)
 {
-	if(!IsInitialized())
-	{
-		SetLastError((DWORD)OLE_E_BLANK);
-		return NULL;
-	}
-	BEGIN_BUFFERED_PAINT pfnBeginBufferedPaint = (BEGIN_BUFFERED_PAINT)GetProcAddress(m_hUxThemeLib, "BeginBufferedPaint");
-	if(!pfnBeginBufferedPaint)
-		return NULL;
+    if(!IsInitialized())
+    {
+        SetLastError((DWORD)OLE_E_BLANK);
+        return NULL;
+    }
+    BEGIN_BUFFERED_PAINT pfnBeginBufferedPaint = (BEGIN_BUFFERED_PAINT)GetProcAddress(m_hUxThemeLib, "BeginBufferedPaint");
+    if(!pfnBeginBufferedPaint)
+        return NULL;
 
-	return pfnBeginBufferedPaint(hdcTarget, prcTarget, dwFormat, pPaintParams, phdc);
+    return pfnBeginBufferedPaint(hdcTarget, prcTarget, dwFormat, pPaintParams, phdc);
 }
 
 HRESULT CUxThemeAeroImpl::EndBufferedPaint(HANDLE hBufferedPaint, BOOL fUpdateTarget)
 {
-	if(!IsInitialized())
-	{
-		return OLE_E_BLANK;
-	}
-	END_BUFFERED_PAINT pfnEndBufferedPaint = (END_BUFFERED_PAINT)GetProcAddress(m_hUxThemeLib, "EndBufferedPaint");
-	if(!pfnEndBufferedPaint)
-		return HRESULT_FROM_WIN32(GetLastError());
+    if(!IsInitialized())
+    {
+        return OLE_E_BLANK;
+    }
+    END_BUFFERED_PAINT pfnEndBufferedPaint = (END_BUFFERED_PAINT)GetProcAddress(m_hUxThemeLib, "EndBufferedPaint");
+    if(!pfnEndBufferedPaint)
+        return HRESULT_FROM_WIN32(GetLastError());
 
-	return pfnEndBufferedPaint(hBufferedPaint, fUpdateTarget);
+    return pfnEndBufferedPaint(hBufferedPaint, fUpdateTarget);
 }
 
 HRESULT CUxThemeAeroImpl::DrawThemeTextEx(HTHEME hTheme, HDC hdc, int iPartId, int iStateId, LPCWSTR pszText, int cchText, DWORD dwTextFlags, LPRECT pRect, const DTTOPTS *pOptions)
 {
-	if(!IsInitialized())
-	{
-		return OLE_E_BLANK;
-	}
-	DRAW_THEME_TEXT_EX pfnDrawThemeTextEx = (DRAW_THEME_TEXT_EX)GetProcAddress(m_hUxThemeLib, "DrawThemeTextEx");
-	if(!pfnDrawThemeTextEx)
-		return HRESULT_FROM_WIN32(GetLastError());
+    if(!IsInitialized())
+    {
+        return OLE_E_BLANK;
+    }
+    DRAW_THEME_TEXT_EX pfnDrawThemeTextEx = (DRAW_THEME_TEXT_EX)GetProcAddress(m_hUxThemeLib, "DrawThemeTextEx");
+    if(!pfnDrawThemeTextEx)
+        return HRESULT_FROM_WIN32(GetLastError());
 
-	return pfnDrawThemeTextEx(hTheme, hdc, iPartId, iStateId, pszText, cchText, dwTextFlags, pRect, pOptions);
+    return pfnDrawThemeTextEx(hTheme, hdc, iPartId, iStateId, pszText, cchText, dwTextFlags, pRect, pOptions);
 }
 
 HRESULT CUxThemeAeroImpl::GetThemeInt(HTHEME hTheme, int iPartId, int iStateId, int iPropId, int *piVal)
 {
-	if(!IsInitialized())
-	{
-		return OLE_E_BLANK;
-	}
-	GET_THEME_INT pfnGetThemeInt = (GET_THEME_INT)GetProcAddress(m_hUxThemeLib, "GetThemeInt");
-	if(!pfnGetThemeInt)
-		return HRESULT_FROM_WIN32(GetLastError());
+    if(!IsInitialized())
+    {
+        return OLE_E_BLANK;
+    }
+    GET_THEME_INT pfnGetThemeInt = (GET_THEME_INT)GetProcAddress(m_hUxThemeLib, "GetThemeInt");
+    if(!pfnGetThemeInt)
+        return HRESULT_FROM_WIN32(GetLastError());
 
-	return pfnGetThemeInt(hTheme, iPartId, iStateId, iPropId, piVal);
+    return pfnGetThemeInt(hTheme, iPartId, iStateId, iPropId, piVal);
 }
 
 HRESULT CUxThemeAeroImpl::GetThemeSysFont(HTHEME hTheme, int iFontId, LOGFONTW *plf)
 {
-	if(!IsInitialized())
-	{
-		return OLE_E_BLANK;
-	}
-	GET_THEME_SYS_FONT pfnGetThemeSysFont = (GET_THEME_SYS_FONT)GetProcAddress(m_hUxThemeLib, "GetThemeSysFont");
-	if(!pfnGetThemeSysFont)
-		return HRESULT_FROM_WIN32(GetLastError());
+    if(!IsInitialized())
+    {
+        return OLE_E_BLANK;
+    }
+    GET_THEME_SYS_FONT pfnGetThemeSysFont = (GET_THEME_SYS_FONT)GetProcAddress(m_hUxThemeLib, "GetThemeSysFont");
+    if(!pfnGetThemeSysFont)
+        return HRESULT_FROM_WIN32(GetLastError());
 
-	return pfnGetThemeSysFont(hTheme, iFontId, plf);
+    return pfnGetThemeSysFont(hTheme, iFontId, plf);
 }
 
 HRESULT CUxThemeAeroImpl::BufferedPaintSetAlpha(HPAINTBUFFER hBufferedPaint, const RECT *prc, BYTE alpha)
 {
-	if(!IsInitialized())
-	{
-		return OLE_E_BLANK;
-	}
+    if(!IsInitialized())
+    {
+        return OLE_E_BLANK;
+    }
 
-	BUFFERED_PAINT_SET_ALPHA pfnBufferedPaintSetAlpha = (BUFFERED_PAINT_SET_ALPHA)GetProcAddress(m_hUxThemeLib, "BufferedPaintSetAlpha");
-	if(!pfnBufferedPaintSetAlpha)
-		return HRESULT_FROM_WIN32(GetLastError());
+    BUFFERED_PAINT_SET_ALPHA pfnBufferedPaintSetAlpha = (BUFFERED_PAINT_SET_ALPHA)GetProcAddress(m_hUxThemeLib, "BufferedPaintSetAlpha");
+    if(!pfnBufferedPaintSetAlpha)
+        return HRESULT_FROM_WIN32(GetLastError());
 
-	return pfnBufferedPaintSetAlpha(hBufferedPaint, prc, alpha);
+    return pfnBufferedPaintSetAlpha(hBufferedPaint, prc, alpha);
 }
 
 HRESULT CUxThemeAeroImpl::BufferedPaintMakeOpaque_(HPAINTBUFFER hBufferedPaint, const RECT *prc)
 {
-	return BufferedPaintSetAlpha(hBufferedPaint, prc, 255);
+    return BufferedPaintSetAlpha(hBufferedPaint, prc, 255);
 }
 
 HRESULT CUxThemeAeroImpl::DrawThemeBackground(HTHEME hTheme, HDC hdc, int iPartId, int iStateId, const RECT *pRect, const RECT *pClipRect)
 {
-	if(!IsInitialized())
-	{
-		return OLE_E_BLANK;
-	}
+    if(!IsInitialized())
+    {
+        return OLE_E_BLANK;
+    }
 
-	DRAW_THEME_BACKGROUND pfnDrawThemeBackground = (DRAW_THEME_BACKGROUND)GetProcAddress(m_hUxThemeLib, "DrawThemeBackground");
-	if(!pfnDrawThemeBackground)
-		return HRESULT_FROM_WIN32(GetLastError());
+    DRAW_THEME_BACKGROUND pfnDrawThemeBackground = (DRAW_THEME_BACKGROUND)GetProcAddress(m_hUxThemeLib, "DrawThemeBackground");
+    if(!pfnDrawThemeBackground)
+        return HRESULT_FROM_WIN32(GetLastError());
 
-	return pfnDrawThemeBackground(hTheme, hdc, iPartId, iStateId, pRect, pClipRect);
+    return pfnDrawThemeBackground(hTheme, hdc, iPartId, iStateId, pRect, pClipRect);
 }
 
 HRESULT CUxThemeAeroImpl::GetThemeBackgroundContentRect(HTHEME hTheme, HDC hdc, int iPartId, int iStateId, LPCRECT pBoundingRect, LPRECT pContentRect)
 {
-	if(!IsInitialized())
-	{
-		return OLE_E_BLANK;
-	}
+    if(!IsInitialized())
+    {
+        return OLE_E_BLANK;
+    }
 
-	GET_THEME_BKG_CONTENT_RECT pfnGetThemeBackgroundContentRect = (GET_THEME_BKG_CONTENT_RECT)GetProcAddress(m_hUxThemeLib, "GetThemeBackgroundContentRect");
-	if(!pfnGetThemeBackgroundContentRect)
-		return HRESULT_FROM_WIN32(GetLastError());
+    GET_THEME_BKG_CONTENT_RECT pfnGetThemeBackgroundContentRect = (GET_THEME_BKG_CONTENT_RECT)GetProcAddress(m_hUxThemeLib, "GetThemeBackgroundContentRect");
+    if(!pfnGetThemeBackgroundContentRect)
+        return HRESULT_FROM_WIN32(GetLastError());
 
-	return pfnGetThemeBackgroundContentRect(hTheme, hdc, iPartId, iStateId, pBoundingRect, pContentRect);
+    return pfnGetThemeBackgroundContentRect(hTheme, hdc, iPartId, iStateId, pBoundingRect, pContentRect);
 }
 
 HRESULT CUxThemeAeroImpl::GetThemeBackgroundExtent(HTHEME hTheme, HDC hdc, int iPartId, int iStateId, LPCRECT pContentRect, LPRECT pExtentRect)
 {
-	if(!IsInitialized())
-	{
-		return OLE_E_BLANK;
-	}
+    if(!IsInitialized())
+    {
+        return OLE_E_BLANK;
+    }
 
-	GET_THEME_BKG_CONTENT_EXTENT pfnGetThemeBackgroundExtent = (GET_THEME_BKG_CONTENT_EXTENT)GetProcAddress(m_hUxThemeLib, "GetThemeBackgroundExtent");
-	if(!pfnGetThemeBackgroundExtent)
-		return HRESULT_FROM_WIN32(GetLastError());
+    GET_THEME_BKG_CONTENT_EXTENT pfnGetThemeBackgroundExtent = (GET_THEME_BKG_CONTENT_EXTENT)GetProcAddress(m_hUxThemeLib, "GetThemeBackgroundExtent");
+    if(!pfnGetThemeBackgroundExtent)
+        return HRESULT_FROM_WIN32(GetLastError());
 
-	return pfnGetThemeBackgroundExtent(hTheme, hdc, iPartId, iStateId, pContentRect, pExtentRect);
+    return pfnGetThemeBackgroundExtent(hTheme, hdc, iPartId, iStateId, pContentRect, pExtentRect);
 }
 
 HRESULT CUxThemeAeroImpl::GetThemeBitmap(HTHEME hTheme, int iPartId, int iStateId, int iPropId, ULONG dwFlags, HBITMAP *phBitmap)
 {
-	if(!IsInitialized())
-	{
-		return OLE_E_BLANK;
-	}
+    if(!IsInitialized())
+    {
+        return OLE_E_BLANK;
+    }
 
-	GET_THEME_BITMAP pfnGetThemeBitmap = (GET_THEME_BITMAP)GetProcAddress(m_hUxThemeLib, "GetThemeBitmap");
-	if(!pfnGetThemeBitmap)
-		return HRESULT_FROM_WIN32(GetLastError());
+    GET_THEME_BITMAP pfnGetThemeBitmap = (GET_THEME_BITMAP)GetProcAddress(m_hUxThemeLib, "GetThemeBitmap");
+    if(!pfnGetThemeBitmap)
+        return HRESULT_FROM_WIN32(GetLastError());
 
-	return pfnGetThemeBitmap(hTheme, iPartId, iStateId, iPropId, dwFlags, phBitmap);
+    return pfnGetThemeBitmap(hTheme, iPartId, iStateId, iPropId, dwFlags, phBitmap);
 }
 
 BOOL CUxThemeAeroImpl::DetermineGlowSize(int *piSize, LPCWSTR pszClassIdList /*= NULL*/)
 {
-	if(!piSize)
-	{
-		SetLastError(ERROR_INVALID_PARAMETER);
-		return FALSE;
-	}
+    if(!piSize)
+    {
+        SetLastError(ERROR_INVALID_PARAMETER);
+        return FALSE;
+    }
 
-	if(!pszClassIdList)
-		pszClassIdList = L"CompositedWindow::Window";
+    if(!pszClassIdList)
+        pszClassIdList = L"CompositedWindow::Window";
 
-	HTHEME hThemeWindow = OpenThemeData(NULL, pszClassIdList);
-	if (hThemeWindow != NULL)
-	{
-		GetThemeInt(hThemeWindow, 0, 0, TMT_TEXTGLOWSIZE, piSize);
-		CloseThemeData(hThemeWindow);
-		return TRUE;
-	}
+    HTHEME hThemeWindow = OpenThemeData(NULL, pszClassIdList);
+    if (hThemeWindow != NULL)
+    {
+        GetThemeInt(hThemeWindow, 0, 0, TMT_TEXTGLOWSIZE, piSize);
+        CloseThemeData(hThemeWindow);
+        return TRUE;
+    }
 
-	SetLastError(ERROR_FILE_NOT_FOUND);
-	return FALSE;
+    SetLastError(ERROR_FILE_NOT_FOUND);
+    return FALSE;
 }
 
 HRESULT CUxThemeAeroImpl::DrawThemeParentBackground(HWND hwnd, HDC hdc, const RECT *prc)
 {
-	if(!IsInitialized())
-	{
-		return OLE_E_BLANK;
-	}
+    if(!IsInitialized())
+    {
+        return OLE_E_BLANK;
+    }
 
-	DRAW_THEME_PARENT_BACKGROUND pfnDrawThemeParentBackground = (DRAW_THEME_PARENT_BACKGROUND)GetProcAddress(m_hUxThemeLib, "DrawThemeParentBackground");
-	if(!pfnDrawThemeParentBackground)
-		return HRESULT_FROM_WIN32(GetLastError());
+    DRAW_THEME_PARENT_BACKGROUND pfnDrawThemeParentBackground = (DRAW_THEME_PARENT_BACKGROUND)GetProcAddress(m_hUxThemeLib, "DrawThemeParentBackground");
+    if(!pfnDrawThemeParentBackground)
+        return HRESULT_FROM_WIN32(GetLastError());
 
-	return pfnDrawThemeParentBackground(hwnd, hdc, prc);
+    return pfnDrawThemeParentBackground(hwnd, hdc, prc);
 }
 
 BOOL CUxThemeAeroImpl::IsThemeBackgroundPartiallyTransparent(HTHEME hTheme,int iPartId, int iStateId)
 {
-	if(!IsInitialized())
-	{
-		return FALSE;
-	}
+    if(!IsInitialized())
+    {
+        return FALSE;
+    }
 
-	IS_THEME_BACKGROUND_PARTIALLY_TRANSPARENT pfnIsThemeBackgroundPartiallyTransparent = (IS_THEME_BACKGROUND_PARTIALLY_TRANSPARENT)GetProcAddress(m_hUxThemeLib, "IsThemeBackgroundPartiallyTransparent");
-	if(!pfnIsThemeBackgroundPartiallyTransparent)
-		return FALSE;
+    IS_THEME_BACKGROUND_PARTIALLY_TRANSPARENT pfnIsThemeBackgroundPartiallyTransparent = (IS_THEME_BACKGROUND_PARTIALLY_TRANSPARENT)GetProcAddress(m_hUxThemeLib, "IsThemeBackgroundPartiallyTransparent");
+    if(!pfnIsThemeBackgroundPartiallyTransparent)
+        return FALSE;
 
-	return pfnIsThemeBackgroundPartiallyTransparent(hTheme,iPartId, iStateId);
+    return pfnIsThemeBackgroundPartiallyTransparent(hTheme,iPartId, iStateId);
 }
 
 HRESULT CUxThemeAeroImpl::DrawThemeText(HTHEME hTheme, HDC hdc, int iPartId, int iStateId, LPCWSTR pszText, int iCharCount, DWORD dwTextFlags, DWORD dwTextFlags2, LPCRECT pRect)
 {
-	if(!IsInitialized())
-	{
-		return OLE_E_BLANK;
-	}
+    if(!IsInitialized())
+    {
+        return OLE_E_BLANK;
+    }
 
-	DRAW_THEME_TEXT pfnDrawThemeText = (DRAW_THEME_TEXT)GetProcAddress(m_hUxThemeLib, "DrawThemeText");
-	if(!pfnDrawThemeText)
-		return HRESULT_FROM_WIN32(GetLastError());
+    DRAW_THEME_TEXT pfnDrawThemeText = (DRAW_THEME_TEXT)GetProcAddress(m_hUxThemeLib, "DrawThemeText");
+    if(!pfnDrawThemeText)
+        return HRESULT_FROM_WIN32(GetLastError());
 
-	return pfnDrawThemeText(hTheme, hdc, iPartId, iStateId, pszText, iCharCount, dwTextFlags, dwTextFlags2, pRect);
+    return pfnDrawThemeText(hTheme, hdc, iPartId, iStateId, pszText, iCharCount, dwTextFlags, dwTextFlags2, pRect);
 }
 
 HRESULT CUxThemeAeroImpl::GetThemeColor(HTHEME hTheme, int iPartId, int iStateId, int iPropId, COLORREF *pColor)
 {
-	if(!IsInitialized())
-	{
-		return OLE_E_BLANK;
-	}
+    if(!IsInitialized())
+    {
+        return OLE_E_BLANK;
+    }
 
-	GET_THEME_COLOR pfnGetThemeColor = (GET_THEME_COLOR)GetProcAddress(m_hUxThemeLib, "GetThemeColor");
-	if(!pfnGetThemeColor)
-		return HRESULT_FROM_WIN32(GetLastError());
+    GET_THEME_COLOR pfnGetThemeColor = (GET_THEME_COLOR)GetProcAddress(m_hUxThemeLib, "GetThemeColor");
+    if(!pfnGetThemeColor)
+        return HRESULT_FROM_WIN32(GetLastError());
 
-	return pfnGetThemeColor(hTheme, iPartId, iStateId, iPropId, pColor);
+    return pfnGetThemeColor(hTheme, iPartId, iStateId, iPropId, pColor);
 }
 
 HRESULT CUxThemeAeroImpl::GetThemePartSize(HTHEME hTheme, HDC hdc, int iPartId, int iStateId, LPCRECT prc, THEMESIZE eSize,SIZE *psz)
 {
-	if(!IsInitialized())
-	{
-		return OLE_E_BLANK;
-	}
+    if(!IsInitialized())
+    {
+        return OLE_E_BLANK;
+    }
 
-	GET_THEME_PART_SIZE pfnGetThemePartSize = (GET_THEME_PART_SIZE)GetProcAddress(m_hUxThemeLib, "GetThemePartSize");
-	if(!pfnGetThemePartSize)
-		return HRESULT_FROM_WIN32(GetLastError());
+    GET_THEME_PART_SIZE pfnGetThemePartSize = (GET_THEME_PART_SIZE)GetProcAddress(m_hUxThemeLib, "GetThemePartSize");
+    if(!pfnGetThemePartSize)
+        return HRESULT_FROM_WIN32(GetLastError());
 
-	return pfnGetThemePartSize(hTheme, hdc, iPartId, iStateId, prc, eSize, psz);
+    return pfnGetThemePartSize(hTheme, hdc, iPartId, iStateId, prc, eSize, psz);
 }
 
 HRESULT CUxThemeAeroImpl::GetThemePosition(HTHEME hTheme, int iPartId, int iStateId, int iPropId, POINT *pPoint)
 {
-	if(!IsInitialized())
-	{
-		return OLE_E_BLANK;
-	}
+    if(!IsInitialized())
+    {
+        return OLE_E_BLANK;
+    }
 
-	GET_THEME_POSITION pfnGetThemePosition = (GET_THEME_POSITION)GetProcAddress(m_hUxThemeLib, "GetThemePosition");
-	if(!pfnGetThemePosition)
-		return HRESULT_FROM_WIN32(GetLastError());
+    GET_THEME_POSITION pfnGetThemePosition = (GET_THEME_POSITION)GetProcAddress(m_hUxThemeLib, "GetThemePosition");
+    if(!pfnGetThemePosition)
+        return HRESULT_FROM_WIN32(GetLastError());
 
-	return pfnGetThemePosition(hTheme, iPartId, iStateId, iPropId, pPoint);
+    return pfnGetThemePosition(hTheme, iPartId, iStateId, iPropId, pPoint);
 }
 
 HRESULT CUxThemeAeroImpl::GetThemeMargins(HTHEME hTheme, HDC hdc, int iPartId, int iStateId, int iPropId, LPRECT prc, MARGINS *pMargins)
 {
-	if(!IsInitialized())
-	{
-		return OLE_E_BLANK;
-	}
+    if(!IsInitialized())
+    {
+        return OLE_E_BLANK;
+    }
 
-	GET_THEME_MARGINS pfnGetThemeMargins = (GET_THEME_MARGINS)GetProcAddress(m_hUxThemeLib, "GetThemeMargins");
-	if(!pfnGetThemeMargins)
-		return HRESULT_FROM_WIN32(GetLastError());
+    GET_THEME_MARGINS pfnGetThemeMargins = (GET_THEME_MARGINS)GetProcAddress(m_hUxThemeLib, "GetThemeMargins");
+    if(!pfnGetThemeMargins)
+        return HRESULT_FROM_WIN32(GetLastError());
 
-	return pfnGetThemeMargins(hTheme, hdc, iPartId, iStateId, iPropId, prc, pMargins);
+    return pfnGetThemeMargins(hTheme, hdc, iPartId, iStateId, iPropId, prc, pMargins);
 }
 
 HRESULT CUxThemeAeroImpl::GetThemeMetric(HTHEME hTheme, HDC hdc, int iPartId, int iStateId, int iPropId, int *piVal)
 {
-	if(!IsInitialized())
-	{
-		return OLE_E_BLANK;
-	}
+    if(!IsInitialized())
+    {
+        return OLE_E_BLANK;
+    }
 
-	GET_THEME_METRIC pfnGetThemeMetric = (GET_THEME_METRIC)GetProcAddress(m_hUxThemeLib, "GetThemeMetric");
-	if(!pfnGetThemeMetric)
-		return HRESULT_FROM_WIN32(GetLastError());
+    GET_THEME_METRIC pfnGetThemeMetric = (GET_THEME_METRIC)GetProcAddress(m_hUxThemeLib, "GetThemeMetric");
+    if(!pfnGetThemeMetric)
+        return HRESULT_FROM_WIN32(GetLastError());
 
-	return pfnGetThemeMetric(hTheme, hdc, iPartId, iStateId, iPropId, piVal);
+    return pfnGetThemeMetric(hTheme, hdc, iPartId, iStateId, iPropId, piVal);
 }
 
 HRESULT CUxThemeAeroImpl::GetThemeRect(HTHEME hTheme, int iPartId, int iStateId, int iPropId, LPRECT pRect)
 {
-	if(!IsInitialized())
-	{
-		return OLE_E_BLANK;
-	}
+    if(!IsInitialized())
+    {
+        return OLE_E_BLANK;
+    }
 
-	GET_THEME_RECT pfnGetThemeRect = (GET_THEME_RECT)GetProcAddress(m_hUxThemeLib, "GetThemeRect");
-	if(!pfnGetThemeRect)
-		return HRESULT_FROM_WIN32(GetLastError());
+    GET_THEME_RECT pfnGetThemeRect = (GET_THEME_RECT)GetProcAddress(m_hUxThemeLib, "GetThemeRect");
+    if(!pfnGetThemeRect)
+        return HRESULT_FROM_WIN32(GetLastError());
 
-	return pfnGetThemeRect(hTheme, iPartId, iStateId, iPropId, pRect);
+    return pfnGetThemeRect(hTheme, iPartId, iStateId, iPropId, pRect);
 }
 

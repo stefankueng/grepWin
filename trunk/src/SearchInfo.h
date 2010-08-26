@@ -27,16 +27,16 @@ using namespace std;
 class CSearchInfo
 {
 public:
-	CSearchInfo(void);
-	CSearchInfo(const wstring& path);
-	~CSearchInfo(void);
+    CSearchInfo(void);
+    CSearchInfo(const wstring& path);
+    ~CSearchInfo(void);
 
-	wstring				filepath;
-	DWORD				filesize;
-	vector<DWORD>		matchlinesnumbers;	
-	vector<wstring>		matchlines;
-	CTextFile::UnicodeType	encoding;
-	FILETIME			modifiedtime;
-	bool				readerror;
-	bool				folder;
+    wstring             filepath;
+    DWORD               filesize;
+    vector<DWORD>       matchlinesnumbers;
+    vector<wstring>     matchlines;
+    CTextFile::UnicodeType  encoding;
+    FILETIME            modifiedtime;
+    bool                readerror;
+    bool                folder;
 };

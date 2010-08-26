@@ -28,45 +28,45 @@
 class CDialog
 {
 public:
-	INT_PTR DoModal(HINSTANCE hInstance, int resID, HWND hWndParent);
-	INT_PTR DoModal(HINSTANCE hInstance, int resID, HWND hWndParent, UINT idAccel);
+    INT_PTR DoModal(HINSTANCE hInstance, int resID, HWND hWndParent);
+    INT_PTR DoModal(HINSTANCE hInstance, int resID, HWND hWndParent, UINT idAccel);
     HWND    Create(HINSTANCE hInstance, int resID, HWND hWndParent);
-	BOOL	EndDialog(HWND hDlg, INT_PTR nResult);
-	void	AddToolTip(UINT ctrlID, LPTSTR text);
-	bool	IsCursorOverWindowBorder();
-	/**
-	 * Wrapper around the CWnd::EnableWindow() method, but
-	 * makes sure that a control that has the focus is not disabled
-	 * before the focus is passed on to the next control.
-	 */
-	bool	DialogEnableWindow(UINT nID, bool bEnable);
-	void	OnCompositionChanged();
-	void	ExtendFrameIntoClientArea(UINT leftControl, UINT topControl, UINT rightControl, UINT botomControl);
+    BOOL    EndDialog(HWND hDlg, INT_PTR nResult);
+    void    AddToolTip(UINT ctrlID, LPTSTR text);
+    bool    IsCursorOverWindowBorder();
+    /**
+     * Wrapper around the CWnd::EnableWindow() method, but
+     * makes sure that a control that has the focus is not disabled
+     * before the focus is passed on to the next control.
+     */
+    bool    DialogEnableWindow(UINT nID, bool bEnable);
+    void    OnCompositionChanged();
+    void    ExtendFrameIntoClientArea(UINT leftControl, UINT topControl, UINT rightControl, UINT botomControl);
 
-	virtual LRESULT CALLBACK DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) = 0;
-	virtual bool PreTranslateMessage(MSG* pMsg);
+    virtual LRESULT CALLBACK DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) = 0;
+    virtual bool PreTranslateMessage(MSG* pMsg);
 
-	operator HWND() {return m_hwnd;}
+    operator HWND() {return m_hwnd;}
 protected:
-	HINSTANCE		hResource;
-	HWND			m_hwnd;
-	CDwmApiImpl		m_Dwm;
-	MARGINS			m_margins;
+    HINSTANCE       hResource;
+    HWND            m_hwnd;
+    CDwmApiImpl     m_Dwm;
+    MARGINS         m_margins;
 
-	void InitDialog(HWND hwndDlg, UINT iconID);
+    void InitDialog(HWND hwndDlg, UINT iconID);
 
-	// the real message handler
-	static INT_PTR CALLBACK stDlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
+    // the real message handler
+    static INT_PTR CALLBACK stDlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-	// returns a pointer the dialog (stored as the WindowLong)
-	inline static CDialog * GetObjectFromWindow(HWND hWnd)
-	{
-		return (CDialog *)GetWindowLongPtr(hWnd, GWLP_USERDATA);
-	}
+    // returns a pointer the dialog (stored as the WindowLong)
+    inline static CDialog * GetObjectFromWindow(HWND hWnd)
+    {
+        return (CDialog *)GetWindowLongPtr(hWnd, GWLP_USERDATA);
+    }
 private:
-	bool		m_bPseudoModal;
-	bool		m_bPseudoEnded;
-	INT_PTR		m_iPseudoRet;
-	HWND		m_hToolTips;
+    bool        m_bPseudoModal;
+    bool        m_bPseudoEnded;
+    INT_PTR     m_iPseudoRet;
+    HWND        m_hToolTips;
 };
 

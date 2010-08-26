@@ -20,228 +20,228 @@
 #include "AutoComplete.h"
 
 CAutoComplete::CAutoComplete(void)
-	: m_pcacs(NULL)
-	, m_pac(NULL)
-	, m_pdrop(NULL)
+    : m_pcacs(NULL)
+    , m_pac(NULL)
+    , m_pdrop(NULL)
 {
 }
 
 CAutoComplete::~CAutoComplete(void)
 {
-	if (m_pac)
-		m_pac->Release();
-	if (m_pcacs)
-		m_pcacs->Release();
-	if (m_pdrop)
-		m_pdrop->Release();
+    if (m_pac)
+        m_pac->Release();
+    if (m_pcacs)
+        m_pcacs->Release();
+    if (m_pdrop)
+        m_pdrop->Release();
 }
 
 bool CAutoComplete::Init(HWND hEdit)
 {
-	if (m_pac)
-		m_pac->Release();
-	if (m_pdrop)
-		m_pdrop->Release();
-	if (CoCreateInstance(CLSID_AutoComplete, 
-		NULL, 
-		CLSCTX_INPROC_SERVER,
-		IID_IAutoComplete2, 
-		(LPVOID*)&m_pac) == S_OK)
-	{
-		IUnknown *punkSource;
+    if (m_pac)
+        m_pac->Release();
+    if (m_pdrop)
+        m_pdrop->Release();
+    if (CoCreateInstance(CLSID_AutoComplete,
+        NULL,
+        CLSCTX_INPROC_SERVER,
+        IID_IAutoComplete2,
+        (LPVOID*)&m_pac) == S_OK)
+    {
+        IUnknown *punkSource;
 
-		if (m_pcacs)
-			delete m_pcacs;
-		m_pcacs = new CAutoCompleteEnum(m_arEntries);
+        if (m_pcacs)
+            delete m_pcacs;
+        m_pcacs = new CAutoCompleteEnum(m_arEntries);
 
-		if (m_pcacs->QueryInterface(IID_IUnknown, 
-			(void **) &punkSource) == S_OK)
-		{
-			if (m_pac->Init(hEdit, punkSource, NULL, NULL) == S_OK)
-			{
-				m_pac->Enable(TRUE);
-				m_pac->SetOptions(ACO_UPDOWNKEYDROPSLIST|ACO_AUTOSUGGEST);
-				if (m_pac->QueryInterface(IID_IAutoCompleteDropDown, (void **)&m_pdrop) != S_OK)
-				{
-					m_pdrop = NULL;
-				}
-				return true;
-			}
-		}
-		else
-		{
-			delete m_pcacs;
-			m_pcacs = NULL;
-		}
-	}
-	
-	return false;
+        if (m_pcacs->QueryInterface(IID_IUnknown,
+            (void **) &punkSource) == S_OK)
+        {
+            if (m_pac->Init(hEdit, punkSource, NULL, NULL) == S_OK)
+            {
+                m_pac->Enable(TRUE);
+                m_pac->SetOptions(ACO_UPDOWNKEYDROPSLIST|ACO_AUTOSUGGEST);
+                if (m_pac->QueryInterface(IID_IAutoCompleteDropDown, (void **)&m_pdrop) != S_OK)
+                {
+                    m_pdrop = NULL;
+                }
+                return true;
+            }
+        }
+        else
+        {
+            delete m_pcacs;
+            m_pcacs = NULL;
+        }
+    }
+
+    return false;
 }
 
 bool CAutoComplete::Enable(bool bEnable)
 {
-	if (m_pac)
-	{
-		if (m_pac->Enable(bEnable) == S_OK)
-			return true;
-	}
-	return false;
+    if (m_pac)
+    {
+        if (m_pac->Enable(bEnable) == S_OK)
+            return true;
+    }
+    return false;
 }
 
 bool CAutoComplete::AddEntry(LPCTSTR szText)
 {
-	bool bRet = CRegHistory::AddEntry(szText);
-	if (m_pcacs)
-		m_pcacs->Init(m_arEntries);
-	if (m_pdrop)
-		m_pdrop->ResetEnumerator();
-	return bRet;
+    bool bRet = CRegHistory::AddEntry(szText);
+    if (m_pcacs)
+        m_pcacs->Init(m_arEntries);
+    if (m_pdrop)
+        m_pdrop->ResetEnumerator();
+    return bRet;
 }
 
 bool CAutoComplete::RemoveSelected()
 {
-	if (m_pdrop == NULL)
-		return false;
-	if (m_pcacs == NULL)
-		return false;
+    if (m_pdrop == NULL)
+        return false;
+    if (m_pcacs == NULL)
+        return false;
 
-	DWORD flags;
-	LPWSTR string = 0;
-	if (m_pdrop->GetDropDownStatus(&flags, &string) == S_OK)
-	{
-		if (flags & ACDD_VISIBLE)
-		{
-			RemoveEntry(string);
-			// need to save the history now, otherwise adding a new
-			// entry with AddEntry() will reload the history from the
-			// registry, and our removed item would get restored
-			Save();
-			if (string)
-				CoTaskMemFree(string);
-			m_pcacs->Init(m_arEntries);
-			m_pdrop->ResetEnumerator();
-		}
-		else
-		{
-			if (string)
-				CoTaskMemFree(string);
-			return false;
-		}
-	}
-	return true;
+    DWORD flags;
+    LPWSTR string = 0;
+    if (m_pdrop->GetDropDownStatus(&flags, &string) == S_OK)
+    {
+        if (flags & ACDD_VISIBLE)
+        {
+            RemoveEntry(string);
+            // need to save the history now, otherwise adding a new
+            // entry with AddEntry() will reload the history from the
+            // registry, and our removed item would get restored
+            Save();
+            if (string)
+                CoTaskMemFree(string);
+            m_pcacs->Init(m_arEntries);
+            m_pdrop->ResetEnumerator();
+        }
+        else
+        {
+            if (string)
+                CoTaskMemFree(string);
+            return false;
+        }
+    }
+    return true;
 }
 
-CAutoCompleteEnum::CAutoCompleteEnum(const vector<wstring>& vec) 
-	: m_cRefCount(0)
-	, m_iCur(0)
+CAutoCompleteEnum::CAutoCompleteEnum(const vector<wstring>& vec)
+    : m_cRefCount(0)
+    , m_iCur(0)
 {
-	Init(vec);
+    Init(vec);
 }
 
-CAutoCompleteEnum::CAutoCompleteEnum(const vector<wstring*>& vec) 
-	: m_cRefCount(0)
-	, m_iCur(0)
+CAutoCompleteEnum::CAutoCompleteEnum(const vector<wstring*>& vec)
+    : m_cRefCount(0)
+    , m_iCur(0)
 {
-	Init(vec);
+    Init(vec);
 }
 
 void CAutoCompleteEnum::Init(const vector<wstring>& vec)
 {
-	m_vecStrings.clear();
-	for (size_t i = 0; i < vec.size(); ++i)
-		m_vecStrings.push_back(vec[i]);
+    m_vecStrings.clear();
+    for (size_t i = 0; i < vec.size(); ++i)
+        m_vecStrings.push_back(vec[i]);
 }
 void CAutoCompleteEnum::Init(const vector<wstring*>& vec)
 {
-	m_vecStrings.clear();
-	for (size_t i = 0; i < vec.size(); ++i)
-		m_vecStrings.push_back(*vec[i]);
+    m_vecStrings.clear();
+    for (size_t i = 0; i < vec.size(); ++i)
+        m_vecStrings.push_back(*vec[i]);
 }
 
 
 STDMETHODIMP  CAutoCompleteEnum::QueryInterface(REFIID refiid, void** ppv)
 {
-	*ppv = NULL;
-	if (IID_IUnknown==refiid || IID_IEnumString==refiid)
-		*ppv=this;
+    *ppv = NULL;
+    if (IID_IUnknown==refiid || IID_IEnumString==refiid)
+        *ppv=this;
 
-	if (*ppv != NULL)
-	{
-		((LPUNKNOWN)*ppv)->AddRef();
-		return S_OK;
-	}
-	return E_NOINTERFACE;
+    if (*ppv != NULL)
+    {
+        ((LPUNKNOWN)*ppv)->AddRef();
+        return S_OK;
+    }
+    return E_NOINTERFACE;
 }
 
 STDMETHODIMP_(ULONG) CAutoCompleteEnum::AddRef(void)
 {
-	return ++m_cRefCount;
+    return ++m_cRefCount;
 }
 
 STDMETHODIMP_(ULONG) CAutoCompleteEnum::Release(void)
 {
-	--m_cRefCount;
-	if (m_cRefCount == 0)
-	{
-		delete this;
-		return 0;
-	}
-	return m_cRefCount; 
+    --m_cRefCount;
+    if (m_cRefCount == 0)
+    {
+        delete this;
+        return 0;
+    }
+    return m_cRefCount;
 }
 
 STDMETHODIMP CAutoCompleteEnum::Next(ULONG celt, LPOLESTR* rgelt, ULONG* pceltFetched)
 {
-	HRESULT hr = S_FALSE;
+    HRESULT hr = S_FALSE;
 
-	if (!celt)
-		celt = 1;
+    if (!celt)
+        celt = 1;
 
-	ULONG i = 0;
-	for ( ; i < celt; i++)
-	{
-		if (m_iCur == (ULONG)m_vecStrings.size())
-			break;
+    ULONG i = 0;
+    for ( ; i < celt; i++)
+    {
+        if (m_iCur == (ULONG)m_vecStrings.size())
+            break;
 
-		rgelt[i] = (LPWSTR)::CoTaskMemAlloc((ULONG) sizeof(WCHAR) * (m_vecStrings[m_iCur].size() + 1));
-		wcscpy_s(rgelt[i], m_vecStrings[m_iCur].size() + 1, m_vecStrings[m_iCur].c_str());
+        rgelt[i] = (LPWSTR)::CoTaskMemAlloc((ULONG) sizeof(WCHAR) * (m_vecStrings[m_iCur].size() + 1));
+        wcscpy_s(rgelt[i], m_vecStrings[m_iCur].size() + 1, m_vecStrings[m_iCur].c_str());
 
-		if (pceltFetched)
-			*pceltFetched++;
+        if (pceltFetched)
+            *pceltFetched++;
 
-		m_iCur++;
-	}
+        m_iCur++;
+    }
 
-	if (i == celt)
-		hr = S_OK;
+    if (i == celt)
+        hr = S_OK;
 
-	return hr;
+    return hr;
 }
 
 STDMETHODIMP CAutoCompleteEnum::Skip(ULONG celt)
 {
-	if ((m_iCur + int(celt)) >= m_vecStrings.size())
-		return S_FALSE;
-	m_iCur += celt;
-	return S_OK;
+    if ((m_iCur + int(celt)) >= m_vecStrings.size())
+        return S_FALSE;
+    m_iCur += celt;
+    return S_OK;
 }
 
 STDMETHODIMP CAutoCompleteEnum::Reset(void)
 {
-	m_iCur = 0;
-	return S_OK;
+    m_iCur = 0;
+    return S_OK;
 }
 
 STDMETHODIMP CAutoCompleteEnum::Clone(IEnumString** ppenum)
 {
-	if (ppenum == NULL)
-		return E_POINTER;
+    if (ppenum == NULL)
+        return E_POINTER;
 
-	CAutoCompleteEnum *newEnum = new CAutoCompleteEnum(m_vecStrings);
-	if (newEnum == NULL)
-		return E_OUTOFMEMORY;
+    CAutoCompleteEnum *newEnum = new CAutoCompleteEnum(m_vecStrings);
+    if (newEnum == NULL)
+        return E_OUTOFMEMORY;
 
-	newEnum->AddRef();
-	newEnum->m_iCur = m_iCur;
-	*ppenum = newEnum;
-	return S_OK;
+    newEnum->AddRef();
+    newEnum->m_iCur = m_iCur;
+    *ppenum = newEnum;
+    return S_OK;
 }

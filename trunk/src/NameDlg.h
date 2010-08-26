@@ -30,19 +30,19 @@ using namespace std;
 class CNameDlg : public CDialog
 {
 public:
-	CNameDlg(HWND hParent);
-	~CNameDlg(void);
+    CNameDlg(HWND hParent);
+    ~CNameDlg(void);
 
-	wstring					GetName() {return m_name;}
+    wstring                 GetName() {return m_name;}
 
 protected:
-	LRESULT CALLBACK		DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
-	LRESULT					DoCommand(int id, int msg);
+    LRESULT CALLBACK        DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
+    LRESULT                 DoCommand(int id, int msg);
 
 private:
-	HWND					m_hParent;
-	wstring					m_name;
+    HWND                    m_hParent;
+    wstring                 m_name;
 
-	CDlgResizer				m_resizer;
-	AeroControlBase			m_aerocontrols;
+    CDlgResizer             m_resizer;
+    AeroControlBase         m_aerocontrols;
 };
