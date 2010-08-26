@@ -175,7 +175,7 @@ public:
     */
    inline void GetFileName(LPTSTR szFileName) const
    {
-	   _tcscpy_s(szFileName, MAX_PATH_NEW, m_FindFileData.cFileName);
+       _tcscpy_s(szFileName, MAX_PATH_NEW, m_FindFileData.cFileName);
    }
 
    const WIN32_FIND_DATA * GetFileFindData() const {return &m_FindFileData;}
@@ -186,8 +186,8 @@ public:
     */
    inline void GetFilePath(LPTSTR szPath) const
    {
-	   _tcscpy_s(szPath, MAX_PATH_NEW, m_szPathPrefix);
-	   _tcscat_s(szPath, MAX_PATH_NEW, m_FindFileData.cFileName);
+       _tcscpy_s(szPath, MAX_PATH_NEW, m_szPathPrefix);
+       _tcscat_s(szPath, MAX_PATH_NEW, m_FindFileData.cFileName);
    }
 
    /**
@@ -197,7 +197,7 @@ public:
     * \return TRUE iff the current file is the "." or ".."
     * pseudo-directory.
     */
-   inline BOOL IsDots() const 
+   inline BOOL IsDots() const
    {
       return IsDirectory()
           && m_FindFileData.cFileName[0] == _T('.')
@@ -238,7 +238,7 @@ public:
     *
     * @param dirName The directory to search in.
     */
-	CDirFileEnum(LPCTSTR dirName);
+    CDirFileEnum(LPCTSTR dirName);
 
    /**
     * Destructor.  Frees all resources.
@@ -251,11 +251,11 @@ public:
     * \param  result On successful return, holds the full path to the found
     *                file. (If this function returns FALSE, the value of
     *                result is unspecified).
-	* \param  bRecurse if false, then the last returned directory is not
-	*                recursed into. Only valid for directories.
-	* \param  pbIsDirectory Pointer to a bool variable which will hold
-	*                TRUE if the \c result path is a directory, FALSE
-	*				 if it's a file. Pass NULL if you don't need that information.
+    * \param  bRecurse if false, then the last returned directory is not
+    *                recursed into. Only valid for directories.
+    * \param  pbIsDirectory Pointer to a bool variable which will hold
+    *                TRUE if the \c result path is a directory, FALSE
+    *                if it's a file. Pass NULL if you don't need that information.
     * \return TRUE iff a file was found, false at end of the iteration.
     */
    BOOL NextFile(LPTSTR result, bool bRecurse, bool* pbIsDirectory);

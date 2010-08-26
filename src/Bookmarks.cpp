@@ -32,67 +32,67 @@ CBookmarks::~CBookmarks(void)
 
 void CBookmarks::Load()
 {
-	TCHAR path[MAX_PATH_NEW] = {0};
-	GetModuleFileName(NULL, path, MAX_PATH_NEW);
-	CCmdLineParser parser(GetCommandLine());
-	if ((_tcsstr(path, _T("portable")))||(parser.HasKey(_T("portable"))))
-	{
-		m_iniPath = path;
-		m_iniPath = m_iniPath.substr(0, m_iniPath.rfind('\\'));
-	}
-	else
-	{
-		SHGetFolderPath(NULL, CSIDL_APPDATA, NULL, SHGFP_TYPE_CURRENT, path);
-		m_iniPath = path;
-		m_iniPath += _T("\\grepWin");
-	}
-	CreateDirectory(m_iniPath.c_str(), NULL);
-	m_iniPath += _T("\\bookmarks");
-	LoadFile(m_iniPath.c_str());
+    TCHAR path[MAX_PATH_NEW] = {0};
+    GetModuleFileName(NULL, path, MAX_PATH_NEW);
+    CCmdLineParser parser(GetCommandLine());
+    if ((_tcsstr(path, _T("portable")))||(parser.HasKey(_T("portable"))))
+    {
+        m_iniPath = path;
+        m_iniPath = m_iniPath.substr(0, m_iniPath.rfind('\\'));
+    }
+    else
+    {
+        SHGetFolderPath(NULL, CSIDL_APPDATA, NULL, SHGFP_TYPE_CURRENT, path);
+        m_iniPath = path;
+        m_iniPath += _T("\\grepWin");
+    }
+    CreateDirectory(m_iniPath.c_str(), NULL);
+    m_iniPath += _T("\\bookmarks");
+    LoadFile(m_iniPath.c_str());
 }
 
 void CBookmarks::Save()
 {
-	TCHAR path[MAX_PATH_NEW] = {0};
-	GetModuleFileName(NULL, path, MAX_PATH_NEW);
-	CCmdLineParser parser(GetCommandLine());
-	if ((_tcsstr(path, _T("portable")))||(parser.HasKey(_T("portable"))))
-	{
-		m_iniPath = path;
-		m_iniPath = m_iniPath.substr(0, m_iniPath.rfind('\\'));
-	}
-	else
-	{
-		SHGetFolderPath(NULL, CSIDL_APPDATA, NULL, SHGFP_TYPE_CURRENT, path);
-		m_iniPath = path;
-		m_iniPath += _T("\\grepWin");
-	}
-	CreateDirectory(m_iniPath.c_str(), NULL);
-	m_iniPath += _T("\\bookmarks");
-	FILE * pFile = NULL;
-	_tfopen_s(&pFile, m_iniPath.c_str(), _T("wb"));
-	SaveFile(pFile);
-	fclose(pFile);
+    TCHAR path[MAX_PATH_NEW] = {0};
+    GetModuleFileName(NULL, path, MAX_PATH_NEW);
+    CCmdLineParser parser(GetCommandLine());
+    if ((_tcsstr(path, _T("portable")))||(parser.HasKey(_T("portable"))))
+    {
+        m_iniPath = path;
+        m_iniPath = m_iniPath.substr(0, m_iniPath.rfind('\\'));
+    }
+    else
+    {
+        SHGetFolderPath(NULL, CSIDL_APPDATA, NULL, SHGFP_TYPE_CURRENT, path);
+        m_iniPath = path;
+        m_iniPath += _T("\\grepWin");
+    }
+    CreateDirectory(m_iniPath.c_str(), NULL);
+    m_iniPath += _T("\\bookmarks");
+    FILE * pFile = NULL;
+    _tfopen_s(&pFile, m_iniPath.c_str(), _T("wb"));
+    SaveFile(pFile);
+    fclose(pFile);
 }
 
 void CBookmarks::AddBookmark(const wstring& name, const wstring& search, const wstring& replace, bool bRegex)
 {
-	wstring val = _T("\"");
-	val += search;
-	val += _T("\"");
-	SetValue(name.c_str(), _T("searchString"), val.c_str());
+    wstring val = _T("\"");
+    val += search;
+    val += _T("\"");
+    SetValue(name.c_str(), _T("searchString"), val.c_str());
 
-	val = _T("\"");
-	val += replace;
-	val += _T("\"");
-	SetValue(name.c_str(), _T("replaceString"), val.c_str());
-	SetValue(name.c_str(), _T("useregex"), bRegex ? _T("true") : _T("false"));
+    val = _T("\"");
+    val += replace;
+    val += _T("\"");
+    SetValue(name.c_str(), _T("replaceString"), val.c_str());
+    SetValue(name.c_str(), _T("useregex"), bRegex ? _T("true") : _T("false"));
 }
 
 void CBookmarks::RemoveBookmark(const wstring& name)
 {
-	Delete(name.c_str(), _T("searchString"), true);
-	Delete(name.c_str(), _T("replaceString"), true);
-	Delete(name.c_str(), _T("useregex"), true);
+    Delete(name.c_str(), _T("searchString"), true);
+    Delete(name.c_str(), _T("replaceString"), true);
+    Delete(name.c_str(), _T("useregex"), true);
 }
 

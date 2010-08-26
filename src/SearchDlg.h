@@ -30,12 +30,12 @@
 
 using namespace std;
 
-#define SEARCH_FOUND		(WM_APP+1)
-#define SEARCH_START		(WM_APP+2)
-#define SEARCH_PROGRESS		(WM_APP+3)
-#define SEARCH_END			(WM_APP+4)
+#define SEARCH_FOUND        (WM_APP+1)
+#define SEARCH_START        (WM_APP+2)
+#define SEARCH_PROGRESS     (WM_APP+3)
+#define SEARCH_END          (WM_APP+4)
 
-#define ID_ABOUTBOX			0x0010
+#define ID_ABOUTBOX         0x0010
 
 /**
  * search dialog.
@@ -43,115 +43,115 @@ using namespace std;
 class CSearchDlg : public CDialog
 {
 public:
-	CSearchDlg(HWND hParent);
-	~CSearchDlg(void);
+    CSearchDlg(HWND hParent);
+    ~CSearchDlg(void);
 
-	DWORD					SearchThread();
-	void					SetSearchPath(const wstring& path) {m_searchpath = path;}
-	void					SetSearchString(const wstring& search) {m_searchString = search;}
-	void					SetFileMask(const wstring& mask, bool reg) {m_patternregex = mask; m_bUseRegexForPaths = reg;} 
-	void					SetExcludeFileMask(const wstring& mask) {m_excludedirspatternregex = mask;} 
-	void					SetExecute(bool execute) {m_bExecuteImmediately = execute;}
+    DWORD                   SearchThread();
+    void                    SetSearchPath(const wstring& path) {m_searchpath = path;}
+    void                    SetSearchString(const wstring& search) {m_searchString = search;}
+    void                    SetFileMask(const wstring& mask, bool reg) {m_patternregex = mask; m_bUseRegexForPaths = reg;}
+    void                    SetExcludeFileMask(const wstring& mask) {m_excludedirspatternregex = mask;}
+    void                    SetExecute(bool execute) {m_bExecuteImmediately = execute;}
 protected:
-	LRESULT CALLBACK		DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
-	LRESULT					DoCommand(int id, int msg);
-	bool					PreTranslateMessage(MSG* pMsg);
+    LRESULT CALLBACK        DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
+    LRESULT                 DoCommand(int id, int msg);
+    bool                    PreTranslateMessage(MSG* pMsg);
 
-	int						SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bIncludeBinary, bool bUseRegex, bool bCaseSensitive, bool bDotMatchesNewline, const wstring& searchString);
+    int                     SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bIncludeBinary, bool bUseRegex, bool bCaseSensitive, bool bDotMatchesNewline, const wstring& searchString);
 
-	bool					InitResultList();
-	void					FillResultList();
-	bool					AddFoundEntry(CSearchInfo * pInfo, bool bOnlyListControl = false);
-	void					ShowContextMenu(int x, int y);
-	void					DoListNotify(LPNMITEMACTIVATE lpNMItemActivate);
-	void					UpdateInfoLabel();
-	void					UpdateSearchButton();
-	bool					SaveSettings();
-	void					SaveWndPosition();
-	void					formatDate(TCHAR date_native[], const FILETIME& filetime, bool force_short_fmt);
-	int						CheckRegex();
-	bool					MatchPath(LPCTSTR pathbuf);
-	void					AutoSizeAllColumns();
-	int						GetSelectedListIndex(int index);
-
-private:
-	static bool				NameCompareAsc(const CSearchInfo Entry1, const CSearchInfo Entry2);
-	static bool				SizeCompareAsc(const CSearchInfo Entry1, const CSearchInfo Entry2);
-	static bool				MatchesCompareAsc(const CSearchInfo Entry1, const CSearchInfo Entry2);
-	static bool				PathCompareAsc(const CSearchInfo Entry1, const CSearchInfo Entry2);
-	static bool				EncodingCompareAsc(const CSearchInfo Entry1, const CSearchInfo Entry2);
-	static bool				ModifiedTimeCompareAsc(const CSearchInfo Entry1, const CSearchInfo Entry2);
-
-	static bool				NameCompareDesc(const CSearchInfo Entry1, const CSearchInfo Entry2);
-	static bool				SizeCompareDesc(const CSearchInfo Entry1, const CSearchInfo Entry2);
-	static bool				MatchesCompareDesc(const CSearchInfo Entry1, const CSearchInfo Entry2);
-	static bool				PathCompareDesc(const CSearchInfo Entry1, const CSearchInfo Entry2);
-	static bool				EncodingCompareDesc(const CSearchInfo Entry1, const CSearchInfo Entry2);
-	static bool				ModifiedTimeCompareDesc(const CSearchInfo Entry1, const CSearchInfo Entry2);
+    bool                    InitResultList();
+    void                    FillResultList();
+    bool                    AddFoundEntry(CSearchInfo * pInfo, bool bOnlyListControl = false);
+    void                    ShowContextMenu(int x, int y);
+    void                    DoListNotify(LPNMITEMACTIVATE lpNMItemActivate);
+    void                    UpdateInfoLabel();
+    void                    UpdateSearchButton();
+    bool                    SaveSettings();
+    void                    SaveWndPosition();
+    void                    formatDate(TCHAR date_native[], const FILETIME& filetime, bool force_short_fmt);
+    int                     CheckRegex();
+    bool                    MatchPath(LPCTSTR pathbuf);
+    void                    AutoSizeAllColumns();
+    int                     GetSelectedListIndex(int index);
 
 private:
-	HWND					m_hParent;
-	volatile LONG			m_dwThreadRunning;
-	volatile LONG			m_Cancelled;
-	wstring					m_searchpath;
-	wstring					m_searchString;
-	wstring					m_replaceString;
-	vector<wstring>			m_patterns;
-	wstring					m_patternregex;
-	wstring					m_excludedirspatternregex;
-	bool					m_bUseRegex;
-	bool					m_bUseRegexForPaths;
-	bool					m_bAllSize;
-	DWORD					m_lSize;
-	int						m_sizeCmp;
-	bool					m_bIncludeSystem;
-	bool					m_bIncludeHidden;
-	bool					m_bIncludeSubfolders;
-	bool					m_bIncludeBinary;
-	bool					m_bCreateBackup;
-	bool					m_bUTF8;
-	bool					m_bCaseSensitive;
-	bool					m_bDotMatchesNewline;
-	bool					m_bExecuteImmediately;
+    static bool             NameCompareAsc(const CSearchInfo Entry1, const CSearchInfo Entry2);
+    static bool             SizeCompareAsc(const CSearchInfo Entry1, const CSearchInfo Entry2);
+    static bool             MatchesCompareAsc(const CSearchInfo Entry1, const CSearchInfo Entry2);
+    static bool             PathCompareAsc(const CSearchInfo Entry1, const CSearchInfo Entry2);
+    static bool             EncodingCompareAsc(const CSearchInfo Entry1, const CSearchInfo Entry2);
+    static bool             ModifiedTimeCompareAsc(const CSearchInfo Entry1, const CSearchInfo Entry2);
 
-	bool					m_bReplace;
-	HANDLE					m_hSearchThread;
+    static bool             NameCompareDesc(const CSearchInfo Entry1, const CSearchInfo Entry2);
+    static bool             SizeCompareDesc(const CSearchInfo Entry1, const CSearchInfo Entry2);
+    static bool             MatchesCompareDesc(const CSearchInfo Entry1, const CSearchInfo Entry2);
+    static bool             PathCompareDesc(const CSearchInfo Entry1, const CSearchInfo Entry2);
+    static bool             EncodingCompareDesc(const CSearchInfo Entry1, const CSearchInfo Entry2);
+    static bool             ModifiedTimeCompareDesc(const CSearchInfo Entry1, const CSearchInfo Entry2);
 
-	vector<CSearchInfo>		m_items;
-	int						m_totalitems;
-	int						m_searchedItems;
-	int						m_totalmatches;
-	bool					m_bAscending;
-	wstring					m_resultString;
+private:
+    HWND                    m_hParent;
+    volatile LONG           m_dwThreadRunning;
+    volatile LONG           m_Cancelled;
+    wstring                 m_searchpath;
+    wstring                 m_searchString;
+    wstring                 m_replaceString;
+    vector<wstring>         m_patterns;
+    wstring                 m_patternregex;
+    wstring                 m_excludedirspatternregex;
+    bool                    m_bUseRegex;
+    bool                    m_bUseRegexForPaths;
+    bool                    m_bAllSize;
+    DWORD                   m_lSize;
+    int                     m_sizeCmp;
+    bool                    m_bIncludeSystem;
+    bool                    m_bIncludeHidden;
+    bool                    m_bIncludeSubfolders;
+    bool                    m_bIncludeBinary;
+    bool                    m_bCreateBackup;
+    bool                    m_bUTF8;
+    bool                    m_bCaseSensitive;
+    bool                    m_bDotMatchesNewline;
+    bool                    m_bExecuteImmediately;
 
-	CDlgResizer				m_resizer;
-	CHyperLink				m_link;
+    bool                    m_bReplace;
+    HANDLE                  m_hSearchThread;
 
-	CFileDropTarget *		m_pDropTarget;
-	AeroControlBase			m_aerocontrols;
+    vector<CSearchInfo>     m_items;
+    int                     m_totalitems;
+    int                     m_searchedItems;
+    int                     m_totalmatches;
+    bool                    m_bAscending;
+    wstring                 m_resultString;
 
-	DWORD					m_startTime;
-	static UINT				GREPWIN_STARTUPMSG;
+    CDlgResizer             m_resizer;
+    CHyperLink              m_link;
 
-	CAutoComplete			m_AutoCompleteFilePatterns;
-	CAutoComplete			m_AutoCompleteExcludeDirsPatterns;
-	CAutoComplete			m_AutoCompleteSearchPatterns;
-	CAutoComplete			m_AutoCompleteReplacePatterns;
-	CAutoComplete			m_AutoCompleteSearchPaths;
-	CRegStdWORD				m_regUseRegex;
-	CRegStdWORD				m_regAllSize;
-	CRegStdWORD				m_regSize;
-	CRegStdWORD				m_regSizeCombo;
-	CRegStdWORD				m_regIncludeSystem;
-	CRegStdWORD				m_regIncludeHidden;
-	CRegStdWORD				m_regIncludeSubfolders;
-	CRegStdWORD				m_regIncludeBinary;
-	CRegStdWORD				m_regCreateBackup;
-	CRegStdWORD				m_regUTF8;
-	CRegStdWORD				m_regCaseSensitive;
-	CRegStdWORD				m_regDotMatchesNewline;
-	CRegStdWORD				m_regUseRegexForPaths;
-	CRegStdString			m_regPattern;
-	CRegStdString			m_regExcludeDirsPattern;
-	CRegStdString			m_regSearchPath;
+    CFileDropTarget *       m_pDropTarget;
+    AeroControlBase         m_aerocontrols;
+
+    DWORD                   m_startTime;
+    static UINT             GREPWIN_STARTUPMSG;
+
+    CAutoComplete           m_AutoCompleteFilePatterns;
+    CAutoComplete           m_AutoCompleteExcludeDirsPatterns;
+    CAutoComplete           m_AutoCompleteSearchPatterns;
+    CAutoComplete           m_AutoCompleteReplacePatterns;
+    CAutoComplete           m_AutoCompleteSearchPaths;
+    CRegStdWORD             m_regUseRegex;
+    CRegStdWORD             m_regAllSize;
+    CRegStdWORD             m_regSize;
+    CRegStdWORD             m_regSizeCombo;
+    CRegStdWORD             m_regIncludeSystem;
+    CRegStdWORD             m_regIncludeHidden;
+    CRegStdWORD             m_regIncludeSubfolders;
+    CRegStdWORD             m_regIncludeBinary;
+    CRegStdWORD             m_regCreateBackup;
+    CRegStdWORD             m_regUTF8;
+    CRegStdWORD             m_regCaseSensitive;
+    CRegStdWORD             m_regDotMatchesNewline;
+    CRegStdWORD             m_regUseRegexForPaths;
+    CRegStdString           m_regPattern;
+    CRegStdString           m_regExcludeDirsPattern;
+    CRegStdString           m_regSearchPath;
 };

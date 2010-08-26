@@ -85,8 +85,8 @@
 //
 // MULTI-LINE VALUES
 // =================
-// Values that span multiple lines are created using the following format. 
-//      
+// Values that span multiple lines are created using the following format.
+//
 //      key = <<<ENDTAG
 //      .... multiline value ....
 //      ENDTAG
@@ -354,9 +354,9 @@ public:
     bool IsMultiKey() const { return m_bAllowMultiKey; }
 
     /**
-     * Should data values be permitted to span multiple lines in the file. If 
+     * Should data values be permitted to span multiple lines in the file. If
      * set to false then the multi-line construct <<<TAG as a value will be
-     * returned as is instead of loading the data. This value may be changed 
+     * returned as is instead of loading the data. This value may be changed
      * at any time.
      */
     void SetMultiLine(bool a_bAllowMultiLine = true) {
@@ -767,7 +767,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::LoadFile(
 {
 #ifdef _WIN32
     FILE * fp;
-	errno_t err = _wfopen_s(&fp, a_pwszFile, L"rb");
+    errno_t err = _wfopen_s(&fp, a_pwszFile, L"rb");
     if ((err!=0)||(!fp)) {
         return SI_FILE;
     }
@@ -1026,9 +1026,9 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::IsMultiLineData(
     ) const
 {
     // data is multi-line if it has any of the following features:
-    //  * whitespace prefix 
+    //  * whitespace prefix
     //  * embedded newlines
-    //  * whitespace suffix 
+    //  * whitespace suffix
 
     // empty string
     if (!*a_pData) {
@@ -1067,7 +1067,7 @@ template<class SI_CHAR, class SI_STRLESS, class SI_CONVERTER>
 bool
 CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::FindMultiLine(
     SI_CHAR *&        a_pData,
-    const SI_CHAR *& a_pVal 
+    const SI_CHAR *& a_pVal
     ) const
 {
     // skip the "<<<" to get the tag that will end the multiline
@@ -1075,7 +1075,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::FindMultiLine(
     a_pVal = a_pData; // real value starts on next line
 
     // find the end tag. This tag must start in column 1 and be
-    // followed by a newline. No whitespace removal is done while 
+    // followed by a newline. No whitespace removal is done while
     // searching for this tag.
     SI_CHAR *pLine;
     SI_CHAR cRememberThis;
@@ -1084,21 +1084,21 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::FindMultiLine(
         while (IsNewLineChar(*a_pData)) ++a_pData;
         pLine = a_pData;
         while (*a_pData && !IsNewLineChar(*a_pData)) ++a_pData;
-        
+
         // end the line with a NULL
         cRememberThis = *a_pData;
         *a_pData = 0;
 
         // see if we have found the tag
         if (IsEqual(pLine, pTagName)) {
-            // null terminate the data before the newline of the previous line. 
-            // If you want a new line at the end of the line then add an empty 
+            // null terminate the data before the newline of the previous line.
+            // If you want a new line at the end of the line then add an empty
             // line before the tag.
             --pLine;
             if (*(pLine-1) == '\r') {
                 // handle Windows style newlines. This handles Unix newline files
                 // on Windows and Windows style newlines on Unix. \n\r
-                --pLine; 
+                --pLine;
             }
             *pLine = 0;
 
@@ -1523,7 +1523,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::DeleteString(
  */
 template<class SI_CHAR>
 struct SI_GenericCase {
-	bool operator()(const SI_CHAR * pLeft, const SI_CHAR * pRight) const {
+    bool operator()(const SI_CHAR * pLeft, const SI_CHAR * pRight) const {
         long cmp;
         for ( ;*pLeft && *pRight; ++pLeft, ++pRight) {
             cmp = (long) *pLeft - (long) *pRight;
@@ -1546,7 +1546,7 @@ struct SI_GenericNoCase {
     inline SI_CHAR locase(SI_CHAR ch) const {
         return (ch < 'A' || ch > 'Z') ? ch : (ch - 'A' + 'a');
     }
-	bool operator()(const SI_CHAR * pLeft, const SI_CHAR * pRight) const {
+    bool operator()(const SI_CHAR * pLeft, const SI_CHAR * pRight) const {
         long cmp;
         for ( ;*pLeft && *pRight; ++pLeft, ++pRight) {
             cmp = (long) locase(*pLeft) - (long) locase(*pRight);
@@ -2095,7 +2095,7 @@ public:
 #include <mbstring.h>
 template<class SI_CHAR>
 struct SI_NoCase {
-	bool operator()(const SI_CHAR * pLeft, const SI_CHAR * pRight) const {
+    bool operator()(const SI_CHAR * pLeft, const SI_CHAR * pRight) const {
         if (sizeof(SI_CHAR) == sizeof(char)) {
             return _mbsicmp((const unsigned char *)pLeft,
                 (const unsigned char *)pRight) < 0;

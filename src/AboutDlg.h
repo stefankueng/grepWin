@@ -31,13 +31,13 @@ using namespace std;
 class CAboutDlg : public CDialog
 {
 public:
-	CAboutDlg(HWND hParent);
-	~CAboutDlg(void);
+    CAboutDlg(HWND hParent);
+    ~CAboutDlg(void);
 
 protected:
-	LRESULT CALLBACK		DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
-	LRESULT					DoCommand(int id, int msg);
+    LRESULT CALLBACK        DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
+    LRESULT                 DoCommand(int id, int msg);
 private:
-	HWND					m_hParent;
-	CHyperLink				m_link;
+    HWND                    m_hParent;
+    CHyperLink              m_link;
 };

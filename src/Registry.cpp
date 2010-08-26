@@ -19,34 +19,34 @@
 #include "stdafx.h"
 #include "registry.h"
 
-DWORD CRegStdBase::removeKey() 
-{ 
-	RegOpenKeyEx(m_base, m_path.c_str(), 0, KEY_WRITE, &m_hKey); 
-	LSTATUS ret = SHDeleteKey(m_base, m_path.c_str()); 
-	RegCloseKey(m_hKey); 
-	m_hKey = NULL;
-	return ret;
+DWORD CRegStdBase::removeKey()
+{
+    RegOpenKeyEx(m_base, m_path.c_str(), 0, KEY_WRITE, &m_hKey);
+    LSTATUS ret = SHDeleteKey(m_base, m_path.c_str());
+    RegCloseKey(m_hKey);
+    m_hKey = NULL;
+    return ret;
 }
 
-LONG CRegStdBase::removeValue() 
-{ 
-	RegOpenKeyEx(m_base, m_path.c_str(), 0, KEY_WRITE, &m_hKey); 
-	LONG ret = RegDeleteValue(m_hKey, m_key.c_str()); 
-	RegCloseKey(m_hKey); 
-	m_hKey = NULL;
-	return ret;
+LONG CRegStdBase::removeValue()
+{
+    RegOpenKeyEx(m_base, m_path.c_str(), 0, KEY_WRITE, &m_hKey);
+    LONG ret = RegDeleteValue(m_hKey, m_key.c_str());
+    RegCloseKey(m_hKey);
+    m_hKey = NULL;
+    return ret;
 }
 
 
 CRegStdString::CRegStdString(void)
 {
-	m_value = _T("");
-	m_defaultvalue = _T("");
-	m_key = _T("");
-	m_base = HKEY_CURRENT_USER;
-	m_read = FALSE;
-	m_force = FALSE;
-	LastError = ERROR_SUCCESS;
+    m_value = _T("");
+    m_defaultvalue = _T("");
+    m_key = _T("");
+    m_base = HKEY_CURRENT_USER;
+    m_read = FALSE;
+    m_force = FALSE;
+    LastError = ERROR_SUCCESS;
 }
 
 /**
@@ -58,119 +58,119 @@ CRegStdString::CRegStdString(void)
  */
 CRegStdString::CRegStdString(const stdstring& key, const stdstring& def, BOOL force, HKEY base)
 {
-	m_value = _T("");
-	m_defaultvalue = def;
-	m_force = force;
-	m_base = base;
-	m_read = FALSE;
+    m_value = _T("");
+    m_defaultvalue = def;
+    m_force = force;
+    m_base = base;
+    m_read = FALSE;
 
-	stdstring::size_type pos = key.find_last_of(_T('\\'));
+    stdstring::size_type pos = key.find_last_of(_T('\\'));
     m_path = key.substr(0, pos);
-	m_key = key.substr(pos + 1);
-	read();
-	LastError = ERROR_SUCCESS;
+    m_key = key.substr(pos + 1);
+    read();
+    LastError = ERROR_SUCCESS;
 }
 
 CRegStdString::~CRegStdString(void)
 {
-	if (m_hKey)
-		RegCloseKey(m_hKey);
+    if (m_hKey)
+        RegCloseKey(m_hKey);
 }
 
-stdstring	CRegStdString::read()
+stdstring   CRegStdString::read()
 {
-	if ((LastError = RegOpenKeyEx(m_base, m_path.c_str(), 0, KEY_EXECUTE, &m_hKey))==ERROR_SUCCESS)
-	{
-		int size = 0;
-		DWORD type;
-		RegQueryValueEx(m_hKey, m_key.c_str(), NULL, &type, NULL, (LPDWORD) &size);
-		TCHAR* pStr = new TCHAR[size];
-		if ((LastError = RegQueryValueEx(m_hKey, m_key.c_str(), NULL, &type, (BYTE*) pStr,(LPDWORD) &size))==ERROR_SUCCESS)
-		{
-			m_value.assign(pStr);
-			delete [] pStr;
-			m_read = TRUE;
-			LastError = RegCloseKey(m_hKey);
-			m_hKey = NULL;
-			return m_value;
-		}
-		else
-		{
-			delete [] pStr;
-			RegCloseKey(m_hKey);
-			m_hKey = NULL;
-			m_value = m_defaultvalue;
-			m_read = TRUE;
-			return m_defaultvalue;
-		}
-	}
-	m_value = m_defaultvalue;
-	return m_defaultvalue;
+    if ((LastError = RegOpenKeyEx(m_base, m_path.c_str(), 0, KEY_EXECUTE, &m_hKey))==ERROR_SUCCESS)
+    {
+        int size = 0;
+        DWORD type;
+        RegQueryValueEx(m_hKey, m_key.c_str(), NULL, &type, NULL, (LPDWORD) &size);
+        TCHAR* pStr = new TCHAR[size];
+        if ((LastError = RegQueryValueEx(m_hKey, m_key.c_str(), NULL, &type, (BYTE*) pStr,(LPDWORD) &size))==ERROR_SUCCESS)
+        {
+            m_value.assign(pStr);
+            delete [] pStr;
+            m_read = TRUE;
+            LastError = RegCloseKey(m_hKey);
+            m_hKey = NULL;
+            return m_value;
+        }
+        else
+        {
+            delete [] pStr;
+            RegCloseKey(m_hKey);
+            m_hKey = NULL;
+            m_value = m_defaultvalue;
+            m_read = TRUE;
+            return m_defaultvalue;
+        }
+    }
+    m_value = m_defaultvalue;
+    return m_defaultvalue;
 }
 
 void CRegStdString::write()
 {
-	DWORD disp;
-	if ((LastError = RegCreateKeyEx(m_base, m_path.c_str(), 0, _T(""), REG_OPTION_NON_VOLATILE, KEY_WRITE, NULL, &m_hKey, &disp))!=ERROR_SUCCESS)
-	{
-		return;
-	}
-	if ((LastError = RegSetValueEx(m_hKey, m_key.c_str(), 0, REG_SZ, (BYTE *)m_value.c_str(), ((DWORD)m_value.size()+1)*sizeof(TCHAR)))==ERROR_SUCCESS)
-	{
-		m_read = TRUE;
-	}
-	RegCloseKey(m_hKey);
-	m_hKey = NULL;
+    DWORD disp;
+    if ((LastError = RegCreateKeyEx(m_base, m_path.c_str(), 0, _T(""), REG_OPTION_NON_VOLATILE, KEY_WRITE, NULL, &m_hKey, &disp))!=ERROR_SUCCESS)
+    {
+        return;
+    }
+    if ((LastError = RegSetValueEx(m_hKey, m_key.c_str(), 0, REG_SZ, (BYTE *)m_value.c_str(), ((DWORD)m_value.size()+1)*sizeof(TCHAR)))==ERROR_SUCCESS)
+    {
+        m_read = TRUE;
+    }
+    RegCloseKey(m_hKey);
+    m_hKey = NULL;
 }
 
 CRegStdString::operator LPCTSTR()
 {
-	if ((m_read)&&(!m_force))
-	{
-		LastError = 0;
-		return m_value.c_str();
-	}
-	else
-		return read().c_str();
+    if ((m_read)&&(!m_force))
+    {
+        LastError = 0;
+        return m_value.c_str();
+    }
+    else
+        return read().c_str();
 }
 
 CRegStdString::operator stdstring()
 {
-	if ((m_read)&&(!m_force))
-	{
-		LastError = 0;
-		return m_value;
-	}
-	else
-	{
-		return read();
-	}
+    if ((m_read)&&(!m_force))
+    {
+        LastError = 0;
+        return m_value;
+    }
+    else
+    {
+        return read();
+    }
 }
 
 CRegStdString& CRegStdString::operator =(stdstring s)
 {
-	if ((s.compare(m_value)==0)&&(!m_force))
-	{
-		//no write to the registry required, its the same value
-		LastError = 0;
-		return *this;
-	}
-	m_value = s;
-	write();
-	return *this;
+    if ((s.compare(m_value)==0)&&(!m_force))
+    {
+        //no write to the registry required, its the same value
+        LastError = 0;
+        return *this;
+    }
+    m_value = s;
+    write();
+    return *this;
 }
 
 /////////////////////////////////////////////////////////////////////
 
 CRegStdWORD::CRegStdWORD(void)
 {
-	m_value = 0;
-	m_defaultvalue = 0;
-	m_key = _T("");
-	m_base = HKEY_CURRENT_USER;
-	m_read = FALSE;
-	m_force = FALSE;
-	LastError = ERROR_SUCCESS;
+    m_value = 0;
+    m_defaultvalue = 0;
+    m_key = _T("");
+    m_base = HKEY_CURRENT_USER;
+    m_read = FALSE;
+    m_force = FALSE;
+    LastError = ERROR_SUCCESS;
 }
 
 /**
@@ -182,88 +182,88 @@ CRegStdWORD::CRegStdWORD(void)
  */
 CRegStdWORD::CRegStdWORD(const stdstring& key, DWORD def, BOOL force, HKEY base)
 {
-	m_value = 0;
-	m_defaultvalue = def;
-	m_force = force;
-	m_base = base;
-	m_read = FALSE;
+    m_value = 0;
+    m_defaultvalue = def;
+    m_force = force;
+    m_base = base;
+    m_read = FALSE;
 
-	stdstring::size_type pos = key.find_last_of(_T('\\'));
+    stdstring::size_type pos = key.find_last_of(_T('\\'));
     m_path = key.substr(0, pos);
-	m_key = key.substr(pos + 1);
-	read();
-	LastError = ERROR_SUCCESS;
+    m_key = key.substr(pos + 1);
+    read();
+    LastError = ERROR_SUCCESS;
 }
 
 CRegStdWORD::~CRegStdWORD(void)
 {
-	if (m_hKey)
-		RegCloseKey(m_hKey);
+    if (m_hKey)
+        RegCloseKey(m_hKey);
 }
 
-DWORD	CRegStdWORD::read()
+DWORD   CRegStdWORD::read()
 {
-	if ((LastError = RegOpenKeyEx(m_base, m_path.c_str(), 0, KEY_EXECUTE, &m_hKey))==ERROR_SUCCESS)
-	{
-		int size = sizeof(m_value);
-		DWORD type;
-		if ((LastError = RegQueryValueEx(m_hKey, m_key.c_str(), NULL, &type, (BYTE*) &m_value,(LPDWORD) &size))==ERROR_SUCCESS)
-		{
-			m_read = TRUE;
-			LastError = RegCloseKey(m_hKey); 
-			m_hKey = NULL;
-			return m_value;
-		}
-		else
-		{
-			RegCloseKey(m_hKey);
-			m_hKey = NULL;
-			m_value = m_defaultvalue;
-			m_read = TRUE;
-			return m_defaultvalue;
-		}
-	}
-	m_value = m_defaultvalue;
-	return m_defaultvalue;
+    if ((LastError = RegOpenKeyEx(m_base, m_path.c_str(), 0, KEY_EXECUTE, &m_hKey))==ERROR_SUCCESS)
+    {
+        int size = sizeof(m_value);
+        DWORD type;
+        if ((LastError = RegQueryValueEx(m_hKey, m_key.c_str(), NULL, &type, (BYTE*) &m_value,(LPDWORD) &size))==ERROR_SUCCESS)
+        {
+            m_read = TRUE;
+            LastError = RegCloseKey(m_hKey);
+            m_hKey = NULL;
+            return m_value;
+        }
+        else
+        {
+            RegCloseKey(m_hKey);
+            m_hKey = NULL;
+            m_value = m_defaultvalue;
+            m_read = TRUE;
+            return m_defaultvalue;
+        }
+    }
+    m_value = m_defaultvalue;
+    return m_defaultvalue;
 }
 
 void CRegStdWORD::write()
 {
-	DWORD disp;
-	if ((LastError = RegCreateKeyEx(m_base, m_path.c_str(), 0, _T(""), REG_OPTION_NON_VOLATILE, KEY_WRITE, NULL, &m_hKey, &disp))!=ERROR_SUCCESS)
-	{
-		return;
-	}
-	if ((LastError = RegSetValueEx(m_hKey, m_key.c_str(), 0, REG_DWORD,(const BYTE*) &m_value, sizeof(m_value)))==ERROR_SUCCESS)
-	{
-		m_read = TRUE;
-	}
-	RegCloseKey(m_hKey);
-	m_hKey = NULL;
+    DWORD disp;
+    if ((LastError = RegCreateKeyEx(m_base, m_path.c_str(), 0, _T(""), REG_OPTION_NON_VOLATILE, KEY_WRITE, NULL, &m_hKey, &disp))!=ERROR_SUCCESS)
+    {
+        return;
+    }
+    if ((LastError = RegSetValueEx(m_hKey, m_key.c_str(), 0, REG_DWORD,(const BYTE*) &m_value, sizeof(m_value)))==ERROR_SUCCESS)
+    {
+        m_read = TRUE;
+    }
+    RegCloseKey(m_hKey);
+    m_hKey = NULL;
 }
 
 CRegStdWORD::operator DWORD()
 {
-	if ((m_read)&&(!m_force))
-	{
-		LastError = 0;
-		return m_value;
-	}
-	else
-	{
-		return read();
-	}
+    if ((m_read)&&(!m_force))
+    {
+        LastError = 0;
+        return m_value;
+    }
+    else
+    {
+        return read();
+    }
 }
 
 CRegStdWORD& CRegStdWORD::operator =(DWORD d)
 {
-	if ((d==m_value)&&(!m_force))
-	{
-		//no write to the registry required, its the same value
-		LastError = 0;
-		return *this;
-	}
-	m_value = d;
-	write();
-	return *this;
+    if ((d==m_value)&&(!m_force))
+    {
+        //no write to the registry required, its the same value
+        LastError = 0;
+        return *this;
+    }
+    m_value = d;
+    write();
+    return *this;
 }

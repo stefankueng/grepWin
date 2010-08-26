@@ -26,31 +26,31 @@
 class AeroControlBase
 {
 public:
-	AeroControlBase();
-	virtual ~AeroControlBase();
+    AeroControlBase();
+    virtual ~AeroControlBase();
 
-	bool SubclassControl(HWND hControl);
+    bool SubclassControl(HWND hControl);
 
 private:
-	static LRESULT CALLBACK SubclassProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uidSubclass, DWORD_PTR dwRefData);
-	LRESULT StaticWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-	LRESULT ButtonWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-	LRESULT ProgressbarWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+    static LRESULT CALLBACK SubclassProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uidSubclass, DWORD_PTR dwRefData);
+    LRESULT StaticWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+    LRESULT ButtonWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+    LRESULT ProgressbarWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-	void DrawFocusRect(LPRECT prcFocus, HDC hdcPaint);
-	void DrawRect(LPRECT prc, HDC hdcPaint, Gdiplus::DashStyle dashStyle, Gdiplus::Color clr, Gdiplus::REAL width);
-	void FillRect(LPRECT prc, HDC hdcPaint, Gdiplus::Color clr);
-	int GetStateFromBtnState(LONG_PTR dwStyle, BOOL bHot, BOOL bFocus, LRESULT dwCheckState, int iPartId, BOOL bHasMouseCapture);
-	void PaintControl(HWND hWnd, HDC hdc, RECT* prc, bool bDrawBorder);
-	void ScreenToClient(HWND hWnd, LPRECT lprc);
-	void DrawSolidWndRectOnParent(HWND hWnd,Gdiplus:: Color clr);
-	void DrawEditBorder(HWND hWnd);
-	BOOL GetEditBorderColor(HWND hWnd, COLORREF *pClr);
-	void GetRoundRectPath(Gdiplus::GraphicsPath *pPath, Gdiplus::Rect r, int dia);
+    void DrawFocusRect(LPRECT prcFocus, HDC hdcPaint);
+    void DrawRect(LPRECT prc, HDC hdcPaint, Gdiplus::DashStyle dashStyle, Gdiplus::Color clr, Gdiplus::REAL width);
+    void FillRect(LPRECT prc, HDC hdcPaint, Gdiplus::Color clr);
+    int GetStateFromBtnState(LONG_PTR dwStyle, BOOL bHot, BOOL bFocus, LRESULT dwCheckState, int iPartId, BOOL bHasMouseCapture);
+    void PaintControl(HWND hWnd, HDC hdc, RECT* prc, bool bDrawBorder);
+    void ScreenToClient(HWND hWnd, LPRECT lprc);
+    void DrawSolidWndRectOnParent(HWND hWnd,Gdiplus:: Color clr);
+    void DrawEditBorder(HWND hWnd);
+    BOOL GetEditBorderColor(HWND hWnd, COLORREF *pClr);
+    void GetRoundRectPath(Gdiplus::GraphicsPath *pPath, Gdiplus::Rect r, int dia);
 
-	CDwmApiImpl					m_dwm;
-	CUxThemeAeroImpl			m_theme;
-	std::map<HWND, UINT_PTR>	subclassedControls;
-	ULONG_PTR					gdiplusToken;
+    CDwmApiImpl                 m_dwm;
+    CUxThemeAeroImpl            m_theme;
+    std::map<HWND, UINT_PTR>    subclassedControls;
+    ULONG_PTR                   gdiplusToken;
 };
 

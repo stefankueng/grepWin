@@ -24,7 +24,7 @@
 
 
 // Global Variables:
-HINSTANCE hInst;								// current instance
+HINSTANCE hInst;                                // current instance
 
 // Forward declarations of functions included in this code module:
 
@@ -33,73 +33,73 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
                      LPTSTR    lpCmdLine,
                      int       nCmdShow)
 {
-	UNREFERENCED_PARAMETER(hPrevInstance);
-	UNREFERENCED_PARAMETER(lpCmdLine);
-	UNREFERENCED_PARAMETER(nCmdShow);
+    UNREFERENCED_PARAMETER(hPrevInstance);
+    UNREFERENCED_PARAMETER(lpCmdLine);
+    UNREFERENCED_PARAMETER(nCmdShow);
 
     SetDllDirectory(L"");
-	::OleInitialize(NULL);
-	::CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
-	// we need some of the common controls
-	INITCOMMONCONTROLSEX icex;
-	icex.dwSize = sizeof(INITCOMMONCONTROLSEX);
-	icex.dwICC = ICC_LINK_CLASS|ICC_LISTVIEW_CLASSES|ICC_PAGESCROLLER_CLASS
-		|ICC_PROGRESS_CLASS|ICC_STANDARD_CLASSES|ICC_TAB_CLASSES|ICC_TREEVIEW_CLASSES
-		|ICC_UPDOWN_CLASS|ICC_USEREX_CLASSES|ICC_WIN95_CLASSES;
-	InitCommonControlsEx(&icex);
+    ::OleInitialize(NULL);
+    ::CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
+    // we need some of the common controls
+    INITCOMMONCONTROLSEX icex;
+    icex.dwSize = sizeof(INITCOMMONCONTROLSEX);
+    icex.dwICC = ICC_LINK_CLASS|ICC_LISTVIEW_CLASSES|ICC_PAGESCROLLER_CLASS
+        |ICC_PROGRESS_CLASS|ICC_STANDARD_CLASSES|ICC_TAB_CLASSES|ICC_TREEVIEW_CLASSES
+        |ICC_UPDOWN_CLASS|ICC_USEREX_CLASSES|ICC_WIN95_CLASSES;
+    InitCommonControlsEx(&icex);
 
-	HMODULE hRichEdt = LoadLibrary(_T("Riched20.dll"));
+    HMODULE hRichEdt = LoadLibrary(_T("Riched20.dll"));
 
-	CCmdLineParser parser(lpCmdLine);
+    CCmdLineParser parser(lpCmdLine);
 
-	bool bQuit = false;
-	HWND hWnd = FindWindow(NULL, _T("grepWin"));		// try finding the running instance of this app
-	if (hWnd)
-	{
-		UINT GREPWIN_STARTUPMSG = RegisterWindowMessage(_T("grepWin_StartupMessage"));
-		if (SendMessage(hWnd, GREPWIN_STARTUPMSG, 0, 0))				// send the new path
-		{
-			wstring spath = parser.GetVal(_T("searchpath"));
-			COPYDATASTRUCT CopyData = {0};
-			CopyData.lpData = (LPVOID)spath.c_str();
-			CopyData.cbData = spath.size()*sizeof(wchar_t);
-			SendMessage(hWnd, WM_COPYDATA, 0, (LPARAM)&CopyData);
-			SetForegroundWindow(hWnd);									//set the window to front
-			bQuit = true;
-		}
-	}
+    bool bQuit = false;
+    HWND hWnd = FindWindow(NULL, _T("grepWin"));        // try finding the running instance of this app
+    if (hWnd)
+    {
+        UINT GREPWIN_STARTUPMSG = RegisterWindowMessage(_T("grepWin_StartupMessage"));
+        if (SendMessage(hWnd, GREPWIN_STARTUPMSG, 0, 0))                // send the new path
+        {
+            wstring spath = parser.GetVal(_T("searchpath"));
+            COPYDATASTRUCT CopyData = {0};
+            CopyData.lpData = (LPVOID)spath.c_str();
+            CopyData.cbData = spath.size()*sizeof(wchar_t);
+            SendMessage(hWnd, WM_COPYDATA, 0, (LPARAM)&CopyData);
+            SetForegroundWindow(hWnd);                                  //set the window to front
+            bQuit = true;
+        }
+    }
 
-	int ret = 0;
-	if (!bQuit)
-	{
-		if (parser.HasKey(_T("about"))||parser.HasKey(_T("?"))||parser.HasKey(_T("help")))
-		{
-			CAboutDlg aboutDlg(NULL);
-			ret= aboutDlg.DoModal(hInstance, IDD_ABOUT, NULL, NULL);
-		}
-		else
-		{
-			CSearchDlg searchDlg(NULL);
-			if (parser.HasVal(_T("searchpath")))
-				searchDlg.SetSearchPath(parser.GetVal(_T("searchpath")));
-			if (parser.HasVal(_T("searchfor")))
-				searchDlg.SetSearchString(parser.GetVal(_T("searchfor")));
-			if (parser.HasVal(_T("filemaskregex")))
-				searchDlg.SetFileMask(parser.GetVal(_T("filemaskregex")), true);
-			if (parser.HasVal(_T("filemask")))
-				searchDlg.SetFileMask(parser.GetVal(_T("filemask")), false);
-			if (parser.HasVal(_T("filemaskexclude")))
-				searchDlg.SetExcludeFileMask(parser.GetVal(_T("filemaskexclude")));
-			if (parser.HasKey(_T("execute")))
-				searchDlg.SetExecute(true);
-			ret = searchDlg.DoModal(hInstance, IDD_SEARCHDLG, NULL, IDR_SEARCHDLG);
-		}
-	}
+    int ret = 0;
+    if (!bQuit)
+    {
+        if (parser.HasKey(_T("about"))||parser.HasKey(_T("?"))||parser.HasKey(_T("help")))
+        {
+            CAboutDlg aboutDlg(NULL);
+            ret= aboutDlg.DoModal(hInstance, IDD_ABOUT, NULL, NULL);
+        }
+        else
+        {
+            CSearchDlg searchDlg(NULL);
+            if (parser.HasVal(_T("searchpath")))
+                searchDlg.SetSearchPath(parser.GetVal(_T("searchpath")));
+            if (parser.HasVal(_T("searchfor")))
+                searchDlg.SetSearchString(parser.GetVal(_T("searchfor")));
+            if (parser.HasVal(_T("filemaskregex")))
+                searchDlg.SetFileMask(parser.GetVal(_T("filemaskregex")), true);
+            if (parser.HasVal(_T("filemask")))
+                searchDlg.SetFileMask(parser.GetVal(_T("filemask")), false);
+            if (parser.HasVal(_T("filemaskexclude")))
+                searchDlg.SetExcludeFileMask(parser.GetVal(_T("filemaskexclude")));
+            if (parser.HasKey(_T("execute")))
+                searchDlg.SetExecute(true);
+            ret = searchDlg.DoModal(hInstance, IDD_SEARCHDLG, NULL, IDR_SEARCHDLG);
+        }
+    }
 
-	::CoUninitialize();
-	::OleUninitialize();
-	FreeLibrary(hRichEdt);
-	return ret;
+    ::CoUninitialize();
+    ::OleUninitialize();
+    FreeLibrary(hRichEdt);
+    return ret;
 }
 
 

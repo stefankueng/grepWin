@@ -23,13 +23,13 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-class CInfoDlg  
+class CInfoDlg
 {
 public:
-	CInfoDlg();
-	virtual ~CInfoDlg();
+    CInfoDlg();
+    virtual ~CInfoDlg();
 public:
-	static BOOL ShowDialog(UINT idAboutHTMLID, HINSTANCE hInstance);
+    static BOOL ShowDialog(UINT idAboutHTMLID, HINSTANCE hInstance);
 
 };
 

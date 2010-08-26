@@ -25,12 +25,12 @@
  */
 class ResString
 {
-	enum { MAX_RESSTRING = 1024 };
+    enum { MAX_RESSTRING = 1024 };
 public:
-	ResString (HINSTANCE hInst, int resId);
-	operator TCHAR const * () const { return _buf; }
+    ResString (HINSTANCE hInst, int resId);
+    operator TCHAR const * () const { return _buf; }
 private:
-	TCHAR _buf [MAX_RESSTRING + 1];
+    TCHAR _buf [MAX_RESSTRING + 1];
 };
 
 /**
@@ -41,70 +41,70 @@ private:
 class CWindow
 {
 public:
-	virtual bool RegisterWindow(UINT style, HICON hIcon, HCURSOR hCursor, HBRUSH hbrBackground, 
-		LPCTSTR lpszMenuName, LPCTSTR lpszClassName, HICON hIconSm);
-	virtual bool RegisterWindow(CONST WNDCLASSEX* wcx);
+    virtual bool RegisterWindow(UINT style, HICON hIcon, HCURSOR hCursor, HBRUSH hbrBackground,
+        LPCTSTR lpszMenuName, LPCTSTR lpszClassName, HICON hIconSm);
+    virtual bool RegisterWindow(CONST WNDCLASSEX* wcx);
 
-	/// static message handler to put in WNDCLASSEX structure
-	static LRESULT CALLBACK stWinMsgHandler(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+    /// static message handler to put in WNDCLASSEX structure
+    static LRESULT CALLBACK stWinMsgHandler(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-	/**
-	 * Sets the window title. 
-	 */
-	void SetWindowTitle(const std::wstring& sTitle) 
-	{
-		sWindowTitle = sTitle;
-	};
+    /**
+     * Sets the window title.
+     */
+    void SetWindowTitle(const std::wstring& sTitle)
+    {
+        sWindowTitle = sTitle;
+    };
 
-	void SetRegistryPath(const std::wstring& sPath)
-	{
-		size_t slashPos = sPath.find_last_of('\\');
-		sRegistryPath = sPath.substr(0, slashPos);
-		sRegistryValue = sPath.substr(slashPos+1);
-	}
+    void SetRegistryPath(const std::wstring& sPath)
+    {
+        size_t slashPos = sPath.find_last_of('\\');
+        sRegistryPath = sPath.substr(0, slashPos);
+        sRegistryValue = sPath.substr(slashPos+1);
+    }
 
-	/**
-	 * Sets the transparency of the window.
-	 * \remark note that this also sets the WS_EX_LAYERED style!
-	 */
-	void SetTransparency(BYTE alpha, COLORREF color = 0xFF000000);
+    /**
+     * Sets the transparency of the window.
+     * \remark note that this also sets the WS_EX_LAYERED style!
+     */
+    void SetTransparency(BYTE alpha, COLORREF color = 0xFF000000);
 
-	virtual bool Create();
-	virtual bool Create(DWORD dwStyles, HWND hParent = NULL, RECT* rect = NULL);
-	virtual bool CreateEx(DWORD dwExStyles, DWORD dwStyles, HWND hParent = NULL, RECT* rect = NULL);
+    virtual bool Create();
+    virtual bool Create(DWORD dwStyles, HWND hParent = NULL, RECT* rect = NULL);
+    virtual bool CreateEx(DWORD dwExStyles, DWORD dwStyles, HWND hParent = NULL, RECT* rect = NULL);
 
-	//void MsgLoop();
-	bool IsWindowClosed() { return bWindowClosed; };
+    //void MsgLoop();
+    bool IsWindowClosed() { return bWindowClosed; };
 
-	operator HWND() {return m_hwnd;}
+    operator HWND() {return m_hwnd;}
 protected:
-	HINSTANCE hResource;
-	HWND m_hwnd;
-	bool bWindowClosed;
-	std::wstring sClassName;
-	std::wstring sWindowTitle;
-	std::wstring sRegistryPath;
-	std::wstring sRegistryValue;
-	bool bWindowRestored;
+    HINSTANCE hResource;
+    HWND m_hwnd;
+    bool bWindowClosed;
+    std::wstring sClassName;
+    std::wstring sWindowTitle;
+    std::wstring sRegistryPath;
+    std::wstring sRegistryValue;
+    bool bWindowRestored;
 
-	//constructor 
-	CWindow(HINSTANCE hInst, CONST WNDCLASSEX* wcx = NULL) : m_hwnd(NULL)
-		, hResource(NULL)
-		, bWindowClosed(FALSE)
-		, bWindowRestored(false)
-	{
-		hResource = hInst; 
-		if (wcx != NULL)
-			RegisterWindow(wcx);
-	};
+    //constructor
+    CWindow(HINSTANCE hInst, CONST WNDCLASSEX* wcx = NULL) : m_hwnd(NULL)
+        , hResource(NULL)
+        , bWindowClosed(FALSE)
+        , bWindowRestored(false)
+    {
+        hResource = hInst;
+        if (wcx != NULL)
+            RegisterWindow(wcx);
+    };
 
-	// the real message handler
-	virtual LRESULT CALLBACK WinMsgHandler(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) = 0;
+    // the real message handler
+    virtual LRESULT CALLBACK WinMsgHandler(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) = 0;
 
-	// returns a pointer the window (stored as the WindowLong)
-	inline static CWindow * GetObjectFromWindow(HWND hWnd)
-	{
-		return (CWindow *)GetWindowLongPtr(hWnd, GWLP_USERDATA);
-	}
+    // returns a pointer the window (stored as the WindowLong)
+    inline static CWindow * GetObjectFromWindow(HWND hWnd)
+    {
+        return (CWindow *)GetWindowLongPtr(hWnd, GWLP_USERDATA);
+    }
 };
 

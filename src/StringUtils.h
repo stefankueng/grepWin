@@ -30,7 +30,7 @@
  * \param string the string to compare the wildcard to
  * \return TRUE if the wildcard matches the string, 0 otherwise
  * \par example
- * \code 
+ * \code
  * if (strwildcmp("bl?hblah.*", "bliblah.jpeg"))
  *  printf("success\n");
  * else

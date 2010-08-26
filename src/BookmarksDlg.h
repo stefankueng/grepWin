@@ -31,28 +31,28 @@ using namespace std;
 class CBookmarksDlg : public CDialog
 {
 public:
-	CBookmarksDlg(HWND hParent);
-	~CBookmarksDlg(void);
+    CBookmarksDlg(HWND hParent);
+    ~CBookmarksDlg(void);
 
-	wstring					GetName() {return m_name;}
-	wstring					GetSelectedSearchString() {return m_searchString;}
-	wstring					GetSelectedReplaceString() {return m_replaceString;}
-	bool					GetSelectedUseRegex() {return m_bUseRegex;}
+    wstring                 GetName() {return m_name;}
+    wstring                 GetSelectedSearchString() {return m_searchString;}
+    wstring                 GetSelectedReplaceString() {return m_replaceString;}
+    bool                    GetSelectedUseRegex() {return m_bUseRegex;}
 
 protected:
-	LRESULT CALLBACK		DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
-	LRESULT					DoCommand(int id, int msg);
-	void					InitBookmarks();
-	void					RemoveQuotes(wstring& str);
+    LRESULT CALLBACK        DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
+    LRESULT                 DoCommand(int id, int msg);
+    void                    InitBookmarks();
+    void                    RemoveQuotes(wstring& str);
 private:
-	HWND					m_hParent;
-	wstring					m_name;
-	CBookmarks				m_bookmarks;
+    HWND                    m_hParent;
+    wstring                 m_name;
+    CBookmarks              m_bookmarks;
 
-	wstring					m_searchString;
-	wstring					m_replaceString;
-	bool					m_bUseRegex;
+    wstring                 m_searchString;
+    wstring                 m_replaceString;
+    bool                    m_bUseRegex;
 
-	CDlgResizer				m_resizer;
-	AeroControlBase			m_aerocontrols;
+    CDlgResizer             m_resizer;
+    AeroControlBase         m_aerocontrols;
 };
