@@ -1557,14 +1557,14 @@ DWORD CSearchDlg::SearchThread()
         pBuf++;
     } while(*pBuf && (*(pBuf-1)));
 
-    bool bAlwaysSearch = false;
-    if ((pathvector.size() == 1)&&(!PathIsDirectory(pathvector[0].c_str())))
-        bAlwaysSearch = true;
     for (vector<wstring>::const_iterator it = pathvector.begin(); it != pathvector.end(); ++it)
     {
         wstring searchpath = *it;
         if (!searchpath.empty())
         {
+            bool bAlwaysSearch = false;
+            if (!PathIsDirectory(searchpath.c_str()))
+                bAlwaysSearch = true;
             bool bIsDirectory = false;
             CDirFileEnum fileEnumerator(searchpath.c_str());
             bool bRecurse = m_bIncludeSubfolders;
@@ -1576,15 +1576,17 @@ DWORD CSearchDlg::SearchThread()
                 {
                     bool bSearch = false;
                     DWORD nFileSizeLow = 0;
+                    FILETIME ft = {0};
                     if (bAlwaysSearch)
                     {
-                        _tcscpy_s(pathbuf, MAX_PATH_NEW, pathvector[0].c_str());
-                        HANDLE hFile = CreateFile(pathvector[0].c_str(), FILE_READ_EA, FILE_SHARE_DELETE|FILE_SHARE_READ|FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+                        _tcscpy_s(pathbuf, MAX_PATH_NEW, searchpath.c_str());
+                        HANDLE hFile = CreateFile(searchpath.c_str(), FILE_READ_EA, FILE_SHARE_DELETE|FILE_SHARE_READ|FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
                         if (hFile != INVALID_HANDLE_VALUE)
                         {
-                            LARGE_INTEGER fs;
-                            GetFileSizeEx(hFile, &fs);
-                            nFileSizeLow = fs.LowPart;
+                            BY_HANDLE_FILE_INFORMATION bhfi = {0};
+                            GetFileInformationByHandle(hFile, &bhfi);
+                            nFileSizeLow = bhfi.nFileSizeLow;
+                            ft = bhfi.ftLastWriteTime;
                             CloseHandle(hFile);
                         }
                     }
@@ -1594,6 +1596,7 @@ DWORD CSearchDlg::SearchThread()
                         bSearch = ((m_bIncludeHidden)||((pFindData->dwFileAttributes & FILE_ATTRIBUTE_HIDDEN) == 0));
                         bSearch = bSearch && ((m_bIncludeSystem)||((pFindData->dwFileAttributes & FILE_ATTRIBUTE_SYSTEM) == 0));
                         nFileSizeLow = pFindData->nFileSizeLow;
+                        ft = pFindData->ftLastWriteTime;
                         if (!m_bAllSize)
                         {
                             switch (m_sizeCmp)
@@ -1618,8 +1621,7 @@ DWORD CSearchDlg::SearchThread()
                     {
                         CSearchInfo sinfo(pathbuf);
                         sinfo.filesize = nFileSizeLow;
-                        const WIN32_FIND_DATA * pFindData = fileEnumerator.GetFileInfo();
-                        sinfo.modifiedtime = pFindData->ftLastWriteTime;
+                        sinfo.modifiedtime = ft;
                         if (m_searchString.empty())
                         {
                             SendMessage(*this, SEARCH_FOUND, 1, (LPARAM)&sinfo);
