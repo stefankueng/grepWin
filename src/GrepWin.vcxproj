@@ -163,7 +163,9 @@
   <ItemGroup>
     <None Include="Resources\GrepWin.ico" />
     <None Include="Resources\small.ico" />
-    <None Include="..\default.build" />
+    <None Include="..\default.build">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Setup\setup.build" />
     <None Include="Setup\Setup.wxs" />
     <None Include="..\version.build.in" />
