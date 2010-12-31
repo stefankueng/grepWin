@@ -1055,6 +1055,44 @@ bool CSearchDlg::PreTranslateMessage(MSG* pMsg)
                 }
             }
             break;
+        case 'C':
+            {
+                if ((GetFocus() == hListControl)&&(GetKeyState(VK_CONTROL)&0x8000))
+                {
+                    // copy all selected entries to the clipboard
+                    std::wstring clipBoardText;
+                    HWND hHeader = ListView_GetHeader(hListControl);
+                    int columns = Header_GetItemCount(hHeader);
+                    WCHAR buf[MAX_PATH] = {0};
+                    for (int i = 0; i < columns; ++i)
+                    {
+                        HD_ITEM hdi = {0};
+                        hdi.mask = HDI_TEXT;
+                        hdi.pszText = buf;
+                        hdi.cchTextMax = _countof(buf);
+                        Header_GetItem(hHeader, i, &hdi);
+                        if (i > 0)
+                            clipBoardText += L"\t";
+                        clipBoardText += hdi.pszText;
+                    }
+                    clipBoardText += L"\r\n";
+
+                    int iItem = -1;
+                    while ((iItem = ListView_GetNextItem(hListControl, iItem, LVNI_SELECTED)) != (-1))
+                    {
+                        for (int i = 0; i < columns; ++i)
+                        {
+                            ListView_GetItemText(hListControl, iItem, i, buf, _countof(buf));
+                            if (i > 0)
+                                clipBoardText += L"\t";
+                            clipBoardText += buf;
+                        }
+                        clipBoardText += L"\r\n";
+                    }
+                    WriteAsciiStringToClipboard(clipBoardText.c_str(), *this);
+                }
+            }
+            break;
         case VK_DELETE:
             {
                 m_AutoCompleteFilePatterns.RemoveSelected();
