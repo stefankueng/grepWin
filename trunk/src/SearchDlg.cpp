@@ -535,6 +535,13 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 DialogEnableWindow(IDC_EXCLUDEDIRSPATTERN, bIsDir);
                 DialogEnableWindow(IDC_FILEPATTERNREGEX, bIsDir);
                 DialogEnableWindow(IDC_FILEPATTERNTEXT, bIsDir);
+
+                // change the dialog title to "grepWin : search/path"
+                TCHAR compactPath[100] = {0};
+                PathCompactPathEx(compactPath, buf, 40, 0);
+                TCHAR titleBuf[MAX_PATH] = {0};
+                _stprintf_s(titleBuf, _countof(titleBuf), _T("grepWin : %s"), compactPath);
+                SetWindowText(*this, titleBuf);
             }
         }
         break;
