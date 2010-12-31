@@ -229,6 +229,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             m_resizer.AddControl(hwndDlg, IDC_TEXTRADIO, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_SEARCHFORLABEL, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_SEARCHTEXT, RESIZER_TOPLEFTRIGHT);
+            m_resizer.AddControl(hwndDlg, IDC_HELPBUTTON, RESIZER_TOPRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_REPLACEWITHLABEL, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_REPLACETEXT, RESIZER_TOPLEFTRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_CASE_SENSITIVE, RESIZER_TOPLEFT);
@@ -642,6 +643,11 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
         {
             CAboutDlg dlgAbout(*this);
             dlgAbout.DoModal(hResource, IDD_ABOUT, *this);
+        }
+        break;
+    case IDC_HELPBUTTON:
+        {
+            CInfoDlg::ShowDialog(IDR_INFODLG, hResource);
         }
         break;
     }
