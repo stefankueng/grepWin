@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008, 2010 - Stefan Kueng
+// Copyright (C) 2007-2008, 2010-2011 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -90,6 +90,33 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
                 searchDlg.SetFileMask(parser.GetVal(_T("filemask")), false);
             if (parser.HasVal(_T("filemaskexclude")))
                 searchDlg.SetExcludeFileMask(parser.GetVal(_T("filemaskexclude")));
+            if (parser.HasVal(_T("replacewith")))
+                searchDlg.SetReplaceWith(parser.GetVal(_T("replacewith")));
+
+            if (parser.HasVal(_T("i")))
+                searchDlg.SetCaseSensitive(_tcsicmp(parser.GetVal(_T("i")), _T("yes"))==0);
+            if (parser.HasVal(_T("n")))
+                searchDlg.SetMatchesNewline(_tcsicmp(parser.GetVal(_T("n")), _T("yes"))==0);
+            if (parser.HasVal(_T("k")))
+                searchDlg.SetCreateBackups(_tcsicmp(parser.GetVal(_T("k")), _T("yes"))==0);
+            if (parser.HasVal(_T("utf8")))
+                searchDlg.SetUTF8(_tcsicmp(parser.GetVal(_T("utf8")), _T("yes"))==0);
+            if (parser.HasVal(_T("size")))
+            {
+                int cmp = 0;
+                if (parser.HasVal(_T("sizecmp")))
+                    cmp = parser.GetLongVal(_T("sizecmp"));
+                searchDlg.SetSize(parser.GetLongVal(_T("size")), cmp);
+            }
+            if (parser.HasVal(_T("s")))
+                searchDlg.SetIncludeSystem(_tcsicmp(parser.GetVal(_T("s")), _T("yes"))==0);
+            if (parser.HasVal(_T("h")))
+                searchDlg.SetIncludeHidden(_tcsicmp(parser.GetVal(_T("h")), _T("yes"))==0);
+            if (parser.HasVal(_T("u")))
+                searchDlg.SetIncludeSubfolders(_tcsicmp(parser.GetVal(_T("u")), _T("yes"))==0);
+            if (parser.HasVal(_T("b")))
+                searchDlg.SetIncludeBinary(_tcsicmp(parser.GetVal(_T("b")), _T("yes"))==0);
+
             if (parser.HasKey(_T("execute")))
                 searchDlg.SetExecute(true);
             ret = searchDlg.DoModal(hInstance, IDD_SEARCHDLG, NULL, IDR_SEARCHDLG);
