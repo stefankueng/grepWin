@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2010 - Stefan Kueng
+// Copyright (C) 2007-2011 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -96,7 +96,7 @@ int CRegHistory::Load(LPCTSTR lpszSection, LPCTSTR lpszKeyPrefix)
         }
     } while (!sText.empty() && n < m_nMaxHistoryItems);
 
-    return m_arEntries.size();
+    return (int)m_arEntries.size();
 }
 
 bool CRegHistory::Save() const

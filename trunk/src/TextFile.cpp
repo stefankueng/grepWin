@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2010 - Stefan Kueng
+// Copyright (C) 2007-2011 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -175,13 +175,13 @@ void CTextFile::SetFileContent(const wstring& content)
             pFileBuf = new BYTE[(content.size()+2)*sizeof(wchar_t)];
             memcpy(pFileBuf, _T("\xFE\xFF"), 2*sizeof(wchar_t));
             memcpy(pFileBuf+4, content.c_str(), content.size()*sizeof(wchar_t));
-            filelen = (content.size()+2)*sizeof(wchar_t);
+            filelen = ((int)content.size()+2)*sizeof(wchar_t);
         }
         else
         {
             pFileBuf = new BYTE[content.size()*sizeof(wchar_t)];
             memcpy(pFileBuf, content.c_str(), content.size()*sizeof(wchar_t));
-            filelen = content.size()*sizeof(wchar_t);
+            filelen = (int)content.size()*sizeof(wchar_t);
         }
     }
     else if (encoding == UTF8)
@@ -216,9 +216,9 @@ void CTextFile::SetFileContent(const wstring& content)
     }
     else if ((encoding == ANSI)||(encoding == BINARY))
     {
-        int ret = WideCharToMultiByte(CP_ACP, 0, content.c_str(), content.size()+1, NULL, 0, NULL, NULL);
+        int ret = WideCharToMultiByte(CP_ACP, 0, content.c_str(), (int)content.size()+1, NULL, 0, NULL, NULL);
         pFileBuf = new BYTE[ret];
-        int ret2 = WideCharToMultiByte(CP_ACP, 0, content.c_str(), content.size()+1, (LPSTR)pFileBuf, ret, NULL, NULL);
+        int ret2 = WideCharToMultiByte(CP_ACP, 0, content.c_str(), (int)content.size()+1, (LPSTR)pFileBuf, ret, NULL, NULL);
         filelen = ret2-1;
         if (ret2 != ret)
         {
@@ -385,7 +385,7 @@ wstring CTextFile::GetLineString(long lineNumber) const
 
     long startpos = 0;
     if (lineNumber > 1)
-        startpos = linepositions[lineNumber-2];
+        startpos = (long)linepositions[lineNumber-2];
     size_t endpos = textcontent.find(_T("\n"), startpos+1);
     wstring line;
     if (endpos != wstring::npos)

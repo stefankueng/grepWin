@@ -390,7 +390,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
     case SEARCH_FOUND:
         if ((wParam != 0)||(m_searchString.empty())||((CSearchInfo*)lParam)->readerror)
             AddFoundEntry((CSearchInfo*)lParam);
-        m_totalmatches += ((CSearchInfo*)lParam)->matchlinesnumbers.size();
+        m_totalmatches += (int)((CSearchInfo*)lParam)->matchlinesnumbers.size();
         UpdateInfoLabel();
         break;
     case SEARCH_PROGRESS:
@@ -569,7 +569,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
             {
                 TCHAR buf[MAX_PATH*4] = {0};
                 GetDlgItemText(*this, IDC_SEARCHTEXT, buf, MAX_PATH*4);
-                int len = _tcslen(buf);
+                int len = (int)_tcslen(buf);
                 GetDlgItemText(*this, IDC_SEARCHPATH, buf, MAX_PATH*4);
                 bool bIsDir = !!PathIsDirectory(buf);
                 if ((!bIsDir) && _tcschr(buf, '|'))
@@ -1383,7 +1383,7 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
 
         // Which item number?
         size_t itemid = pInfoTip->iItem;
-        int iItem = GetSelectedListIndex(itemid);
+        int iItem = GetSelectedListIndex((int)itemid);
         pInfoTip->pszText[0] = 0;
         if ((int)m_items.size() > iItem)
         {
@@ -1486,7 +1486,7 @@ bool CSearchDlg::SaveSettings()
         m_lSize = _tstol(buf);
         m_regSize = m_lSize;
         m_lSize *= 1024;
-        m_sizeCmp = SendDlgItemMessage(*this, IDC_SIZECOMBO, CB_GETCURSEL, 0, 0);
+        m_sizeCmp = (int)SendDlgItemMessage(*this, IDC_SIZECOMBO, CB_GETCURSEL, 0, 0);
         m_regSizeCombo = m_sizeCmp;
     }
     m_bIncludeSystem = (IsDlgButtonChecked(*this, IDC_INCLUDESYSTEM) == BST_CHECKED);
@@ -1844,8 +1844,8 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
                         if (whatc[0].matched)
                         {
                             nFound++;
-                            long linestart = textfile.LineFromPosition(whatc[0].first-textfile.GetFileString().begin());
-                            long lineend = textfile.LineFromPosition(whatc[0].second-textfile.GetFileString().begin());
+                            long linestart = textfile.LineFromPosition(long(whatc[0].first-textfile.GetFileString().begin()));
+                            long lineend = textfile.LineFromPosition(long(whatc[0].second-textfile.GetFileString().begin()));
                             for (long l = linestart; l <= lineend; ++l)
                             {
                                 sinfo.matchlines.push_back(textfile.GetLineString(l));
@@ -1945,7 +1945,7 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
                 while (boost::regex_search(start, end, whatc, expression, flags))
                 {
                     nFound++;
-                    sinfo.matchlinesnumbers.push_back(whatc[0].first-fbeg);
+                    sinfo.matchlinesnumbers.push_back(DWORD(whatc[0].first-fbeg));
                     // update search position:
                     start = whatc[0].second;
                     // update flags:
@@ -2006,7 +2006,7 @@ int CSearchDlg::CheckRegex()
 {
     TCHAR buf[MAX_PATH*4] = {0};
     GetDlgItemText(*this, IDC_SEARCHTEXT, buf, MAX_PATH*4);
-    int len = _tcslen(buf);
+    int len = (int)_tcslen(buf);
     if (IsDlgButtonChecked(*this, IDC_REGEXRADIO) == BST_CHECKED)
     {
         // check if the regex is valid
@@ -2071,7 +2071,7 @@ int CSearchDlg::GetSelectedListIndex(int index)
     lv.iItem = index;
     lv.mask = LVIF_PARAM;
     if (ListView_GetItem(hListControl, &lv))
-        iItem = lv.lParam;
+        iItem = (int)lv.lParam;
 
     return iItem;
 }

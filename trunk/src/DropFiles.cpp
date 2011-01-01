@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2010 - Stefan Kueng
+// Copyright (C) 2007-2011 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -95,7 +95,7 @@ STDMETHODIMP FileDataObject::GetData(FORMATETC* pformatetcIn, STGMEDIUM* pmedium
         UINT uBuffSize = 0;
         for (vector<wstring>::const_iterator it = m_allPaths.begin(); it != m_allPaths.end(); ++it)
         {
-            uBuffSize += it->size();
+            uBuffSize += (UINT)it->size();
             uBuffSize += 1;
         }
         uBuffSize = sizeof(DROPFILES) + sizeof(TCHAR) * ( uBuffSize + 1 );

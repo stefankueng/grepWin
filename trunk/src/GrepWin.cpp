@@ -62,7 +62,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
             wstring spath = parser.GetVal(_T("searchpath"));
             COPYDATASTRUCT CopyData = {0};
             CopyData.lpData = (LPVOID)spath.c_str();
-            CopyData.cbData = spath.size()*sizeof(wchar_t);
+            CopyData.cbData = (DWORD)spath.size()*sizeof(wchar_t);
             SendMessage(hWnd, WM_COPYDATA, 0, (LPARAM)&CopyData);
             SetForegroundWindow(hWnd);                                  //set the window to front
             bQuit = true;
@@ -75,7 +75,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
         if (parser.HasKey(_T("about"))||parser.HasKey(_T("?"))||parser.HasKey(_T("help")))
         {
             CAboutDlg aboutDlg(NULL);
-            ret= aboutDlg.DoModal(hInstance, IDD_ABOUT, NULL, NULL);
+            ret= (int)aboutDlg.DoModal(hInstance, IDD_ABOUT, NULL, NULL);
         }
         else
         {
@@ -119,7 +119,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 
             if (parser.HasKey(_T("execute")))
                 searchDlg.SetExecute(true);
-            ret = searchDlg.DoModal(hInstance, IDD_SEARCHDLG, NULL, IDR_SEARCHDLG);
+            ret = (int)searchDlg.DoModal(hInstance, IDD_SEARCHDLG, NULL, IDR_SEARCHDLG);
         }
     }
 

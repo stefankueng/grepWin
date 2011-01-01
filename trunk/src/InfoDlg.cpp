@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2009 - Stefan Kueng
+// Copyright (C) 2007-2009, 2011 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -58,7 +58,7 @@ BOOL CInfoDlg::ShowDialog(UINT idAboutHTMLID, HINSTANCE hInstance)
                 //Add the IE Res protocol
                 TCHAR strResourceURL[MAX_PATH_NEW];
                 _stprintf_s(strResourceURL, MAX_PATH_NEW, _T("res://%s/%d"), lpszModule, idAboutHTMLID);
-                int iLength = _tcslen(strResourceURL);
+                int iLength = (int)_tcslen(strResourceURL);
                 LPWSTR lpWideCharStr = NULL;
                 lpWideCharStr =  new wchar_t[iLength+1];
                 //Attempt to Create the URL Moniker to the specified in the URL String
