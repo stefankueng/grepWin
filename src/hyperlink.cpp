@@ -47,8 +47,13 @@ class CGlobalAtom
 {
 public:
     CGlobalAtom(void)
+#ifdef _WIN64
+    { atom = GlobalAddAtom(TEXT("_Hyperlink_Object_Pointer64_")
+    TEXT("\\{AFEED740-CC6D-47c5-831D-9848FD916EEF}")); }
+#else
     { atom = GlobalAddAtom(TEXT("_Hyperlink_Object_Pointer_")
-             TEXT("\\{AFEED740-CC6D-47c5-831D-9848FD916EEF}")); }
+        TEXT("\\{AFEED740-CC6D-47c5-831D-9848FD916EEF}")); }
+#endif
     ~CGlobalAtom(void)
     { DeleteAtom(atom); }
 
@@ -61,7 +66,7 @@ public:
 static CGlobalAtom ga;
 
 /*
- * Static members initilisation
+ * Static members initializations
  */
 COLORREF CHyperLink::g_crLinkColor     = RGB(  0,   0, 255);   // Blue;
 COLORREF CHyperLink::g_crVisitedColor  = RGB( 128,  0, 128);   // Purple;
@@ -116,7 +121,7 @@ BOOL CHyperLink::ConvertStaticToHyperlink(HWND hwndCtl, LPCTSTR strURL)
         {
             SetProp( hwndParent, PROP_ORIGINAL_PROC, (HANDLE)pfnOrigProc );
             SetWindowLongPtr( hwndParent, GWLP_WNDPROC,
-                           (LONG) (WNDPROC) _HyperlinkParentProc );
+                           (LONG_PTR) (WNDPROC) _HyperlinkParentProc );
         }
     }
 
@@ -138,7 +143,7 @@ BOOL CHyperLink::ConvertStaticToHyperlink(HWND hwndCtl, LPCTSTR strURL)
 
     m_pfnOrigCtlProc = (WNDPROC) GetWindowLongPtr(hwndCtl, GWLP_WNDPROC);
     SetProp(hwndCtl, PROP_OBJECT_PTR, (HANDLE) this);
-    SetWindowLongPtr(hwndCtl, GWLP_WNDPROC, (LONG) (WNDPROC) _HyperlinkProc);
+    SetWindowLongPtr(hwndCtl, GWLP_WNDPROC, (LONG_PTR) (WNDPROC) _HyperlinkProc);
 
     return TRUE;
 }
@@ -212,7 +217,7 @@ LRESULT CALLBACK CHyperLink::_HyperlinkParentProc(HWND hwnd, UINT message,
         }
     case WM_DESTROY:
         {
-            SetWindowLongPtr(hwnd, GWLP_WNDPROC, (LONG) pfnOrigProc);
+            SetWindowLongPtr(hwnd, GWLP_WNDPROC, (LONG_PTR) pfnOrigProc);
             RemoveProp(hwnd, PROP_ORIGINAL_PROC);
             break;
         }
@@ -351,7 +356,7 @@ LRESULT CALLBACK CHyperLink::_HyperlinkProc(HWND hwnd, UINT message,
     case WM_DESTROY:
         {
             SetWindowLongPtr(hwnd, GWLP_WNDPROC,
-                          (LONG) pHyperLink->m_pfnOrigCtlProc);
+                          (LONG_PTR) pHyperLink->m_pfnOrigCtlProc);
 
             SendMessage(hwnd, WM_SETFONT, (WPARAM) pHyperLink->m_StdFont, 0);
 
