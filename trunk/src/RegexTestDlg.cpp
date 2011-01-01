@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008 - Stefan Kueng
+// Copyright (C) 2007-2008, 2011 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -128,7 +128,6 @@ LRESULT CRegexTestDlg::DoCommand(int id, int msg)
             }
         }
         break;
-    case IDC_REPLACETEXT:
     case IDC_SEARCHTEXT:
         {
             if (msg == EN_CHANGE)
@@ -136,6 +135,16 @@ LRESULT CRegexTestDlg::DoCommand(int id, int msg)
                 TCHAR buf[MAX_PATH*4] = {0};
                 GetDlgItemText(*this, IDC_SEARCHTEXT, buf, MAX_PATH*4);
                 m_searchText = buf;
+
+                SetTimer(*this, ID_REGEXTIMER, 300, NULL);
+            }
+        }
+        break;
+    case IDC_REPLACETEXT:
+        {
+            if (msg == EN_CHANGE)
+            {
+                TCHAR buf[MAX_PATH*4] = {0};
                 GetDlgItemText(*this, IDC_REPLACETEXT, buf, MAX_PATH*4);
                 m_replaceText = buf;
 
