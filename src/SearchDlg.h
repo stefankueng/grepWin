@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2010 - Stefan Kueng
+// Copyright (C) 2007-2011 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -51,6 +51,18 @@ public:
     void                    SetSearchString(const wstring& search) {m_searchString = search;}
     void                    SetFileMask(const wstring& mask, bool reg) {m_patternregex = mask; m_bUseRegexForPaths = reg;}
     void                    SetExcludeFileMask(const wstring& mask) {m_excludedirspatternregex = mask;}
+    void                    SetReplaceWith(const wstring& replace) {m_replaceString = replace;}
+
+    void                    SetCaseSensitive(bool bSet) {m_bCaseSensitiveC = true; m_bCaseSensitive = bSet;}
+    void                    SetMatchesNewline(bool bSet) {m_bDotMatchesNewlineC = true; m_bDotMatchesNewline = bSet;}
+    void                    SetCreateBackups(bool bSet) {m_bCreateBackupC = true; m_bCreateBackup = bSet;}
+    void                    SetUTF8(bool bSet) {m_bUTF8C = true;m_bUTF8 = bSet;}
+    void                    SetSize(DWORD size, int cmp) {m_bSizeC = true; m_lSize = size; m_sizeCmp = cmp; m_bAllSize = (size == (DWORD)-1);}
+    void                    SetIncludeSystem(bool bSet) {m_bIncludeSystemC = true; m_bIncludeSystem = bSet;}
+    void                    SetIncludeHidden(bool bSet) {m_bIncludeHiddenC = true; m_bIncludeHidden = bSet;}
+    void                    SetIncludeSubfolders(bool bSet) {m_bIncludeSubfoldersC = true; m_bIncludeSubfolders = bSet;}
+    void                    SetIncludeBinary(bool bSet) {m_bIncludeBinaryC = true; m_bIncludeBinary = bSet;}
+
     void                    SetExecute(bool execute) {m_bExecuteImmediately = execute;}
 protected:
     LRESULT CALLBACK        DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -105,13 +117,22 @@ private:
     DWORD                   m_lSize;
     int                     m_sizeCmp;
     bool                    m_bIncludeSystem;
+    bool                    m_bIncludeSystemC;
     bool                    m_bIncludeHidden;
+    bool                    m_bIncludeHiddenC;
     bool                    m_bIncludeSubfolders;
+    bool                    m_bIncludeSubfoldersC;
     bool                    m_bIncludeBinary;
+    bool                    m_bIncludeBinaryC;
     bool                    m_bCreateBackup;
+    bool                    m_bCreateBackupC;
     bool                    m_bUTF8;
+    bool                    m_bUTF8C;
     bool                    m_bCaseSensitive;
+    bool                    m_bCaseSensitiveC;
     bool                    m_bDotMatchesNewline;
+    bool                    m_bDotMatchesNewlineC;
+    bool                    m_bSizeC;
     bool                    m_bExecuteImmediately;
 
     bool                    m_bReplace;

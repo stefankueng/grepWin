@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2010 - Stefan Kueng
+// Copyright (C) 2007-2011 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -60,6 +60,23 @@ CSearchDlg::CSearchDlg(HWND hParent) : m_searchedItems(0)
     , m_hParent(hParent)
     , m_bExecuteImmediately(false)
     , m_bUseRegexForPaths(false)
+    , m_bIncludeSystem(false)
+    , m_bIncludeSystemC(false)
+    , m_bIncludeHidden(false)
+    , m_bIncludeHiddenC(false)
+    , m_bIncludeSubfolders(false)
+    , m_bIncludeSubfoldersC(false)
+    , m_bIncludeBinary(false)
+    , m_bIncludeBinaryC(false)
+    , m_bCreateBackup(false)
+    , m_bCreateBackupC(false)
+    , m_bUTF8(false)
+    , m_bUTF8C(false)
+    , m_bCaseSensitive(false)
+    , m_bCaseSensitiveC(false)
+    , m_bDotMatchesNewline(false)
+    , m_bDotMatchesNewlineC(false)
+    , m_bSizeC(false)
     , m_regUseRegex(_T("Software\\grepWin\\UseRegex"), 1)
     , m_regAllSize(_T("Software\\grepWin\\AllSize"))
     , m_regSize(_T("Software\\grepWin\\Size"), 2000)
@@ -135,6 +152,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             SetDlgItemText(hwndDlg, IDC_SEARCHTEXT, m_searchString.c_str());
             SetDlgItemText(hwndDlg, IDC_EXCLUDEDIRSPATTERN, m_excludedirspatternregex.c_str());
             SetDlgItemText(hwndDlg, IDC_PATTERN, m_patternregex.c_str());
+            SetDlgItemText(hwndDlg, IDC_REPLACETEXT, m_replaceString.c_str());
 
             // the path edit control should work as a drop target for files and folders
             HWND hSearchPath = GetDlgItem(hwndDlg, IDC_SEARCHPATH);
@@ -180,33 +198,65 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             }
 
             TCHAR buf[MAX_PATH] = {0};
-            if (DWORD(m_regSize) > 0)
+            if (m_bSizeC)
             {
-                _stprintf_s(buf, MAX_PATH, _T("%ld"), DWORD(m_regSize));
+                _stprintf_s(buf, MAX_PATH, _T("%ld"), m_lSize);
                 SetDlgItemText(hwndDlg, IDC_SIZEEDIT, buf);
             }
             else
-                SetDlgItemText(hwndDlg, IDC_SIZEEDIT, _T("2000"));
+            {
+                if (DWORD(m_regSize) > 0)
+                {
+                    _stprintf_s(buf, MAX_PATH, _T("%ld"), DWORD(m_regSize));
+                    SetDlgItemText(hwndDlg, IDC_SIZEEDIT, buf);
+                }
+                else
+                    SetDlgItemText(hwndDlg, IDC_SIZEEDIT, _T("2000"));
+            }
 
             SendDlgItemMessage(hwndDlg, IDC_SIZECOMBO, CB_INSERTSTRING, (WPARAM)-1, (LPARAM)_T("less than"));
             SendDlgItemMessage(hwndDlg, IDC_SIZECOMBO, CB_INSERTSTRING, (WPARAM)-1, (LPARAM)_T("equal to"));
             SendDlgItemMessage(hwndDlg, IDC_SIZECOMBO, CB_INSERTSTRING, (WPARAM)-1, (LPARAM)_T("greater than"));
-            SendDlgItemMessage(hwndDlg, IDC_SIZECOMBO, CB_SETCURSEL, DWORD(m_regSizeCombo), 0);
-            SendDlgItemMessage(hwndDlg, IDC_INCLUDESUBFOLDERS, BM_SETCHECK, DWORD(m_regIncludeSubfolders) ? BST_CHECKED : BST_UNCHECKED, 0);
-            SendDlgItemMessage(hwndDlg, IDC_CREATEBACKUP, BM_SETCHECK, DWORD(m_regCreateBackup) ? BST_CHECKED : BST_UNCHECKED, 0);
-            SendDlgItemMessage(hwndDlg, IDC_UTF8, BM_SETCHECK, DWORD(m_regUTF8) ? BST_CHECKED : BST_UNCHECKED, 0);
-            SendDlgItemMessage(hwndDlg, IDC_INCLUDESYSTEM, BM_SETCHECK, DWORD(m_regIncludeSystem) ? BST_CHECKED : BST_UNCHECKED, 0);
-            SendDlgItemMessage(hwndDlg, IDC_INCLUDEHIDDEN, BM_SETCHECK, DWORD(m_regIncludeHidden) ? BST_CHECKED : BST_UNCHECKED, 0);
-            SendDlgItemMessage(hwndDlg, IDC_INCLUDEBINARY, BM_SETCHECK, DWORD(m_regIncludeBinary) ? BST_CHECKED : BST_UNCHECKED, 0);
-            SendDlgItemMessage(hwndDlg, IDC_CASE_SENSITIVE, BM_SETCHECK, DWORD(m_regCaseSensitive) ? BST_CHECKED : BST_UNCHECKED, 0);
-            SendDlgItemMessage(hwndDlg, IDC_DOTMATCHNEWLINE, BM_SETCHECK, DWORD(m_regDotMatchesNewline) ? BST_CHECKED : BST_UNCHECKED, 0);
+            if (!m_bIncludeSubfoldersC)
+                m_bIncludeSubfolders = !!DWORD(m_regIncludeSubfolders);
+            if (!m_bIncludeSystemC)
+                m_bIncludeSystem = !!DWORD(m_regIncludeSystem);
+            if (!m_bIncludeHiddenC)
+                m_bIncludeHidden = !!DWORD(m_regIncludeHidden);
+            if (!m_bIncludeBinaryC)
+                m_bIncludeBinaryC = !!DWORD(m_regIncludeBinary);
+            if (!m_bCaseSensitiveC)
+                m_bCaseSensitive = !!DWORD(m_regCaseSensitive);
+            if (!m_bDotMatchesNewlineC)
+                m_bDotMatchesNewline = !!DWORD(m_regDotMatchesNewline);
+            if (!m_bCreateBackupC)
+                m_bCreateBackup = !!DWORD(m_regCreateBackup);
+            if (!m_bUTF8C)
+                m_bUTF8 = !!DWORD(m_regUTF8);
+            if (!m_bDotMatchesNewlineC)
+                m_bDotMatchesNewline = !!DWORD(m_regDotMatchesNewline);
+            if (!m_bSizeC)
+            {
+                m_bAllSize = !!DWORD(m_regAllSize);
+                m_sizeCmp = (int)DWORD(m_regSizeCombo);
+            }
+            SendDlgItemMessage(hwndDlg, IDC_SIZECOMBO, CB_SETCURSEL, m_sizeCmp, 0);
+
+            SendDlgItemMessage(hwndDlg, IDC_INCLUDESUBFOLDERS, BM_SETCHECK, m_bIncludeSubfolders ? BST_CHECKED : BST_UNCHECKED, 0);
+            SendDlgItemMessage(hwndDlg, IDC_CREATEBACKUP, BM_SETCHECK, m_bCreateBackup ? BST_CHECKED : BST_UNCHECKED, 0);
+            SendDlgItemMessage(hwndDlg, IDC_UTF8, BM_SETCHECK, m_bUTF8 ? BST_CHECKED : BST_UNCHECKED, 0);
+            SendDlgItemMessage(hwndDlg, IDC_INCLUDESYSTEM, BM_SETCHECK, m_bIncludeSystem ? BST_CHECKED : BST_UNCHECKED, 0);
+            SendDlgItemMessage(hwndDlg, IDC_INCLUDEHIDDEN, BM_SETCHECK, m_bIncludeHidden ? BST_CHECKED : BST_UNCHECKED, 0);
+            SendDlgItemMessage(hwndDlg, IDC_INCLUDEBINARY, BM_SETCHECK, m_bIncludeBinary ? BST_CHECKED : BST_UNCHECKED, 0);
+            SendDlgItemMessage(hwndDlg, IDC_CASE_SENSITIVE, BM_SETCHECK, m_bCaseSensitive ? BST_CHECKED : BST_UNCHECKED, 0);
+            SendDlgItemMessage(hwndDlg, IDC_DOTMATCHNEWLINE, BM_SETCHECK, m_bDotMatchesNewline ? BST_CHECKED : BST_UNCHECKED, 0);
 
             CheckRadioButton(hwndDlg, IDC_REGEXRADIO, IDC_TEXTRADIO, DWORD(m_regUseRegex) ? IDC_REGEXRADIO : IDC_TEXTRADIO);
-            CheckRadioButton(hwndDlg, IDC_ALLSIZERADIO, IDC_SIZERADIO, DWORD(m_regAllSize) ? IDC_ALLSIZERADIO : IDC_SIZERADIO);
+            CheckRadioButton(hwndDlg, IDC_ALLSIZERADIO, IDC_SIZERADIO, m_bAllSize ? IDC_ALLSIZERADIO : IDC_SIZERADIO);
             CheckRadioButton(hwndDlg, IDC_FILEPATTERNREGEX, IDC_FILEPATTERNTEXT, m_bUseRegexForPaths ? IDC_FILEPATTERNREGEX : IDC_FILEPATTERNTEXT);
 
             DialogEnableWindow(IDC_ADDTOBOOKMARKS, FALSE);
-            DialogEnableWindow(IDC_EXCLUDEDIRSPATTERN, !!DWORD(m_regIncludeSubfolders));
+            DialogEnableWindow(IDC_EXCLUDEDIRSPATTERN, !!m_bIncludeSubfolders);
 
             bool bText = (IsDlgButtonChecked(*this, IDC_TEXTRADIO) == BST_CHECKED);
             DialogEnableWindow(IDC_REPLACETEXT, !bText);
