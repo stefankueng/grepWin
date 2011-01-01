@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008 - Stefan Kueng
+// Copyright (C) 2007-2008, 2011 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -93,7 +93,7 @@ void CDlgResizer::DoResize(int width, int height)
 
     InvalidateRect(m_hDlg, NULL, true);
 
-    HDWP hdwp = BeginDeferWindowPos(m_controls.size());
+    HDWP hdwp = BeginDeferWindowPos((int)m_controls.size());
     for (size_t i=0; i<m_controls.size(); ++i)
     {
         RECT newpos = m_controls[i].origSize;
