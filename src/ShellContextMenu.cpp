@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2009 - Stefan Kueng
+// Copyright (C) 2007-2010 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -185,7 +185,7 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
         case 1:
             {
                 // This is the command line for explorer which tells it to select the given file
-                wstring sFolder = _T( "/Select," ) + m_strVector[0];
+                wstring sFolder = _T( "/Select,\"" ) + m_strVector[0] + _T("\"");
 
                 // Prepare shell execution params
                 SHELLEXECUTEINFO shExecInfo   = { 0 };
