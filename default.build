@@ -10,7 +10,6 @@
     <property name="studioversion" value="2010" if="${string::contains (environment::get-variable('VCINSTALLDIR'), '10.0')}"/>
 
     <property name="configuration" value="release" />
-    <property name="platform" value="win32" />
     <!-- the signinfo.txt file has to contain one line with parameters for signtool.exe,
          for example:
          /t "url/to/timestamp/server" /q
@@ -40,7 +39,12 @@
         <exec program="devenv.com" >
             <arg value="${solutionname}" />
             <arg value="/clean" />
-            <arg value="${configuration}|${platform}" />
+            <arg value="${configuration}|win32" />
+        </exec>
+        <exec program="devenv.com" >
+            <arg value="${solutionname}" />
+            <arg value="/clean" />
+            <arg value="${configuration}|x64" />
         </exec>
     </target>
 
@@ -75,7 +79,12 @@
         <exec program="devenv.com" >
             <arg value="${solutionname}" />
             <arg value="/rebuild" />
-            <arg value="${configuration}|${platform}" />
+            <arg value="${configuration}|win32" />
+        </exec>
+        <exec program="devenv.com" >
+            <arg value="${solutionname}" />
+            <arg value="/rebuild" />
+            <arg value="${configuration}|x64" />
         </exec>
     </target>
 
