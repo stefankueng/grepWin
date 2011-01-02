@@ -25,6 +25,7 @@
 #pragma comment(lib, "shell32.lib")
 
 using namespace std;
+class CIShellFolderHook;
 
 class CShellContextMenu
 {
@@ -53,6 +54,8 @@ private:
     int GetPIDLCount(LPCITEMIDLIST pidl);
 
     static HRESULT CALLBACK dfmCallback(IShellFolder *psf, HWND hwnd, IDataObject *pdtobj, UINT uMsg, WPARAM wParam, LPARAM lParam);
+
+    CIShellFolderHook * m_pFolderhook;
 
     friend class CIShellFolderHook;
 };
