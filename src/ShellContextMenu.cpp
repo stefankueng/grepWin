@@ -28,16 +28,18 @@ IContextMenu2 * g_IContext2 = NULL;
 IContextMenu3 * g_IContext3 = NULL;
 WNDPROC g_OldWndProc = NULL;
 
-CShellContextMenu::CShellContextMenu()
+CShellContextMenu::CShellContextMenu() 
+    : m_pFolderhook(NULL)
+    , m_psfFolder(NULL)
+    , m_pidlArray(NULL)
+    , m_Menu(NULL)
 {
-    m_psfFolder = NULL;
-    m_pidlArray = NULL;
-    m_Menu = NULL;
 }
 
 CShellContextMenu::~CShellContextMenu()
 {
     // free all allocated data
+    delete m_pFolderhook;
     if (m_psfFolder && bDelete)
         m_psfFolder->Release ();
     m_psfFolder = NULL;
@@ -85,16 +87,10 @@ BOOL CShellContextMenu::GetContextMenu(HWND hWnd, void ** ppContextMenu, int & i
         }
     }
 
-    CIShellFolderHook folderhook(m_psfFolder, this);
+    delete m_pFolderhook;
+    m_pFolderhook = new CIShellFolderHook(m_psfFolder, this);
 
-    // get IShellFolder interface of Desktop (root of shell namespace)
-    IShellFolder * psfDesktop = NULL;
-    SHGetDesktopFolder(&psfDesktop);
-    LPITEMIDLIST desktoppidl = NULL;
-    psfDesktop->ParseDisplayName(NULL, 0, (LPWSTR)L"", NULL, &desktoppidl, NULL);
-
-    CDefFolderMenu_Create2(NULL, hWnd, (UINT)m_strVector.size(), (LPCITEMIDLIST*)m_pidlArray, &folderhook, dfmCallback, numkeys, ahkeys, &icm1);
-    icm1->AddRef();
+    CDefFolderMenu_Create2(NULL, hWnd, (UINT)m_strVector.size(), (LPCITEMIDLIST*)m_pidlArray, m_pFolderhook, dfmCallback, numkeys, ahkeys, &icm1);
     for (int i = 0; i < numkeys; ++i)
         RegCloseKey(ahkeys[i]);
 
@@ -268,7 +264,8 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
     pContextMenu->Release();
     g_IContext2 = NULL;
     g_IContext3 = NULL;
-
+    delete m_pFolderhook;
+    m_pFolderhook = NULL;
     return (idCommand);
 }
 
