@@ -34,6 +34,11 @@
         <arg value="${signinfo}" />
         <arg value="..\..\bin\release\GrepWin.exe" />
       </exec>
+      <exec program="signtool">
+        <arg value="sign" />
+        <arg value="${signinfo}" />
+        <arg value="..\..\bin\release64\GrepWin.exe" />
+      </exec>
     </if>
     <exec program="candle">
       <arg value="-nologo" />
@@ -52,6 +57,23 @@
       <arg value="..\..\bin\Setup.wixobj" />
       <arg value="..\..\bin\WixUI_Custom.wixobj" />
     </exec>
+    <exec program="candle">
+      <arg value="-nologo" />
+      <arg value="-out" />
+      <arg value="..\..\bin\" />
+      <arg value="Setup64.wxs" />
+      <arg value="WixUI_Custom.wxs" />
+    </exec>
+    <exec program="light">
+      <arg value="-nologo" />
+      <arg value="-ext" />
+      <arg value="WixUIExtension" />
+      <arg value="-cultures:en-us" />
+      <arg value="-out" />
+      <arg value="..\..\bin\${msifilename}-64.msi" />
+      <arg value="..\..\bin\Setup64.wixobj" />
+      <arg value="..\..\bin\WixUI_Custom.wixobj" />
+    </exec>
     <delete>
       <fileset>
         <include name="..\..\bin\*.wixobj" />
@@ -63,6 +85,11 @@
         <arg value="sign" />
         <arg value="${signinfo}" />
         <arg value="..\..\bin\${msifilename}.msi" />
+      </exec>
+      <exec program="signtool">
+        <arg value="sign" />
+        <arg value="${signinfo}" />
+        <arg value="..\..\bin\${msifilename}-64.msi" />
       </exec>
     </if>
   </target>
