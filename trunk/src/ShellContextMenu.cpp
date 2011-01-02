@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2010 - Stefan Kueng
+// Copyright (C) 2007-2011 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -51,7 +51,7 @@ CShellContextMenu::~CShellContextMenu()
 
 // this functions determines which version of IContextMenu is available for those objects (always the highest one)
 // and returns that interface
-BOOL CShellContextMenu::GetContextMenu(void ** ppContextMenu, int & iMenuType)
+BOOL CShellContextMenu::GetContextMenu(HWND hWnd, void ** ppContextMenu, int & iMenuType)
 {
     *ppContextMenu = NULL;
     LPCONTEXTMENU icm1 = NULL;
@@ -59,8 +59,44 @@ BOOL CShellContextMenu::GetContextMenu(void ** ppContextMenu, int & iMenuType)
     if (m_psfFolder == NULL)
         return FALSE;
 
-    // first we retrieve the normal IContextMenu interface (every object should have it)
-    m_psfFolder->GetUIObjectOf(NULL, nItems, (LPCITEMIDLIST *) m_pidlArray, IID_IContextMenu, NULL, (void**) &icm1);
+    HKEY ahkeys[16] = {0};
+    int numkeys = 0;
+    if (RegOpenKey(HKEY_CLASSES_ROOT, L"*", &ahkeys[numkeys++]) != ERROR_SUCCESS)
+        numkeys--;
+    if (RegOpenKey(HKEY_CLASSES_ROOT, L"AllFileSystemObjects", &ahkeys[numkeys++]) != ERROR_SUCCESS)
+        numkeys--;
+    if (PathIsDirectory(m_strVector[0].c_str()))
+    {
+        if (RegOpenKey(HKEY_CLASSES_ROOT, L"Folder", &ahkeys[numkeys++]) != ERROR_SUCCESS)
+            numkeys--;
+        if (RegOpenKey(HKEY_CLASSES_ROOT, L"Directory", &ahkeys[numkeys++]) != ERROR_SUCCESS)
+            numkeys--;
+    }
+    // find extension
+    wstring ext = m_strVector[0].substr(m_strVector[0].find_last_of('.'));
+    if (RegOpenKey(HKEY_CLASSES_ROOT, ext.c_str(), &ahkeys[numkeys++]) == ERROR_SUCCESS)
+    {
+        WCHAR buf[MAX_PATH] = {0};
+        DWORD dwSize = MAX_PATH;
+        if (RegQueryValueEx(ahkeys[numkeys-1], L"", NULL, NULL, (LPBYTE)buf, &dwSize) == ERROR_SUCCESS)
+        {
+            if (RegOpenKey(HKEY_CLASSES_ROOT, buf, &ahkeys[numkeys++]) != ERROR_SUCCESS)
+                numkeys--;
+        }
+    }
+
+    CIShellFolderHook folderhook(m_psfFolder, this);
+
+    // get IShellFolder interface of Desktop (root of shell namespace)
+    IShellFolder * psfDesktop = NULL;
+    SHGetDesktopFolder(&psfDesktop);
+    LPITEMIDLIST desktoppidl = NULL;
+    psfDesktop->ParseDisplayName(NULL, 0, (LPWSTR)L"", NULL, &desktoppidl, NULL);
+
+    CDefFolderMenu_Create2(NULL, hWnd, (UINT)m_strVector.size(), (LPCITEMIDLIST*)m_pidlArray, &folderhook, dfmCallback, numkeys, ahkeys, &icm1);
+    icm1->AddRef();
+    for (int i = 0; i < numkeys; ++i)
+        RegCloseKey(ahkeys[i]);
 
     if (icm1)
     {   // since we got an IContextMenu interface we can now obtain the higher version interfaces via that
@@ -131,7 +167,7 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
     int iMenuType = 0;  // to know which version of IContextMenu is supported
     LPCONTEXTMENU pContextMenu; // common pointer to IContextMenu and higher version interface
 
-    if (!GetContextMenu ((void**)&pContextMenu, iMenuType))
+    if (!GetContextMenu (hWnd, (void**)&pContextMenu, iMenuType))
         return 0;
 
     if (!m_Menu)
@@ -159,7 +195,7 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
     // subclass window to handle menu related messages in CShellContextMenu
     if (iMenuType > 1)  // only subclass if its version 2 or 3
     {
-        g_OldWndProc = (WNDPROC)SetWindowLong (hWnd, GWL_WNDPROC, (DWORD)HookWndProc);
+        g_OldWndProc = (WNDPROC)SetWindowLongPtr (hWnd, GWLP_WNDPROC, (LONG_PTR)HookWndProc);
         if (iMenuType == 2)
             g_IContext2 = (LPCONTEXTMENU2)pContextMenu;
         else    // version 3
@@ -171,7 +207,7 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
     UINT idCommand = TrackPopupMenu(m_Menu, TPM_RETURNCMD | TPM_LEFTALIGN, pt.x, pt.y, 0, hWnd, NULL);
 
     if (g_OldWndProc) // un-subclass
-        SetWindowLong(hWnd, GWL_WNDPROC, (DWORD) g_OldWndProc);
+        SetWindowLongPtr(hWnd, GWLP_WNDPROC, (LONG_PTR) g_OldWndProc);
 
     if (idCommand >= MIN_ID && idCommand <= MAX_ID) // see if returned idCommand belongs to shell menu entries
     {
@@ -257,50 +293,29 @@ void CShellContextMenu::SetObjects(const vector<wstring>& strVector)
     m_pidlArray = NULL;
 
     // get IShellFolder interface of Desktop (root of shell namespace)
-    IShellFolder * psfDesktop = NULL;
-    SHGetDesktopFolder(&psfDesktop);    // needed to obtain full qualified pidl
+    SHGetDesktopFolder(&m_psfFolder);    // needed to obtain full qualified pidl
 
     // ParseDisplayName creates a PIDL from a file system path relative to the IShellFolder interface
     // but since we use the Desktop as our interface and the Desktop is the namespace root
     // that means that it's a fully qualified PIDL, which is what we need
     LPITEMIDLIST pidl = NULL;
 
-    psfDesktop->ParseDisplayName(NULL, 0, (LPWSTR)strVector[0].c_str(), NULL, &pidl, NULL);
+    m_psfFolder->ParseDisplayName(NULL, 0, (LPWSTR)strVector[0].c_str(), NULL, &pidl, NULL);
 
-    // now we need the parent IShellFolder interface of pidl, and the relative PIDL to that interface
-    LPITEMIDLIST pidlItem = NULL;   // relative pidl
-    SHBindToParent(pidl, IID_IShellFolder, (void **) &m_psfFolder, NULL);
-    free (pidlItem);
     // get interface to IMalloc (need to free the PIDLs allocated by the shell functions)
     LPMALLOC lpMalloc = NULL;
     SHGetMalloc(&lpMalloc);
     lpMalloc->Free(pidl);
 
-    // now we have the IShellFolder interface to the parent folder specified in the first element in strArray
-    // since we assume that all objects are in the same folder (as it's stated in the MSDN)
-    // we now have the IShellFolder interface to every objects parent folder
-
-    IShellFolder * psfFolder = NULL;
-    nItems = strVector.size();
+    nItems = (int)strVector.size();
     for (int i = 0; i < nItems; i++)
     {
-        psfDesktop->ParseDisplayName(NULL, 0, (LPWSTR)strVector[i].c_str(), NULL, &pidl, NULL);
+        m_psfFolder->ParseDisplayName(NULL, 0, (LPWSTR)strVector[i].c_str(), NULL, &pidl, NULL);
         m_pidlArray = (LPITEMIDLIST *)realloc (m_pidlArray, (i + 1) * sizeof (LPITEMIDLIST));
-        // get relative pidl via SHBindToParent
-        if (SHBindToParent(pidl, IID_IShellFolder, (void **) &psfFolder, (LPCITEMIDLIST *) &pidlItem) == S_OK)
-        {
-            m_pidlArray[i] = CopyPIDL(pidlItem);    // copy relative pidl to pidlArray
-            lpMalloc->Free(pidl);       // free pidl allocated by ParseDisplayName
-            psfFolder->Release();
-        }
-        else
-        {
-            m_pidlArray[i] = NULL;
-            lpMalloc->Free(pidl);       // free pidl allocated by ParseDisplayName
-        }
+        m_pidlArray[i] = CopyPIDL(pidl);    // copy pidl to pidlArray
+        lpMalloc->Free(pidl);               // free pidl allocated by ParseDisplayName
     }
     lpMalloc->Release ();
-    psfDesktop->Release ();
 
     m_strVector = strVector;
     bDelete = TRUE; // indicates that m_psfFolder should be deleted by CShellContextMenu
@@ -311,7 +326,7 @@ void CShellContextMenu::FreePIDLArray(LPITEMIDLIST *pidlArray)
     if (!pidlArray)
         return;
 
-    int iSize = _msize(pidlArray) / sizeof(LPITEMIDLIST);
+    int iSize = (int)_msize(pidlArray) / sizeof(LPITEMIDLIST);
 
     for (int i = 0; i < iSize; i++)
         free(pidlArray[i]);
@@ -389,3 +404,82 @@ int CShellContextMenu::GetPIDLCount(LPCITEMIDLIST pidl)
     }
     return nCount;
 }
+
+HRESULT CShellContextMenu::dfmCallback( IShellFolder * /*psf*/, HWND /*hwnd*/, IDataObject * /*pdtobj*/, UINT uMsg, WPARAM /*wParam*/, LPARAM /*lParam*/ )
+{
+    switch (uMsg)
+    {
+    case DFM_MERGECONTEXTMENU:
+        return S_OK;
+    case DFM_INVOKECOMMAND:
+    case DFM_INVOKECOMMANDEX:
+    case DFM_GETDEFSTATICID: // Required for Windows 7 to pick a default
+        return S_FALSE;
+    }
+    return E_NOTIMPL;
+}
+
+HRESULT STDMETHODCALLTYPE CIShellFolderHook::GetUIObjectOf( HWND hwndOwner, UINT cidl, LPCITEMIDLIST *apidl, REFIID riid, UINT *rgfReserved, void **ppv )
+{
+    if(InlineIsEqualGUID(riid, IID_IDataObject))
+    {
+        HRESULT hres = m_iSF->GetUIObjectOf(hwndOwner, cidl, apidl, IID_IDataObject, NULL, ppv);
+        if (FAILED(hres))
+            return hres;
+
+        IDataObject * idata = (LPDATAOBJECT)(*ppv);
+        // the IDataObject returned here doesn't have a HDROP, so we create one ourselves and add it to the IDataObject
+        // the HDROP is necessary for most context menu handlers
+
+        int nLength = 0;
+        for (size_t i=0;i<m_pShellContextMenu->m_strVector.size();i++)
+        {
+            nLength += (int)m_pShellContextMenu->m_strVector[i].size();
+            nLength += 1; // '\0' separator
+        }
+        int nBufferSize = sizeof(DROPFILES) + (nLength+1)*sizeof(TCHAR);
+        char * pBuffer = new char[nBufferSize];
+        SecureZeroMemory(pBuffer, nBufferSize);
+        DROPFILES* df = (DROPFILES*)pBuffer;
+        df->pFiles = sizeof(DROPFILES);
+        df->fWide = 1;
+        TCHAR* pFilenames = (TCHAR*)(pBuffer + sizeof(DROPFILES));
+        TCHAR* pCurrentFilename = pFilenames;
+
+        for (size_t i=0;i<m_pShellContextMenu->m_strVector.size();i++)
+        {
+            wstring str = m_pShellContextMenu->m_strVector[i];
+            wcscpy_s(pCurrentFilename, str.size()+1, str.c_str());
+            pCurrentFilename += str.size();
+            *pCurrentFilename = '\0'; // separator between file names
+            pCurrentFilename++;
+        }
+        *pCurrentFilename = '\0'; // terminate array
+        STGMEDIUM * pmedium = new STGMEDIUM;
+        pmedium->tymed = TYMED_HGLOBAL;
+        pmedium->hGlobal = GlobalAlloc(GMEM_ZEROINIT|GMEM_MOVEABLE|GMEM_DDESHARE, nBufferSize);
+        if (pmedium->hGlobal)
+        {
+            LPVOID pMem = ::GlobalLock(pmedium->hGlobal);
+            if (pMem)
+                memcpy(pMem, pBuffer, nBufferSize);
+            GlobalUnlock(pmedium->hGlobal);
+        }
+        FORMATETC formatetc = {0};
+        formatetc.cfFormat = CF_HDROP;
+        formatetc.dwAspect = DVASPECT_CONTENT;
+        formatetc.lindex = -1;
+        formatetc.tymed = TYMED_HGLOBAL;
+        pmedium->pUnkForRelease = NULL;
+        hres = idata->SetData(&formatetc, pmedium, TRUE);
+        delete [] pBuffer;
+        delete pmedium;
+        return hres;
+    }
+    else 
+    {
+        // just pass it on to the base object
+        return m_iSF->GetUIObjectOf(hwndOwner, cidl, apidl, riid, rgfReserved, ppv);
+    }
+}
+
