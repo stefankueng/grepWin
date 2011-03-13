@@ -1669,6 +1669,7 @@ DWORD CSearchDlg::SearchThread()
         pBuf++;
     } while(*pBuf && (*(pBuf-1)));
 
+    SendMessage(*this, SEARCH_START, 0, 0);
     for (vector<wstring>::const_iterator it = pathvector.begin(); it != pathvector.end(); ++it)
     {
         wstring searchpath = *it;
@@ -1681,7 +1682,6 @@ DWORD CSearchDlg::SearchThread()
             CDirFileEnum fileEnumerator(searchpath.c_str());
             bool bRecurse = m_bIncludeSubfolders;
 
-            SendMessage(*this, SEARCH_START, 0, 0);
             while (((fileEnumerator.NextFile(pathbuf, bRecurse, &bIsDirectory))&&(!m_Cancelled))||(bAlwaysSearch))
             {
                 if (!bIsDirectory)
