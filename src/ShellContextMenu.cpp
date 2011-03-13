@@ -75,15 +75,20 @@ BOOL CShellContextMenu::GetContextMenu(HWND hWnd, void ** ppContextMenu, int & i
             numkeys--;
     }
     // find extension
-    wstring ext = m_strVector[0].substr(m_strVector[0].find_last_of('.'));
-    if (RegOpenKey(HKEY_CLASSES_ROOT, ext.c_str(), &ahkeys[numkeys++]) == ERROR_SUCCESS)
+    size_t dotpos = m_strVector[0].find_last_of('.');
+    wstring ext;
+    if (dotpos != std::string::npos)
     {
-        WCHAR buf[MAX_PATH] = {0};
-        DWORD dwSize = MAX_PATH;
-        if (RegQueryValueEx(ahkeys[numkeys-1], L"", NULL, NULL, (LPBYTE)buf, &dwSize) == ERROR_SUCCESS)
+        ext = m_strVector[0].substr(dotpos);
+        if (RegOpenKey(HKEY_CLASSES_ROOT, ext.c_str(), &ahkeys[numkeys++]) == ERROR_SUCCESS)
         {
-            if (RegOpenKey(HKEY_CLASSES_ROOT, buf, &ahkeys[numkeys++]) != ERROR_SUCCESS)
-                numkeys--;
+            WCHAR buf[MAX_PATH] = {0};
+            DWORD dwSize = MAX_PATH;
+            if (RegQueryValueEx(ahkeys[numkeys-1], L"", NULL, NULL, (LPBYTE)buf, &dwSize) == ERROR_SUCCESS)
+            {
+                if (RegOpenKey(HKEY_CLASSES_ROOT, buf, &ahkeys[numkeys++]) != ERROR_SUCCESS)
+                    numkeys--;
+            }
         }
     }
 
