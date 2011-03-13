@@ -47,6 +47,8 @@ using namespace std;
 
 #define GREPWIN_DATEBUFFER 100
 
+#define LABELUPDATETIMER 10
+
 DWORD WINAPI SearchThreadEntry(LPVOID lpParam);
 
 UINT CSearchDlg::GREPWIN_STARTUPMSG = RegisterWindowMessage(_T("grepWin_StartupMessage"));
@@ -385,20 +387,22 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             m_searchedItems = 0;
             m_totalmatches = 0;
             UpdateInfoLabel();
+            SetTimer(*this, LABELUPDATETIMER, 200, NULL);
         }
         break;
     case SEARCH_FOUND:
-        if ((wParam != 0)||(m_searchString.empty())||((CSearchInfo*)lParam)->readerror)
-            AddFoundEntry((CSearchInfo*)lParam);
         m_totalmatches += (int)((CSearchInfo*)lParam)->matchlinesnumbers.size();
-        UpdateInfoLabel();
+        if ((wParam != 0)||(m_searchString.empty())||((CSearchInfo*)lParam)->readerror)
+        {
+            AddFoundEntry((CSearchInfo*)lParam);
+            UpdateInfoLabel();
+        }
         break;
     case SEARCH_PROGRESS:
         {
             if (wParam)
                 m_searchedItems++;
             m_totalitems++;
-            UpdateInfoLabel();
         }
         break;
     case SEARCH_END:
@@ -408,6 +412,13 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             ::SetDlgItemText(*this, IDOK, _T("&Search"));
             DialogEnableWindow(IDC_RESULTFILES, true);
             DialogEnableWindow(IDC_RESULTCONTENT, true);
+            KillTimer(*this, LABELUPDATETIMER);
+        }
+        break;
+    case WM_TIMER:
+        {
+            if (wParam == LABELUPDATETIMER)
+                UpdateInfoLabel();
         }
         break;
     case WM_HELP:
