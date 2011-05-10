@@ -1086,19 +1086,22 @@ bool CSearchDlg::PreTranslateMessage(MSG* pMsg)
             {
                 if (GetFocus() == hListControl)
                 {
-                    int selItem = ListView_GetSelectionMark(hListControl);
-                    selItem = GetSelectedListIndex(selItem);
-                    if ((selItem >= 0)&&(selItem < (int)m_items.size()))
+                    int iItem = -1;
+                    while ((iItem = ListView_GetNextItem(hListControl, iItem, LVNI_SELECTED)) != (-1))
                     {
-                        SHELLEXECUTEINFO shExInfo = {0};
-                        shExInfo.cbSize = sizeof(SHELLEXECUTEINFO);
-                        shExInfo.fMask = SEE_MASK_UNICODE;
-                        shExInfo.hwnd = *this;
-                        shExInfo.lpFile = m_items[selItem].filepath.c_str();
-                        shExInfo.nShow = SW_SHOW;
-                        ShellExecuteEx(&shExInfo);
-                        return true;
+                        int selItem = GetSelectedListIndex(iItem);
+                        if ((selItem >= 0)&&(selItem < (int)m_items.size()))
+                        {
+                            SHELLEXECUTEINFO shExInfo = {0};
+                            shExInfo.cbSize = sizeof(SHELLEXECUTEINFO);
+                            shExInfo.fMask = SEE_MASK_UNICODE;
+                            shExInfo.hwnd = *this;
+                            shExInfo.lpFile = m_items[selItem].filepath.c_str();
+                            shExInfo.nShow = SW_SHOW;
+                            ShellExecuteEx(&shExInfo);
+                        }
                     }
+                    return true;
                 }
             }
             break;
