@@ -1184,19 +1184,12 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
             if (dotPos != wstring::npos)
                 ext = inf.filepath.substr(dotPos);
 
-            // some scripting languages (e.g. python) will execute the document
-            // instead of open it. Try to identify these cases.
             DWORD buflen = 0;
-            AssocQueryString(ASSOCF_INIT_DEFAULTTOSTAR, ASSOCSTR_COMMAND, ext.c_str(), _T("open"), NULL, &buflen);
+            AssocQueryString(ASSOCF_INIT_DEFAULTTOSTAR, ASSOCSTR_COMMAND, ext.c_str(), NULL, NULL, &buflen);
             TCHAR * cmdbuf = new TCHAR[buflen + 1];
-            AssocQueryString(ASSOCF_INIT_DEFAULTTOSTAR, ASSOCSTR_COMMAND, ext.c_str(), _T("open"), cmdbuf, &buflen);
+            AssocQueryString(ASSOCF_INIT_DEFAULTTOSTAR, ASSOCSTR_COMMAND, ext.c_str(), NULL, cmdbuf, &buflen);
             wstring application = cmdbuf;
             delete [] cmdbuf;
-            if (   (application.find(_T("%2")) != wstring::npos)
-                || (application.find(_T("%*")) != wstring::npos))
-            {
-                verb = _T("edit");
-            }
             // normalize application path
             DWORD len = ExpandEnvironmentStrings (application.c_str(), NULL, 0);
             cmdbuf = new TCHAR[len+1];
