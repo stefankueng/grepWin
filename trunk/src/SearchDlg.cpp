@@ -260,10 +260,10 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             DialogEnableWindow(IDC_ADDTOBOOKMARKS, FALSE);
             DialogEnableWindow(IDC_EXCLUDEDIRSPATTERN, !!m_bIncludeSubfolders);
 
-            bool bText = (IsDlgButtonChecked(*this, IDC_TEXTRADIO) == BST_CHECKED);
-            DialogEnableWindow(IDC_REPLACETEXT, !bText);
-            DialogEnableWindow(IDC_REPLACE, !bText);
-            DialogEnableWindow(IDC_CREATEBACKUP, !bText);
+            bool bText = (::GetWindowTextLength(GetDlgItem(*this, IDC_SEARCHTEXT)) > 0);
+            DialogEnableWindow(IDC_REPLACETEXT, bText);
+            DialogEnableWindow(IDC_REPLACE, bText);
+            DialogEnableWindow(IDC_CREATEBACKUP, bText);
             ::SetDlgItemText(*this, IDOK, _T("&Search"));
             CheckRadioButton(*this, IDC_RESULTFILES, IDC_RESULTCONTENT, IDC_RESULTFILES);
 
@@ -623,6 +623,9 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 int len = CheckRegex();
                 DialogEnableWindow(IDC_ADDTOBOOKMARKS, len > 0);
                 DialogEnableWindow(IDC_INCLUDEBINARY, len > 0);
+                DialogEnableWindow(IDC_REPLACETEXT, len > 0);
+                DialogEnableWindow(IDC_REPLACE, len > 0);
+                DialogEnableWindow(IDC_CREATEBACKUP, len > 0);
             }
         }
         break;
@@ -652,10 +655,10 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
     case IDC_REGEXRADIO:
     case IDC_TEXTRADIO:
         {
-            bool bText = (IsDlgButtonChecked(*this, IDC_TEXTRADIO) == BST_CHECKED);
-            DialogEnableWindow(IDC_REPLACETEXT, !bText);
-            DialogEnableWindow(IDC_REPLACE, !bText);
-            DialogEnableWindow(IDC_CREATEBACKUP, !bText);
+            bool bText = (::GetWindowTextLength(GetDlgItem(*this, IDC_SEARCHTEXT)) > 0);
+            DialogEnableWindow(IDC_REPLACETEXT, bText);
+            DialogEnableWindow(IDC_REPLACE, bText);
+            DialogEnableWindow(IDC_CREATEBACKUP, bText);
             CheckRegex();
         }
         break;
