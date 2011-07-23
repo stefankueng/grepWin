@@ -260,10 +260,6 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             DialogEnableWindow(IDC_ADDTOBOOKMARKS, FALSE);
             DialogEnableWindow(IDC_EXCLUDEDIRSPATTERN, !!m_bIncludeSubfolders);
 
-            bool bText = (::GetWindowTextLength(GetDlgItem(*this, IDC_SEARCHTEXT)) > 0);
-            DialogEnableWindow(IDC_REPLACETEXT, bText);
-            DialogEnableWindow(IDC_REPLACE, bText);
-            DialogEnableWindow(IDC_CREATEBACKUP, bText);
             ::SetDlgItemText(*this, IDOK, _T("&Search"));
             CheckRadioButton(*this, IDC_RESULTFILES, IDC_RESULTCONTENT, IDC_RESULTFILES);
 
@@ -623,8 +619,6 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 int len = CheckRegex();
                 DialogEnableWindow(IDC_ADDTOBOOKMARKS, len > 0);
                 DialogEnableWindow(IDC_INCLUDEBINARY, len > 0);
-                DialogEnableWindow(IDC_REPLACETEXT, len > 0);
-                DialogEnableWindow(IDC_CREATEBACKUP, len > 0);
             }
         }
         break;
@@ -654,10 +648,6 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
     case IDC_REGEXRADIO:
     case IDC_TEXTRADIO:
         {
-            bool bText = (::GetWindowTextLength(GetDlgItem(*this, IDC_SEARCHTEXT)) > 0);
-            DialogEnableWindow(IDC_REPLACETEXT, bText);
-            DialogEnableWindow(IDC_REPLACE, bText);
-            DialogEnableWindow(IDC_CREATEBACKUP, bText);
             CheckRegex();
         }
         break;
@@ -2046,26 +2036,30 @@ int CSearchDlg::CheckRegex()
                 SetDlgItemText(*this, IDC_REGEXOKLABEL, _T("regex ok"));
                 DialogEnableWindow(IDOK, true);
                 DialogEnableWindow(IDC_REPLACE, true);
+                DialogEnableWindow(IDC_CREATEBACKUP, true);
             }
             else
             {
                 SetDlgItemText(*this, IDC_REGEXOKLABEL, _T("invalid regex!"));
                 DialogEnableWindow(IDOK, false);
                 DialogEnableWindow(IDC_REPLACE, false);
+                DialogEnableWindow(IDC_CREATEBACKUP, false);
             }
         }
         else
         {
             SetDlgItemText(*this, IDC_REGEXOKLABEL, _T(""));
             DialogEnableWindow(IDOK, true);
-            DialogEnableWindow(IDC_REPLACE, true);
+            DialogEnableWindow(IDC_REPLACE, false);
+            DialogEnableWindow(IDC_CREATEBACKUP, false);
         }
     }
     else
     {
         SetDlgItemText(*this, IDC_REGEXOKLABEL, _T(""));
         DialogEnableWindow(IDOK, true);
-        DialogEnableWindow(IDC_REPLACE, true);
+        DialogEnableWindow(IDC_REPLACE, len>0);
+        DialogEnableWindow(IDC_CREATEBACKUP, len>0);
     }
 
     return len;
