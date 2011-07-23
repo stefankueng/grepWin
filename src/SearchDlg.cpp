@@ -1203,6 +1203,7 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
 
 
             bool filelist = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
+            wstring linenumberparam_before;
             wstring linenumberparam;
             if (!filelist)
             {
@@ -1254,8 +1255,8 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
                     {
                         // Notepad2
                         TCHAR buf[MAX_PATH] = {0};
-                        _stprintf_s(buf, MAX_PATH, _T("/G %s"), textlinebuf);
-                        linenumberparam = buf;
+                        _stprintf_s(buf, MAX_PATH, _T("/g %s"), textlinebuf);
+                        linenumberparam_before = buf;
                     }
                 }
             }
@@ -1275,6 +1276,10 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
                 repl = _T("\"") + inf.filepath + _T("\"");
             else
                 repl = inf.filepath;
+            if (linenumberparam_before.size())
+            {
+                repl = linenumberparam_before + L" " + repl;
+            }
             it_begin = search(application.begin(), application.end(), tag.begin(), tag.end());
             if (it_begin != application.end())
             {
