@@ -175,4 +175,5 @@ private:
     CRegStdString           m_regPattern;
     CRegStdString           m_regExcludeDirsPattern;
     CRegStdString           m_regSearchPath;
+    CRegStdWORD             m_regOnlyOne;
 };
