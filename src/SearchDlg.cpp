@@ -624,7 +624,6 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 DialogEnableWindow(IDC_ADDTOBOOKMARKS, len > 0);
                 DialogEnableWindow(IDC_INCLUDEBINARY, len > 0);
                 DialogEnableWindow(IDC_REPLACETEXT, len > 0);
-                DialogEnableWindow(IDC_REPLACE, len > 0);
                 DialogEnableWindow(IDC_CREATEBACKUP, len > 0);
             }
         }
