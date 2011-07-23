@@ -21,12 +21,25 @@
 #include "SearchDlg.h"
 #include "AboutDlg.h"
 #include "CmdLineParser.h"
-
+#include "Registry.h"
 
 // Global Variables:
 HINSTANCE hInst;                                // current instance
 
 // Forward declarations of functions included in this code module:
+
+BOOL CALLBACK windowenumerator(__in  HWND hwnd,__in  LPARAM lParam)
+{
+    HWND * pWnd = (HWND*)lParam;
+    WCHAR buf[MAX_PATH] = {0};
+    GetWindowText(hwnd, buf, MAX_PATH);
+    if (wcsncmp(buf, L"grepWin :", 9) == 0)
+    {
+        *pWnd = hwnd;
+        return FALSE;
+    }
+    return TRUE;
+}
 
 int APIENTRY _tWinMain(HINSTANCE hInstance,
                      HINSTANCE hPrevInstance,
@@ -53,7 +66,8 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
     CCmdLineParser parser(lpCmdLine);
 
     bool bQuit = false;
-    HWND hWnd = FindWindow(NULL, _T("grepWin"));        // try finding the running instance of this app
+    HWND hWnd = NULL;
+    EnumWindows(windowenumerator, (LPARAM)&hWnd);
     if (hWnd)
     {
         UINT GREPWIN_STARTUPMSG = RegisterWindowMessage(_T("grepWin_StartupMessage"));
@@ -67,6 +81,17 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
             SetForegroundWindow(hWnd);                                  //set the window to front
             bQuit = true;
         }
+        else if (DWORD(CRegStdWORD(_T("Software\\grepWin\\onlyone"), 0)))
+        {
+            wstring spath = parser.GetVal(_T("searchpath"));
+            COPYDATASTRUCT CopyData = {0};
+            CopyData.lpData = (LPVOID)spath.c_str();
+            CopyData.cbData = (DWORD)spath.size()*sizeof(wchar_t);
+            SendMessage(hWnd, WM_COPYDATA, 1, (LPARAM)&CopyData);
+            SetForegroundWindow(hWnd);                                  //set the window to front
+            bQuit = true;
+        }
+
     }
 
     int ret = 0;

@@ -95,6 +95,7 @@ CSearchDlg::CSearchDlg(HWND hParent) : m_searchedItems(0)
     , m_regPattern(_T("Software\\grepWin\\pattern"))
     , m_regExcludeDirsPattern(_T("Software\\grepWin\\ExcludeDirsPattern"))
     , m_regSearchPath(_T("Software\\grepWin\\searchpath"))
+    , m_regOnlyOne(_T("Software\\grepWin\\onlyone"), 0)
 {
     m_startTime = GetTickCount();
 }
@@ -110,7 +111,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
     UNREFERENCED_PARAMETER(lParam);
     if (uMsg == GREPWIN_STARTUPMSG)
     {
-        if ((GetTickCount() - 1000) < m_startTime)
+        if ((GetTickCount() - 2000) < m_startTime)
         {
             m_startTime = GetTickCount();
             return TRUE;
@@ -126,6 +127,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             AddToolTip(IDC_SEARCHPATH, _T("the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"));
             AddToolTip(IDC_DOTMATCHNEWLINE, _T("\\n is matched by '.'"));
             AddToolTip(IDC_SEARCHTEXT, _T("a regular expression used for searching. Press F1 for more info."));
+            AddToolTip(IDC_ONLYONE, _T("reuse grepWin instances."));
 
             if (m_searchpath.empty())
             {
@@ -242,6 +244,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                 m_bAllSize = !!DWORD(m_regAllSize);
                 m_sizeCmp = (int)DWORD(m_regSizeCombo);
             }
+
             SendDlgItemMessage(hwndDlg, IDC_SIZECOMBO, CB_SETCURSEL, m_sizeCmp, 0);
 
             SendDlgItemMessage(hwndDlg, IDC_INCLUDESUBFOLDERS, BM_SETCHECK, m_bIncludeSubfolders ? BST_CHECKED : BST_UNCHECKED, 0);
@@ -252,6 +255,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             SendDlgItemMessage(hwndDlg, IDC_INCLUDEBINARY, BM_SETCHECK, m_bIncludeBinary ? BST_CHECKED : BST_UNCHECKED, 0);
             SendDlgItemMessage(hwndDlg, IDC_CASE_SENSITIVE, BM_SETCHECK, m_bCaseSensitive ? BST_CHECKED : BST_UNCHECKED, 0);
             SendDlgItemMessage(hwndDlg, IDC_DOTMATCHNEWLINE, BM_SETCHECK, m_bDotMatchesNewline ? BST_CHECKED : BST_UNCHECKED, 0);
+            SendDlgItemMessage(hwndDlg, IDC_ONLYONE, BM_SETCHECK, DWORD(m_regOnlyOne) ? BST_CHECKED : BST_UNCHECKED, 0);
 
             CheckRadioButton(hwndDlg, IDC_REGEXRADIO, IDC_TEXTRADIO, DWORD(m_regUseRegex) ? IDC_REGEXRADIO : IDC_TEXTRADIO);
             CheckRadioButton(hwndDlg, IDC_ALLSIZERADIO, IDC_SIZERADIO, m_bAllSize ? IDC_ALLSIZERADIO : IDC_SIZERADIO);
@@ -308,6 +312,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             m_resizer.AddControl(hwndDlg, IDC_FILEPATTERNREGEX, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_FILEPATTERNTEXT, RESIZER_TOPLEFT);
 
+            m_resizer.AddControl(hwndDlg, IDC_ONLYONE, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_REPLACE, RESIZER_TOPRIGHT);
             m_resizer.AddControl(hwndDlg, IDOK, RESIZER_TOPRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_GROUPSEARCHRESULTS, RESIZER_TOPLEFTBOTTOMRIGHT);
@@ -439,7 +444,14 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                 wstring newpath = wstring((LPCTSTR)pCopyData->lpData, pCopyData->cbData/sizeof(wchar_t));
                 if (!newpath.empty())
                 {
-                    m_searchpath += _T("|");
+                    TCHAR buf[MAX_PATH*4] = {0};
+                    GetDlgItemText(*this, IDC_SEARCHPATH, buf, MAX_PATH*4);
+                    m_searchpath = buf;
+
+                    if (wParam == 1)
+                        m_searchpath.clear();
+                    else
+                        m_searchpath += _T("|");
                     m_searchpath += newpath;
                     SetDlgItemText(hwndDlg, IDC_SEARCHPATH, m_searchpath.c_str());
                 }
@@ -1505,6 +1517,7 @@ bool CSearchDlg::SaveSettings()
     m_bCaseSensitive = (IsDlgButtonChecked(*this, IDC_CASE_SENSITIVE) == BST_CHECKED);
     m_bDotMatchesNewline = (IsDlgButtonChecked(*this, IDC_DOTMATCHNEWLINE) == BST_CHECKED);
 
+    m_regOnlyOne = IsDlgButtonChecked(*this, IDC_ONLYONE) == BST_CHECKED;
     m_regIncludeSystem = (DWORD)m_bIncludeSystem;
     m_regIncludeHidden = (DWORD)m_bIncludeHidden;
     m_regIncludeSubfolders = (DWORD)m_bIncludeSubfolders;
