@@ -1271,7 +1271,10 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
             }
             // replace %1 with "path/of/selected/file"
             tag = _T("%1");
-            repl = _T("\"") + inf.filepath + _T("\"");
+            if (application.find(L"rundll32.exe") == std::string::npos)
+                repl = _T("\"") + inf.filepath + _T("\"");
+            else
+                repl = inf.filepath;
             it_begin = search(application.begin(), application.end(), tag.begin(), tag.end());
             if (it_begin != application.end())
             {
