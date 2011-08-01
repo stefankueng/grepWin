@@ -310,12 +310,14 @@ void CShellContextMenu::SetObjects(const vector<wstring>& strVector)
     lpMalloc->Free(pidl);
 
     nItems = (int)strVector.size();
+    m_pidlArray = (LPITEMIDLIST *)calloc(nItems + 1, sizeof (LPITEMIDLIST));
     for (int i = 0; i < nItems; i++)
     {
-        m_psfFolder->ParseDisplayName(NULL, 0, (LPWSTR)strVector[i].c_str(), NULL, &pidl, NULL);
-        m_pidlArray = (LPITEMIDLIST *)realloc (m_pidlArray, (i + 1) * sizeof (LPITEMIDLIST));
-        m_pidlArray[i] = CopyPIDL(pidl);    // copy pidl to pidlArray
-        lpMalloc->Free(pidl);               // free pidl allocated by ParseDisplayName
+        if (SUCCEEDED(m_psfFolder->ParseDisplayName(NULL, 0, (LPWSTR)strVector[i].c_str(), NULL, &pidl, NULL)))
+        {
+            m_pidlArray[i] = CopyPIDL(pidl);    // copy pidl to pidlArray
+            lpMalloc->Free(pidl);               // free pidl allocated by ParseDisplayName
+        }
     }
     lpMalloc->Release ();
 
