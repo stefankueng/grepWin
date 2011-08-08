@@ -122,7 +122,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
     {
     case WM_INITDIALOG:
         {
-            AddToolTip(IDC_PATTERN, _T("only files that match this pattern are searched.\r\nExample: *.cpp;*.h"));
+            AddToolTip(IDC_PATTERN, _T("only files that match this pattern are searched.\r\nUse \"|\" as the delimiter.\r\nExample: *.cpp|*.h"));
             AddToolTip(IDC_EXCLUDEDIRSPATTERN, _T("you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."));
             AddToolTip(IDC_SEARCHPATH, _T("the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"));
             AddToolTip(IDC_DOTMATCHNEWLINE, _T("\\n is matched by '.'"));
@@ -1454,7 +1454,7 @@ bool CSearchDlg::SaveSettings()
     m_patterns.clear();
     do
     {
-        pos = _tcscspn(pBuf, _T(",; "));
+        pos = _tcscspn(pBuf, _T("|"));
         wstring s = wstring(pBuf, pos);
         if (!s.empty())
         {
