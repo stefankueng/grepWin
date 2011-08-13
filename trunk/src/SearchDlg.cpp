@@ -1856,7 +1856,7 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
                         ft |= boost::regbase::icase;
                     boost::wregex expression = boost::wregex(localSearchString, ft);
                     boost::match_results<wstring::const_iterator> whatc;
-                    boost::match_flag_type flags = boost::match_default;
+                    boost::match_flag_type flags = boost::match_default | boost::format_all;
                     if (!bDotMatchesNewline)
                         flags |= boost::match_not_dot_newline;
                     while (regex_search(start, end, whatc, expression, flags))
@@ -1955,7 +1955,7 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
             boost::spirit::classic::file_iterator<> end = start.make_end();
 
             boost::match_results<string::const_iterator> what;
-            boost::match_flag_type flags = boost::match_default;
+            boost::match_flag_type flags = boost::match_default | boost::format_all;
             if (!bDotMatchesNewline)
                 flags |= boost::match_not_dot_newline;
             try
