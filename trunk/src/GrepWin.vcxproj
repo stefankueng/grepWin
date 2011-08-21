@@ -187,6 +187,7 @@
     <ClCompile Include="GrepWin.cpp" />
     <ClCompile Include="hyperlink.cpp" />
     <ClCompile Include="InfoDlg.cpp" />
+    <ClCompile Include="MultiLineEditDlg.cpp" />
     <ClCompile Include="NameDlg.cpp" />
     <ClCompile Include="RegexTestDlg.cpp" />
     <ClCompile Include="RegHistory.cpp" />
@@ -224,6 +225,7 @@
     <ClInclude Include="GrepWin.h" />
     <ClInclude Include="hyperlink.h" />
     <ClInclude Include="InfoDlg.h" />
+    <ClInclude Include="MultiLineEditDlg.h" />
     <ClInclude Include="NameDlg.h" />
     <ClInclude Include="RegexTestDlg.h" />
     <ClInclude Include="RegHistory.h" />
