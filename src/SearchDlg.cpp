@@ -1201,6 +1201,15 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
                 ext = inf.filepath.substr(dotPos);
 
             DWORD buflen = 0;
+            AssocQueryString(ASSOCF_INIT_DEFAULTTOSTAR, ASSOCSTR_DDECOMMAND, ext.c_str(), NULL, NULL, &buflen);
+            if (buflen)
+            {
+                // application requires DDE to open the file:
+                // since we can't do this the easy way with CreateProcess, we use ShellExecute instead
+                ShellExecute(*this, NULL, inf.filepath.c_str(), NULL, NULL, SW_SHOW);
+                return;
+            }
+
             AssocQueryString(ASSOCF_INIT_DEFAULTTOSTAR, ASSOCSTR_COMMAND, ext.c_str(), NULL, NULL, &buflen);
             TCHAR * cmdbuf = new TCHAR[buflen + 1];
             AssocQueryString(ASSOCF_INIT_DEFAULTTOSTAR, ASSOCSTR_COMMAND, ext.c_str(), NULL, cmdbuf, &buflen);
