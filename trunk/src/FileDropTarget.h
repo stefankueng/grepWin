@@ -23,6 +23,7 @@
 #include <ShlObj.h>
 #include "UnicodeUtils.h"
 #include "maxpath.h"
+#include "auto_buffer.h"
 
 class CIDropTarget : public IDropTarget
 {
@@ -78,7 +79,7 @@ public:
             if(medium.pstm != NULL)
             {
                 const int BUF_SIZE = 10000;
-                char buff[BUF_SIZE+1];
+                auto_buffer<char> buff(BUF_SIZE+1);
                 ULONG cbRead=0;
                 HRESULT hr = medium.pstm->Read(buff, BUF_SIZE, &cbRead);
                 if( SUCCEEDED(hr) && cbRead > 0 && cbRead < BUF_SIZE)
@@ -107,7 +108,7 @@ public:
             if(medium.pstm != NULL)
             {
                 const int BUF_SIZE = 10000;
-                TCHAR buff[BUF_SIZE+1];
+                auto_buffer<char> buff(BUF_SIZE+1);
                 ULONG cbRead=0;
                 HRESULT hr = medium.pstm->Read(buff, BUF_SIZE, &cbRead);
                 if( SUCCEEDED(hr) && cbRead > 0 && cbRead < BUF_SIZE)
@@ -157,12 +158,12 @@ public:
             HDROP hDrop = (HDROP)GlobalLock(medium.hGlobal);
             if(hDrop != NULL)
             {
-                TCHAR szFileName[MAX_PATH_NEW];
+                auto_buffer<TCHAR> szFileName(MAX_PATH_NEW);
 
                 UINT cFiles = DragQueryFile(hDrop, 0xFFFFFFFF, NULL, 0);
                 for(UINT i = 0; i < cFiles; ++i)
                 {
-                    DragQueryFile(hDrop, i, szFileName, sizeof(szFileName));
+                    DragQueryFile(hDrop, i, szFileName, MAX_PATH_NEW);
                     ::SendMessage(m_hTargetWnd, WM_SETTEXT, 0, (LPARAM)szFileName);
                 }
                 //DragFinish(hDrop); // base class calls ReleaseStgMedium

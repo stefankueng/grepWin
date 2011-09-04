@@ -20,6 +20,7 @@
 #include <windowsx.h>
 #include "BrowseFolder.h"
 #include "maxpath.h"
+#include "auto_buffer.h"
 
 BOOL CBrowseFolder::m_bCheck = FALSE;
 BOOL CBrowseFolder::m_bCheck2 = FALSE;
@@ -87,7 +88,7 @@ CBrowseFolder::retVal CBrowseFolder::Show(HWND parent, std::wstring& path, const
 
     if (ret != CANCEL)
     {
-        TCHAR buf[MAX_PATH_NEW] = {0};
+        auto_buffer<TCHAR> buf(MAX_PATH_NEW);
         if (!SHGetPathFromIDList(itemIDList, buf))
             ret = NOPATH;
 
@@ -263,7 +264,7 @@ int CBrowseFolder::BrowseCallBackProc(HWND hwnd, UINT uMsg, LPARAM lParam, LPARA
     if (uMsg == BFFM_SELCHANGED)
     {
         // Set the status window to the currently selected path.
-        TCHAR szDir[MAX_PATH_NEW];
+        auto_buffer<TCHAR> szDir(MAX_PATH_NEW);
         if (SHGetPathFromIDList((LPITEMIDLIST)lParam, szDir))
         {
             SendMessage(hwnd,BFFM_SETSTATUSTEXT, 0, (LPARAM)szDir);

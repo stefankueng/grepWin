@@ -20,6 +20,7 @@
 #include "Bookmarks.h"
 #include "maxpath.h"
 #include "CmdLineParser.h"
+#include "auto_buffer.h"
 #include <shlobj.h>
 
 CBookmarks::CBookmarks(void)
@@ -32,7 +33,7 @@ CBookmarks::~CBookmarks(void)
 
 void CBookmarks::Load()
 {
-    TCHAR path[MAX_PATH_NEW] = {0};
+    auto_buffer<TCHAR> path(MAX_PATH_NEW);
     GetModuleFileName(NULL, path, MAX_PATH_NEW);
     CCmdLineParser parser(GetCommandLine());
     if ((_tcsstr(path, _T("portable")))||(parser.HasKey(_T("portable"))))
@@ -53,7 +54,7 @@ void CBookmarks::Load()
 
 void CBookmarks::Save()
 {
-    TCHAR path[MAX_PATH_NEW] = {0};
+    auto_buffer<TCHAR> path(MAX_PATH_NEW);
     GetModuleFileName(NULL, path, MAX_PATH_NEW);
     CCmdLineParser parser(GetCommandLine());
     if ((_tcsstr(path, _T("portable")))||(parser.HasKey(_T("portable"))))
