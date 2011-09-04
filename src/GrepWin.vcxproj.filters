@@ -212,6 +212,9 @@
     <ClInclude Include="MultiLineEditDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="auto_buffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\GrepWin.ico">

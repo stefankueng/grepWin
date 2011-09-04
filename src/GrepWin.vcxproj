@@ -211,6 +211,7 @@
     <ClInclude Include="AeroControls.h" />
     <ClInclude Include="AeroGlass.h" />
     <ClInclude Include="AutoComplete.h" />
+    <ClInclude Include="auto_buffer.h" />
     <ClInclude Include="BaseDialog.h" />
     <ClInclude Include="BaseWindow.h" />
     <ClInclude Include="Bookmarks.h" />
