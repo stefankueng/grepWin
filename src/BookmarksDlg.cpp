@@ -20,6 +20,7 @@
 #include "Resource.h"
 #include "maxpath.h"
 #include "BookmarksDlg.h"
+#include "auto_buffer.h"
 #include <string>
 
 #include <boost/regex.hpp>
@@ -129,7 +130,7 @@ LRESULT CBookmarksDlg::DoCommand(int id, int /*msg*/)
             int iItem = ListView_GetNextItem(GetDlgItem(*this, IDC_BOOKMARKS), -1, LVNI_SELECTED);
             if (iItem >= 0)
             {
-                TCHAR buf[MAX_PATH_NEW] = {0};
+                auto_buffer<TCHAR> buf(MAX_PATH_NEW);
                 LVITEM lv = {0};
                 lv.iItem = iItem;
                 lv.mask = LVIF_TEXT;
@@ -152,14 +153,14 @@ LRESULT CBookmarksDlg::DoCommand(int id, int /*msg*/)
             int iItem = ListView_GetNextItem(GetDlgItem(*this, IDC_BOOKMARKS), -1, LVNI_SELECTED);
             if (iItem >= 0)
             {
-                TCHAR buf[MAX_PATH_NEW] = {0};
+                auto_buffer<TCHAR> buf(MAX_PATH_NEW);
                 LVITEM lv = {0};
                 lv.iItem = iItem;
                 lv.mask = LVIF_TEXT;
                 lv.pszText = buf;
                 lv.cchTextMax = MAX_PATH_NEW;
                 ListView_GetItem(GetDlgItem(*this, IDC_BOOKMARKS), &lv);
-                m_bookmarks.RemoveBookmark(buf);
+                m_bookmarks.RemoveBookmark(buf.get());
                 ListView_DeleteItem(GetDlgItem(*this, IDC_BOOKMARKS), iItem);
             }
         }

@@ -35,6 +35,7 @@
 #include "AboutDlg.h"
 #include "InfoDlg.h"
 #include "DropFiles.h"
+#include "auto_buffer.h"
 #include <string>
 #include <iostream>
 #include <fstream>
@@ -143,7 +144,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                 TCHAR * pathbuf = new TCHAR[ret+2];
                 ret = ::GetLongPathName(m_searchpath.c_str(), pathbuf, ret+1);
                 m_searchpath = wstring(pathbuf, ret);
-                delete pathbuf;
+                delete [] pathbuf;
             }
 
             if (m_patternregex.size() == 0)
@@ -560,10 +561,10 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
     case IDC_TESTREGEX:
         {
             // get all the information we need from the dialog
-            TCHAR buf[MAX_PATH*4] = {0};
-            GetDlgItemText(*this, IDC_SEARCHTEXT, buf, MAX_PATH*4);
+            auto_buffer<TCHAR> buf(MAX_PATH_NEW);
+            GetDlgItemText(*this, IDC_SEARCHTEXT, buf, MAX_PATH_NEW);
             m_searchString = buf;
-            GetDlgItemText(*this, IDC_REPLACETEXT, buf, MAX_PATH*4);
+            GetDlgItemText(*this, IDC_REPLACETEXT, buf, MAX_PATH_NEW);
             m_replaceString = buf;
 
             SaveSettings();
@@ -582,10 +583,10 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
         break;
     case IDC_SEARCHPATHBROWSE:
         {
-            TCHAR path[MAX_PATH_NEW] = {0};
+            auto_buffer<TCHAR> path(MAX_PATH_NEW);
             CBrowseFolder browse;
 
-            GetDlgItemText(*this, IDC_SEARCHPATH, path, MAX_PATH*4);
+            GetDlgItemText(*this, IDC_SEARCHPATH, path, MAX_PATH_NEW);
             browse.SetInfo(_T("Select path to search"));
             if (browse.Show(*this, path, MAX_PATH_NEW, m_searchpath.c_str()) == CBrowseFolder::OK)
             {
@@ -598,10 +599,10 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
         {
             if (msg == EN_CHANGE)
             {
-                TCHAR buf[MAX_PATH*4] = {0};
-                GetDlgItemText(*this, IDC_SEARCHTEXT, buf, MAX_PATH*4);
+                auto_buffer<TCHAR> buf(MAX_PATH_NEW);
+                GetDlgItemText(*this, IDC_SEARCHTEXT, buf, MAX_PATH_NEW);
                 int len = (int)_tcslen(buf);
-                GetDlgItemText(*this, IDC_SEARCHPATH, buf, MAX_PATH*4);
+                GetDlgItemText(*this, IDC_SEARCHPATH, buf, MAX_PATH_NEW);
                 bool bIsDir = !!PathIsDirectory(buf);
                 if ((!bIsDir) && _tcschr(buf, '|'))
                     bIsDir = true;  // assume directories in case of multiple paths
@@ -677,10 +678,10 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
         break;
     case IDC_ADDTOBOOKMARKS:
         {
-            TCHAR buf[MAX_PATH*4] = {0};
-            GetDlgItemText(*this, IDC_SEARCHTEXT, buf, MAX_PATH*4);
+            auto_buffer<TCHAR> buf(MAX_PATH_NEW);
+            GetDlgItemText(*this, IDC_SEARCHTEXT, buf, MAX_PATH_NEW);
             m_searchString = buf;
-            GetDlgItemText(*this, IDC_REPLACETEXT, buf, MAX_PATH*4);
+            GetDlgItemText(*this, IDC_REPLACETEXT, buf, MAX_PATH_NEW);
             m_replaceString = buf;
             bool bUseRegex = (IsDlgButtonChecked(*this, IDC_REGEXRADIO) == BST_CHECKED);
 
@@ -813,7 +814,7 @@ bool CSearchDlg::AddFoundEntry(CSearchInfo * pInfo, bool bOnlyListControl)
         lv.mask = LVIF_TEXT;
         lv.iItem = ret;
         lv.iSubItem = 1;
-        TCHAR sb[MAX_PATH_NEW] = {0};
+        auto_buffer<TCHAR> sb(MAX_PATH_NEW);
         if (!pInfo->folder)
             StrFormatByteSizeW(pInfo->filesize, sb, 20);
         lv.pszText = sb;
@@ -895,7 +896,7 @@ bool CSearchDlg::AddFoundEntry(CSearchInfo * pInfo, bool bOnlyListControl)
                     lv.iItem = ret;
 
                     lv.iSubItem = 1;
-                    TCHAR sb[MAX_PATH_NEW] = {0};
+                    auto_buffer<TCHAR> sb(MAX_PATH_NEW);
                     _stprintf_s(sb, MAX_PATH_NEW, _T("%ld"), pInfo->matchlinesnumbers[subIndex]);
                     lv.pszText = sb;
                     ListView_SetItem(hListControl, &lv);
@@ -949,7 +950,7 @@ void CSearchDlg::FillResultList()
                 lv.iItem = ret;
 
                 lv.iSubItem = 1;
-                TCHAR sb[MAX_PATH_NEW] = {0};
+                auto_buffer<TCHAR> sb(MAX_PATH_NEW);
                 if (!pInfo->folder)
                     StrFormatByteSizeW(pInfo->filesize, sb, 20);
                 lv.pszText = sb;
@@ -970,19 +971,19 @@ void CSearchDlg::FillResultList()
                 switch (pInfo->encoding)
                 {
                 case CTextFile::ANSI:
-                    _tcscpy_s(sb, MAX_PATH*4, _T("ANSI"));
+                    _tcscpy_s(sb, MAX_PATH_NEW, _T("ANSI"));
                     break;
                 case CTextFile::UNICODE_LE:
-                    _tcscpy_s(sb, MAX_PATH*4, _T("UNICODE"));
+                    _tcscpy_s(sb, MAX_PATH_NEW, _T("UNICODE"));
                     break;
                 case CTextFile::UTF8:
-                    _tcscpy_s(sb, MAX_PATH*4, _T("UTF8"));
+                    _tcscpy_s(sb, MAX_PATH_NEW, _T("UTF8"));
                     break;
                 case CTextFile::BINARY:
-                    _tcscpy_s(sb, MAX_PATH*4, _T("BINARY"));
+                    _tcscpy_s(sb, MAX_PATH_NEW, _T("BINARY"));
                     break;
                 default:
-                    _tcscpy_s(sb, MAX_PATH*4, _T(""));
+                    _tcscpy_s(sb, MAX_PATH_NEW, _T(""));
                     break;
                 }
                 ListView_SetItem(hListControl, &lv);
@@ -1040,7 +1041,7 @@ void CSearchDlg::FillResultList()
                         lv.iItem = ret;
 
                         lv.iSubItem = 1;
-                        TCHAR sb[MAX_PATH_NEW] = {0};
+                        auto_buffer<TCHAR> sb(MAX_PATH_NEW);
                         _stprintf_s(sb, MAX_PATH_NEW, _T("%ld"), pInfo->matchlinesnumbers[subIndex]);
                         lv.pszText = sb;
                         ListView_SetItem(hListControl, &lv);
@@ -1653,17 +1654,17 @@ bool grepWin_match_i(const wstring& the_regex, const TCHAR *pText)
 
 DWORD CSearchDlg::SearchThread()
 {
-    TCHAR pathbuf[MAX_PATH_NEW] = {0};
+    auto_buffer<TCHAR> pathbuf(MAX_PATH_NEW);
 
     // split the path string into single paths and
     // add them to an array
-    const TCHAR * pBuf = m_searchpath.c_str();
+    const TCHAR * pBufSearchPath = m_searchpath.c_str();
     size_t pos = 0;
     vector<wstring> pathvector;
     do
     {
-        pos = _tcscspn(pBuf, _T("|"));
-        wstring s = wstring(pBuf, pos);
+        pos = _tcscspn(pBufSearchPath, _T("|"));
+        wstring s = wstring(pBufSearchPath, pos);
         if (!s.empty())
         {
 
@@ -1695,9 +1696,9 @@ DWORD CSearchDlg::SearchThread()
             s = prettypath;
             pathvector.push_back(s);
         }
-        pBuf += pos;
-        pBuf++;
-    } while(*pBuf && (*(pBuf-1)));
+        pBufSearchPath += pos;
+        pBufSearchPath++;
+    } while(*pBufSearchPath && (*(pBufSearchPath-1)));
 
     SendMessage(*this, SEARCH_START, 0, 0);
     for (vector<wstring>::const_iterator it = pathvector.begin(); it != pathvector.end(); ++it)
@@ -1761,7 +1762,7 @@ DWORD CSearchDlg::SearchThread()
                     int nFound = -1;
                     if ((bSearch && bPattern)||(bAlwaysSearch))
                     {
-                        CSearchInfo sinfo(pathbuf);
+                        CSearchInfo sinfo(pathbuf.get());
                         sinfo.filesize = nFileSizeLow;
                         sinfo.modifiedtime = ft;
                         if (m_searchString.empty())
@@ -1792,7 +1793,7 @@ DWORD CSearchDlg::SearchThread()
                         // match the specified file pattern
                         if (MatchPath(pathbuf))
                         {
-                            CSearchInfo sinfo(pathbuf);
+                            CSearchInfo sinfo(pathbuf.get());
                             sinfo.modifiedtime = pFindData->ftLastWriteTime;
                             sinfo.folder = true;
                             SendMessage(*this, SEARCH_FOUND, 1, (LPARAM)&sinfo);
@@ -1908,9 +1909,6 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
                     }
                     if ((m_bReplace)&&(nFound))
                     {
-                        boost::match_flag_type flags = boost::match_default | boost::format_all;
-                        if (!bDotMatchesNewline)
-                            flags |= boost::match_not_dot_newline;
                         wstring replaced = regex_replace(textfile.GetFileString(), expression, m_replaceString, flags);
                         if (replaced.compare(textfile.GetFileString()))
                         {

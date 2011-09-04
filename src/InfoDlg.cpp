@@ -19,6 +19,7 @@
 #include "stdafx.h"
 #include "InfoDlg.h"
 #include "maxpath.h"
+#include "auto_buffer.h"
 
 #include <mshtmhst.h>
 
@@ -56,7 +57,7 @@ BOOL CInfoDlg::ShowDialog(UINT idAboutHTMLID, HINSTANCE hInstance)
             if (GetModuleFileName(hInstance, lpszModule, MAX_PATH_NEW))
             {
                 //Add the IE Res protocol
-                TCHAR strResourceURL[MAX_PATH_NEW];
+                auto_buffer<TCHAR> strResourceURL(MAX_PATH_NEW);
                 _stprintf_s(strResourceURL, MAX_PATH_NEW, _T("res://%s/%d"), lpszModule, idAboutHTMLID);
                 int iLength = (int)_tcslen(strResourceURL);
                 LPWSTR lpWideCharStr = NULL;
@@ -71,7 +72,7 @@ BOOL CInfoDlg::ShowDialog(UINT idAboutHTMLID, HINSTANCE hInstance)
                     pfnShowHTMLDialog(NULL,pmk,NULL,NULL,NULL);
                     bSuccess = TRUE;
                 }
-                delete lpWideCharStr;
+                delete [] lpWideCharStr;
             }
             delete [] lpszModule;
         }

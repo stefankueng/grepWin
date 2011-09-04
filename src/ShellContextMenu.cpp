@@ -101,9 +101,9 @@ BOOL CShellContextMenu::GetContextMenu(HWND hWnd, void ** ppContextMenu, int & i
 
     if (icm1)
     {   // since we got an IContextMenu interface we can now obtain the higher version interfaces via that
-        if (icm1->QueryInterface(IID_IContextMenu3, ppContextMenu) == NOERROR)
+        if (icm1->QueryInterface(IID_IContextMenu3, ppContextMenu) == S_OK)
             iMenuType = 3;
-        else if (icm1->QueryInterface(IID_IContextMenu2, ppContextMenu) == NOERROR)
+        else if (icm1->QueryInterface(IID_IContextMenu2, ppContextMenu) == S_OK)
             iMenuType = 2;
 
         if (*ppContextMenu)
@@ -180,8 +180,8 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
     if (m_strVector.size() == 1)
     {
         ::InsertMenu(m_Menu, 1, MF_BYPOSITION | MF_STRING, 1, _T("Open Containing Folder"));
-        ::InsertMenu(m_Menu, 2, MF_BYPOSITION | MF_STRING, 2, _T("Copy path(s) to clipboard"));
-        ::InsertMenu(m_Menu, 3, MF_BYPOSITION | MF_STRING, 3, _T("Copy filename(s) to clipboard"));
+        ::InsertMenu(m_Menu, 2, MF_BYPOSITION | MF_STRING, 2, _T("Copy path to clipboard"));
+        ::InsertMenu(m_Menu, 3, MF_BYPOSITION | MF_STRING, 3, _T("Copy filename to clipboard"));
         ::InsertMenu(m_Menu, 4, MF_SEPARATOR|MF_BYPOSITION, 0, NULL);
     }
     else if (m_strVector.size() > 1)
@@ -441,7 +441,7 @@ HRESULT STDMETHODCALLTYPE CIShellFolderHook::GetUIObjectOf( HWND hwndOwner, UINT
             nLength += (int)m_pShellContextMenu->m_strVector[i].size();
             nLength += 1; // '\0' separator
         }
-        int nBufferSize = sizeof(DROPFILES) + (nLength+1)*sizeof(TCHAR);
+        int nBufferSize = sizeof(DROPFILES) + ((nLength+2)*sizeof(TCHAR));
         char * pBuffer = new char[nBufferSize];
         SecureZeroMemory(pBuffer, nBufferSize);
         DROPFILES* df = (DROPFILES*)pBuffer;
@@ -461,24 +461,25 @@ HRESULT STDMETHODCALLTYPE CIShellFolderHook::GetUIObjectOf( HWND hwndOwner, UINT
         *pCurrentFilename = '\0'; // terminate array
         STGMEDIUM * pmedium = new STGMEDIUM;
         pmedium->tymed = TYMED_HGLOBAL;
-        pmedium->hGlobal = GlobalAlloc(GMEM_ZEROINIT|GMEM_MOVEABLE|GMEM_DDESHARE, nBufferSize);
+        pmedium->hGlobal = GlobalAlloc(GMEM_ZEROINIT|GMEM_MOVEABLE|GMEM_DDESHARE, nBufferSize+20);
         if (pmedium->hGlobal)
         {
             LPVOID pMem = ::GlobalLock(pmedium->hGlobal);
             if (pMem)
                 memcpy(pMem, pBuffer, nBufferSize);
             GlobalUnlock(pmedium->hGlobal);
+            FORMATETC formatetc = {0};
+            formatetc.cfFormat = CF_HDROP;
+            formatetc.dwAspect = DVASPECT_CONTENT;
+            formatetc.lindex = -1;
+            formatetc.tymed = TYMED_HGLOBAL;
+            pmedium->pUnkForRelease = NULL;
+            hres = idata->SetData(&formatetc, pmedium, TRUE);
+            delete [] pBuffer;
+            return hres;
         }
-        FORMATETC formatetc = {0};
-        formatetc.cfFormat = CF_HDROP;
-        formatetc.dwAspect = DVASPECT_CONTENT;
-        formatetc.lindex = -1;
-        formatetc.tymed = TYMED_HGLOBAL;
-        pmedium->pUnkForRelease = NULL;
-        hres = idata->SetData(&formatetc, pmedium, TRUE);
         delete [] pBuffer;
-        delete pmedium;
-        return hres;
+        return E_OUTOFMEMORY;
     }
     else 
     {

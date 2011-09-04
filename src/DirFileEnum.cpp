@@ -18,7 +18,7 @@
 //
 #include "StdAfx.h"
 #include "DirFileEnum.h"
-
+#include "auto_buffer.h"
 
 CSimpleFileFind::CSimpleFileFind(LPCTSTR szPath, LPCTSTR pPattern) :
 m_dError(ERROR_SUCCESS),
@@ -38,8 +38,7 @@ m_bFirst(TRUE)
             }
         }
     }
-
-    TCHAR patternpath[MAX_PATH_NEW];
+    auto_buffer<TCHAR> patternpath(MAX_PATH_NEW);
     _tcscpy_s(patternpath, MAX_PATH_NEW, m_szPathPrefix);
     _tcscat_s(patternpath, MAX_PATH_NEW, pPattern);
     m_hFindFile = ::FindFirstFile(patternpath, &m_FindFileData);
@@ -170,7 +169,7 @@ BOOL CDirFileEnum::NextFile(LPTSTR szResult, bool bRecurse, bool* pbIsDirectory)
     }
     else if (bRecurse && m_seStack && m_seStack->IsDirectory())
     {
-        TCHAR path[MAX_PATH_NEW];
+        auto_buffer<TCHAR> path(MAX_PATH_NEW);
         m_seStack->GetFilePath(path);
         PushStack(path);
     }

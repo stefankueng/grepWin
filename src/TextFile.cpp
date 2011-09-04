@@ -19,6 +19,7 @@
 #include "StdAfx.h"
 #include "TextFile.h"
 #include "maxpath.h"
+#include "auto_buffer.h"
 
 CTextFile::CTextFile(void) : pFileBuf(NULL)
     , filelen(0)
@@ -56,7 +57,7 @@ bool CTextFile::Load(LPCTSTR path, UnicodeType& type, bool bUTF8)
     if (pFileBuf)
         delete [] pFileBuf;
     pFileBuf = NULL;
-    TCHAR pathbuf[MAX_PATH_NEW] = {0};
+    auto_buffer<TCHAR> pathbuf(MAX_PATH_NEW);
     HANDLE hFile = INVALID_HANDLE_VALUE;
     int retrycounter = 0;
 
