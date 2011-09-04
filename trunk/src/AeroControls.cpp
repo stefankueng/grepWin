@@ -60,7 +60,7 @@ bool AeroControlBase::SubclassControl(HWND hControl)
 {
     bool bRet = false;
     TCHAR szWndClassName[MAX_PATH];
-    if (GetClassName(hControl, szWndClassName, sizeof(szWndClassName)))
+    if (GetClassName(hControl, szWndClassName, _countof(szWndClassName)))
     {
         if (!_tcscmp(szWndClassName, _T("Static")))
         {
