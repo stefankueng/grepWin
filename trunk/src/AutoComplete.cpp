@@ -206,7 +206,7 @@ STDMETHODIMP CAutoCompleteEnum::Next(ULONG celt, LPOLESTR* rgelt, ULONG* pceltFe
         wcscpy_s(rgelt[i], m_vecStrings[m_iCur].size() + 1, m_vecStrings[m_iCur].c_str());
 
         if (pceltFetched)
-            *pceltFetched++;
+            (*pceltFetched)++;
 
         m_iCur++;
     }
