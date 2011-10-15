@@ -1996,6 +1996,10 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
             {
                 return -1;
             }
+            catch (...)
+            {
+                return -1;
+            }
         }
     }
 
