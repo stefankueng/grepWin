@@ -1087,7 +1087,7 @@ void CSearchDlg::ShowContextMenu(int x, int y)
         while ((iItem = ListView_GetNextItem(hListControl, iItem, LVNI_SELECTED)) != (-1))
         {
             ListView_GetItemText(hListControl, iItem, 1, numbuf, 40);
-            int line = _wtoi(numbuf);
+            DWORD line = _wtoi(numbuf);
             if (line)
             {
                 const auto matchlinesnumbers = m_items[GetSelectedListIndex(iItem)].matchlinesnumbers;
