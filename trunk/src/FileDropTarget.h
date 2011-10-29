@@ -99,7 +99,7 @@ public:
                         std::wstring str = CUnicodeUtils::StdGetUnicode(std::string(buff));
                         ::SendMessage(m_hTargetWnd, EM_REPLACESEL, TRUE, (LPARAM)str.c_str());
                         cbRead=0;
-                        hr = medium.pstm->Read(buff, BUF_SIZE, &cbRead);
+                        hr = medium.pstm->Read(buff.get(), BUF_SIZE, &cbRead);
                     }
             }
         }
@@ -116,7 +116,7 @@ public:
                     buff[cbRead]=0;
                     LRESULT nLen = ::SendMessage(m_hTargetWnd, WM_GETTEXTLENGTH, 0, 0);
                     ::SendMessage(m_hTargetWnd, EM_SETSEL, nLen, -1);
-                    ::SendMessage(m_hTargetWnd, EM_REPLACESEL, TRUE, (LPARAM)buff);
+                    ::SendMessage(m_hTargetWnd, EM_REPLACESEL, TRUE, (LPARAM)buff.get());
                 }
                 else
                     for(;(hr==S_OK && cbRead >0) && SUCCEEDED(hr) ;)
@@ -124,9 +124,9 @@ public:
                         buff[cbRead]=0;
                         LRESULT nLen = ::SendMessage(m_hTargetWnd, WM_GETTEXTLENGTH, 0, 0);
                         ::SendMessage(m_hTargetWnd, EM_SETSEL, nLen, -1);
-                        ::SendMessage(m_hTargetWnd, EM_REPLACESEL, TRUE, (LPARAM)buff);
+                        ::SendMessage(m_hTargetWnd, EM_REPLACESEL, TRUE, (LPARAM)buff.get());
                         cbRead=0;
-                        hr = medium.pstm->Read(buff, BUF_SIZE, &cbRead);
+                        hr = medium.pstm->Read(buff.get(), BUF_SIZE, &cbRead);
                     }
             }
         }
@@ -164,7 +164,7 @@ public:
                 for(UINT i = 0; i < cFiles; ++i)
                 {
                     DragQueryFile(hDrop, i, szFileName, MAX_PATH_NEW);
-                    ::SendMessage(m_hTargetWnd, WM_SETTEXT, 0, (LPARAM)szFileName);
+                    ::SendMessage(m_hTargetWnd, WM_SETTEXT, 0, (LPARAM)szFileName.get());
                 }
                 //DragFinish(hDrop); // base class calls ReleaseStgMedium
             }
