@@ -20,6 +20,7 @@
 #include "ShellContextMenu.h"
 #include "shellapi.h"
 #include "StringUtils.h"
+#include <algorithm>
 
 #define MIN_ID 5
 #define MAX_ID 10000
@@ -182,13 +183,17 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
         ::InsertMenu(m_Menu, 1, MF_BYPOSITION | MF_STRING, 1, _T("Open Containing Folder"));
         ::InsertMenu(m_Menu, 2, MF_BYPOSITION | MF_STRING, 2, _T("Copy path to clipboard"));
         ::InsertMenu(m_Menu, 3, MF_BYPOSITION | MF_STRING, 3, _T("Copy filename to clipboard"));
-        ::InsertMenu(m_Menu, 4, MF_SEPARATOR|MF_BYPOSITION, 0, NULL);
+        if (m_lineVector.size())
+            ::InsertMenu(m_Menu, 4, MF_BYPOSITION | MF_STRING, 4, _T("Copy text result to clipboard"));
+        ::InsertMenu(m_Menu, 5, MF_SEPARATOR|MF_BYPOSITION, 0, NULL);
     }
     else if (m_strVector.size() > 1)
     {
-        ::InsertMenu(m_Menu, 2, MF_BYPOSITION | MF_STRING, 2, _T("Copy path(s) to clipboard"));
-        ::InsertMenu(m_Menu, 3, MF_BYPOSITION | MF_STRING, 3, _T("Copy filename(s) to clipboard"));
-        ::InsertMenu(m_Menu, 4, MF_SEPARATOR|MF_BYPOSITION, 0, NULL);
+        ::InsertMenu(m_Menu, 2, MF_BYPOSITION | MF_STRING, 2, _T("Copy paths to clipboard"));
+        ::InsertMenu(m_Menu, 3, MF_BYPOSITION | MF_STRING, 3, _T("Copy filenames to clipboard"));
+        if (m_lineVector.size())
+            ::InsertMenu(m_Menu, 4, MF_BYPOSITION | MF_STRING, 4, _T("Copy text results to clipboard"));
+        ::InsertMenu(m_Menu, 5, MF_SEPARATOR|MF_BYPOSITION, 0, NULL);
     }
     // lets fill the our popup menu
     pContextMenu->QueryContextMenu(m_Menu, GetMenuItemCount(m_Menu), MIN_ID, MAX_ID, CMF_NORMAL | CMF_EXPLORE);
@@ -263,6 +268,22 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
                 WriteAsciiStringToClipboard(pathnames.c_str(), hWnd);
             }
             break;
+        case 4:
+            {
+                wstring lines;
+                for (auto it = m_lineVector.begin(); it != m_lineVector.end(); ++it)
+                {
+                    if (lines.size())
+                        lines += _T("\r\n");
+                    wstring l = *it;
+                    std::replace(l.begin(), l.end(), '\n', ' ');
+                    std::replace(l.begin(), l.end(), '\r', ' ');
+
+                    lines += l;
+                }
+                WriteAsciiStringToClipboard(lines.c_str(), hWnd);
+            }
+            break;
         }
     }
 
@@ -285,7 +306,7 @@ void CShellContextMenu::InvokeCommand(LPCONTEXTMENU pContextMenu, UINT idCommand
     pContextMenu->InvokeCommand (&cmi);
 }
 
-void CShellContextMenu::SetObjects(const vector<wstring>& strVector)
+void CShellContextMenu::SetObjects(const vector<wstring>& strVector, const vector<wstring>& lineVector)
 {
     // free all allocated data
     if (m_psfFolder && bDelete)
@@ -322,6 +343,7 @@ void CShellContextMenu::SetObjects(const vector<wstring>& strVector)
     lpMalloc->Release ();
 
     m_strVector = strVector;
+    m_lineVector = lineVector;
     bDelete = TRUE; // indicates that m_psfFolder should be deleted by CShellContextMenu
 }
 
