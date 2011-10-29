@@ -31,7 +31,7 @@ class CShellContextMenu
 {
 public:
     HMENU GetMenu();
-    void SetObjects(const vector<wstring>& strVector);
+    void SetObjects(const vector<wstring>& strVector, const vector<wstring>& lineVector);
     UINT ShowContextMenu(HWND hWnd, POINT pt);
     CShellContextMenu();
     virtual ~CShellContextMenu();
@@ -43,6 +43,7 @@ private:
     IShellFolder * m_psfFolder;
     LPITEMIDLIST * m_pidlArray;
     vector<wstring> m_strVector;
+    vector<wstring> m_lineVector;
 
     void InvokeCommand(LPCONTEXTMENU pContextMenu, UINT idCommand);
     BOOL GetContextMenu(HWND hWnd, void ** ppContextMenu, int & iMenuType);

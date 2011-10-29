@@ -1078,7 +1078,34 @@ void CSearchDlg::ShowContextMenu(int x, int y)
     if (paths.size() == 0)
         return;
 
-    shellMenu.SetObjects(paths);
+
+    vector<wstring> lines;
+    bool filelist = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
+    if (!filelist)
+    {
+        WCHAR numbuf[40];
+        while ((iItem = ListView_GetNextItem(hListControl, iItem, LVNI_SELECTED)) != (-1))
+        {
+            ListView_GetItemText(hListControl, iItem, 1, numbuf, 40);
+            int line = _wtoi(numbuf);
+            if (line)
+            {
+                const auto matchlinesnumbers = m_items[GetSelectedListIndex(iItem)].matchlinesnumbers;
+                int lineindex = 0;
+                for (auto it = matchlinesnumbers.cbegin(); it != matchlinesnumbers.cend(); ++it)
+                {
+                    if (*it == line)
+                    {
+                        lines.push_back(m_items[GetSelectedListIndex(iItem)].matchlines[lineindex]);
+                    }
+                    ++lineindex;
+                }
+            }
+        }
+    }
+
+
+    shellMenu.SetObjects(paths, lines);
 
     POINT pt = {x,y};
     if ((x==-1)&&(y==-1))
