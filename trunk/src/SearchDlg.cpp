@@ -1970,9 +1970,12 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
                             start = whatc[0].second;
                         // update flags:
                         flags |= boost::match_prev_avail;
+                        flags |= boost::match_not_bob;
                     }
                     if ((m_bReplace)&&(nFound))
                     {
+                        flags &= ~boost::match_prev_avail;
+                        flags &= ~boost::match_not_bob;
                         wstring replaced = regex_replace(textfile.GetFileString(), expression, m_replaceString, flags);
                         if (replaced.compare(textfile.GetFileString()))
                         {
@@ -2053,6 +2056,7 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
                     start = whatc[0].second;
                     // update flags:
                     flags |= boost::match_prev_avail;
+                    flags |= boost::match_not_bob;
                 }
             }
             catch (const exception&)
