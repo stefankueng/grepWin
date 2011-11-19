@@ -766,6 +766,18 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
             ::SetFocus(GetDlgItem(*this, uID));
         }
         break;
+    case IDC_PATHMRU:
+        {
+            TCHAR buf[MAX_PATH*4] = {0};
+            GetDlgItemText(*this, IDC_SEARCHPATH, buf, MAX_PATH*4);
+            m_searchpath = buf;
+
+            m_AutoCompleteSearchPaths.AddEntry(m_searchpath.c_str());
+            SetDlgItemText(*this, IDC_SEARCHPATH, L"");
+            ::SetFocus(GetDlgItem(*this, IDC_SEARCHPATH));
+            SendDlgItemMessage(*this, IDC_SEARCHPATH, WM_KEYDOWN, VK_DOWN, 0);
+        }
+        break;
     }
     return 1;
 }
