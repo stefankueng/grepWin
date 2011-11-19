@@ -128,9 +128,10 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             AddToolTip(IDC_EXCLUDEDIRSPATTERN, _T("you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."));
             AddToolTip(IDC_SEARCHPATH, _T("the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"));
             AddToolTip(IDC_DOTMATCHNEWLINE, _T("\\n is matched by '.'"));
-            AddToolTip(IDC_SEARCHTEXT, _T("a regular expression used for searching. Doubleclick to edit with multilines. Press F1 for more info."));
-            AddToolTip(IDC_REPLACETEXT, _T("Doubleclick to edit with multilines."));
+            AddToolTip(IDC_SEARCHTEXT, _T("a regular expression used for searching. Press F1 for more info."));
             AddToolTip(IDC_ONLYONE, _T("reuse grepWin instances."));
+            AddToolTip(IDC_EDITMULTILINE1, L"click to edit the search text as a multiline text");
+            AddToolTip(IDC_EDITMULTILINE2, L"click to edit the replace text as a multiline text");
 
             if (m_searchpath.empty())
             {
@@ -284,9 +285,10 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             m_resizer.AddControl(hwndDlg, IDC_TEXTRADIO, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_SEARCHFORLABEL, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_SEARCHTEXT, RESIZER_TOPLEFTRIGHT);
-            m_resizer.AddControl(hwndDlg, IDC_HELPBUTTON, RESIZER_TOPRIGHT);
+            m_resizer.AddControl(hwndDlg, IDC_EDITMULTILINE1, RESIZER_TOPRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_REPLACEWITHLABEL, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_REPLACETEXT, RESIZER_TOPLEFTRIGHT);
+            m_resizer.AddControl(hwndDlg, IDC_EDITMULTILINE2, RESIZER_TOPRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_CASE_SENSITIVE, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_DOTMATCHNEWLINE, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_REGEXOKLABEL, RESIZER_TOPRIGHT);
@@ -326,9 +328,6 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 
             InitDialog(hwndDlg, IDI_GREPWIN);
 
-            SetWindowSubclass(GetDlgItem(hwndDlg, IDC_SEARCHTEXT), EditProc, IDC_SEARCHTEXT, (DWORD_PTR)this);
-            SetWindowSubclass(GetDlgItem(hwndDlg, IDC_REPLACETEXT), EditProc, IDC_REPLACETEXT, (DWORD_PTR)this);
-
 
             WINDOWPLACEMENT wpl = {0};
             DWORD size = sizeof(wpl);
@@ -350,8 +349,6 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
         return FALSE;
     case WM_CLOSE:
         {
-            RemoveWindowSubclass(GetDlgItem(hwndDlg, IDC_SEARCHTEXT), EditProc, IDC_SEARCHTEXT);
-            RemoveWindowSubclass(GetDlgItem(hwndDlg, IDC_REPLACETEXT), EditProc, IDC_REPLACETEXT);
         }
         break;
     case WM_COMMAND:
@@ -723,9 +720,50 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
             dlgAbout.DoModal(hResource, IDD_ABOUT, *this);
         }
         break;
-    case IDC_HELPBUTTON:
+    case IDC_EDITMULTILINE1:
+    case IDC_EDITMULTILINE2:
         {
-            CInfoDlg::ShowDialog(IDR_INFODLG, hResource);
+            int uID = (id == IDC_EDITMULTILINE1 ? IDC_SEARCHTEXT : IDC_REPLACETEXT);
+            int textlen = ::GetWindowTextLength(GetDlgItem(*this, (int)uID));
+            TCHAR * buf = new TCHAR[textlen+10];
+            GetDlgItemText(*this, (int)uID, buf, textlen+10);
+            std::wstring ctrlText = buf;
+
+            // replace all \r\n strings with real CRLFs
+            try
+            {
+                int ft = boost::regex::normal;
+                boost::wregex expression = boost::wregex(L"\\\\r\\\\n", ft);
+                boost::match_results<wstring::const_iterator> whatc;
+                boost::match_flag_type rflags = boost::match_default|boost::format_all;
+                ctrlText = regex_replace(ctrlText, expression, L"\\r\\n", rflags);
+            }
+            catch (const exception&)
+            {
+            }
+            CMultiLineEditDlg editDlg(*this);
+            editDlg.SetString(ctrlText);
+
+            if (editDlg.DoModal(hResource, IDD_MULTILINEEDIT, *this) == IDOK)
+            {
+                std::wstring text = editDlg.GetSearchString();
+                // replace all CRLFs with \r\n strings (literal)
+                try
+                {
+                    int ft = boost::regex::normal;
+                    boost::wregex expression = boost::wregex(L"\\r\\n", ft);
+                    boost::match_results<wstring::const_iterator> whatc;
+                    boost::match_flag_type rflags = boost::match_default|boost::format_all;
+                    text = regex_replace(text, expression, L"\\\\r\\\\n", rflags);
+                }
+                catch (const exception&)
+                {
+                }
+
+                SetDlgItemText(*this, (int)uID, text.c_str());
+            }
+            delete [] buf;
+            ::SetFocus(GetDlgItem(*this, uID));
         }
         break;
     }
@@ -1932,7 +1970,6 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
                             start = whatc[0].second;
                         // update flags:
                         flags |= boost::match_prev_avail;
-                        flags |= boost::match_not_bob;
                     }
                     if ((m_bReplace)&&(nFound))
                     {
@@ -2016,7 +2053,6 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
                     start = whatc[0].second;
                     // update flags:
                     flags |= boost::match_prev_avail;
-                    flags |= boost::match_not_bob;
                 }
             }
             catch (const exception&)
@@ -2148,57 +2184,5 @@ int CSearchDlg::GetSelectedListIndex(int index)
         iItem = (int)lv.lParam;
 
     return iItem;
-}
-
-LRESULT CALLBACK CSearchDlg::EditProc(HWND hWnd, UINT uMessage, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
-{
-    CSearchDlg *pThis = (CSearchDlg*)dwRefData;
-    if (pThis == NULL)
-        return 0;
-    if (uMessage == WM_LBUTTONDBLCLK)
-    {
-        CMultiLineEditDlg editDlg(*pThis);
-        int textlen = ::GetWindowTextLength(GetDlgItem(*pThis, (int)uIdSubclass));
-        TCHAR * buf = new TCHAR[textlen+10];
-        GetDlgItemText(*pThis, (int)uIdSubclass, buf, textlen+10);
-        std::wstring ctrlText = buf;
-
-        // replace all \r\n strings with real CRLFs
-        try
-        {
-            int ft = boost::regex::normal;
-            boost::wregex expression = boost::wregex(L"\\\\r\\\\n", ft);
-            boost::match_results<wstring::const_iterator> whatc;
-            boost::match_flag_type rflags = boost::match_default|boost::format_all;
-            ctrlText = regex_replace(ctrlText, expression, L"\\r\\n", rflags);
-        }
-        catch (const exception&)
-        {
-        }
-        editDlg.SetString(ctrlText);
-
-        if (editDlg.DoModal(pThis->hResource, IDD_MULTILINEEDIT, *pThis) == IDOK)
-        {
-            std::wstring text = editDlg.GetSearchString();
-            // replace all CRLFs with \r\n strings (literal)
-            try
-            {
-                int ft = boost::regex::normal;
-                boost::wregex expression = boost::wregex(L"\\r\\n", ft);
-                boost::match_results<wstring::const_iterator> whatc;
-                boost::match_flag_type rflags = boost::match_default|boost::format_all;
-                text = regex_replace(text, expression, L"\\\\r\\\\n", rflags);
-            }
-            catch (const exception&)
-            {
-            }
-
-            SetDlgItemText(*pThis, (int)uIdSubclass, text.c_str());
-        }
-        delete [] buf;
-        ::SetFocus(hWnd);
-        return TRUE;
-    }
-    return DefSubclassProc(hWnd, uMessage, wParam, lParam);
 }
 
