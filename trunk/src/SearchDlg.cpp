@@ -36,6 +36,7 @@
 #include "InfoDlg.h"
 #include "DropFiles.h"
 #include "auto_buffer.h"
+#include "RegexReplaceFormatter.h"
 #include <string>
 #include <iostream>
 #include <fstream>
@@ -1988,7 +1989,21 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
                     {
                         flags &= ~boost::match_prev_avail;
                         flags &= ~boost::match_not_bob;
-                        wstring replaced = regex_replace(textfile.GetFileString(), expression, m_replaceString, flags);
+                        RegexReplaceFormatter replaceFmt(m_replaceString);
+                        replaceFmt.SetReplacePair(L"${filepath}", sinfo.filepath);
+                        std::wstring filenamefull = sinfo.filepath.substr(sinfo.filepath.find_last_of('\\')+1);
+                        auto dotpos = filenamefull.find_last_of('.');
+                        if (dotpos != std::string::npos)
+                        {
+                            std::wstring filename = filenamefull.substr(0, dotpos);
+                            replaceFmt.SetReplacePair(L"${filename}", filename);
+                            if (filenamefull.size() > dotpos)
+                            {
+                                std::wstring fileext = filenamefull.substr(dotpos+1);
+                                replaceFmt.SetReplacePair(L"${fileext}", fileext);
+                            }
+                        }
+                        wstring replaced = regex_replace(textfile.GetFileString(), expression, replaceFmt, flags);
                         if (replaced.compare(textfile.GetFileString()))
                         {
                             textfile.SetFileContent(replaced);

@@ -232,6 +232,7 @@
     <ClInclude Include="InfoDlg.h" />
     <ClInclude Include="MultiLineEditDlg.h" />
     <ClInclude Include="NameDlg.h" />
+    <ClInclude Include="RegexReplaceFormatter.h" />
     <ClInclude Include="RegexTestDlg.h" />
     <ClInclude Include="RegHistory.h" />
     <ClInclude Include="Registry.h" />
