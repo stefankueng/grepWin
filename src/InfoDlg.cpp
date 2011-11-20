@@ -69,7 +69,7 @@ BOOL CInfoDlg::ShowDialog(UINT idAboutHTMLID, HINSTANCE hInstance)
                     //Invoke the ShowHTMLDialog function by pointer
                     //passing the HWND of your Application , the Moniker,
                     //the remaining parameters can be set to NULL
-                    pfnShowHTMLDialog(NULL,pmk,NULL,NULL,NULL);
+                    pfnShowHTMLDialog(NULL,pmk,NULL,L"resizable:yes",NULL);
                     bSuccess = TRUE;
                 }
                 delete [] lpWideCharStr;
