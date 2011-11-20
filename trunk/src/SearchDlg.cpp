@@ -277,8 +277,10 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             m_link.ConvertStaticToHyperlink(hwndDlg, IDC_ABOUTLINK, _T(""));
 
             m_resizer.Init(hwndDlg);
+            m_resizer.AddControl(hwndDlg, IDC_HELPLABEL, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_ABOUTLINK, RESIZER_TOPRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_GROUPSEARCHIN, RESIZER_TOPLEFTRIGHT);
+            m_resizer.AddControl(hwndDlg, IDC_PATHMRU, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_SEARCHPATH, RESIZER_TOPLEFTRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_SEARCHPATHBROWSE, RESIZER_TOPRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_GROUPSEARCHFOR, RESIZER_TOPLEFTRIGHT);
@@ -339,6 +341,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 
             ExtendFrameIntoClientArea(0, IDC_GROUPSEARCHIN, 0, 0);
             m_aerocontrols.SubclassControl(GetDlgItem(*this, IDC_ABOUTLINK));
+            m_aerocontrols.SubclassControl(GetDlgItem(*this, IDC_HELPLABEL));
             if (m_Dwm.IsDwmCompositionEnabled())
                 m_resizer.ShowSizeGrip(false);
 
