@@ -3,6 +3,22 @@
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
     <meta http-equiv="MSThemeCompatible" content="yes" />
     <title>Regex Help</title>
+    <style type="text/css">
+        .style1
+        {
+            width: 252px;
+        }
+        .style2
+        {
+            height: 26px;
+            width: 252px;
+        }
+        .style3
+        {
+            height: 17px;
+            width: 252px;
+        }
+    </style>
 </head>
 <body style="height: 424px; width: 447px">
     <table border="0" id="TABLE1">
@@ -12,115 +28,133 @@
                 Regular expression examples</strong></td>
         </tr>
         <tr>
-            <td style="width: 70px">
+            <td class="style1">
                 .</td>
             <td align="left">
                 Matches all characters</td>
         </tr>
         <tr>
-            <td style="width: 70px">
+            <td class="style1">
                 +</td>
             <td align="left" style="text-align: left">
                 Matches the previous expression one or more times</td>
         </tr>
         <tr>
-            <td style="width: 70px; height: 26px">
+            <td class="style2">
                 *</td>
             <td align="right" style="height: 26px; text-align: left; width: 360px;">
                 Matches the previous expression zero or more times</td>
         </tr>
         <tr>
-            <td style="width: 70px; height: 26px">
+            <td class="style2">
                 \</td>
             <td align="right" style="height: 26px; text-align: left; width: 360px;">
                 Escapes special characters</td>
         </tr>
         <tr>
-            <td style="width: 70px; height: 26px">
+            <td class="style2">
                 \Q...\E</td>
             <td align="right" style="height: 26px; text-align: left; width: 360px;">
                 Matches the characters between \Q and \E literally, suppressing the meaning of special
                 characters.</td>
         </tr>
         <tr>
-            <td style="width: 70px; height: 26px">
+            <td class="style2">
                 [a-c]</td>
             <td align="right" style="height: 26px; text-align: left; width: 360px;">
                 Matches a, b and c</td>
         </tr>
         <tr>
-            <td style="width: 70px; height: 26px">
+            <td class="style2">
                 \d</td>
             <td align="right" style="height: 26px; text-align: left; width: 360px;">
                 Matches all digits</td>
         </tr>
         <tr>
-            <td style="width: 70px; height: 26px">
+            <td class="style2">
                 \w</td>
             <td align="right" style="height: 26px; text-align: left; width: 360px;">
                 Matches all word characters</td>
         </tr>
         <tr>
-            <td style="width: 70px; height: 26px">
+            <td class="style2">
                 \s</td>
             <td align="right" style="width: 360px; height: 26px; text-align: left">
                 Matches all whitespace characters</td>
         </tr>
         <tr>
-            <td style="width: 70px; height: 17px">
+            <td class="style3">
                 ^</td>
             <td align="right" style="width: 360px; height: 17px; text-align: left">
                 Matches the start of a line</td>
         </tr>
         <tr>
-            <td style="width: 70px; height: 17px">
+            <td class="style3">
                 $</td>
             <td align="right" style="width: 360px; height: 17px; text-align: left">
                 Matches the end of a line</td>
         </tr>
         <tr>
-            <td style="width: 70px; height: 17px">
+            <td class="style3">
                 \b</td>
             <td align="right" style="width: 360px; height: 17px; text-align: left">
                 Matches a word boundary. \bword\b matches only &#39;word&#39;, but not &#39;subwords&#39; or 
                 &#39;words&#39;</td>
         </tr>
         <tr>
-            <td style="width: 70px; height: 17px">
+            <td class="style3">
                 (...)</td>
             <td align="right" style="width: 360px; height: 17px; text-align: left">
                 parenthesis pairs define a group within the RegExp</td>
         </tr>
         <tr>
-            <td style="width: 70px; height: 17px">
+            <td class="style3">
                 $1..$9</td>
             <td align="right" style="width: 360px; height: 17px; text-align: left">
                 groups are referenced in the replace expression by $i for the i-th group</td>
         </tr>
         <tr>
-            <td style="width: 70px; height: 17px">
+            <td class="style3">
                 ${filepath}</td>
             <td align="right" style="width: 360px; height: 17px; text-align: left">
                 replaced with the current full path of the file</td>
         </tr>
         <tr>
-            <td style="width: 70px; height: 17px">
+            <td class="style3">
                 ${filename}</td>
             <td align="right" style="width: 360px; height: 17px; text-align: left">
                 replaced with the name of the current file, without extension</td>
         </tr>
         <tr>
-            <td style="width: 70px; height: 17px">
+            <td class="style3">
                 ${fileext}</td>
             <td align="right" style="width: 360px; height: 17px; text-align: left">
                 replaced with the extension of the current file</td>
         </tr>
         <tr>
-            <td align="right" style="height: 17px; width: 70px;">
+            <td class="style3">
+                ${count08}</td>
+            <td align="right" style="width: 360px; height: 17px; text-align: left">
+                replaced with numbers starting from 1, incrementing by 1. The numbers after 'count' are optional and indicate how many leading spaces the output should use, or if the number is preceded by a zero how many leading zeros.</td>
+        </tr>
+        <tr>
+            <td class="style3">
+                ${count08(start)}</td>
+            <td align="right" style="width: 360px; height: 17px; text-align: left">
+                same as ${count}, but with 'start' as the start value for counting</td>
+        </tr>
+        <tr>
+            <td class="style3">
+                ${count08(start, increment)}</td>
+            <td align="right" style="width: 360px; height: 17px; text-align: left">
+                same as ${count(start)}, but with 'increment' as the increment value instead of the default 1</td>
+        </tr>
+        <tr>
+            <td align="right" class="style3">
                 <button tabindex="1" type="submit" align="right" id="okButton" class="button" onclick="window.close();">
                     Close</button></td>
             <td style="width: 360px; height: 17px">
-            <a href="http://tools.tortoisesvn.net">more help and examples on our website</a>
+            <a href="http://tools.tortoisesvn.net/regexhelp.html">more help and examples on our website</a>
             </td>
         </tr>
     </table>
