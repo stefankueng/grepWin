@@ -193,6 +193,7 @@
     <ClCompile Include="InfoDlg.cpp" />
     <ClCompile Include="MultiLineEditDlg.cpp" />
     <ClCompile Include="NameDlg.cpp" />
+    <ClCompile Include="RegexReplaceFormatter.cpp" />
     <ClCompile Include="RegexTestDlg.cpp" />
     <ClCompile Include="RegHistory.cpp" />
     <ClCompile Include="Registry.cpp" />

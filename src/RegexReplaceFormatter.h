@@ -44,7 +44,7 @@ public:
     std::wstring    expression;
 };
 
-std::vector<NumberReplacer> g_incVec;
+extern std::vector<NumberReplacer> g_incVec;
 
 class RegexReplaceFormatter
 {
@@ -64,8 +64,8 @@ public:
         // number string. If 0 is specified, zeros are used for padding, otherwise spaces.
         //boost::wregex expression = boost::wregex(L"(?<!\\\\)\\$\\{count(?<leadzero>0)?(?<length>\\d+)?(\\((?<startval>[-0-9]+)\\)||\\((?<startval>[-0-9]+),(?<increment>[-0-9]+)\\))?\\}", boost::regex::normal);
         boost::wregex expression = boost::wregex(L"\\$\\{count(?<leadzero>0)?(?<length>\\d+)?(\\((?<startval>[-0-9]+)\\)||\\((?<startval>[-0-9]+),(?<increment>[-0-9]+)\\))?\\}", boost::regex::normal);
-        boost::match_results<wstring::const_iterator> whatc;
-        wstring::const_iterator start, end;
+        boost::match_results<std::wstring::const_iterator> whatc;
+        std::wstring::const_iterator start, end;
         start = m_sReplace.begin();
         end = m_sReplace.end();
         boost::match_flag_type flags = boost::match_default | boost::format_all;
@@ -109,7 +109,7 @@ public:
 
     std::wstring operator()(boost::match_results<std::wstring::const_iterator> what) const
     {
-        std::wstring sReplace = m_sReplace;
+        std::wstring sReplace = what.format(m_sReplace);
         if (m_replaceMap.size())
         {
             for (auto it = m_replaceMap.cbegin(); it != m_replaceMap.cend(); ++it)
@@ -161,6 +161,8 @@ public:
                 }
             }
         }
+
+        //sReplace = boost::regex_replace(what[0].str(), sReplace, boost::match_default);
 
         return sReplace;
     }
