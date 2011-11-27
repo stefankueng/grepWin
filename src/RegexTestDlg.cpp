@@ -19,6 +19,7 @@
 #include "StdAfx.h"
 #include "Resource.h"
 #include "RegexTestDlg.h"
+#include "RegexReplaceFormatter.h"
 #include <string>
 #include <Richedit.h>
 #include <boost/regex.hpp>
@@ -203,7 +204,13 @@ void CRegexTestDlg::DoRegex()
                 boost::match_flag_type rflags = boost::match_default|boost::format_all;
                 if (!bDotMatchesNewline)
                     rflags |= boost::match_not_dot_newline;
-                replaceresult = regex_replace(m_textContent, expression, m_replaceText, rflags);
+
+                RegexReplaceFormatter replaceFmt(m_replaceText);
+                replaceFmt.SetReplacePair(L"${filepath}", L"c:\\grepwintest\\file.txt");
+                replaceFmt.SetReplacePair(L"${filename}", L"file");
+                replaceFmt.SetReplacePair(L"${fileext}", L"txt");
+
+                replaceresult = regex_replace(m_textContent, expression, replaceFmt, rflags);
 
                 while (boost::regex_search(start, end, whatc, expression, flags))
                 {
