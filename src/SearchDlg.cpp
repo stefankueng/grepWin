@@ -313,9 +313,11 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 
             m_resizer.AddControl(hwndDlg, IDC_PATTERNLABEL, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_PATTERN, RESIZER_TOPLEFTRIGHT);
+            m_resizer.AddControl(hwndDlg, IDC_PATTERNMRU, RESIZER_TOPRIGHT);
 
             m_resizer.AddControl(hwndDlg, IDC_EXCLUDE_DIRS_PATTERNLABEL, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_EXCLUDEDIRSPATTERN, RESIZER_TOPLEFTRIGHT);
+            m_resizer.AddControl(hwndDlg, IDC_EXCLUDEDIRMRU, RESIZER_TOPRIGHT);
 
             m_resizer.AddControl(hwndDlg, IDC_FILEPATTERNREGEX, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_FILEPATTERNTEXT, RESIZER_TOPLEFT);
@@ -780,6 +782,30 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
             SetDlgItemText(*this, IDC_SEARCHPATH, L"");
             ::SetFocus(GetDlgItem(*this, IDC_SEARCHPATH));
             SendDlgItemMessage(*this, IDC_SEARCHPATH, WM_KEYDOWN, VK_DOWN, 0);
+        }
+        break;
+    case IDC_EXCLUDEDIRMRU:
+        {
+            TCHAR buf[MAX_PATH*4] = {0};
+            GetDlgItemText(*this, IDC_EXCLUDEDIRSPATTERN, buf, MAX_PATH*4);
+            m_searchpath = buf;
+
+            m_AutoCompleteExcludeDirsPatterns.AddEntry(m_excludedirspatternregex.c_str());
+            SetDlgItemText(*this, IDC_EXCLUDEDIRSPATTERN, L"");
+            ::SetFocus(GetDlgItem(*this, IDC_EXCLUDEDIRSPATTERN));
+            SendDlgItemMessage(*this, IDC_EXCLUDEDIRSPATTERN, WM_KEYDOWN, VK_DOWN, 0);
+        }
+        break;
+    case IDC_PATTERNMRU:
+        {
+            TCHAR buf[MAX_PATH*4] = {0};
+            GetDlgItemText(*this, IDC_PATTERN, buf, MAX_PATH*4);
+            m_searchpath = buf;
+
+            m_AutoCompleteFilePatterns.AddEntry(m_searchpath.c_str());
+            SetDlgItemText(*this, IDC_PATTERN, L"");
+            ::SetFocus(GetDlgItem(*this, IDC_PATTERN));
+            SendDlgItemMessage(*this, IDC_PATTERN, WM_KEYDOWN, VK_DOWN, 0);
         }
         break;
     }
