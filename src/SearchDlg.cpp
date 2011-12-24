@@ -1459,8 +1459,6 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
     if (lpNMItemActivate->hdr.code == LVN_COLUMNCLICK)
     {
         bool filelist = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
-        //if (!filelist)
-        //    return;     // no sorting for the result view
         m_bAscending = !m_bAscending;
         switch (lpNMItemActivate->iSubItem)
         {
