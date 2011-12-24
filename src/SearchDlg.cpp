@@ -1459,8 +1459,8 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
     if (lpNMItemActivate->hdr.code == LVN_COLUMNCLICK)
     {
         bool filelist = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
-        if (!filelist)
-            return;     // no sorting for the result view
+        //if (!filelist)
+        //    return;     // no sorting for the result view
         m_bAscending = !m_bAscending;
         switch (lpNMItemActivate->iSubItem)
         {
@@ -1471,16 +1471,22 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
                 sort(m_items.begin(), m_items.end(), NameCompareDesc);
             break;
         case 1:
-            if (m_bAscending)
-                sort(m_items.begin(), m_items.end(), SizeCompareAsc);
-            else
-                sort(m_items.begin(), m_items.end(), SizeCompareDesc);
+            if (filelist)
+            {
+                if (m_bAscending)
+                    sort(m_items.begin(), m_items.end(), SizeCompareAsc);
+                else
+                    sort(m_items.begin(), m_items.end(), SizeCompareDesc);
+            }
             break;
         case 2:
-            if (m_bAscending)
-                sort(m_items.begin(), m_items.end(), MatchesCompareAsc);
-            else
-                sort(m_items.begin(), m_items.end(), MatchesCompareDesc);
+            if (filelist)
+            {
+                if (m_bAscending)
+                    sort(m_items.begin(), m_items.end(), MatchesCompareAsc);
+                else
+                    sort(m_items.begin(), m_items.end(), MatchesCompareDesc);
+            }
             break;
         case 3:
             if (m_bAscending)
