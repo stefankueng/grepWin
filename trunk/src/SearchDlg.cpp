@@ -1681,7 +1681,7 @@ bool CSearchDlg::NameCompareAsc(const CSearchInfo Entry1, const CSearchInfo Entr
 {
     wstring name1 = Entry1.filepath.substr(Entry1.filepath.find_last_of('\\')+1);
     wstring name2 = Entry2.filepath.substr(Entry2.filepath.find_last_of('\\')+1);
-    return name1.compare(name2) < 0;
+    return StrCmpLogicalW(name1.c_str(), name2.c_str()) < 0;
 }
 
 bool CSearchDlg::SizeCompareAsc(const CSearchInfo Entry1, const CSearchInfo Entry2)
@@ -1703,7 +1703,7 @@ bool CSearchDlg::PathCompareAsc(const CSearchInfo Entry1, const CSearchInfo Entr
     int cmp = path1.compare(path2);
     if (cmp != 0)
         return cmp < 0;
-    return name1.compare(name2) < 0;
+    return StrCmpLogicalW(name1.c_str(), name2.c_str()) < 0;
 }
 
 bool CSearchDlg::EncodingCompareAsc(const CSearchInfo Entry1, const CSearchInfo Entry2)
@@ -1720,7 +1720,7 @@ bool CSearchDlg::NameCompareDesc(const CSearchInfo Entry1, const CSearchInfo Ent
 {
     wstring name1 = Entry1.filepath.substr(Entry1.filepath.find_last_of('\\')+1);
     wstring name2 = Entry2.filepath.substr(Entry2.filepath.find_last_of('\\')+1);
-    return name1.compare(name2) > 0;
+    return StrCmpLogicalW(name1.c_str(), name2.c_str()) > 0;
 }
 
 bool CSearchDlg::SizeCompareDesc(const CSearchInfo Entry1, const CSearchInfo Entry2)
@@ -1742,7 +1742,7 @@ bool CSearchDlg::PathCompareDesc(const CSearchInfo Entry1, const CSearchInfo Ent
     int cmp = path1.compare(path2);
     if (cmp != 0)
         return cmp > 0;
-    return name1.compare(name2) > 0;
+    return StrCmpLogicalW(name1.c_str(), name2.c_str()) > 0;
 }
 
 bool CSearchDlg::EncodingCompareDesc(const CSearchInfo Entry1, const CSearchInfo Entry2)
