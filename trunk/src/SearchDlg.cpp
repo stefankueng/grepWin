@@ -1002,74 +1002,80 @@ bool CSearchDlg::AddFoundEntry(CSearchInfo * pInfo, bool bOnlyListControl)
 
 void CSearchDlg::FillResultList()
 {
+    SetCursor(LoadCursor(NULL, IDC_APPSTARTING));
+    // refresh cursor
+    POINT pt;
+    GetCursorPos(&pt);
+    SetCursorPos(pt.x, pt.y);
+
     bool filelist = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
     HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
+    SendMessage(hListControl, WM_SETREDRAW, FALSE, 0);
 
     ListView_DeleteAllItems(hListControl);
 
     int index = 0;
     int fileIndex = 0;
+    std::unique_ptr<TCHAR[]> pBuf = std::unique_ptr<TCHAR[]>(new TCHAR[32767]);
+    std::unique_ptr<TCHAR[]> sb   = std::unique_ptr<TCHAR[]>(new TCHAR[MAX_PATH_NEW]);
     for (vector<CSearchInfo>::const_iterator pInfo = m_items.begin(); pInfo != m_items.end(); ++pInfo)
     {
         if (filelist)
         {
             LVITEM lv = {0};
             lv.mask = LVIF_TEXT | LVIF_IMAGE | LVIF_PARAM;
-            TCHAR * pBuf = new TCHAR[pInfo->filepath.size()+1];
             wstring name = pInfo->filepath.substr(pInfo->filepath.find_last_of('\\')+1);
-            _tcscpy_s(pBuf, pInfo->filepath.size()+1, name.c_str());
-            lv.pszText = pBuf;
+            _tcscpy_s(pBuf.get(), pInfo->filepath.size()+1, name.c_str());
+            lv.pszText = pBuf.get();
             lv.iImage = pInfo->folder ? CSysImageList::GetInstance().GetDirIconIndex() : CSysImageList::GetInstance().GetFileIconIndex(pInfo->filepath);
             lv.iItem = index;
             lv.lParam = fileIndex;
             int ret = ListView_InsertItem(hListControl, &lv);
-            delete [] pBuf;
             if (ret >= 0)
             {
                 lv.mask = LVIF_TEXT;
                 lv.iItem = ret;
 
                 lv.iSubItem = 1;
-                auto_buffer<TCHAR> sb(MAX_PATH_NEW);
                 if (!pInfo->folder)
-                    StrFormatByteSizeW(pInfo->filesize, sb, 20);
-                lv.pszText = sb;
+                    StrFormatByteSizeW(pInfo->filesize, sb.get(), 20);
+                lv.pszText = sb.get();
                 ListView_SetItem(hListControl, &lv);
 
                 lv.iSubItem = 2;
                 if (pInfo->readerror)
-                    _tcscpy_s(sb, MAX_PATH_NEW, _T("read error"));
+                    _tcscpy_s(sb.get(), MAX_PATH_NEW, _T("read error"));
                 else
-                    _stprintf_s(sb, MAX_PATH_NEW, _T("%ld"), pInfo->matchlinesnumbers.size());
+                    _stprintf_s(sb.get(), MAX_PATH_NEW, _T("%ld"), pInfo->matchlinesnumbers.size());
                 ListView_SetItem(hListControl, &lv);
 
                 lv.iSubItem = 3;
-                _tcscpy_s(sb, MAX_PATH_NEW, pInfo->filepath.substr(0, pInfo->filepath.size()-name.size()-1).c_str());
+                _tcscpy_s(sb.get(), MAX_PATH_NEW, pInfo->filepath.substr(0, pInfo->filepath.size()-name.size()-1).c_str());
                 ListView_SetItem(hListControl, &lv);
 
                 lv.iSubItem = 4;
                 switch (pInfo->encoding)
                 {
                 case CTextFile::ANSI:
-                    _tcscpy_s(sb, MAX_PATH_NEW, _T("ANSI"));
+                    _tcscpy_s(sb.get(), MAX_PATH_NEW, _T("ANSI"));
                     break;
                 case CTextFile::UNICODE_LE:
-                    _tcscpy_s(sb, MAX_PATH_NEW, _T("UNICODE"));
+                    _tcscpy_s(sb.get(), MAX_PATH_NEW, _T("UNICODE"));
                     break;
                 case CTextFile::UTF8:
-                    _tcscpy_s(sb, MAX_PATH_NEW, _T("UTF8"));
+                    _tcscpy_s(sb.get(), MAX_PATH_NEW, _T("UTF8"));
                     break;
                 case CTextFile::BINARY:
-                    _tcscpy_s(sb, MAX_PATH_NEW, _T("BINARY"));
+                    _tcscpy_s(sb.get(), MAX_PATH_NEW, _T("BINARY"));
                     break;
                 default:
-                    _tcscpy_s(sb, MAX_PATH_NEW, _T(""));
+                    _tcscpy_s(sb.get(), MAX_PATH_NEW, _T(""));
                     break;
                 }
                 ListView_SetItem(hListControl, &lv);
 
                 lv.iSubItem = 5;
-                formatDate(sb, pInfo->modifiedtime, true);
+                formatDate(sb.get(), pInfo->modifiedtime, true);
                 ListView_SetItem(hListControl, &lv);
                 index++;
             }
@@ -1081,15 +1087,13 @@ void CSearchDlg::FillResultList()
             {
                 LVITEM lv = {0};
                 lv.mask = LVIF_TEXT | LVIF_IMAGE | LVIF_PARAM;
-                TCHAR * pBuf = new TCHAR[pInfo->filepath.size()+1];
                 wstring name = pInfo->filepath.substr(pInfo->filepath.find_last_of('\\')+1);
-                _tcscpy_s(pBuf, pInfo->filepath.size()+1, name.c_str());
-                lv.pszText = pBuf;
+                _tcscpy_s(pBuf.get(), pInfo->filepath.size()+1, name.c_str());
+                lv.pszText = pBuf.get();
                 lv.iImage = pInfo->folder ? CSysImageList::GetInstance().GetDirIconIndex() : CSysImageList::GetInstance().GetFileIconIndex(pInfo->filepath);
                 lv.iItem = index++;
                 lv.lParam = fileIndex;
                 int ret = ListView_InsertItem(hListControl, &lv);
-                delete [] pBuf;
                 if (ret >= 0)
                 {
                     lv.mask = LVIF_TEXT;
@@ -1106,24 +1110,21 @@ void CSearchDlg::FillResultList()
                 {
                     LVITEM lv = {0};
                     lv.mask = LVIF_TEXT | LVIF_IMAGE | LVIF_PARAM;
-                    TCHAR * pBuf = new TCHAR[pInfo->filepath.size()+1];
                     wstring name = pInfo->filepath.substr(pInfo->filepath.find_last_of('\\')+1);
-                    _tcscpy_s(pBuf, pInfo->filepath.size()+1, name.c_str());
-                    lv.pszText = pBuf;
+                    _tcscpy_s(pBuf.get(), pInfo->filepath.size()+1, name.c_str());
+                    lv.pszText = pBuf.get();
                     lv.iImage = pInfo->folder ? CSysImageList::GetInstance().GetDirIconIndex() : CSysImageList::GetInstance().GetFileIconIndex(pInfo->filepath);
                     lv.iItem = index;
                     lv.lParam = fileIndex;
                     int ret = ListView_InsertItem(hListControl, &lv);
-                    delete [] pBuf;
                     if (ret >= 0)
                     {
                         lv.mask = LVIF_TEXT;
                         lv.iItem = ret;
 
                         lv.iSubItem = 1;
-                        auto_buffer<TCHAR> sb(MAX_PATH_NEW);
-                        _stprintf_s(sb, MAX_PATH_NEW, _T("%ld"), pInfo->matchlinesnumbers[subIndex]);
-                        lv.pszText = sb;
+                        _stprintf_s(sb.get(), MAX_PATH_NEW, _T("%ld"), pInfo->matchlinesnumbers[subIndex]);
+                        lv.pszText = sb.get();
                         ListView_SetItem(hListControl, &lv);
 
                         lv.iSubItem = 2;
@@ -1141,6 +1142,13 @@ void CSearchDlg::FillResultList()
         fileIndex++;
     }
     AutoSizeAllColumns();
+    SendMessage(hListControl, WM_SETREDRAW, TRUE, 0);
+    SetCursor(LoadCursor(NULL, IDC_ARROW));
+    // refresh cursor
+    GetCursorPos(&pt);
+    SetCursorPos(pt.x, pt.y);
+
+    RedrawWindow(hListControl, NULL, NULL, RDW_ERASE | RDW_FRAME | RDW_INVALIDATE | RDW_ALLCHILDREN);
 }
 
 void CSearchDlg::ShowContextMenu(int x, int y)
@@ -1507,6 +1515,7 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
         }
 
         HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
+        SendMessage(hListControl, WM_SETREDRAW, FALSE, 0);
         ListView_DeleteAllItems(hListControl);
         for (vector<CSearchInfo>::iterator it = m_items.begin(); it != m_items.end(); ++it)
         {
@@ -1527,7 +1536,8 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
         Header_GetItem(hHeader, lpNMItemActivate->iSubItem, &hd);
         hd.fmt |= (m_bAscending ? HDF_SORTUP : HDF_SORTDOWN);
         Header_SetItem(hHeader, lpNMItemActivate->iSubItem, &hd);
-
+        SendMessage(hListControl, WM_SETREDRAW, TRUE, 0);
+        RedrawWindow(hListControl, NULL, NULL, RDW_ERASE | RDW_FRAME | RDW_INVALIDATE | RDW_ALLCHILDREN);
     }
     if (lpNMItemActivate->hdr.code == LVN_GETINFOTIP)
     {
