@@ -42,13 +42,14 @@ private:
     HMENU m_Menu;
     IShellFolder * m_psfFolder;
     LPITEMIDLIST * m_pidlArray;
+    int            m_pidlArrayItems;
     vector<wstring> m_strVector;
     vector<wstring> m_lineVector;
 
     void InvokeCommand(LPCONTEXTMENU pContextMenu, UINT idCommand);
     BOOL GetContextMenu(HWND hWnd, void ** ppContextMenu, int & iMenuType);
     static LRESULT CALLBACK HookWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
-    void FreePIDLArray(LPITEMIDLIST * pidlArray);
+    void FreePIDLArray(LPITEMIDLIST * pidlArray, int nItems);
     LPITEMIDLIST CopyPIDL(LPCITEMIDLIST pidl, int cb = -1);
     UINT GetPIDLSize(LPCITEMIDLIST pidl);
     LPBYTE GetPIDLPos(LPCITEMIDLIST pidl, int nPos);

@@ -33,6 +33,7 @@ CShellContextMenu::CShellContextMenu()
     : m_pFolderhook(NULL)
     , m_psfFolder(NULL)
     , m_pidlArray(NULL)
+    , m_pidlArrayItems(0)
     , m_Menu(NULL)
 {
 }
@@ -44,8 +45,9 @@ CShellContextMenu::~CShellContextMenu()
     if (m_psfFolder && bDelete)
         m_psfFolder->Release ();
     m_psfFolder = NULL;
-    FreePIDLArray (m_pidlArray);
+    FreePIDLArray (m_pidlArray, m_pidlArrayItems);
     m_pidlArray = NULL;
+    m_pidlArrayItems = 0;
 
     if (m_Menu)
         DestroyMenu(m_Menu);
@@ -96,7 +98,7 @@ BOOL CShellContextMenu::GetContextMenu(HWND hWnd, void ** ppContextMenu, int & i
     delete m_pFolderhook;
     m_pFolderhook = new CIShellFolderHook(m_psfFolder, this);
 
-    CDefFolderMenu_Create2(NULL, hWnd, (UINT)m_strVector.size(), (LPCITEMIDLIST*)m_pidlArray, m_pFolderhook, dfmCallback, numkeys, ahkeys, &icm1);
+    CDefFolderMenu_Create2(NULL, hWnd, (UINT)m_pidlArrayItems, (LPCITEMIDLIST*)m_pidlArray, m_pFolderhook, dfmCallback, numkeys, ahkeys, &icm1);
     for (int i = 0; i < numkeys; ++i)
         RegCloseKey(ahkeys[i]);
 
@@ -312,7 +314,7 @@ void CShellContextMenu::SetObjects(const vector<wstring>& strVector, const vecto
     if (m_psfFolder && bDelete)
         m_psfFolder->Release();
     m_psfFolder = NULL;
-    FreePIDLArray(m_pidlArray);
+    FreePIDLArray(m_pidlArray, m_pidlArrayItems);
     m_pidlArray = NULL;
 
     // get IShellFolder interface of Desktop (root of shell namespace)
@@ -326,37 +328,34 @@ void CShellContextMenu::SetObjects(const vector<wstring>& strVector, const vecto
     m_psfFolder->ParseDisplayName(NULL, 0, (LPWSTR)strVector[0].c_str(), NULL, &pidl, NULL);
 
     // get interface to IMalloc (need to free the PIDLs allocated by the shell functions)
-    LPMALLOC lpMalloc = NULL;
-    SHGetMalloc(&lpMalloc);
-    lpMalloc->Free(pidl);
+    CoTaskMemFree(pidl);
 
     nItems = (int)strVector.size();
-    m_pidlArray = (LPITEMIDLIST *)calloc(nItems + 1, sizeof (LPITEMIDLIST));
+    m_pidlArray = (LPITEMIDLIST *)CoTaskMemAlloc((nItems + 10) * sizeof (LPITEMIDLIST));
+    SecureZeroMemory(m_pidlArray, (nItems + 10) * sizeof (LPITEMIDLIST));
+    m_pidlArrayItems = nItems;
     for (int i = 0; i < nItems; i++)
     {
         if (SUCCEEDED(m_psfFolder->ParseDisplayName(NULL, 0, (LPWSTR)strVector[i].c_str(), NULL, &pidl, NULL)))
         {
             m_pidlArray[i] = CopyPIDL(pidl);    // copy pidl to pidlArray
-            lpMalloc->Free(pidl);               // free pidl allocated by ParseDisplayName
+            CoTaskMemFree(pidl);                // free pidl allocated by ParseDisplayName
         }
     }
-    lpMalloc->Release ();
 
     m_strVector = strVector;
     m_lineVector = lineVector;
     bDelete = TRUE; // indicates that m_psfFolder should be deleted by CShellContextMenu
 }
 
-void CShellContextMenu::FreePIDLArray(LPITEMIDLIST *pidlArray)
+void CShellContextMenu::FreePIDLArray(LPITEMIDLIST *pidlArray, int nItems)
 {
     if (!pidlArray)
         return;
 
-    int iSize = (int)_msize(pidlArray) / sizeof(LPITEMIDLIST);
-
-    for (int i = 0; i < iSize; i++)
-        free(pidlArray[i]);
-    free(pidlArray);
+    for (int i = 0; i < nItems; i++)
+        CoTaskMemFree(pidlArray[i]);
+    CoTaskMemFree(pidlArray);
 }
 
 
@@ -365,7 +364,8 @@ LPITEMIDLIST CShellContextMenu::CopyPIDL(LPCITEMIDLIST pidl, int cb)
     if (cb == -1)
         cb = GetPIDLSize(pidl); // Calculate size of list.
 
-    LPITEMIDLIST pidlRet = (LPITEMIDLIST)calloc (cb + sizeof(USHORT), sizeof(BYTE));
+    LPITEMIDLIST pidlRet = (LPITEMIDLIST)CoTaskMemAlloc ((cb + sizeof(USHORT)) * sizeof(BYTE));
+    SecureZeroMemory(pidlRet, (cb + sizeof(USHORT)) * sizeof(BYTE));
     if (pidlRet)
         CopyMemory(pidlRet, pidl, cb);
 
@@ -483,7 +483,7 @@ HRESULT STDMETHODCALLTYPE CIShellFolderHook::GetUIObjectOf( HWND hwndOwner, UINT
         *pCurrentFilename = '\0'; // terminate array
         STGMEDIUM * pmedium = new STGMEDIUM;
         pmedium->tymed = TYMED_HGLOBAL;
-        pmedium->hGlobal = GlobalAlloc(GMEM_ZEROINIT|GMEM_MOVEABLE|GMEM_DDESHARE, nBufferSize+20);
+        pmedium->hGlobal = GlobalAlloc(GMEM_ZEROINIT|GMEM_MOVEABLE, nBufferSize+20);
         if (pmedium->hGlobal)
         {
             LPVOID pMem = ::GlobalLock(pmedium->hGlobal);
