@@ -463,7 +463,7 @@ HRESULT STDMETHODCALLTYPE CIShellFolderHook::GetUIObjectOf( HWND hwndOwner, UINT
             nLength += (int)m_pShellContextMenu->m_strVector[i].size();
             nLength += 1; // '\0' separator
         }
-        int nBufferSize = sizeof(DROPFILES) + ((nLength+2)*sizeof(TCHAR));
+        int nBufferSize = sizeof(DROPFILES) + ((nLength+3)*sizeof(TCHAR));
         char * pBuffer = new char[nBufferSize];
         SecureZeroMemory(pBuffer, nBufferSize);
         DROPFILES* df = (DROPFILES*)pBuffer;
@@ -480,6 +480,8 @@ HRESULT STDMETHODCALLTYPE CIShellFolderHook::GetUIObjectOf( HWND hwndOwner, UINT
             *pCurrentFilename = '\0'; // separator between file names
             pCurrentFilename++;
         }
+        *pCurrentFilename = '\0'; // terminate array
+        pCurrentFilename++;
         *pCurrentFilename = '\0'; // terminate array
         STGMEDIUM * pmedium = new STGMEDIUM;
         pmedium->tymed = TYMED_HGLOBAL;
