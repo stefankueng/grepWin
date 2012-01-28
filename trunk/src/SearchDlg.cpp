@@ -37,6 +37,8 @@
 #include "DropFiles.h"
 #include "auto_buffer.h"
 #include "RegexReplaceFormatter.h"
+#include "LineData.h"
+#include "Settings.h"
 #include <string>
 #include <iostream>
 #include <fstream>
@@ -99,6 +101,7 @@ CSearchDlg::CSearchDlg(HWND hParent) : m_searchedItems(0)
     , m_regExcludeDirsPattern(_T("Software\\grepWin\\ExcludeDirsPattern"))
     , m_regSearchPath(_T("Software\\grepWin\\searchpath"))
     , m_regOnlyOne(_T("Software\\grepWin\\onlyone"), 0)
+    , m_regEditorCmd(_T("Software\\grepWin\\editorcmd"))
 {
     m_startTime = GetTickCount();
 }
@@ -323,6 +326,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             m_resizer.AddControl(hwndDlg, IDC_FILEPATTERNTEXT, RESIZER_TOPLEFT);
 
             m_resizer.AddControl(hwndDlg, IDC_ONLYONE, RESIZER_TOPLEFT);
+            m_resizer.AddControl(hwndDlg, IDC_SETTINGSBUTTON, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_REPLACE, RESIZER_TOPRIGHT);
             m_resizer.AddControl(hwndDlg, IDOK, RESIZER_TOPRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_GROUPSEARCHRESULTS, RESIZER_TOPLEFTBOTTOMRIGHT);
@@ -724,6 +728,12 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
         {
             CAboutDlg dlgAbout(*this);
             dlgAbout.DoModal(hResource, IDD_ABOUT, *this);
+        }
+        break;
+    case IDC_SETTINGSBUTTON:
+        {
+            CSettingsDlg dlgSettings(*this);
+            dlgSettings.DoModal(hResource, IDD_SETTINGS, *this);
         }
         break;
     case IDC_EDITMULTILINE1:
@@ -1159,15 +1169,15 @@ void CSearchDlg::ShowContextMenu(int x, int y)
         return;
     CShellContextMenu shellMenu;
     int iItem = -1;
-    vector<wstring> paths;
+    vector<CSearchInfo> paths;
     while ((iItem = ListView_GetNextItem(hListControl, iItem, LVNI_SELECTED)) != (-1))
-        paths.push_back(m_items[GetSelectedListIndex(iItem)].filepath);
+        paths.push_back(m_items[GetSelectedListIndex(iItem)]);
 
     if (paths.size() == 0)
         return;
 
 
-    vector<wstring> lines;
+    vector<LineData> lines;
     bool filelist = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
     if (!filelist)
     {
@@ -1178,16 +1188,23 @@ void CSearchDlg::ShowContextMenu(int x, int y)
             DWORD line = _wtoi(numbuf);
             if (line)
             {
-                const auto matchlinesnumbers = m_items[GetSelectedListIndex(iItem)].matchlinesnumbers;
+                LineData data;
+                const CSearchInfo info = m_items[GetSelectedListIndex(iItem)];
+                data.path = info.filepath;
+                const auto matchlinesnumbers = info.matchlinesnumbers;
                 int lineindex = 0;
                 for (auto it = matchlinesnumbers.cbegin(); it != matchlinesnumbers.cend(); ++it)
                 {
                     if (*it == line)
                     {
-                        lines.push_back(m_items[GetSelectedListIndex(iItem)].matchlines[lineindex]);
+                        LineDataLine dataline;
+                        dataline.number = info.matchlinesnumbers[lineindex];
+                        dataline.text = info.matchlines[lineindex];
+                        data.lines.push_back(dataline);
                     }
                     ++lineindex;
                 }
+                lines.push_back(data);
             }
         }
     }

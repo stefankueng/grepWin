@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008, 2011 - Stefan Kueng
+// Copyright (C) 2007-2008, 2011-2012 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -26,12 +26,14 @@
 
 using namespace std;
 class CIShellFolderHook;
+class CSearchInfo;
+struct LineData;
 
 class CShellContextMenu
 {
 public:
     HMENU GetMenu();
-    void SetObjects(const vector<wstring>& strVector, const vector<wstring>& lineVector);
+    void SetObjects(const vector<CSearchInfo>& strVector, const vector<LineData>& lineVector);
     UINT ShowContextMenu(HWND hWnd, POINT pt);
     CShellContextMenu();
     virtual ~CShellContextMenu();
@@ -43,8 +45,8 @@ private:
     IShellFolder * m_psfFolder;
     LPITEMIDLIST * m_pidlArray;
     int            m_pidlArrayItems;
-    vector<wstring> m_strVector;
-    vector<wstring> m_lineVector;
+    vector<CSearchInfo> m_strVector;
+    vector<LineData> m_lineVector;
 
     void InvokeCommand(LPCONTEXTMENU pContextMenu, UINT idCommand);
     BOOL GetContextMenu(HWND hWnd, void ** ppContextMenu, int & iMenuType);
