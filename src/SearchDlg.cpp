@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2011 - Stefan Kueng
+// Copyright (C) 2007-2012 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -1595,6 +1595,9 @@ bool CSearchDlg::SaveSettings()
     TCHAR * pBuf = buf;
     size_t pos = 0;
     m_patterns.clear();
+    m_bPatternsNegated = (buf[0] == '-');
+    if (pBuf[0]=='-')
+        pBuf++;
     do
     {
         pos = _tcscspn(pBuf, _T("|"));
@@ -1956,11 +1959,19 @@ bool CSearchDlg::MatchPath(LPCTSTR pathbuf)
     {
         if (m_patterns.size())
         {
+            if (m_bPatternsNegated)
+                bPattern = true;
+
             wstring fname = pName;
             std::transform(fname.begin(), fname.end(), fname.begin(), (int(*)(int)) std::tolower);
 
             for (vector<wstring>::const_iterator it = m_patterns.begin(); it != m_patterns.end(); ++it)
-                bPattern = bPattern || wcswildcmp(it->c_str(), fname.c_str());
+            {
+                if (m_bPatternsNegated)
+                    bPattern = bPattern && !wcswildcmp(it->c_str(), fname.c_str());
+                else
+                    bPattern = bPattern || wcswildcmp(it->c_str(), fname.c_str());
+            }
         }
         else
             bPattern = true;
