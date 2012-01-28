@@ -199,6 +199,7 @@
     <ClCompile Include="Registry.cpp" />
     <ClCompile Include="SearchDlg.cpp" />
     <ClCompile Include="SearchInfo.cpp" />
+    <ClCompile Include="Settings.cpp" />
     <ClCompile Include="ShellContextMenu.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -231,6 +232,7 @@
     <ClInclude Include="GrepWin.h" />
     <ClInclude Include="hyperlink.h" />
     <ClInclude Include="InfoDlg.h" />
+    <ClInclude Include="LineData.h" />
     <ClInclude Include="MultiLineEditDlg.h" />
     <ClInclude Include="NameDlg.h" />
     <ClInclude Include="RegexReplaceFormatter.h" />
@@ -240,6 +242,7 @@
     <ClInclude Include="Resources\resource.h" />
     <ClInclude Include="SearchDlg.h" />
     <ClInclude Include="SearchInfo.h" />
+    <ClInclude Include="Settings.h" />
     <ClInclude Include="ShellContextMenu.h" />
     <ClInclude Include="SimpleIni.h" />
     <ClInclude Include="stdafx.h" />

@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2011 - Stefan Kueng
+// Copyright (C) 2007-2012 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -20,9 +20,12 @@
 #include "ShellContextMenu.h"
 #include "shellapi.h"
 #include "StringUtils.h"
+#include "Registry.h"
+#include "SearchInfo.h"
+#include "LineData.h"
 #include <algorithm>
 
-#define MIN_ID 5
+#define MIN_ID 6
 #define MAX_ID 10000
 
 IContextMenu2 * g_IContext2 = NULL;
@@ -70,7 +73,7 @@ BOOL CShellContextMenu::GetContextMenu(HWND hWnd, void ** ppContextMenu, int & i
         numkeys--;
     if (RegOpenKey(HKEY_CLASSES_ROOT, L"AllFileSystemObjects", &ahkeys[numkeys++]) != ERROR_SUCCESS)
         numkeys--;
-    if (PathIsDirectory(m_strVector[0].c_str()))
+    if (PathIsDirectory(m_strVector[0].filepath.c_str()))
     {
         if (RegOpenKey(HKEY_CLASSES_ROOT, L"Folder", &ahkeys[numkeys++]) != ERROR_SUCCESS)
             numkeys--;
@@ -78,11 +81,11 @@ BOOL CShellContextMenu::GetContextMenu(HWND hWnd, void ** ppContextMenu, int & i
             numkeys--;
     }
     // find extension
-    size_t dotpos = m_strVector[0].find_last_of('.');
+    size_t dotpos = m_strVector[0].filepath.find_last_of('.');
     wstring ext;
     if (dotpos != std::string::npos)
     {
-        ext = m_strVector[0].substr(dotpos);
+        ext = m_strVector[0].filepath.substr(dotpos);
         if (RegOpenKey(HKEY_CLASSES_ROOT, ext.c_str(), &ahkeys[numkeys++]) == ERROR_SUCCESS)
         {
             WCHAR buf[MAX_PATH] = {0};
@@ -180,8 +183,16 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
         m_Menu = CreatePopupMenu();
     }
 
+    CRegStdString regEditorCmd(L"Software\\grepWin\\editorcmd");
+    std::wstring editorcmd = regEditorCmd;
     if (m_strVector.size() == 1)
     {
+        if (editorcmd.size())
+        {
+            ::InsertMenu(m_Menu, 1, MF_BYPOSITION | MF_STRING, 5, _T("Open with Editor"));
+            ::InsertMenu(m_Menu, 5, MF_SEPARATOR|MF_BYPOSITION, 0, NULL);
+        }
+
         ::InsertMenu(m_Menu, 1, MF_BYPOSITION | MF_STRING, 1, _T("Open Containing Folder"));
         ::InsertMenu(m_Menu, 2, MF_BYPOSITION | MF_STRING, 2, _T("Copy path to clipboard"));
         ::InsertMenu(m_Menu, 3, MF_BYPOSITION | MF_STRING, 3, _T("Copy filename to clipboard"));
@@ -191,6 +202,11 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
     }
     else if (m_strVector.size() > 1)
     {
+        if (editorcmd.size())
+        {
+            ::InsertMenu(m_Menu, 1, MF_BYPOSITION | MF_STRING, 5, _T("Open with Editor"));
+            ::InsertMenu(m_Menu, 5, MF_SEPARATOR|MF_BYPOSITION, 0, NULL);
+        }
         ::InsertMenu(m_Menu, 2, MF_BYPOSITION | MF_STRING, 2, _T("Copy paths to clipboard"));
         ::InsertMenu(m_Menu, 3, MF_BYPOSITION | MF_STRING, 3, _T("Copy filenames to clipboard"));
         if (m_lineVector.size())
@@ -229,7 +245,7 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
         case 1:
             {
                 // This is the command line for explorer which tells it to select the given file
-                wstring sFolder = _T( "/Select,\"" ) + m_strVector[0] + _T("\"");
+                wstring sFolder = _T( "/Select,\"" ) + m_strVector[0].filepath + _T("\"");
 
                 // Prepare shell execution params
                 SHELLEXECUTEINFO shExecInfo   = { 0 };
@@ -247,11 +263,11 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
         case 2:
             {
                 wstring pathnames;
-                for (vector<wstring>::const_iterator it = m_strVector.begin(); it != m_strVector.end(); ++it)
+                for (auto it = m_strVector.begin(); it != m_strVector.end(); ++it)
                 {
                     if (pathnames.size())
                         pathnames += _T("\r\n");
-                    pathnames += *it;
+                    pathnames += it->filepath;
                 }
                 WriteAsciiStringToClipboard(pathnames.c_str(), hWnd);
             }
@@ -259,11 +275,11 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
         case 3:
             {
                 wstring pathnames;
-                for (vector<wstring>::const_iterator it = m_strVector.begin(); it != m_strVector.end(); ++it)
+                for (auto it = m_strVector.begin(); it != m_strVector.end(); ++it)
                 {
                     if (pathnames.size())
                         pathnames += _T("\r\n");
-                    wstring p = *it;
+                    wstring p = it->filepath;
                     p = p.substr(p.find_last_of('\\')+1);
                     pathnames += p;
                 }
@@ -277,13 +293,68 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
                 {
                     if (lines.size())
                         lines += _T("\r\n");
-                    wstring l = *it;
-                    std::replace(l.begin(), l.end(), '\n', ' ');
-                    std::replace(l.begin(), l.end(), '\r', ' ');
+                    for (auto it2 = it->lines.cbegin(); it2 != it->lines.cend(); ++it2)
+                    {
+                        wstring l = it2->text;
+                        std::replace(l.begin(), l.end(), '\n', ' ');
+                        std::replace(l.begin(), l.end(), '\r', ' ');
 
-                    lines += l;
+                        lines += l;
+                    }
                 }
                 WriteAsciiStringToClipboard(lines.c_str(), hWnd);
+            }
+            break;
+        case 5:
+            {
+                if (m_lineVector.size())
+                {
+                    for (auto it = m_lineVector.cbegin(); it != m_lineVector.cend(); ++it)
+                    {
+                        for (auto it2 = it->lines.cbegin(); it2 != it->lines.cend(); ++it2)
+                        {
+                            std::wstring cmd = regEditorCmd;
+                            SearchReplace(cmd, L"%path%", it->path.c_str());
+                            wchar_t buf[40] = {0};
+                            swprintf_s(buf, L"%ld", it2->number);
+                            SearchReplace(cmd, L"%line%", buf);
+
+                            STARTUPINFO startupInfo;
+                            PROCESS_INFORMATION processInfo;
+                            memset(&startupInfo, 0, sizeof(STARTUPINFO));
+                            startupInfo.cb = sizeof(STARTUPINFO);
+                            memset(&processInfo, 0, sizeof(PROCESS_INFORMATION));
+                            CreateProcess(NULL, const_cast<TCHAR*>(cmd.c_str()), NULL, NULL, FALSE, 0, 0, NULL, &startupInfo, &processInfo);
+                            CloseHandle(processInfo.hThread);
+                            CloseHandle(processInfo.hProcess);
+                        }
+                    }
+                }
+                else
+                {
+                    for (auto it = m_strVector.begin(); it != m_strVector.end(); ++it)
+                    {
+                        std::wstring cmd = regEditorCmd;
+                        SearchReplace(cmd, L"%path%", it->filepath.c_str());
+                        if (it->matchlinesnumbers.size())
+                        {
+                            wchar_t buf[40] = {0};
+                            swprintf_s(buf, L"%ld", it->matchlinesnumbers[0]);
+                            SearchReplace(cmd, L"%line%", buf);
+                        }
+                        else
+                            SearchReplace(cmd, L"%line%", L"0");
+
+                        STARTUPINFO startupInfo;
+                        PROCESS_INFORMATION processInfo;
+                        memset(&startupInfo, 0, sizeof(STARTUPINFO));
+                        startupInfo.cb = sizeof(STARTUPINFO);
+                        memset(&processInfo, 0, sizeof(PROCESS_INFORMATION));
+                        CreateProcess(NULL, const_cast<TCHAR*>(cmd.c_str()), NULL, NULL, FALSE, 0, 0, NULL, &startupInfo, &processInfo);
+                        CloseHandle(processInfo.hThread);
+                        CloseHandle(processInfo.hProcess);
+                    }
+                }
             }
             break;
         }
@@ -308,7 +379,7 @@ void CShellContextMenu::InvokeCommand(LPCONTEXTMENU pContextMenu, UINT idCommand
     pContextMenu->InvokeCommand (&cmi);
 }
 
-void CShellContextMenu::SetObjects(const vector<wstring>& strVector, const vector<wstring>& lineVector)
+void CShellContextMenu::SetObjects(const vector<CSearchInfo>& strVector, const vector<LineData>& lineVector)
 {
     // free all allocated data
     if (m_psfFolder && bDelete)
@@ -325,7 +396,7 @@ void CShellContextMenu::SetObjects(const vector<wstring>& strVector, const vecto
     // that means that it's a fully qualified PIDL, which is what we need
     LPITEMIDLIST pidl = NULL;
 
-    m_psfFolder->ParseDisplayName(NULL, 0, (LPWSTR)strVector[0].c_str(), NULL, &pidl, NULL);
+    m_psfFolder->ParseDisplayName(NULL, 0, (LPWSTR)strVector[0].filepath.c_str(), NULL, &pidl, NULL);
 
     // get interface to IMalloc (need to free the PIDLs allocated by the shell functions)
     CoTaskMemFree(pidl);
@@ -336,7 +407,7 @@ void CShellContextMenu::SetObjects(const vector<wstring>& strVector, const vecto
     m_pidlArrayItems = nItems;
     for (int i = 0; i < nItems; i++)
     {
-        if (SUCCEEDED(m_psfFolder->ParseDisplayName(NULL, 0, (LPWSTR)strVector[i].c_str(), NULL, &pidl, NULL)))
+        if (SUCCEEDED(m_psfFolder->ParseDisplayName(NULL, 0, (LPWSTR)strVector[i].filepath.c_str(), NULL, &pidl, NULL)))
         {
             m_pidlArray[i] = CopyPIDL(pidl);    // copy pidl to pidlArray
             CoTaskMemFree(pidl);                // free pidl allocated by ParseDisplayName
@@ -460,7 +531,7 @@ HRESULT STDMETHODCALLTYPE CIShellFolderHook::GetUIObjectOf( HWND hwndOwner, UINT
         int nLength = 0;
         for (size_t i=0;i<m_pShellContextMenu->m_strVector.size();i++)
         {
-            nLength += (int)m_pShellContextMenu->m_strVector[i].size();
+            nLength += (int)m_pShellContextMenu->m_strVector[i].filepath.size();
             nLength += 1; // '\0' separator
         }
         int nBufferSize = sizeof(DROPFILES) + ((nLength+3)*sizeof(TCHAR));
@@ -474,7 +545,7 @@ HRESULT STDMETHODCALLTYPE CIShellFolderHook::GetUIObjectOf( HWND hwndOwner, UINT
 
         for (size_t i=0;i<m_pShellContextMenu->m_strVector.size();i++)
         {
-            wstring str = m_pShellContextMenu->m_strVector[i];
+            wstring str = m_pShellContextMenu->m_strVector[i].filepath;
             wcscpy_s(pCurrentFilename, str.size()+1, str.c_str());
             pCurrentFilename += str.size();
             *pCurrentFilename = '\0'; // separator between file names

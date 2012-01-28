@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008 - Stefan Kueng
+// Copyright (C) 2007-2008, 2012 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -149,4 +149,25 @@ bool WriteAsciiStringToClipboard(const wchar_t * sClipdata, HWND hOwningWnd)
         return false;
     }
     return false;
+}
+
+void SearchReplace(std::wstring& str, const std::wstring& toreplace, const std::wstring& replacewith)
+{
+    std::wstring result;
+    std::wstring::size_type pos = 0;
+    for ( ; ; )	// while (true)
+    {
+        std::wstring::size_type next = str.find(toreplace, pos);
+        result.append(str, pos, next-pos);
+        if( next != std::string::npos ) 
+        {
+            result.append(replacewith);
+            pos = next + toreplace.size();
+        } 
+        else 
+        {
+            break;  // exit loop
+        }
+    }
+    str.swap(result);
 }

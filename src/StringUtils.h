@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008 - Stefan Kueng
+// Copyright (C) 2007-2008, 2012 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -17,6 +17,8 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 #pragma once
+
+#include <string>
 
 #ifdef UNICODE
 #define _tcswildcmp	wcswildcmp
@@ -50,4 +52,5 @@ int strwildcmp(const char * wild, const char * string);
 int wcswildcmp(const wchar_t * wild, const wchar_t * string);
 
 bool WriteAsciiStringToClipboard(const wchar_t * sClipdata, HWND hOwningWnd);
+void SearchReplace(std::wstring& str, const std::wstring& toreplace, const std::wstring& replacewith);
 
