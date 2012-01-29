@@ -20,7 +20,10 @@
 #include "Resource.h"
 #include "maxpath.h"
 #include "Settings.h"
+#include "BrowseFolder.h"
+#include <Commdlg.h>
 
+#pragma comment(lib, "Comdlg32")
 
 CSettingsDlg::CSettingsDlg(HWND hParent)
     : m_hParent(hParent)
@@ -92,6 +95,26 @@ LRESULT CSettingsDlg::DoCommand(int id, int /*msg*/)
         // fall through
     case IDCANCEL:
         EndDialog(*this, id);
+        break;
+    case IDC_SEARCHPATHBROWSE:
+        {
+            OPENFILENAME ofn = {0};     // common dialog box structure
+            TCHAR szFile[MAX_PATH] = {0};  // buffer for file name
+            // Initialize OPENFILENAME
+            ofn.lStructSize = sizeof(OPENFILENAME);
+            ofn.hwndOwner = *this;
+            ofn.lpstrFile = szFile;
+            ofn.nMaxFile = _countof(szFile);
+            ofn.lpstrTitle = _T("Select Editor Application...\0");
+            ofn.Flags = OFN_FILEMUSTEXIST|OFN_HIDEREADONLY|OFN_PATHMUSTEXIST|OFN_DONTADDTORECENT;
+            ofn.lpstrFilter = _T("Programs\0*.exe;*.com\0All files\0*.*\0\0");
+            ofn.nFilterIndex = 1;
+            // Display the Open dialog box.
+            if (GetOpenFileName(&ofn)==TRUE)
+            {
+                SetDlgItemText(*this, IDC_EDITORCMD, szFile);
+            }
+        }
         break;
     }
     return 1;
