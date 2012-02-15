@@ -2027,6 +2027,8 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
             boost::match_flag_type flags = boost::match_default | boost::format_all;
             if (!bDotMatchesNewline)
                 flags |= boost::match_not_dot_newline;
+            long prevlinestart = 0;
+            long prevlineend   = 0;
             while (regex_search(start, end, whatc, expression, flags))
             {
                 if (whatc[0].matched)
@@ -2034,11 +2036,16 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
                     nFound++;
                     long linestart = textfile.LineFromPosition(long(whatc[0].first-textfile.GetFileString().begin()));
                     long lineend   = textfile.LineFromPosition(long(whatc[0].second-textfile.GetFileString().begin()));
-                    for (long l = linestart; l <= lineend; ++l)
+                    if ((linestart != prevlinestart)||(lineend != prevlineend))
                     {
-                        sinfo.matchlines.push_back(textfile.GetLineString(l));
-                        sinfo.matchlinesnumbers.push_back(l);
+                        for (long l = linestart; l <= lineend; ++l)
+                        {
+                            sinfo.matchlines.push_back(textfile.GetLineString(l));
+                            sinfo.matchlinesnumbers.push_back(l);
+                        }
                     }
+                    prevlinestart = linestart;
+                    prevlineend   = lineend;
                 }
                 // update search position:
                 if (start == whatc[0].second)
