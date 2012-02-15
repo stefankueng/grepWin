@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2011 - Stefan Kueng
+// Copyright (C) 2007-2012 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -53,6 +53,8 @@ bool CTextFile::Save(LPCTSTR path)
 
 bool CTextFile::Load(LPCTSTR path, UnicodeType& type, bool bUTF8)
 {
+    encoding = AUTOTYPE;
+    type = AUTOTYPE;
     LARGE_INTEGER lint;
     if (pFileBuf)
         delete [] pFileBuf;
@@ -99,8 +101,49 @@ bool CTextFile::Load(LPCTSTR path, UnicodeType& type, bool bUTF8)
         CloseHandle(hFile);
         return false;
     }
-    DWORD bytesread;
-    pFileBuf = new (std::nothrow) BYTE[lint.LowPart];
+
+    MEMORYSTATUSEX memex = {sizeof(MEMORYSTATUSEX)};
+    GlobalMemoryStatusEx(&memex);
+
+    DWORD bytesread = 0;
+    DWORD bytestoread = min(lint.LowPart, DWORD(memex.ullAvailPhys/100UL));
+    // if there isn't enough RAM available, only load a small part of the file
+    // to do the encoding check. Then only load the full file in case
+    // the encoding is UNICODE_LE since that's the only encoding we have
+    // to convert first to do a proper search with.
+    if ((bytestoread < lint.LowPart)&&((memex.ullAvailPhys>>32UL)==0))
+    {
+        std::unique_ptr<BYTE[]> tempfilebuf(new BYTE[bytestoread+1]);
+        if (!ReadFile(hFile, tempfilebuf.get(), bytestoread, &bytesread, NULL))
+        {
+            CloseHandle(hFile);
+            return false;
+        }
+        encoding = CheckUnicodeType(tempfilebuf.get(), bytesread);
+        type = encoding;
+        switch(encoding)
+        {
+        case BINARY:
+        case UTF8:
+        case ANSI:
+            CloseHandle(hFile);
+            return false;
+            break;
+        default:
+            pFileBuf = new (std::nothrow) BYTE[lint.LowPart];
+            for (unsigned long bc = 0; bc < bytesread; ++bc)
+            {
+                pFileBuf[bc] = tempfilebuf[bc];
+            }
+            break;
+        }
+    }
+    else
+    {
+        if (bytestoread > DWORD(memex.ullAvailPhys/200UL))
+            DebugBreak();
+        pFileBuf = new (std::nothrow) BYTE[lint.LowPart];
+    }
     if ((pFileBuf==NULL) || (!ReadFile(hFile, pFileBuf, lint.LowPart, &bytesread, NULL)))
     {
         delete [] pFileBuf;
@@ -109,14 +152,16 @@ bool CTextFile::Load(LPCTSTR path, UnicodeType& type, bool bUTF8)
         return false;
     }
     CloseHandle(hFile);
-    filelen = bytesread;
+    filelen = lint.LowPart;
 
     // we have the file read into memory, now we have to find out what
     // kind of text file we have here.
-    if (bUTF8)
-        encoding = UTF8;
-    else
+    if (encoding==AUTOTYPE)
+    {
         encoding = CheckUnicodeType(pFileBuf, bytesread);
+        if ((bUTF8)&&(encoding != BINARY))
+            encoding = UTF8;
+    }
 
     if (encoding == UNICODE_LE)
     {
@@ -129,7 +174,7 @@ bool CTextFile::Load(LPCTSTR path, UnicodeType& type, bool bUTF8)
         else
             textcontent = wstring((wchar_t*)pFileBuf, bytesread/sizeof(wchar_t));
     }
-    else if (encoding == UTF8)
+    else if ((encoding == UTF8)||((encoding == BINARY)&&(bUTF8)))
     {
         int ret = MultiByteToWideChar(CP_UTF8, 0, (LPCSTR)pFileBuf, bytesread, NULL, 0);
         wchar_t * pWideBuf = new (std::nothrow) wchar_t[ret];

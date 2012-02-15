@@ -2008,113 +2008,163 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
     CTextFile textfile;
 
     CTextFile::UnicodeType type = CTextFile::AUTOTYPE;
-    if (textfile.Load(sinfo.filepath.c_str(), type, m_bUTF8))
+    bool bLoadResult = textfile.Load(sinfo.filepath.c_str(), type, m_bUTF8);
+    sinfo.encoding = type;
+    if ((bLoadResult) && ((type != CTextFile::BINARY)||(bIncludeBinary)||bSearchAlways))
     {
-        sinfo.encoding = type;
         sinfo.readerror = false;
-        if ((type != CTextFile::BINARY)||(bIncludeBinary)||bSearchAlways)
+        wstring::const_iterator start, end;
+        start = textfile.GetFileString().begin();
+        end = textfile.GetFileString().end();
+        boost::match_results<wstring::const_iterator> what;
+        try
         {
-            wstring::const_iterator start, end;
-            start = textfile.GetFileString().begin();
-            end = textfile.GetFileString().end();
-            boost::match_results<wstring::const_iterator> what;
-            try
+            int ft = boost::regex::normal;
+            if (!bCaseSensitive)
+                ft |= boost::regbase::icase;
+            boost::wregex expression = boost::wregex(localSearchString, ft);
+            boost::match_results<wstring::const_iterator> whatc;
+            boost::match_flag_type flags = boost::match_default | boost::format_all;
+            if (!bDotMatchesNewline)
+                flags |= boost::match_not_dot_newline;
+            while (regex_search(start, end, whatc, expression, flags))
             {
-                int ft = boost::regex::normal;
-                if (!bCaseSensitive)
-                    ft |= boost::regbase::icase;
-                boost::wregex expression = boost::wregex(localSearchString, ft);
-                boost::match_results<wstring::const_iterator> whatc;
-                boost::match_flag_type flags = boost::match_default | boost::format_all;
-                if (!bDotMatchesNewline)
-                    flags |= boost::match_not_dot_newline;
-                while (regex_search(start, end, whatc, expression, flags))
+                if (whatc[0].matched)
                 {
-                    if (whatc[0].matched)
+                    nFound++;
+                    long linestart = textfile.LineFromPosition(long(whatc[0].first-textfile.GetFileString().begin()));
+                    long lineend   = textfile.LineFromPosition(long(whatc[0].second-textfile.GetFileString().begin()));
+                    for (long l = linestart; l <= lineend; ++l)
                     {
-                        nFound++;
-                        long linestart = textfile.LineFromPosition(long(whatc[0].first-textfile.GetFileString().begin()));
-                        long lineend = textfile.LineFromPosition(long(whatc[0].second-textfile.GetFileString().begin()));
-                        for (long l = linestart; l <= lineend; ++l)
+                        sinfo.matchlines.push_back(textfile.GetLineString(l));
+                        sinfo.matchlinesnumbers.push_back(l);
+                    }
+                }
+                // update search position:
+                if (start == whatc[0].second)
+                {
+                    if (start == end)
+                        break;
+                    start++;
+                }
+                else
+                    start = whatc[0].second;
+                // update flags:
+                flags |= boost::match_prev_avail;
+                flags |= boost::match_not_bob;
+            }
+            if ((m_bReplace)&&(nFound))
+            {
+                flags &= ~boost::match_prev_avail;
+                flags &= ~boost::match_not_bob;
+                RegexReplaceFormatter replaceFmt(m_replaceString);
+                replaceFmt.SetReplacePair(L"${filepath}", sinfo.filepath);
+                std::wstring filenamefull = sinfo.filepath.substr(sinfo.filepath.find_last_of('\\')+1);
+                auto dotpos = filenamefull.find_last_of('.');
+                if (dotpos != std::string::npos)
+                {
+                    std::wstring filename = filenamefull.substr(0, dotpos);
+                    replaceFmt.SetReplacePair(L"${filename}", filename);
+                    if (filenamefull.size() > dotpos)
+                    {
+                        std::wstring fileext = filenamefull.substr(dotpos+1);
+                        replaceFmt.SetReplacePair(L"${fileext}", fileext);
+                    }
+                }
+                wstring replaced = regex_replace(textfile.GetFileString(), expression, replaceFmt, flags);
+                if (replaced.compare(textfile.GetFileString()))
+                {
+                    textfile.SetFileContent(replaced);
+                    if (m_bCreateBackup)
+                    {
+                        wstring backupfile = sinfo.filepath + _T(".bak");
+                        CopyFile(sinfo.filepath.c_str(), backupfile.c_str(), FALSE);
+                    }
+                    if (!textfile.Save(sinfo.filepath.c_str()))
+                    {
+                        // saving the file failed. Find out why...
+                        DWORD err = GetLastError();
+                        if (err == ERROR_ACCESS_DENIED)
                         {
-                            sinfo.matchlines.push_back(textfile.GetLineString(l));
-                            sinfo.matchlinesnumbers.push_back(l);
+                            // access denied can happen if the file has the
+                            // read-only flag and/or the hidden flag set
+                            // those are not situations where we should fail, so
+                            // we reset those flags and restore them
+                            // again after saving the file
+                            DWORD origAttributes = GetFileAttributes(sinfo.filepath.c_str());
+                            DWORD newAttributes = origAttributes & (~(FILE_ATTRIBUTE_HIDDEN|FILE_ATTRIBUTE_READONLY|FILE_ATTRIBUTE_SYSTEM));
+                            SetFileAttributes(sinfo.filepath.c_str(), newAttributes);
+                            bool bRet = textfile.Save(sinfo.filepath.c_str());
+                            // restore the attributes
+                            SetFileAttributes(sinfo.filepath.c_str(), origAttributes);
+                            if (!bRet)
+                                return -1;
                         }
                     }
+                }
+            }
+        }
+        catch (const exception&)
+        {
+            return -1;
+        }
+    }
+    else
+    {
+        if (type == CTextFile::AUTOTYPE)
+        {
+            sinfo.readerror = true;
+            return 0;
+        }
+
+        // file is either too big or binary.
+        // in any case, use the search function that uses a file iterator
+        // instead of a string iterator to reduce the memory consumption
+
+        if ((type != CTextFile::BINARY)||(bIncludeBinary)||bSearchAlways)
+        {
+            sinfo.encoding = type;
+            string filepath = CUnicodeUtils::StdGetANSI(sinfo.filepath);
+            string searchfor = (type == CTextFile::ANSI) ? CUnicodeUtils::StdGetANSI(searchString) : CUnicodeUtils::StdGetUTF8(searchString);
+
+            if (!bUseRegex)
+            {
+                searchfor = "\\Q";
+                searchfor += CUnicodeUtils::StdGetUTF8(searchString);
+                searchfor += "\\E";
+            }
+            boost::spirit::classic::file_iterator<> start(filepath.c_str());
+            boost::spirit::classic::file_iterator<> fbeg = start;
+            boost::spirit::classic::file_iterator<> end = start.make_end();
+
+            boost::match_results<string::const_iterator> what;
+            boost::match_flag_type flags = boost::match_default | boost::format_all;
+            if (!bDotMatchesNewline)
+                flags |= boost::match_not_dot_newline;
+            try
+            {
+                boost::regex expression = boost::regex(searchfor);
+                boost::match_results<boost::spirit::classic::file_iterator<>> whatc;
+                while (boost::regex_search(start, end, whatc, expression, flags))
+                {
+                    nFound++;
+                    sinfo.matchlinesnumbers.push_back(DWORD(whatc[0].first-fbeg));
                     // update search position:
-                    if (start == whatc[0].second)
-                    {
-                        if (start == end)
-                            break;
-                        start++;
-                    }
-                    else
-                        start = whatc[0].second;
+                    start = whatc[0].second;
                     // update flags:
                     flags |= boost::match_prev_avail;
                     flags |= boost::match_not_bob;
-                }
-                if ((m_bReplace)&&(nFound))
-                {
-                    flags &= ~boost::match_prev_avail;
-                    flags &= ~boost::match_not_bob;
-                    RegexReplaceFormatter replaceFmt(m_replaceString);
-                    replaceFmt.SetReplacePair(L"${filepath}", sinfo.filepath);
-                    std::wstring filenamefull = sinfo.filepath.substr(sinfo.filepath.find_last_of('\\')+1);
-                    auto dotpos = filenamefull.find_last_of('.');
-                    if (dotpos != std::string::npos)
-                    {
-                        std::wstring filename = filenamefull.substr(0, dotpos);
-                        replaceFmt.SetReplacePair(L"${filename}", filename);
-                        if (filenamefull.size() > dotpos)
-                        {
-                            std::wstring fileext = filenamefull.substr(dotpos+1);
-                            replaceFmt.SetReplacePair(L"${fileext}", fileext);
-                        }
-                    }
-                    wstring replaced = regex_replace(textfile.GetFileString(), expression, replaceFmt, flags);
-                    if (replaced.compare(textfile.GetFileString()))
-                    {
-                        textfile.SetFileContent(replaced);
-                        if (m_bCreateBackup)
-                        {
-                            wstring backupfile = sinfo.filepath + _T(".bak");
-                            CopyFile(sinfo.filepath.c_str(), backupfile.c_str(), FALSE);
-                        }
-                        if (!textfile.Save(sinfo.filepath.c_str()))
-                        {
-                            // saving the file failed. Find out why...
-                            DWORD err = GetLastError();
-                            if (err == ERROR_ACCESS_DENIED)
-                            {
-                                // access denied can happen if the file has the
-                                // read-only flag and/or the hidden flag set
-                                // those are not situations where we should fail, so
-                                // we reset those flags and restore them
-                                // again after saving the file
-                                DWORD origAttributes = GetFileAttributes(sinfo.filepath.c_str());
-                                DWORD newAttributes = origAttributes & (~(FILE_ATTRIBUTE_HIDDEN|FILE_ATTRIBUTE_READONLY|FILE_ATTRIBUTE_SYSTEM));
-                                SetFileAttributes(sinfo.filepath.c_str(), newAttributes);
-                                bool bRet = textfile.Save(sinfo.filepath.c_str());
-                                // restore the attributes
-                                SetFileAttributes(sinfo.filepath.c_str(), origAttributes);
-                                if (!bRet)
-                                    return -1;
-                            }
-                        }
-                    }
                 }
             }
             catch (const exception&)
             {
                 return -1;
             }
+            catch (...)
+            {
+                return -1;
+            }
         }
-    }
-    else
-    {
-        sinfo.readerror = true;
-        return 0;
     }
     return nFound;
 }
