@@ -140,8 +140,6 @@ bool CTextFile::Load(LPCTSTR path, UnicodeType& type, bool bUTF8)
     }
     else
     {
-        if (bytestoread > DWORD(memex.ullAvailPhys/200UL))
-            DebugBreak();
         pFileBuf = new (std::nothrow) BYTE[lint.LowPart];
     }
     if ((pFileBuf==NULL) || (!ReadFile(hFile, pFileBuf, lint.LowPart, &bytesread, NULL)))
