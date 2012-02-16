@@ -67,7 +67,8 @@ BOOL CShellContextMenu::GetContextMenu(HWND hWnd, void ** ppContextMenu, int & i
     if (m_psfFolder == NULL)
         return FALSE;
 
-    HKEY ahkeys[16] = {0};
+    HKEY ahkeys[16];
+    SecureZeroMemory(ahkeys, _countof(ahkeys)*sizeof(HKEY));
     int numkeys = 0;
     if (RegOpenKey(HKEY_CLASSES_ROOT, L"*", &ahkeys[numkeys++]) != ERROR_SUCCESS)
         numkeys--;
@@ -394,28 +395,27 @@ void CShellContextMenu::SetObjects(const vector<CSearchInfo>& strVector, const v
     // ParseDisplayName creates a PIDL from a file system path relative to the IShellFolder interface
     // but since we use the Desktop as our interface and the Desktop is the namespace root
     // that means that it's a fully qualified PIDL, which is what we need
-    LPITEMIDLIST pidl = NULL;
-
-    m_psfFolder->ParseDisplayName(NULL, 0, (LPWSTR)strVector[0].filepath.c_str(), NULL, &pidl, NULL);
-
-    // get interface to IMalloc (need to free the PIDLs allocated by the shell functions)
-    CoTaskMemFree(pidl);
 
     nItems = (int)strVector.size();
     m_pidlArray = (LPITEMIDLIST *)CoTaskMemAlloc((nItems + 10) * sizeof (LPITEMIDLIST));
     SecureZeroMemory(m_pidlArray, (nItems + 10) * sizeof (LPITEMIDLIST));
     m_pidlArrayItems = nItems;
+    int succeededItems = 0;
+    LPITEMIDLIST pidl = NULL;
+    m_strVector.clear();
+    m_lineVector.clear();
     for (int i = 0; i < nItems; i++)
     {
         if (SUCCEEDED(m_psfFolder->ParseDisplayName(NULL, 0, (LPWSTR)strVector[i].filepath.c_str(), NULL, &pidl, NULL)))
         {
-            m_pidlArray[i] = CopyPIDL(pidl);    // copy pidl to pidlArray
-            CoTaskMemFree(pidl);                // free pidl allocated by ParseDisplayName
+            m_pidlArray[succeededItems++] = CopyPIDL(pidl);   // copy pidl to pidlArray
+            CoTaskMemFree(pidl);                            // free pidl allocated by ParseDisplayName
+            m_strVector.push_back(strVector[i]);
+            if (lineVector.size() > i)
+                m_lineVector.push_back(lineVector[i]);
         }
     }
 
-    m_strVector = strVector;
-    m_lineVector = lineVector;
     bDelete = TRUE; // indicates that m_psfFolder should be deleted by CShellContextMenu
 }
 
@@ -425,7 +425,10 @@ void CShellContextMenu::FreePIDLArray(LPITEMIDLIST *pidlArray, int nItems)
         return;
 
     for (int i = 0; i < nItems; i++)
-        CoTaskMemFree(pidlArray[i]);
+    {
+        if (pidlArray[i])
+            CoTaskMemFree(pidlArray[i]);
+    }
     CoTaskMemFree(pidlArray);
 }
 
@@ -535,12 +538,12 @@ HRESULT STDMETHODCALLTYPE CIShellFolderHook::GetUIObjectOf( HWND hwndOwner, UINT
             nLength += 1; // '\0' separator
         }
         int nBufferSize = sizeof(DROPFILES) + ((nLength+3)*sizeof(TCHAR));
-        char * pBuffer = new char[nBufferSize];
-        SecureZeroMemory(pBuffer, nBufferSize);
-        DROPFILES* df = (DROPFILES*)pBuffer;
+        std::unique_ptr<char[]> pBuffer(new char[nBufferSize]);
+        SecureZeroMemory(pBuffer.get(), nBufferSize);
+        DROPFILES* df = (DROPFILES*)pBuffer.get();
         df->pFiles = sizeof(DROPFILES);
         df->fWide = 1;
-        TCHAR* pFilenames = (TCHAR*)(pBuffer + sizeof(DROPFILES));
+        TCHAR* pFilenames = (TCHAR*)(pBuffer.get() + sizeof(DROPFILES));
         TCHAR* pCurrentFilename = pFilenames;
 
         for (size_t i=0;i<m_pShellContextMenu->m_strVector.size();i++)
@@ -561,19 +564,19 @@ HRESULT STDMETHODCALLTYPE CIShellFolderHook::GetUIObjectOf( HWND hwndOwner, UINT
         {
             LPVOID pMem = ::GlobalLock(pmedium->hGlobal);
             if (pMem)
-                memcpy(pMem, pBuffer, nBufferSize);
-            GlobalUnlock(pmedium->hGlobal);
-            FORMATETC formatetc = {0};
-            formatetc.cfFormat = CF_HDROP;
-            formatetc.dwAspect = DVASPECT_CONTENT;
-            formatetc.lindex = -1;
-            formatetc.tymed = TYMED_HGLOBAL;
-            pmedium->pUnkForRelease = NULL;
-            hres = idata->SetData(&formatetc, pmedium, TRUE);
-            delete [] pBuffer;
-            return hres;
+            {
+                memcpy(pMem, pBuffer.get(), nBufferSize);
+                GlobalUnlock(pmedium->hGlobal);
+                FORMATETC formatetc = {0};
+                formatetc.cfFormat = CF_HDROP;
+                formatetc.dwAspect = DVASPECT_CONTENT;
+                formatetc.lindex = -1;
+                formatetc.tymed = TYMED_HGLOBAL;
+                pmedium->pUnkForRelease = NULL;
+                hres = idata->SetData(&formatetc, pmedium, TRUE);
+                return hres;
+            }
         }
-        delete [] pBuffer;
         return E_OUTOFMEMORY;
     }
     else 
