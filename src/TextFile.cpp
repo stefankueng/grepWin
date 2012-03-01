@@ -175,10 +175,10 @@ bool CTextFile::Load(LPCTSTR path, UnicodeType& type, bool bUTF8)
     else if ((encoding == UTF8)||((encoding == BINARY)&&(bUTF8)))
     {
         int ret = MultiByteToWideChar(CP_UTF8, 0, (LPCSTR)pFileBuf, bytesread, NULL, 0);
-        wchar_t * pWideBuf = new (std::nothrow) wchar_t[ret];
+        wchar_t * pWideBuf = new (std::nothrow) wchar_t[ret+1];
         if (pWideBuf==NULL)
             return false;
-        int ret2 = MultiByteToWideChar(CP_UTF8, 0, (LPCSTR)pFileBuf, bytesread, pWideBuf, ret);
+        int ret2 = MultiByteToWideChar(CP_UTF8, 0, (LPCSTR)pFileBuf, bytesread, pWideBuf, ret+1);
         if (ret2 == ret)
         {
             if (*pWideBuf == 0xFEFF)
@@ -195,10 +195,10 @@ bool CTextFile::Load(LPCTSTR path, UnicodeType& type, bool bUTF8)
     else //if (encoding == ANSI)
     {
         int ret = MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, (LPCSTR)pFileBuf, bytesread, NULL, 0);
-        wchar_t * pWideBuf = new (std::nothrow) wchar_t[ret];
+        wchar_t * pWideBuf = new (std::nothrow) wchar_t[ret+1];
         if (pWideBuf == NULL)
             return false;
-        int ret2 = MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, (LPCSTR)pFileBuf, bytesread, pWideBuf, ret);
+        int ret2 = MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, (LPCSTR)pFileBuf, bytesread, pWideBuf, ret+1);
         if (ret2 == ret)
             textcontent = wstring(pWideBuf, ret);
         delete [] pWideBuf;
