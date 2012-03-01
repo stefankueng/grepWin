@@ -155,7 +155,7 @@ LRESULT CALLBACK CShellContextMenu::HookWndProc(HWND hWnd, UINT message, WPARAM 
             LRESULT lResult = 0;
             g_IContext3->HandleMenuMsg2 (message, wParam, lParam, &lResult);
         }
-        else
+        else if (g_IContext2)
             g_IContext2->HandleMenuMsg (message, wParam, lParam);
 
         return TRUE;
@@ -174,6 +174,9 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
 {
     int iMenuType = 0;  // to know which version of IContextMenu is supported
     LPCONTEXTMENU pContextMenu; // common pointer to IContextMenu and higher version interface
+
+    if (GetWindowLongPtr(hWnd, GWLP_WNDPROC) == (LONG_PTR)HookWndProc)
+        return 0;
 
     if (!GetContextMenu (hWnd, (void**)&pContextMenu, iMenuType))
         return 0;
@@ -220,7 +223,8 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
     // subclass window to handle menu related messages in CShellContextMenu
     if (iMenuType > 1)  // only subclass if its version 2 or 3
     {
-        g_OldWndProc = (WNDPROC)SetWindowLongPtr (hWnd, GWLP_WNDPROC, (LONG_PTR)HookWndProc);
+        if (GetWindowLongPtr(hWnd, GWLP_WNDPROC) != (LONG_PTR)HookWndProc)
+            g_OldWndProc = (WNDPROC)SetWindowLongPtr (hWnd, GWLP_WNDPROC, (LONG_PTR)HookWndProc);
         if (iMenuType == 2)
             g_IContext2 = (LPCONTEXTMENU2)pContextMenu;
         else    // version 3
@@ -411,7 +415,7 @@ void CShellContextMenu::SetObjects(const vector<CSearchInfo>& strVector, const v
             m_pidlArray[succeededItems++] = CopyPIDL(pidl);   // copy pidl to pidlArray
             CoTaskMemFree(pidl);                            // free pidl allocated by ParseDisplayName
             m_strVector.push_back(strVector[i]);
-            if (lineVector.size() > i)
+            if (lineVector.size() > (size_t)i)
                 m_lineVector.push_back(lineVector[i]);
         }
     }
@@ -537,13 +541,13 @@ HRESULT STDMETHODCALLTYPE CIShellFolderHook::GetUIObjectOf( HWND hwndOwner, UINT
             nLength += (int)m_pShellContextMenu->m_strVector[i].filepath.size();
             nLength += 1; // '\0' separator
         }
-        int nBufferSize = sizeof(DROPFILES) + ((nLength+3)*sizeof(TCHAR));
+        int nBufferSize = sizeof(DROPFILES) + ((nLength+5)*sizeof(TCHAR));
         std::unique_ptr<char[]> pBuffer(new char[nBufferSize]);
         SecureZeroMemory(pBuffer.get(), nBufferSize);
         DROPFILES* df = (DROPFILES*)pBuffer.get();
         df->pFiles = sizeof(DROPFILES);
         df->fWide = 1;
-        TCHAR* pFilenames = (TCHAR*)(pBuffer.get() + sizeof(DROPFILES));
+        TCHAR* pFilenames = (TCHAR*)((BYTE*)(pBuffer.get()) + sizeof(DROPFILES));
         TCHAR* pCurrentFilename = pFilenames;
 
         for (size_t i=0;i<m_pShellContextMenu->m_strVector.size();i++)
