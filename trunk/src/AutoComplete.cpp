@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2009 - Stefan Kueng
+// Copyright (C) 2007-2009, 2012 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -30,8 +30,6 @@ CAutoComplete::~CAutoComplete(void)
 {
     if (m_pac)
         m_pac->Release();
-    if (m_pcacs)
-        m_pcacs->Release();
     if (m_pdrop)
         m_pdrop->Release();
 }
