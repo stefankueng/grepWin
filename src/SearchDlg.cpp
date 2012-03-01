@@ -1171,7 +1171,12 @@ void CSearchDlg::ShowContextMenu(int x, int y)
     int iItem = -1;
     vector<CSearchInfo> paths;
     while ((iItem = ListView_GetNextItem(hListControl, iItem, LVNI_SELECTED)) != (-1))
-        paths.push_back(m_items[GetSelectedListIndex(iItem)]);
+    {
+        int selIndex = GetSelectedListIndex(iItem);
+        if ((selIndex < 0)||(selIndex >= m_items.size()))
+            continue;
+        paths.push_back(m_items[selIndex]);
+    }
 
     if (paths.size() == 0)
         return;
