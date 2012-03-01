@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2009 - Stefan Kueng
+// Copyright (C) 2007-2009, 2012 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -35,6 +35,7 @@ class CAutoCompleteEnum : public IEnumString
 public:
     CAutoCompleteEnum(const vector<wstring*>& vec);
     CAutoCompleteEnum(const vector<wstring>& vec);
+    ~CAutoCompleteEnum() {}
     //IUnknown members
     STDMETHOD(QueryInterface)(REFIID, void**);
     STDMETHOD_(ULONG, AddRef)(void);
