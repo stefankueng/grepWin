@@ -561,23 +561,23 @@ HRESULT STDMETHODCALLTYPE CIShellFolderHook::GetUIObjectOf( HWND hwndOwner, UINT
         *pCurrentFilename = '\0'; // terminate array
         pCurrentFilename++;
         *pCurrentFilename = '\0'; // terminate array
-        STGMEDIUM * pmedium = new STGMEDIUM;
-        pmedium->tymed = TYMED_HGLOBAL;
-        pmedium->hGlobal = GlobalAlloc(GMEM_ZEROINIT|GMEM_MOVEABLE, nBufferSize+20);
-        if (pmedium->hGlobal)
+        STGMEDIUM medium = {0};
+        medium.tymed = TYMED_HGLOBAL;
+        medium.hGlobal = GlobalAlloc(GMEM_ZEROINIT|GMEM_MOVEABLE, nBufferSize+20);
+        if (medium.hGlobal)
         {
-            LPVOID pMem = ::GlobalLock(pmedium->hGlobal);
+            LPVOID pMem = ::GlobalLock(medium.hGlobal);
             if (pMem)
             {
                 memcpy(pMem, pBuffer.get(), nBufferSize);
-                GlobalUnlock(pmedium->hGlobal);
+                GlobalUnlock(medium.hGlobal);
                 FORMATETC formatetc = {0};
                 formatetc.cfFormat = CF_HDROP;
                 formatetc.dwAspect = DVASPECT_CONTENT;
                 formatetc.lindex = -1;
                 formatetc.tymed = TYMED_HGLOBAL;
-                pmedium->pUnkForRelease = NULL;
-                hres = idata->SetData(&formatetc, pmedium, TRUE);
+                medium.pUnkForRelease = NULL;
+                hres = idata->SetData(&formatetc, &medium, TRUE);
                 return hres;
             }
         }
