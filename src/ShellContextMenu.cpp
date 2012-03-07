@@ -417,7 +417,7 @@ void CShellContextMenu::SetObjects(const vector<CSearchInfo>& strVector, const v
     nItems = (int)strVector.size();
     m_pidlArray = (LPITEMIDLIST *)CoTaskMemAlloc((nItems + 10) * sizeof (LPITEMIDLIST));
     SecureZeroMemory(m_pidlArray, (nItems + 10) * sizeof (LPITEMIDLIST));
-    m_pidlArrayItems = nItems;
+    m_pidlArrayItems = 0;
     int succeededItems = 0;
     LPITEMIDLIST pidl = NULL;
     m_strVector.clear();
@@ -429,12 +429,12 @@ void CShellContextMenu::SetObjects(const vector<CSearchInfo>& strVector, const v
         if (SUCCEEDED(m_psfFolder->ParseDisplayName(NULL, 0, filepath.get(), NULL, &pidl, NULL)))
         {
             m_pidlArray[succeededItems++] = pidl;           // copy pidl to pidlArray
-            //CoTaskMemFree(pidl);                            // free pidl allocated by ParseDisplayName
             m_strVector.push_back(strVector[i]);
             if (lineVector.size() > (size_t)i)
                 m_lineVector.push_back(lineVector[i]);
         }
     }
+    m_pidlArrayItems = succeededItems;
 
     bDelete = TRUE; // indicates that m_psfFolder should be deleted by CShellContextMenu
 }
