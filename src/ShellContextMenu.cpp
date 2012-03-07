@@ -105,7 +105,8 @@ BOOL CShellContextMenu::GetContextMenu(HWND hWnd, void ** ppContextMenu, int & i
     m_pFolderhook = new CIShellFolderHook(m_psfFolder, this);
 
     LPCONTEXTMENU icm1 = NULL;
-    CDefFolderMenu_Create2(NULL, hWnd, (UINT)m_pidlArrayItems, (LPCITEMIDLIST*)m_pidlArray, m_pFolderhook, dfmCallback, numkeys, ahkeys, &icm1);
+    if (FAILED(CDefFolderMenu_Create2(NULL, hWnd, (UINT)m_pidlArrayItems, (LPCITEMIDLIST*)m_pidlArray, m_pFolderhook, dfmCallback, numkeys, ahkeys, &icm1)))
+        return FALSE;
     for (int i = 0; i < numkeys; ++i)
         RegCloseKey(ahkeys[i]);
 
