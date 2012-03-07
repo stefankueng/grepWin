@@ -62,9 +62,11 @@ CShellContextMenu::~CShellContextMenu()
 BOOL CShellContextMenu::GetContextMenu(HWND hWnd, void ** ppContextMenu, int & iMenuType)
 {
     *ppContextMenu = NULL;
-    LPCONTEXTMENU icm1 = NULL;
-
+    if (m_pFolderhook)
+        return FALSE;
     if (m_psfFolder == NULL)
+        return FALSE;
+    if (m_strVector.size()==0)
         return FALSE;
 
     HKEY ahkeys[16];
@@ -102,6 +104,7 @@ BOOL CShellContextMenu::GetContextMenu(HWND hWnd, void ** ppContextMenu, int & i
     delete m_pFolderhook;
     m_pFolderhook = new CIShellFolderHook(m_psfFolder, this);
 
+    LPCONTEXTMENU icm1 = NULL;
     CDefFolderMenu_Create2(NULL, hWnd, (UINT)m_pidlArrayItems, (LPCITEMIDLIST*)m_pidlArray, m_pFolderhook, dfmCallback, numkeys, ahkeys, &icm1);
     for (int i = 0; i < numkeys; ++i)
         RegCloseKey(ahkeys[i]);
@@ -410,10 +413,12 @@ void CShellContextMenu::SetObjects(const vector<CSearchInfo>& strVector, const v
     m_lineVector.clear();
     for (int i = 0; i < nItems; i++)
     {
-        if (SUCCEEDED(m_psfFolder->ParseDisplayName(NULL, 0, (LPWSTR)strVector[i].filepath.c_str(), NULL, &pidl, NULL)))
+        std::unique_ptr<WCHAR[]> filepath(new WCHAR[strVector[i].filepath.size()+3]);
+        wcscpy_s(filepath.get(), strVector[i].filepath.size()+2, strVector[i].filepath.c_str());
+        if (SUCCEEDED(m_psfFolder->ParseDisplayName(NULL, 0, filepath.get(), NULL, &pidl, NULL)))
         {
-            m_pidlArray[succeededItems++] = CopyPIDL(pidl);   // copy pidl to pidlArray
-            CoTaskMemFree(pidl);                            // free pidl allocated by ParseDisplayName
+            m_pidlArray[succeededItems++] = pidl;           // copy pidl to pidlArray
+            //CoTaskMemFree(pidl);                            // free pidl allocated by ParseDisplayName
             m_strVector.push_back(strVector[i]);
             if (lineVector.size() > (size_t)i)
                 m_lineVector.push_back(lineVector[i]);
@@ -434,79 +439,6 @@ void CShellContextMenu::FreePIDLArray(LPITEMIDLIST *pidlArray, int nItems)
             CoTaskMemFree(pidlArray[i]);
     }
     CoTaskMemFree(pidlArray);
-}
-
-
-LPITEMIDLIST CShellContextMenu::CopyPIDL(LPCITEMIDLIST pidl, int cb)
-{
-    if (cb == -1)
-        cb = GetPIDLSize(pidl); // Calculate size of list.
-
-    LPITEMIDLIST pidlRet = (LPITEMIDLIST)CoTaskMemAlloc ((cb + sizeof(USHORT)) * sizeof(BYTE));
-    SecureZeroMemory(pidlRet, (cb + sizeof(USHORT)) * sizeof(BYTE));
-    if (pidlRet)
-        CopyMemory(pidlRet, pidl, cb);
-
-    return pidlRet;
-}
-
-
-UINT CShellContextMenu::GetPIDLSize(LPCITEMIDLIST pidl)
-{
-    if (!pidl)
-        return 0;
-    int nSize = 0;
-    LPITEMIDLIST pidlTemp = (LPITEMIDLIST)pidl;
-    while (pidlTemp->mkid.cb)
-    {
-        nSize += pidlTemp->mkid.cb;
-        pidlTemp = (LPITEMIDLIST)(((LPBYTE)pidlTemp) + pidlTemp->mkid.cb);
-    }
-    return nSize;
-}
-
-HMENU CShellContextMenu::GetMenu()
-{
-    if (!m_Menu)
-    {
-        m_Menu = CreatePopupMenu();
-    }
-    return m_Menu;
-}
-
-LPBYTE CShellContextMenu::GetPIDLPos(LPCITEMIDLIST pidl, int nPos)
-{
-    if (!pidl)
-        return 0;
-    int nCount = 0;
-
-    BYTE * pCur = (BYTE *)pidl;
-    while (((LPCITEMIDLIST)pCur)->mkid.cb)
-    {
-        if (nCount == nPos)
-            return pCur;
-        nCount++;
-        pCur += ((LPCITEMIDLIST)pCur)->mkid.cb;
-    }
-    if (nCount == nPos)
-        return pCur;
-    return NULL;
-}
-
-
-int CShellContextMenu::GetPIDLCount(LPCITEMIDLIST pidl)
-{
-    if (!pidl)
-        return 0;
-
-    int nCount = 0;
-    BYTE*  pCur = (BYTE *)pidl;
-    while (((LPCITEMIDLIST)pCur)->mkid.cb)
-    {
-        nCount++;
-        pCur += ((LPCITEMIDLIST)pCur)->mkid.cb;
-    }
-    return nCount;
 }
 
 HRESULT CShellContextMenu::dfmCallback( IShellFolder * /*psf*/, HWND /*hwnd*/, IDataObject * /*pdtobj*/, UINT uMsg, WPARAM /*wParam*/, LPARAM /*lParam*/ )

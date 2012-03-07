@@ -32,7 +32,6 @@ struct LineData;
 class CShellContextMenu
 {
 public:
-    HMENU GetMenu();
     void SetObjects(const vector<CSearchInfo>& strVector, const vector<LineData>& lineVector);
     UINT ShowContextMenu(HWND hWnd, POINT pt);
     CShellContextMenu();
@@ -52,10 +51,6 @@ private:
     BOOL GetContextMenu(HWND hWnd, void ** ppContextMenu, int & iMenuType);
     static LRESULT CALLBACK HookWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
     void FreePIDLArray(LPITEMIDLIST * pidlArray, int nItems);
-    LPITEMIDLIST CopyPIDL(LPCITEMIDLIST pidl, int cb = -1);
-    UINT GetPIDLSize(LPCITEMIDLIST pidl);
-    LPBYTE GetPIDLPos(LPCITEMIDLIST pidl, int nPos);
-    int GetPIDLCount(LPCITEMIDLIST pidl);
 
     static HRESULT CALLBACK dfmCallback(IShellFolder *psf, HWND hwnd, IDataObject *pdtobj, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
