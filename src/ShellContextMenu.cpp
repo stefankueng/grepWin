@@ -23,6 +23,7 @@
 #include "Registry.h"
 #include "SearchInfo.h"
 #include "LineData.h"
+#include <set>
 #include <algorithm>
 
 #define MIN_ID 6
@@ -31,6 +32,15 @@
 IContextMenu2 * g_IContext2 = NULL;
 IContextMenu3 * g_IContext3 = NULL;
 WNDPROC g_OldWndProc = NULL;
+
+struct icompare
+{
+    bool operator() (const std::wstring& lhs, const std::wstring& rhs) const
+    {
+        return wcsicmp(lhs.c_str(), rhs.c_str()) < 0;
+    }
+};
+
 
 CShellContextMenu::CShellContextMenu() 
     : m_pFolderhook(NULL)
@@ -468,10 +478,17 @@ HRESULT STDMETHODCALLTYPE CIShellFolderHook::GetUIObjectOf( HWND hwndOwner, UINT
         // the IDataObject returned here doesn't have a HDROP, so we create one ourselves and add it to the IDataObject
         // the HDROP is necessary for most context menu handlers
 
+        // it seems the paths in the HDROP need to be sorted, otherwise
+        // it might not work properly or even crash.
+        // to get the items sorted, we just add them to a set - that way we g
+        std::set<std::wstring, icompare> sortedpaths;
+        for (auto it = m_pShellContextMenu->m_strVector.cbegin(); it != m_pShellContextMenu->m_strVector.cend(); ++it)
+            sortedpaths.insert(it->filepath);
+
         int nLength = 0;
-        for (size_t i=0;i<m_pShellContextMenu->m_strVector.size();i++)
+        for (auto it = sortedpaths.cbegin(); it != sortedpaths.cend(); ++it)
         {
-            nLength += (int)m_pShellContextMenu->m_strVector[i].filepath.size();
+            nLength += it->size();
             nLength += 1; // '\0' separator
         }
         int nBufferSize = sizeof(DROPFILES) + ((nLength+5)*sizeof(TCHAR));
@@ -483,11 +500,10 @@ HRESULT STDMETHODCALLTYPE CIShellFolderHook::GetUIObjectOf( HWND hwndOwner, UINT
         TCHAR* pFilenames = (TCHAR*)((BYTE*)(pBuffer.get()) + sizeof(DROPFILES));
         TCHAR* pCurrentFilename = pFilenames;
 
-        for (size_t i=0;i<m_pShellContextMenu->m_strVector.size();i++)
+        for (auto it = sortedpaths.cbegin(); it != sortedpaths.cend(); ++it)
         {
-            wstring str = m_pShellContextMenu->m_strVector[i].filepath;
-            wcscpy_s(pCurrentFilename, str.size()+1, str.c_str());
-            pCurrentFilename += str.size();
+            wcscpy_s(pCurrentFilename, it->size()+1, it->c_str());
+            pCurrentFilename += it->size();
             *pCurrentFilename = '\0'; // separator between file names
             pCurrentFilename++;
         }
