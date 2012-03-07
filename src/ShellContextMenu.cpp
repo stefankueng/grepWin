@@ -37,7 +37,7 @@ struct icompare
 {
     bool operator() (const std::wstring& lhs, const std::wstring& rhs) const
     {
-        return wcsicmp(lhs.c_str(), rhs.c_str()) < 0;
+        return _wcsicmp(lhs.c_str(), rhs.c_str()) < 0;
     }
 };
 
@@ -488,7 +488,7 @@ HRESULT STDMETHODCALLTYPE CIShellFolderHook::GetUIObjectOf( HWND hwndOwner, UINT
         int nLength = 0;
         for (auto it = sortedpaths.cbegin(); it != sortedpaths.cend(); ++it)
         {
-            nLength += it->size();
+            nLength += (int)it->size();
             nLength += 1; // '\0' separator
         }
         int nBufferSize = sizeof(DROPFILES) + ((nLength+5)*sizeof(TCHAR));
