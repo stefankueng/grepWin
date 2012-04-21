@@ -1173,7 +1173,7 @@ void CSearchDlg::ShowContextMenu(int x, int y)
     while ((iItem = ListView_GetNextItem(hListControl, iItem, LVNI_SELECTED)) != (-1))
     {
         int selIndex = GetSelectedListIndex(iItem);
-        if ((selIndex < 0)||(selIndex >= m_items.size()))
+        if ((selIndex < 0)||(selIndex >= (int)m_items.size()))
             continue;
         paths.push_back(m_items[selIndex]);
     }
@@ -1617,9 +1617,6 @@ bool CSearchDlg::SaveSettings()
     TCHAR * pBuf = buf;
     size_t pos = 0;
     m_patterns.clear();
-    m_bPatternsNegated = (buf[0] == '-');
-    if (pBuf[0]=='-')
-        pBuf++;
     do
     {
         pos = _tcscspn(pBuf, _T("|"));
@@ -1981,7 +1978,7 @@ bool CSearchDlg::MatchPath(LPCTSTR pathbuf)
     {
         if (m_patterns.size())
         {
-            if (m_bPatternsNegated)
+            if (m_patterns[0].size() && (m_patterns[0][0]=='-'))
                 bPattern = true;
 
             wstring fname = pName;
@@ -1989,8 +1986,8 @@ bool CSearchDlg::MatchPath(LPCTSTR pathbuf)
 
             for (vector<wstring>::const_iterator it = m_patterns.begin(); it != m_patterns.end(); ++it)
             {
-                if (m_bPatternsNegated)
-                    bPattern = bPattern && !wcswildcmp(it->c_str(), fname.c_str());
+                if (it->size() && (it->at(0)=='-'))
+                    bPattern = bPattern && !wcswildcmp(&(*it)[1], fname.c_str());
                 else
                     bPattern = bPattern || wcswildcmp(it->c_str(), fname.c_str());
             }

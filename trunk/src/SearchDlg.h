@@ -110,7 +110,6 @@ private:
     wstring                 m_searchString;
     wstring                 m_replaceString;
     vector<wstring>         m_patterns;
-    bool                    m_bPatternsNegated;
     wstring                 m_patternregex;
     wstring                 m_excludedirspatternregex;
     bool                    m_bUseRegex;
