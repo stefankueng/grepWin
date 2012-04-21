@@ -168,6 +168,7 @@ LRESULT CALLBACK CShellContextMenu::HookWndProc(HWND hWnd, UINT message, WPARAM 
         {
             LRESULT lResult = 0;
             g_IContext3->HandleMenuMsg2 (message, wParam, lParam, &lResult);
+            return (lResult);
         }
         else if (g_IContext2)
             g_IContext2->HandleMenuMsg (message, wParam, lParam);
