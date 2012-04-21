@@ -327,6 +327,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 
             m_resizer.AddControl(hwndDlg, IDC_ONLYONE, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_SETTINGSBUTTON, RESIZER_TOPLEFT);
+            m_resizer.AddControl(hwndDlg, IDC_PROGRESS, RESIZER_TOPLEFTRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_REPLACE, RESIZER_TOPRIGHT);
             m_resizer.AddControl(hwndDlg, IDOK, RESIZER_TOPRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_GROUPSEARCHRESULTS, RESIZER_TOPLEFTBOTTOMRIGHT);
@@ -433,6 +434,8 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             ::SetDlgItemText(*this, IDOK, _T("&Search"));
             DialogEnableWindow(IDC_RESULTFILES, true);
             DialogEnableWindow(IDC_RESULTCONTENT, true);
+            ShowWindow(GetDlgItem(*this, IDC_PROGRESS), SW_HIDE);
+            SendDlgItemMessage(*this, IDC_PROGRESS, PBM_SETMARQUEE, 0, 0);
             KillTimer(*this, LABELUPDATETIMER);
         }
         break;
@@ -539,7 +542,8 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 InterlockedExchange(&m_dwThreadRunning, TRUE);
                 InterlockedExchange(&m_Cancelled, FALSE);
                 SetDlgItemText(*this, IDOK, _T("S&top"));
-
+                ShowWindow(GetDlgItem(*this, IDC_PROGRESS), SW_SHOW);
+                SendDlgItemMessage(*this, IDC_PROGRESS, PBM_SETMARQUEE, 1, 0);
                 // now start the thread which does the searching
                 DWORD dwThreadId = 0;
                 m_hSearchThread = CreateThread(
