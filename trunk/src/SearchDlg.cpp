@@ -477,6 +477,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                         m_searchpath += _T("|");
                     m_searchpath += newpath;
                     SetDlgItemText(hwndDlg, IDC_SEARCHPATH, m_searchpath.c_str());
+                    m_startTime = GetTickCount();
                 }
             }
             return TRUE;
