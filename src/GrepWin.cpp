@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008, 2010-2011 - Stefan Kueng
+// Copyright (C) 2007-2008, 2010-2012 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -33,7 +33,7 @@ BOOL CALLBACK windowenumerator(__in  HWND hwnd,__in  LPARAM lParam)
     HWND * pWnd = (HWND*)lParam;
     WCHAR buf[MAX_PATH] = {0};
     GetWindowText(hwnd, buf, MAX_PATH);
-    if (wcsncmp(buf, L"grepWin :", 9) == 0)
+    if (_wcsnicmp(buf, L"grepwin :", 9) == 0)
     {
         *pWnd = hwnd;
         return FALSE;
@@ -65,9 +65,28 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 
     CCmdLineParser parser(lpCmdLine);
 
+    // if multiple items are selected in explorer and grepWin is started for all of them,
+    // explorer starts multiple grepWin instances at once. In case there's already a grepWin instance
+    // running, sleep for a while to give that instance time to fully initialize
+    HANDLE hReloadProtection = ::CreateMutex(NULL, FALSE, L"{6473AA76-0EAE-4C96-8C99-AFDFEFFE42B5}");
+    bool alreadyRunning = false;
+    if ((!hReloadProtection) || (GetLastError() == ERROR_ALREADY_EXISTS))
+    {
+        // An instance of grepWin is already running
+        alreadyRunning = true;
+    }
+
     bool bQuit = false;
     HWND hWnd = NULL;
-    EnumWindows(windowenumerator, (LPARAM)&hWnd);
+    int timeout = 20;
+    do 
+    {
+        EnumWindows(windowenumerator, (LPARAM)&hWnd);
+        if (alreadyRunning && (hWnd == NULL))
+            Sleep(100);
+        timeout--;
+    } while ((hWnd == NULL) && alreadyRunning && timeout);
+
     if (hWnd)
     {
         UINT GREPWIN_STARTUPMSG = RegisterWindowMessage(_T("grepWin_StartupMessage"));
@@ -91,7 +110,6 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
             SetForegroundWindow(hWnd);                                  //set the window to front
             bQuit = true;
         }
-
     }
 
     int ret = 0;
@@ -151,6 +169,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
     ::CoUninitialize();
     ::OleUninitialize();
     FreeLibrary(hRichEdt);
+    CloseHandle(hReloadProtection);
     return ret;
 }
 
