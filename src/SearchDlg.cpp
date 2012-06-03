@@ -1335,13 +1335,52 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
     {
         if (lpNMItemActivate->iItem >= 0)
         {
-            wstring verb = _T("open");
             int iItem = GetSelectedListIndex(lpNMItemActivate->iItem);
             CSearchInfo inf = m_items[iItem];
             size_t dotPos = inf.filepath.rfind('.');
             wstring ext;
             if (dotPos != wstring::npos)
                 ext = inf.filepath.substr(dotPos);
+
+            CRegStdString regEditorCmd(L"Software\\grepWin\\editorcmd");
+            std::wstring cmd = regEditorCmd;
+            if (cmd.size())
+            {
+                bool filelist = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
+                wstring linenumberparam_before;
+                wstring linenumberparam;
+                if (!filelist)
+                {
+                    HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
+                    TCHAR textlinebuf[MAX_PATH] = {0};
+                    LVITEM lv = {0};
+                    lv.iItem = lpNMItemActivate->iItem;
+                    lv.iSubItem = 1;    // line number
+                    lv.mask = LVIF_TEXT;
+                    lv.pszText = textlinebuf;
+                    lv.cchTextMax = MAX_PATH;
+                    if (ListView_GetItem(hListControl, &lv))
+                    {
+                        SearchReplace(cmd, L"%line%", textlinebuf);
+                    }
+                }
+                else
+                    SearchReplace(cmd, L"%line%", L"0");
+
+                SearchReplace(cmd, L"%path%", inf.filepath.c_str());
+
+                STARTUPINFO startupInfo;
+                PROCESS_INFORMATION processInfo;
+                memset(&startupInfo, 0, sizeof(STARTUPINFO));
+                startupInfo.cb = sizeof(STARTUPINFO);
+                memset(&processInfo, 0, sizeof(PROCESS_INFORMATION));
+                CreateProcess(NULL, const_cast<TCHAR*>(cmd.c_str()), NULL, NULL, FALSE, 0, 0, NULL, &startupInfo, &processInfo);
+                CloseHandle(processInfo.hThread);
+                CloseHandle(processInfo.hProcess);
+                return;
+            }
+
+            wstring verb = _T("open");
 
             DWORD buflen = 0;
             AssocQueryString(ASSOCF_INIT_DEFAULTTOSTAR, ASSOCSTR_DDECOMMAND, ext.c_str(), NULL, NULL, &buflen);
