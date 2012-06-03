@@ -1324,6 +1324,16 @@ bool CSearchDlg::PreTranslateMessage(MSG* pMsg)
                 m_AutoCompleteSearchPaths.RemoveSelected();
             }
             break;
+        case 'K':
+        case 'L':
+        case 'S':
+            {
+                if (GetKeyState(VK_CONTROL)&0x8000)
+                {
+                    SetFocus(GetDlgItem(*this, IDC_SEARCHTEXT));
+                }
+            }
+            break;
         }
     }
     return false;
