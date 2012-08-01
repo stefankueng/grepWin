@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2011 - Stefan Kueng
+// Copyright (C) 2011-2012 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -89,9 +89,9 @@ LRESULT CMultiLineEditDlg::DoCommand(int id, int msg)
     {
     case IDOK:
         {
-            TCHAR buf[MAX_PATH*4] = {0};
-            GetDlgItemText(*this, IDC_TEXTCONTENT, buf, MAX_PATH*4);
-            m_RegexText = buf;
+            std::unique_ptr<TCHAR[]> buf(new TCHAR[10*1024*1024]);
+            GetDlgItemText(*this, IDC_TEXTCONTENT, buf.get(), 10*1024*1024);
+            m_RegexText = wstring(buf.get());
         }
         // fall through
     case IDCANCEL:
@@ -101,10 +101,9 @@ LRESULT CMultiLineEditDlg::DoCommand(int id, int msg)
         {
             if (msg == EN_CHANGE)
             {
-                TCHAR * buf = new TCHAR[10*1024*1024];
-                GetDlgItemText(*this, IDC_TEXTCONTENT, buf, 10*1024*1024);
-                m_RegexText = wstring(buf);
-                delete [] buf;
+                std::unique_ptr<TCHAR[]> buf(new TCHAR[10*1024*1024]);
+                GetDlgItemText(*this, IDC_TEXTCONTENT, buf.get(), 10*1024*1024);
+                m_RegexText = wstring(buf.get());
             }
         }
         break;
