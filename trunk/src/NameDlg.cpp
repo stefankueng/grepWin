@@ -43,6 +43,7 @@ LRESULT CNameDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
             InitDialog(hwndDlg, IDI_GREPWIN);
             // initialize the controls
 
+            SetDlgItemText(*this, IDC_NAME, m_name.c_str());
             SetFocus(GetDlgItem(hwndDlg, IDC_NAME));
 
             m_resizer.Init(hwndDlg);
