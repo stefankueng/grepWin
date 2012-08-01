@@ -842,7 +842,7 @@ bool CSearchDlg::InitResultList()
 {
     HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
     bool filelist = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
-    DWORD exStyle = LVS_EX_DOUBLEBUFFER|LVS_EX_INFOTIP;
+    DWORD exStyle = LVS_EX_DOUBLEBUFFER|LVS_EX_INFOTIP|LVS_EX_FULLROWSELECT;
     ListView_DeleteAllItems(hListControl);
 
     int c = Header_GetItemCount(ListView_GetHeader(hListControl))-1;
