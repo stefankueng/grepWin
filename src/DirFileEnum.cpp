@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2009 - Stefan Kueng
+// Copyright (C) 2007-2009, 2012 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -18,7 +18,7 @@
 //
 #include "StdAfx.h"
 #include "DirFileEnum.h"
-#include "auto_buffer.h"
+#include <memory>
 
 CSimpleFileFind::CSimpleFileFind(LPCTSTR szPath, LPCTSTR pPattern) :
 m_dError(ERROR_SUCCESS),
@@ -38,10 +38,10 @@ m_bFirst(TRUE)
             }
         }
     }
-    auto_buffer<TCHAR> patternpath(MAX_PATH_NEW);
-    _tcscpy_s(patternpath, MAX_PATH_NEW, m_szPathPrefix);
-    _tcscat_s(patternpath, MAX_PATH_NEW, pPattern);
-    m_hFindFile = ::FindFirstFile(patternpath, &m_FindFileData);
+    std::unique_ptr<TCHAR[]> patternpath(new TCHAR[MAX_PATH_NEW]);
+    _tcscpy_s(patternpath.get(), MAX_PATH_NEW, m_szPathPrefix);
+    _tcscat_s(patternpath.get(), MAX_PATH_NEW, pPattern);
+    m_hFindFile = ::FindFirstFile(patternpath.get(), &m_FindFileData);
     if (m_hFindFile == INVALID_HANDLE_VALUE)
     {
         m_dError = ::GetLastError();
@@ -169,9 +169,9 @@ BOOL CDirFileEnum::NextFile(LPTSTR szResult, bool bRecurse, bool* pbIsDirectory)
     }
     else if (bRecurse && m_seStack && m_seStack->IsDirectory())
     {
-        auto_buffer<TCHAR> path(MAX_PATH_NEW);
-        m_seStack->GetFilePath(path);
-        PushStack(path);
+        std::unique_ptr<TCHAR[]> path(new TCHAR[MAX_PATH_NEW]);
+        m_seStack->GetFilePath(path.get());
+        PushStack(path.get());
     }
 
     while (m_seStack && !m_seStack->FindNextFileNoDots())

@@ -218,9 +218,6 @@
     <ClInclude Include="MultiLineEditDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="auto_buffer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="RegexReplaceFormatter.h">
       <Filter>Header Files</Filter>
     </ClInclude>

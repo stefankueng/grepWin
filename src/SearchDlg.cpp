@@ -35,7 +35,6 @@
 #include "AboutDlg.h"
 #include "InfoDlg.h"
 #include "DropFiles.h"
-#include "auto_buffer.h"
 #include "RegexReplaceFormatter.h"
 #include "LineData.h"
 #include "Settings.h"
@@ -573,11 +572,11 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
     case IDC_TESTREGEX:
         {
             // get all the information we need from the dialog
-            auto_buffer<TCHAR> buf(MAX_PATH_NEW);
-            GetDlgItemText(*this, IDC_SEARCHTEXT, buf, MAX_PATH_NEW);
-            m_searchString = buf;
-            GetDlgItemText(*this, IDC_REPLACETEXT, buf, MAX_PATH_NEW);
-            m_replaceString = buf;
+            std::unique_ptr<TCHAR[]> buf(new TCHAR[MAX_PATH_NEW]);
+            GetDlgItemText(*this, IDC_SEARCHTEXT, buf.get(), MAX_PATH_NEW);
+            m_searchString = buf.get();
+            GetDlgItemText(*this, IDC_REPLACETEXT, buf.get(), MAX_PATH_NEW);
+            m_replaceString = buf.get();
 
             SaveSettings();
             CRegexTestDlg dlg(*this);
@@ -595,15 +594,15 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
         break;
     case IDC_SEARCHPATHBROWSE:
         {
-            auto_buffer<TCHAR> path(MAX_PATH_NEW);
+            std::unique_ptr<TCHAR[]> path(new TCHAR[MAX_PATH_NEW]);
             CBrowseFolder browse;
 
-            GetDlgItemText(*this, IDC_SEARCHPATH, path, MAX_PATH_NEW);
+            GetDlgItemText(*this, IDC_SEARCHPATH, path.get(), MAX_PATH_NEW);
             browse.SetInfo(_T("Select path to search"));
-            if (browse.Show(*this, path, MAX_PATH_NEW, m_searchpath.c_str()) == CBrowseFolder::OK)
+            if (browse.Show(*this, path.get(), MAX_PATH_NEW, m_searchpath.c_str()) == CBrowseFolder::OK)
             {
-                SetDlgItemText(*this, IDC_SEARCHPATH, path);
-                m_searchpath = path;
+                SetDlgItemText(*this, IDC_SEARCHPATH, path.get());
+                m_searchpath = path.get();
             }
         }
         break;
@@ -611,12 +610,12 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
         {
             if (msg == EN_CHANGE)
             {
-                auto_buffer<TCHAR> buf(MAX_PATH_NEW);
-                GetDlgItemText(*this, IDC_SEARCHTEXT, buf, MAX_PATH_NEW);
-                int len = (int)_tcslen(buf);
-                GetDlgItemText(*this, IDC_SEARCHPATH, buf, MAX_PATH_NEW);
-                bool bIsDir = !!PathIsDirectory(buf);
-                if ((!bIsDir) && _tcschr(buf, '|'))
+                std::unique_ptr<TCHAR[]> buf(new TCHAR[MAX_PATH_NEW]);
+                GetDlgItemText(*this, IDC_SEARCHTEXT, buf.get(), MAX_PATH_NEW);
+                int len = (int)_tcslen(buf.get());
+                GetDlgItemText(*this, IDC_SEARCHPATH, buf.get(), MAX_PATH_NEW);
+                bool bIsDir = !!PathIsDirectory(buf.get());
+                if ((!bIsDir) && _tcschr(buf.get(), '|'))
                     bIsDir = true;  // assume directories in case of multiple paths
                 DialogEnableWindow(IDC_ALLSIZERADIO, bIsDir);
                 DialogEnableWindow(IDC_SIZERADIO, bIsDir);
@@ -633,7 +632,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 
                 // change the dialog title to "grepWin : search/path"
                 TCHAR compactPath[100] = {0};
-                PathCompactPathEx(compactPath, buf, 40, 0);
+                PathCompactPathEx(compactPath, buf.get(), 40, 0);
                 TCHAR titleBuf[MAX_PATH] = {0};
                 _stprintf_s(titleBuf, _countof(titleBuf), _T("grepWin : %s"), compactPath);
                 SetWindowText(*this, titleBuf);
@@ -690,11 +689,11 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
         break;
     case IDC_ADDTOBOOKMARKS:
         {
-            auto_buffer<TCHAR> buf(MAX_PATH_NEW);
-            GetDlgItemText(*this, IDC_SEARCHTEXT, buf, MAX_PATH_NEW);
-            m_searchString = buf;
-            GetDlgItemText(*this, IDC_REPLACETEXT, buf, MAX_PATH_NEW);
-            m_replaceString = buf;
+            std::unique_ptr<TCHAR[]> buf(new TCHAR[MAX_PATH_NEW]);
+            GetDlgItemText(*this, IDC_SEARCHTEXT, buf.get(), MAX_PATH_NEW);
+            m_searchString = buf.get();
+            GetDlgItemText(*this, IDC_REPLACETEXT, buf.get(), MAX_PATH_NEW);
+            m_replaceString = buf.get();
             bool bUseRegex = (IsDlgButtonChecked(*this, IDC_REGEXRADIO) == BST_CHECKED);
 
             CNameDlg nameDlg(*this);
@@ -909,42 +908,42 @@ bool CSearchDlg::AddFoundEntry(CSearchInfo * pInfo, bool bOnlyListControl)
         lv.mask = LVIF_TEXT;
         lv.iItem = ret;
         lv.iSubItem = 1;
-        auto_buffer<TCHAR> sb(MAX_PATH_NEW);
+        std::unique_ptr<TCHAR[]> sb(new TCHAR[MAX_PATH_NEW]);
         if (!pInfo->folder)
-            StrFormatByteSizeW(pInfo->filesize, sb, 20);
-        lv.pszText = sb;
+            StrFormatByteSizeW(pInfo->filesize, sb.get(), 20);
+        lv.pszText = sb.get();
         ListView_SetItem(hListControl, &lv);
         lv.iSubItem = 2;
         if (pInfo->readerror)
-            _tcscpy_s(sb, MAX_PATH_NEW, _T("read error"));
+            _tcscpy_s(sb.get(), MAX_PATH_NEW, _T("read error"));
         else
-            _stprintf_s(sb, MAX_PATH_NEW, _T("%ld"), pInfo->matchlinesnumbers.size());
+            _stprintf_s(sb.get(), MAX_PATH_NEW, _T("%ld"), pInfo->matchlinesnumbers.size());
         ListView_SetItem(hListControl, &lv);
         lv.iSubItem = 3;
-        _tcscpy_s(sb, MAX_PATH_NEW, pInfo->filepath.substr(0, pInfo->filepath.size()-name.size()-1).c_str());
+        _tcscpy_s(sb.get(), MAX_PATH_NEW, pInfo->filepath.substr(0, pInfo->filepath.size()-name.size()-1).c_str());
         ListView_SetItem(hListControl, &lv);
         lv.iSubItem = 4;
         switch (pInfo->encoding)
         {
         case CTextFile::ANSI:
-            _tcscpy_s(sb, MAX_PATH*4, _T("ANSI"));
+            _tcscpy_s(sb.get(), MAX_PATH*4, _T("ANSI"));
             break;
         case CTextFile::UNICODE_LE:
-            _tcscpy_s(sb, MAX_PATH*4, _T("UNICODE"));
+            _tcscpy_s(sb.get(), MAX_PATH*4, _T("UNICODE"));
             break;
         case CTextFile::UTF8:
-            _tcscpy_s(sb, MAX_PATH*4, _T("UTF8"));
+            _tcscpy_s(sb.get(), MAX_PATH*4, _T("UTF8"));
             break;
         case CTextFile::BINARY:
-            _tcscpy_s(sb, MAX_PATH*4, _T("BINARY"));
+            _tcscpy_s(sb.get(), MAX_PATH*4, _T("BINARY"));
             break;
         default:
-            _tcscpy_s(sb, MAX_PATH*4, _T(""));
+            _tcscpy_s(sb.get(), MAX_PATH*4, _T(""));
             break;
         }
         ListView_SetItem(hListControl, &lv);
         lv.iSubItem = 5;
-        formatDate(sb, pInfo->modifiedtime, true);
+        formatDate(sb.get(), pInfo->modifiedtime, true);
         ListView_SetItem(hListControl, &lv);
     }
     else
@@ -991,9 +990,9 @@ bool CSearchDlg::AddFoundEntry(CSearchInfo * pInfo, bool bOnlyListControl)
                     lv.iItem = ret;
 
                     lv.iSubItem = 1;
-                    auto_buffer<TCHAR> sb(MAX_PATH_NEW);
-                    _stprintf_s(sb, MAX_PATH_NEW, _T("%ld"), pInfo->matchlinesnumbers[subIndex]);
-                    lv.pszText = sb;
+                    std::unique_ptr<TCHAR[]> sb(new TCHAR[MAX_PATH_NEW]);
+                    _stprintf_s(sb.get(), MAX_PATH_NEW, _T("%ld"), pInfo->matchlinesnumbers[subIndex]);
+                    lv.pszText = sb.get();
                     ListView_SetItem(hListControl, &lv);
 
                     lv.iSubItem = 2;
@@ -1851,7 +1850,7 @@ bool grepWin_match_i(const wstring& the_regex, const TCHAR *pText)
 
 DWORD CSearchDlg::SearchThread()
 {
-    auto_buffer<TCHAR> pathbuf(MAX_PATH_NEW);
+    std::unique_ptr<TCHAR[]> pathbuf(new TCHAR[MAX_PATH_NEW]);
 
     // split the path string into single paths and
     // add them to an array
@@ -1910,7 +1909,7 @@ DWORD CSearchDlg::SearchThread()
             CDirFileEnum fileEnumerator(searchpath.c_str());
             bool bRecurse = m_bIncludeSubfolders;
 
-            while (((fileEnumerator.NextFile(pathbuf, bRecurse, &bIsDirectory))&&(!m_Cancelled))||(bAlwaysSearch))
+            while (((fileEnumerator.NextFile(pathbuf.get(), bRecurse, &bIsDirectory))&&(!m_Cancelled))||(bAlwaysSearch))
             {
                 if (!bIsDirectory)
                 {
@@ -1919,7 +1918,7 @@ DWORD CSearchDlg::SearchThread()
                     FILETIME ft = {0};
                     if (bAlwaysSearch)
                     {
-                        _tcscpy_s(pathbuf, MAX_PATH_NEW, searchpath.c_str());
+                        _tcscpy_s(pathbuf.get(), MAX_PATH_NEW, searchpath.c_str());
                         HANDLE hFile = CreateFile(searchpath.c_str(), FILE_READ_EA, FILE_SHARE_DELETE|FILE_SHARE_READ|FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
                         if (hFile != INVALID_HANDLE_VALUE)
                         {
@@ -1954,7 +1953,7 @@ DWORD CSearchDlg::SearchThread()
                         }
                     }
                     bRecurse = ((m_bIncludeSubfolders)&&(bSearch));
-                    bool bPattern = MatchPath(pathbuf);
+                    bool bPattern = MatchPath(pathbuf.get());
 
                     int nFound = -1;
                     if ((bSearch && bPattern)||(bAlwaysSearch))
@@ -1988,7 +1987,7 @@ DWORD CSearchDlg::SearchThread()
                     {
                         // if there's no search and replace string, include folders in the 'matched' list if they
                         // match the specified file pattern
-                        if (MatchPath(pathbuf))
+                        if (MatchPath(pathbuf.get()))
                         {
                             CSearchInfo sinfo(pathbuf.get());
                             sinfo.modifiedtime = pFindData->ftLastWriteTime;

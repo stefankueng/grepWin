@@ -19,7 +19,6 @@
 #include "StdAfx.h"
 #include "TextFile.h"
 #include "maxpath.h"
-#include "auto_buffer.h"
 
 CTextFile::CTextFile(void) : pFileBuf(NULL)
     , filelen(0)
@@ -59,28 +58,28 @@ bool CTextFile::Load(LPCTSTR path, UnicodeType& type, bool bUTF8)
     if (pFileBuf)
         delete [] pFileBuf;
     pFileBuf = NULL;
-    auto_buffer<TCHAR> pathbuf(MAX_PATH_NEW);
+    std::unique_ptr<TCHAR[]> pathbuf(new TCHAR[MAX_PATH_NEW]);
     HANDLE hFile = INVALID_HANDLE_VALUE;
     int retrycounter = 0;
 
     if ((_tcslen(path) > 2 )&&(path[0] == '\\')&&(path[1] == '\\'))
     {
         // UNC path
-        _tcscpy_s(pathbuf, MAX_PATH_NEW, _T("\\\\?\\UNC"));
-        _tcscat_s(pathbuf, MAX_PATH_NEW, &path[1]);
+        _tcscpy_s(pathbuf.get(), MAX_PATH_NEW, _T("\\\\?\\UNC"));
+        _tcscat_s(pathbuf.get(), MAX_PATH_NEW, &path[1]);
     }
     else
     {
         // 'normal' path
-        _tcscpy_s(pathbuf, MAX_PATH_NEW, _T("\\\\?\\"));
-        _tcscat_s(pathbuf, MAX_PATH_NEW, path);
+        _tcscpy_s(pathbuf.get(), MAX_PATH_NEW, _T("\\\\?\\"));
+        _tcscat_s(pathbuf.get(), MAX_PATH_NEW, path);
     }
 
     do
     {
         if (retrycounter)
             Sleep(20);
-        hFile = CreateFile(pathbuf, GENERIC_READ, FILE_SHARE_READ,
+        hFile = CreateFile(pathbuf.get(), GENERIC_READ, FILE_SHARE_READ,
             NULL, OPEN_EXISTING, FILE_FLAG_SEQUENTIAL_SCAN, NULL);
         retrycounter++;
     } while (hFile == INVALID_HANDLE_VALUE && retrycounter < 5);

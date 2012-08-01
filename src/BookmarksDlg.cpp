@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2010 - Stefan Kueng
+// Copyright (C) 2007-2010, 2012 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -20,7 +20,6 @@
 #include "Resource.h"
 #include "maxpath.h"
 #include "BookmarksDlg.h"
-#include "auto_buffer.h"
 #include <string>
 
 #include <boost/regex.hpp>
@@ -130,18 +129,18 @@ LRESULT CBookmarksDlg::DoCommand(int id, int /*msg*/)
             int iItem = ListView_GetNextItem(GetDlgItem(*this, IDC_BOOKMARKS), -1, LVNI_SELECTED);
             if (iItem >= 0)
             {
-                auto_buffer<TCHAR> buf(MAX_PATH_NEW);
+                std::unique_ptr<TCHAR[]> buf(new TCHAR[MAX_PATH_NEW]);
                 LVITEM lv = {0};
                 lv.iItem = iItem;
                 lv.mask = LVIF_TEXT;
-                lv.pszText = buf;
+                lv.pszText = buf.get();
                 lv.cchTextMax = MAX_PATH_NEW;
                 ListView_GetItem(GetDlgItem(*this, IDC_BOOKMARKS), &lv);
-                m_searchString = m_bookmarks.GetValue(buf, _T("searchString"), _T(""));
-                m_replaceString = m_bookmarks.GetValue(buf, _T("replaceString"), _T(""));
+                m_searchString = m_bookmarks.GetValue(buf.get(), _T("searchString"), _T(""));
+                m_replaceString = m_bookmarks.GetValue(buf.get(), _T("replaceString"), _T(""));
                 RemoveQuotes(m_searchString);
                 RemoveQuotes(m_replaceString);
-                m_bUseRegex = _tcscmp(m_bookmarks.GetValue(buf, _T("useregex"), _T("false")), _T("true")) == 0;
+                m_bUseRegex = _tcscmp(m_bookmarks.GetValue(buf.get(), _T("useregex"), _T("false")), _T("true")) == 0;
             }
         }
         // fall through
@@ -153,11 +152,11 @@ LRESULT CBookmarksDlg::DoCommand(int id, int /*msg*/)
             int iItem = ListView_GetNextItem(GetDlgItem(*this, IDC_BOOKMARKS), -1, LVNI_SELECTED);
             if (iItem >= 0)
             {
-                auto_buffer<TCHAR> buf(MAX_PATH_NEW);
+                std::unique_ptr<TCHAR[]> buf(new TCHAR[MAX_PATH_NEW]);
                 LVITEM lv = {0};
                 lv.iItem = iItem;
                 lv.mask = LVIF_TEXT;
-                lv.pszText = buf;
+                lv.pszText = buf.get();
                 lv.cchTextMax = MAX_PATH_NEW;
                 ListView_GetItem(GetDlgItem(*this, IDC_BOOKMARKS), &lv);
                 m_bookmarks.RemoveBookmark(buf.get());
