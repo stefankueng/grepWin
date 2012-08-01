@@ -32,8 +32,8 @@ public:
     CNameDlg(HWND hParent);
     ~CNameDlg(void);
 
-    std::wstring            GetName() {return m_name;}
-
+    std::wstring            GetName() const {return m_name;}
+    void                    SetName(const std::wstring& n) { m_name = n; }
 protected:
     LRESULT CALLBACK        DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
     LRESULT                 DoCommand(int id, int msg);

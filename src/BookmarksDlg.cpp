@@ -20,6 +20,7 @@
 #include "Resource.h"
 #include "maxpath.h"
 #include "BookmarksDlg.h"
+#include "NameDlg.h"
 #include <string>
 
 #include <boost/regex.hpp>
@@ -163,6 +164,37 @@ LRESULT CBookmarksDlg::DoCommand(int id, int /*msg*/)
             }
         }
         break;
+    case ID_RENAMEBOOKMARK:
+        {
+            int iItem = ListView_GetNextItem(GetDlgItem(*this, IDC_BOOKMARKS), -1, LVNI_SELECTED);
+            if (iItem >= 0)
+            {
+                std::unique_ptr<TCHAR[]> buf(new TCHAR[MAX_PATH_NEW]);
+                LVITEM lv = {0};
+                lv.iItem = iItem;
+                lv.mask = LVIF_TEXT;
+                lv.pszText = buf.get();
+                lv.cchTextMax = MAX_PATH_NEW;
+                ListView_GetItem(GetDlgItem(*this, IDC_BOOKMARKS), &lv);
+                CNameDlg nameDlg(*this);
+                nameDlg.SetName(buf.get());
+                if (nameDlg.DoModal(hResource, IDD_NAME, *this) == IDOK)
+                {
+                    if (nameDlg.GetName().compare(buf.get()))
+                    {
+                        std::wstring searchString = m_bookmarks.GetValue(buf.get(), _T("searchString"), _T(""));
+                        std::wstring replaceString = m_bookmarks.GetValue(buf.get(), _T("replaceString"), _T(""));
+                        RemoveQuotes(searchString);
+                        RemoveQuotes(replaceString);
+                        bool bUseRegex = _tcscmp(m_bookmarks.GetValue(buf.get(), _T("useregex"), _T("false")), _T("true")) == 0;
+                        m_bookmarks.AddBookmark(nameDlg.GetName(), searchString, replaceString, bUseRegex);
+                        m_bookmarks.RemoveBookmark(buf.get());
+                        m_bookmarks.Save();
+                        InitBookmarks();
+                    }
+                }
+            }
+        }
     }
     return 1;
 }
