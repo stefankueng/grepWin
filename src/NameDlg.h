@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008 - Stefan Kueng
+// Copyright (C) 2007-2008, 2012 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -22,7 +22,6 @@
 #include "AeroControls.h"
 #include <string>
 
-using namespace std;
 
 /**
  * name dialog.
@@ -33,7 +32,7 @@ public:
     CNameDlg(HWND hParent);
     ~CNameDlg(void);
 
-    wstring                 GetName() {return m_name;}
+    std::wstring            GetName() {return m_name;}
 
 protected:
     LRESULT CALLBACK        DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -41,7 +40,7 @@ protected:
 
 private:
     HWND                    m_hParent;
-    wstring                 m_name;
+    std::wstring            m_name;
 
     CDlgResizer             m_resizer;
     AeroControlBase         m_aerocontrols;

@@ -86,7 +86,7 @@ bool CTextFile::Load(LPCTSTR path, UnicodeType& type, bool bUTF8)
 
     if (hFile == INVALID_HANDLE_VALUE)
         return false;
-    wstring wpath(path);
+    std::wstring wpath(path);
     size_t pos = wpath.find_last_of('\\');
     filename = wpath.substr(pos+1);
     if (!GetFileSizeEx(hFile, &lint))
@@ -165,11 +165,11 @@ bool CTextFile::Load(LPCTSTR path, UnicodeType& type, bool bUTF8)
         if (*(char*)pFileBuf == 0xFF)
         {
             // remove the BOM
-            textcontent = wstring(((wchar_t*)pFileBuf+1), (bytesread/sizeof(wchar_t))-1);
+            textcontent = std::wstring(((wchar_t*)pFileBuf+1), (bytesread/sizeof(wchar_t))-1);
             hasBOM = true;
         }
         else
-            textcontent = wstring((wchar_t*)pFileBuf, bytesread/sizeof(wchar_t));
+            textcontent = std::wstring((wchar_t*)pFileBuf, bytesread/sizeof(wchar_t));
     }
     else if ((encoding == UTF8)||((encoding == BINARY)&&(bUTF8)))
     {
@@ -183,11 +183,11 @@ bool CTextFile::Load(LPCTSTR path, UnicodeType& type, bool bUTF8)
             if (*pWideBuf == 0xFEFF)
             {
                 // remove the BOM
-                textcontent = wstring(pWideBuf+1, ret-1);
+                textcontent = std::wstring(pWideBuf+1, ret-1);
                 hasBOM = true;
             }
             else
-                textcontent = wstring(pWideBuf, ret);
+                textcontent = std::wstring(pWideBuf, ret);
         }
         delete [] pWideBuf;
     }
@@ -199,7 +199,7 @@ bool CTextFile::Load(LPCTSTR path, UnicodeType& type, bool bUTF8)
             return false;
         int ret2 = MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, (LPCSTR)pFileBuf, bytesread, pWideBuf, ret+1);
         if (ret2 == ret)
-            textcontent = wstring(pWideBuf, ret);
+            textcontent = std::wstring(pWideBuf, ret);
         delete [] pWideBuf;
     }
     type = encoding;
@@ -208,7 +208,7 @@ bool CTextFile::Load(LPCTSTR path, UnicodeType& type, bool bUTF8)
     return CalculateLines();
 }
 
-void CTextFile::SetFileContent(const wstring& content)
+void CTextFile::SetFileContent(const std::wstring& content)
 {
     if (pFileBuf)
         delete [] pFileBuf;
@@ -393,7 +393,7 @@ bool CTextFile::CalculateLines()
         return true;
     linepositions.clear();
     size_t pos = 0;
-    for (wstring::iterator it = textcontent.begin(); it != textcontent.end(); ++it)
+    for (auto it = textcontent.begin(); it != textcontent.end(); ++it)
     {
         if (*it == '\r')
         {
@@ -429,7 +429,7 @@ bool CTextFile::CalculateLines()
 long CTextFile::LineFromPosition(long pos) const
 {
     long line = 0;
-    for (vector<size_t>::const_iterator it = linepositions.begin(); it != linepositions.end(); ++it)
+    for (auto it = linepositions.begin(); it != linepositions.end(); ++it)
     {
         line++;
         if (pos <= long(*it))
@@ -438,38 +438,38 @@ long CTextFile::LineFromPosition(long pos) const
     return line;
 }
 
-wstring CTextFile::GetLineString(long lineNumber) const
+std::wstring CTextFile::GetLineString(long lineNumber) const
 {
     if ((lineNumber-2) >= (long)linepositions.size())
-        return wstring();
+        return std::wstring();
     if (lineNumber <= 0)
-        return wstring();
+        return std::wstring();
 
     long startpos = 0;
     if (lineNumber > 1)
         startpos = (long)linepositions[lineNumber-2];
     size_t endpos = textcontent.find(_T("\n"), startpos+1);
-    wstring line;
-    if (endpos != wstring::npos)
-        line = wstring(textcontent.begin()+startpos, textcontent.begin() + endpos);
+    std::wstring line;
+    if (endpos != std::wstring::npos)
+        line = std::wstring(textcontent.begin()+startpos, textcontent.begin() + endpos);
     else
-        line = wstring(textcontent.begin()+startpos, textcontent.end());
+        line = std::wstring(textcontent.begin()+startpos, textcontent.end());
 
     return line;
 }
 
-wstring CTextFile::GetFileNameWithoutExtension()
+std::wstring CTextFile::GetFileNameWithoutExtension()
 {
     size_t pos = filename.find_last_of('.');
-    if (pos != string::npos)
+    if (pos != std::string::npos)
         return filename.substr(0, pos);
     return filename;
 }
 
-wstring CTextFile::GetFileNameExtension()
+std::wstring CTextFile::GetFileNameExtension()
 {
     size_t pos = filename.find_last_of('.');
-    if (pos != string::npos)
+    if (pos != std::string::npos)
         return filename.substr(pos);
     return L"";
 }

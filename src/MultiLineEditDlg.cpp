@@ -22,7 +22,6 @@
 #include <string>
 #include <Richedit.h>
 #include <boost/regex.hpp>
-using namespace std;
 
 
 CMultiLineEditDlg::CMultiLineEditDlg(HWND hParent)
@@ -91,7 +90,7 @@ LRESULT CMultiLineEditDlg::DoCommand(int id, int msg)
         {
             std::unique_ptr<TCHAR[]> buf(new TCHAR[10*1024*1024]);
             GetDlgItemText(*this, IDC_TEXTCONTENT, buf.get(), 10*1024*1024);
-            m_RegexText = wstring(buf.get());
+            m_RegexText = std::wstring(buf.get());
         }
         // fall through
     case IDCANCEL:
@@ -103,7 +102,7 @@ LRESULT CMultiLineEditDlg::DoCommand(int id, int msg)
             {
                 std::unique_ptr<TCHAR[]> buf(new TCHAR[10*1024*1024]);
                 GetDlgItemText(*this, IDC_TEXTCONTENT, buf.get(), 10*1024*1024);
-                m_RegexText = wstring(buf.get());
+                m_RegexText = std::wstring(buf.get());
             }
         }
         break;

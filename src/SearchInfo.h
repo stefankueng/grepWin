@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008, 2010 - Stefan Kueng
+// Copyright (C) 2007-2008, 2010, 2012 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -21,22 +21,21 @@
 #include <vector>
 #include "TextFile.h"
 
-using namespace std;
 
 
 class CSearchInfo
 {
 public:
     CSearchInfo(void);
-    CSearchInfo(const wstring& path);
+    CSearchInfo(const std::wstring& path);
     ~CSearchInfo(void);
 
-    wstring             filepath;
-    DWORD               filesize;
-    vector<DWORD>       matchlinesnumbers;
-    vector<wstring>     matchlines;
-    CTextFile::UnicodeType  encoding;
-    FILETIME            modifiedtime;
-    bool                readerror;
-    bool                folder;
+    std::wstring                filepath;
+    DWORD                       filesize;
+    std::vector<DWORD>          matchlinesnumbers;
+    std::vector<std::wstring>   matchlines;
+    CTextFile::UnicodeType      encoding;
+    FILETIME                    modifiedtime;
+    bool                        readerror;
+    bool                        folder;
 };

@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008 - Stefan Kueng
+// Copyright (C) 2007-2008, 2012 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -19,7 +19,6 @@
 #pragma once
 #include <vector>
 
-using namespace std;
 
 
 #define RESIZER_TOPLEFT                 0
@@ -53,10 +52,10 @@ public:
     void    UpdateGripPos();
 
 private:
-    HWND                    m_hDlg;
-    vector<ResizeCtrls>     m_controls;
-    RECT                    m_dlgRect;
-    SIZE                    m_sizeGrip;
-    HWND                    m_wndGrip;
+    HWND                        m_hDlg;
+    std::vector<ResizeCtrls>    m_controls;
+    RECT                        m_dlgRect;
+    SIZE                        m_sizeGrip;
+    HWND                        m_wndGrip;
 
 };

@@ -92,7 +92,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
         UINT GREPWIN_STARTUPMSG = RegisterWindowMessage(_T("grepWin_StartupMessage"));
         if (SendMessage(hWnd, GREPWIN_STARTUPMSG, 0, 0))                // send the new path
         {
-            wstring spath = parser.GetVal(_T("searchpath"));
+            std::wstring spath = parser.GetVal(_T("searchpath"));
             COPYDATASTRUCT CopyData = {0};
             CopyData.lpData = (LPVOID)spath.c_str();
             CopyData.cbData = (DWORD)spath.size()*sizeof(wchar_t);
@@ -102,7 +102,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
         }
         else if (DWORD(CRegStdWORD(_T("Software\\grepWin\\onlyone"), 0)))
         {
-            wstring spath = parser.GetVal(_T("searchpath"));
+            std::wstring spath = parser.GetVal(_T("searchpath"));
             COPYDATASTRUCT CopyData = {0};
             CopyData.lpData = (LPVOID)spath.c_str();
             CopyData.cbData = (DWORD)spath.size()*sizeof(wchar_t);

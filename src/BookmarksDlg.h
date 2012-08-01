@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2009 - Stefan Kueng
+// Copyright (C) 2007-2009, 2012 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -23,7 +23,6 @@
 #include "AeroControls.h"
 #include <string>
 
-using namespace std;
 
 /**
  * bookmarks dialog.
@@ -34,23 +33,23 @@ public:
     CBookmarksDlg(HWND hParent);
     ~CBookmarksDlg(void);
 
-    wstring                 GetName() {return m_name;}
-    wstring                 GetSelectedSearchString() {return m_searchString;}
-    wstring                 GetSelectedReplaceString() {return m_replaceString;}
+    std::wstring            GetName() {return m_name;}
+    std::wstring            GetSelectedSearchString() {return m_searchString;}
+    std::wstring            GetSelectedReplaceString() {return m_replaceString;}
     bool                    GetSelectedUseRegex() {return m_bUseRegex;}
 
 protected:
     LRESULT CALLBACK        DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
     LRESULT                 DoCommand(int id, int msg);
     void                    InitBookmarks();
-    void                    RemoveQuotes(wstring& str);
+    void                    RemoveQuotes(std::wstring& str);
 private:
     HWND                    m_hParent;
-    wstring                 m_name;
+    std::wstring            m_name;
     CBookmarks              m_bookmarks;
 
-    wstring                 m_searchString;
-    wstring                 m_replaceString;
+    std::wstring            m_searchString;
+    std::wstring            m_replaceString;
     bool                    m_bUseRegex;
 
     CDlgResizer             m_resizer;

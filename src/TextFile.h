@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2010 - Stefan Kueng
+// Copyright (C) 2007-2010, 2012 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -20,7 +20,6 @@
 #include <string>
 #include <vector>
 
-using namespace std;
 
 /**
  * handles text files.
@@ -67,13 +66,13 @@ public:
     /**
      * Returns the line from a given line number
      */
-    wstring         GetLineString(long lineNumber) const;
+    std::wstring    GetLineString(long lineNumber) const;
 
     /**
      * Returns the file content as a text string.
      * \note the text string can not be modified and is to be treated read-only.
      */
-    const wstring&  GetFileString() const {return textcontent;}
+    const std::wstring&  GetFileString() const {return textcontent;}
 
     /**
      * Returns a pointer to the file contents. Call GetFileLength() to get
@@ -94,22 +93,22 @@ public:
     /**
      * Returns the filename
      */
-    const wstring&  GetFileName() const {return filename;}
+    const std::wstring&  GetFileName() const {return filename;}
 
     /**
      * Returns the filename without the extension (if any)
      */
-    wstring         GetFileNameWithoutExtension();
+    std::wstring    GetFileNameWithoutExtension();
 
     /**
      * Returns the filename extension (if any)
      */
-    wstring         GetFileNameExtension();
+    std::wstring    GetFileNameExtension();
 
     /**
      * Replaces the file content.
      */
-    void            SetFileContent(const wstring& content);
+    void            SetFileContent(const std::wstring& content);
 protected:
     /**
      * Tries to find out the encoding of the file (utf8, utf16, ansi)
@@ -122,11 +121,11 @@ protected:
     bool            CalculateLines();
 
 private:
-    BYTE *          pFileBuf;
-    DWORD           filelen;
-    wstring         textcontent;
-    vector<size_t>  linepositions;
-    UnicodeType     encoding;
-    wstring         filename;
-    bool            hasBOM;
+    BYTE *              pFileBuf;
+    DWORD               filelen;
+    std::wstring        textcontent;
+    std::vector<size_t> linepositions;
+    UnicodeType         encoding;
+    std::wstring        filename;
+    bool                hasBOM;
 };

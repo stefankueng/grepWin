@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008, 2010 - Stefan Kueng
+// Copyright (C) 2007-2008, 2010, 2012 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -22,7 +22,6 @@
 #include <string>
 #include <vector>
 
-using namespace std;
 
 #define DRAG_NUMFORMATS 2
 
@@ -40,7 +39,7 @@ public:
      * Add a file with an absolute file name. This file will later be
      * included the DROPFILES structure.
      */
-    void AddFile(const wstring& sFile);
+    void AddFile(const std::wstring& sFile);
 
     /**
      * Returns the number of files which have been added
@@ -55,7 +54,7 @@ public:
     void CreateStructure(HWND hWnd);
 
 protected:
-    vector<wstring> m_arFiles;
+    std::vector<std::wstring> m_arFiles;
 };
 
 class CDragSourceNotify : IDropSourceNotify
@@ -179,7 +178,7 @@ public:
      * Constructs the FileDataObject.
      * \param paths    a list of paths.
      */
-    FileDataObject(const vector<wstring>& paths);
+    FileDataObject(const std::vector<std::wstring>& paths);
     ~FileDataObject();
 
     //IUnknown
@@ -213,12 +212,12 @@ private:
 private:
 
 private:
-    vector<wstring>             m_allPaths;
+    std::vector<std::wstring>   m_allPaths;
     long                        m_cRefCount;
     BOOL                        m_bInOperation;
     BOOL                        m_bIsAsync;
-    vector<FORMATETC*>          m_vecFormatEtc;
-    vector<STGMEDIUM*>          m_vecStgMedium;
+    std::vector<FORMATETC*>     m_vecFormatEtc;
+    std::vector<STGMEDIUM*>     m_vecStgMedium;
 };
 
 
@@ -229,8 +228,8 @@ private:
 class CSVNEnumFormatEtc : public IEnumFORMATETC
 {
 public:
-    CSVNEnumFormatEtc(const vector<FORMATETC*>& vec);
-    CSVNEnumFormatEtc(const vector<FORMATETC>& vec);
+    CSVNEnumFormatEtc(const std::vector<FORMATETC*>& vec);
+    CSVNEnumFormatEtc(const std::vector<FORMATETC>& vec);
     //IUnknown members
     STDMETHOD(QueryInterface)(REFIID, void**);
     STDMETHOD_(ULONG, AddRef)(void);
@@ -244,7 +243,7 @@ public:
 private:
     void                        Init();
 private:
-    vector<FORMATETC>           m_vecFormatEtc;
+    std::vector<FORMATETC>      m_vecFormatEtc;
     FORMATETC                   m_formats[DRAG_NUMFORMATS];
     ULONG                       m_cRefCount;
     size_t                      m_iCur;
