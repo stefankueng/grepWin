@@ -23,7 +23,6 @@
 #include <string>
 
 #include <boost/regex.hpp>
-using namespace std;
 
 
 CBookmarksDlg::CBookmarksDlg(HWND hParent)
@@ -196,8 +195,8 @@ void CBookmarksDlg::InitBookmarks()
     m_bookmarks.GetAllSections(sections);
     for (CSimpleIni::TNamesDepend::iterator it = sections.begin(); it != sections.end(); ++it)
     {
-        wstring searchString = m_bookmarks.GetValue(*it, _T("searchString"), _T(""));
-        wstring replaceString = m_bookmarks.GetValue(*it, _T("replaceString"), _T(""));
+        std::wstring searchString = m_bookmarks.GetValue(*it, _T("searchString"), _T(""));
+        std::wstring replaceString = m_bookmarks.GetValue(*it, _T("replaceString"), _T(""));
         RemoveQuotes(searchString);
         RemoveQuotes(replaceString);
 
@@ -232,7 +231,7 @@ void CBookmarksDlg::InitBookmarks()
     ListView_SetColumnWidth(hListControl, 2, LVSCW_AUTOSIZE_USEHEADER);
 }
 
-void CBookmarksDlg::RemoveQuotes(wstring& str)
+void CBookmarksDlg::RemoveQuotes(std::wstring& str)
 {
     if (str.size())
     {

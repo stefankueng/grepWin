@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2011 - Stefan Kueng
+// Copyright (C) 2011-2012 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -23,7 +23,6 @@
 #include <string>
 #include <vector>
 
-using namespace std;
 
 #define ID_REGEXTIMER       100
 
@@ -36,8 +35,8 @@ public:
     CMultiLineEditDlg(HWND hParent);
     ~CMultiLineEditDlg(void);
 
-    void                    SetString(const wstring& search) { m_RegexText = search; }
-    wstring                 GetSearchString() {return m_RegexText;}
+    void                    SetString(const std::wstring& search) { m_RegexText = search; }
+    std::wstring            GetSearchString() {return m_RegexText;}
 
 protected:
     LRESULT CALLBACK        DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -46,7 +45,7 @@ protected:
 
 private:
     HWND                    m_hParent;
-    wstring                 m_RegexText;
+    std::wstring            m_RegexText;
 
     CDlgResizer             m_resizer;
     AeroControlBase         m_aerocontrols;

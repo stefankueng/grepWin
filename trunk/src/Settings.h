@@ -22,7 +22,6 @@
 #include "AeroControls.h"
 #include <string>
 
-using namespace std;
 
 /**
  * bookmarks dialog.

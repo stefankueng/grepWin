@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2011 - Stefan Kueng
+// Copyright (C) 2007-2012 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -26,7 +26,7 @@ CLIPFORMAT CF_FILECONTENTS = (CLIPFORMAT)RegisterClipboardFormat(CFSTR_FILECONTE
 CLIPFORMAT CF_FILEDESCRIPTOR = (CLIPFORMAT)RegisterClipboardFormat(CFSTR_FILEDESCRIPTOR);
 CLIPFORMAT CF_PREFERREDDROPEFFECT = (CLIPFORMAT)RegisterClipboardFormat(CFSTR_PREFERREDDROPEFFECT);
 
-FileDataObject::FileDataObject(const vector<wstring>& paths) : m_bInOperation(FALSE)
+FileDataObject::FileDataObject(const std::vector<std::wstring>& paths) : m_bInOperation(FALSE)
     , m_bIsAsync(TRUE)
     , m_cRefCount(0)
 {
@@ -93,7 +93,7 @@ STDMETHODIMP FileDataObject::GetData(FORMATETC* pformatetcIn, STGMEDIUM* pmedium
     if ((pformatetcIn->tymed & TYMED_HGLOBAL) && (pformatetcIn->dwAspect == DVASPECT_CONTENT) && (pformatetcIn->cfFormat == CF_HDROP))
     {
         UINT uBuffSize = 0;
-        for (vector<wstring>::const_iterator it = m_allPaths.begin(); it != m_allPaths.end(); ++it)
+        for (auto it = m_allPaths.begin(); it != m_allPaths.end(); ++it)
         {
             uBuffSize += (UINT)it->size();
             uBuffSize += 1;
@@ -125,7 +125,7 @@ STDMETHODIMP FileDataObject::GetData(FORMATETC* pformatetcIn, STGMEDIUM* pmedium
         // Copy all the filenames into memory after
         // the end of the DROPFILES struct.
         pszBuff = (TCHAR*) (LPBYTE(pDrop) + sizeof(DROPFILES));
-        for (vector<wstring>::const_iterator it = m_allPaths.begin(); it != m_allPaths.end(); ++it)
+        for (auto it = m_allPaths.begin(); it != m_allPaths.end(); ++it)
         {
             lstrcpy(pszBuff, it->c_str());
             pszBuff += it->size();
@@ -422,7 +422,7 @@ void CSVNEnumFormatEtc::Init()
 
 }
 
-CSVNEnumFormatEtc::CSVNEnumFormatEtc(const vector<FORMATETC>& vec) : m_cRefCount(0)
+CSVNEnumFormatEtc::CSVNEnumFormatEtc(const std::vector<FORMATETC>& vec) : m_cRefCount(0)
     , m_iCur(0)
 {
     for (size_t i = 0; i < vec.size(); ++i)
@@ -430,7 +430,7 @@ CSVNEnumFormatEtc::CSVNEnumFormatEtc(const vector<FORMATETC>& vec) : m_cRefCount
     Init();
 }
 
-CSVNEnumFormatEtc::CSVNEnumFormatEtc(const vector<FORMATETC*>& vec) : m_cRefCount(0)
+CSVNEnumFormatEtc::CSVNEnumFormatEtc(const std::vector<FORMATETC*>& vec) : m_cRefCount(0)
     , m_iCur(0)
 {
     for (size_t i = 0; i < vec.size(); ++i)
@@ -541,7 +541,7 @@ CDropFiles::~CDropFiles()
 {
 }
 
-void CDropFiles::AddFile(const wstring& sFile)
+void CDropFiles::AddFile(const std::wstring& sFile)
 {
     m_arFiles.push_back(sFile);
 }

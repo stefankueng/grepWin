@@ -28,7 +28,6 @@
 #include <string>
 #include <vector>
 
-using namespace std;
 
 #define SEARCH_FOUND        (WM_APP+1)
 #define SEARCH_START        (WM_APP+2)
@@ -47,11 +46,11 @@ public:
     ~CSearchDlg(void);
 
     DWORD                   SearchThread();
-    void                    SetSearchPath(const wstring& path) {m_searchpath = path;}
-    void                    SetSearchString(const wstring& search) {m_searchString = search;}
-    void                    SetFileMask(const wstring& mask, bool reg) {m_patternregex = mask; m_bUseRegexForPaths = reg;}
-    void                    SetExcludeFileMask(const wstring& mask) {m_excludedirspatternregex = mask;}
-    void                    SetReplaceWith(const wstring& replace) {m_replaceString = replace;}
+    void                    SetSearchPath(const std::wstring& path) {m_searchpath = path;}
+    void                    SetSearchString(const std::wstring& search) {m_searchString = search;}
+    void                    SetFileMask(const std::wstring& mask, bool reg) {m_patternregex = mask; m_bUseRegexForPaths = reg;}
+    void                    SetExcludeFileMask(const std::wstring& mask) {m_excludedirspatternregex = mask;}
+    void                    SetReplaceWith(const std::wstring& replace) {m_replaceString = replace;}
 
     void                    SetCaseSensitive(bool bSet) {m_bCaseSensitiveC = true; m_bCaseSensitive = bSet;}
     void                    SetMatchesNewline(bool bSet) {m_bDotMatchesNewlineC = true; m_bDotMatchesNewline = bSet;}
@@ -70,7 +69,7 @@ protected:
     bool                    PreTranslateMessage(MSG* pMsg);
     static LRESULT CALLBACK EditProc(HWND hWnd, UINT uMessage, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData);
 
-    int                     SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bIncludeBinary, bool bUseRegex, bool bCaseSensitive, bool bDotMatchesNewline, const wstring& searchString);
+    int                     SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bIncludeBinary, bool bUseRegex, bool bCaseSensitive, bool bDotMatchesNewline, const std::wstring& searchString);
 
     bool                    InitResultList();
     void                    FillResultList();
@@ -106,12 +105,12 @@ private:
     HWND                    m_hParent;
     volatile LONG           m_dwThreadRunning;
     volatile LONG           m_Cancelled;
-    wstring                 m_searchpath;
-    wstring                 m_searchString;
-    wstring                 m_replaceString;
-    vector<wstring>         m_patterns;
-    wstring                 m_patternregex;
-    wstring                 m_excludedirspatternregex;
+    std::wstring            m_searchpath;
+    std::wstring            m_searchString;
+    std::wstring            m_replaceString;
+    std::vector<std::wstring> m_patterns;
+    std::wstring            m_patternregex;
+    std::wstring            m_excludedirspatternregex;
     bool                    m_bUseRegex;
     bool                    m_bUseRegexForPaths;
     bool                    m_bAllSize;
@@ -139,12 +138,12 @@ private:
     bool                    m_bReplace;
     HANDLE                  m_hSearchThread;
 
-    vector<CSearchInfo>     m_items;
+    std::vector<CSearchInfo> m_items;
     int                     m_totalitems;
     int                     m_searchedItems;
     int                     m_totalmatches;
     bool                    m_bAscending;
-    wstring                 m_resultString;
+    std::wstring            m_resultString;
 
     CDlgResizer             m_resizer;
     CHyperLink              m_link;

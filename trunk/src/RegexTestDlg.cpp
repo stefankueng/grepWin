@@ -23,7 +23,6 @@
 #include <string>
 #include <Richedit.h>
 #include <boost/regex.hpp>
-using namespace std;
 
 
 CRegexTestDlg::CRegexTestDlg(HWND hParent)
@@ -122,7 +121,7 @@ LRESULT CRegexTestDlg::DoCommand(int id, int msg)
             {
                 std::unique_ptr<TCHAR[]> buf(new TCHAR[10*1024*1024]);
                 GetDlgItemText(*this, IDC_TEXTCONTENT, buf.get(), 10*1024*1024);
-                m_textContent = wstring(buf.get());
+                m_textContent = std::wstring(buf.get());
 
                 SetTimer(*this, ID_REGEXTIMER, 300, NULL);
             }
@@ -156,7 +155,7 @@ LRESULT CRegexTestDlg::DoCommand(int id, int msg)
     return 1;
 }
 
-void CRegexTestDlg::SetStrings(const wstring& search, const wstring& replace)
+void CRegexTestDlg::SetStrings(const std::wstring& search, const std::wstring& replace)
 {
     m_replaceText = replace;
     m_searchText = search;
@@ -181,21 +180,21 @@ void CRegexTestDlg::DoRegex()
 
     if (!m_textContent.empty())
     {
-        wstring searchresult;
-        wstring replaceresult;
+        std::wstring searchresult;
+        std::wstring replaceresult;
         if (!m_searchText.empty())
         {
-            wstring::const_iterator start, end;
+            std::wstring::const_iterator start, end;
             start = m_textContent.begin();
             end = m_textContent.end();
-            boost::match_results<wstring::const_iterator> what;
+            boost::match_results<std::wstring::const_iterator> what;
             try
             {
                 int ft = boost::regex::normal;
                 if (!bCaseSensitive)
                     ft |= boost::regbase::icase;
                 boost::wregex expression = boost::wregex(m_searchText, ft);
-                boost::match_results<wstring::const_iterator> whatc;
+                boost::match_results<std::wstring::const_iterator> whatc;
                 boost::match_flag_type flags = boost::match_default;
                 if (!bDotMatchesNewline)
                     flags |= boost::match_not_dot_newline;
@@ -215,7 +214,7 @@ void CRegexTestDlg::DoRegex()
                 {
                     if (!searchresult.empty())
                         searchresult = searchresult + _T("\r\n----------------------------\r\n");
-                    wstring c(whatc[0].first, whatc[0].second);
+                    std::wstring c(whatc[0].first, whatc[0].second);
                     searchresult = searchresult + c;
                     // update search position:
                     if (start == whatc[0].second)
@@ -231,7 +230,7 @@ void CRegexTestDlg::DoRegex()
                     flags |= boost::match_not_bob;
                 }
             }
-            catch (const exception&)
+            catch (const std::exception&)
             {
 
             }

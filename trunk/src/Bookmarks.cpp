@@ -75,9 +75,9 @@ void CBookmarks::Save()
     fclose(pFile);
 }
 
-void CBookmarks::AddBookmark(const wstring& name, const wstring& search, const wstring& replace, bool bRegex)
+void CBookmarks::AddBookmark(const std::wstring& name, const std::wstring& search, const std::wstring& replace, bool bRegex)
 {
-    wstring val = _T("\"");
+    std::wstring val = _T("\"");
     val += search;
     val += _T("\"");
     SetValue(name.c_str(), _T("searchString"), val.c_str());
@@ -89,7 +89,7 @@ void CBookmarks::AddBookmark(const wstring& name, const wstring& search, const w
     SetValue(name.c_str(), _T("useregex"), bRegex ? _T("true") : _T("false"));
 }
 
-void CBookmarks::RemoveBookmark(const wstring& name)
+void CBookmarks::RemoveBookmark(const std::wstring& name)
 {
     Delete(name.c_str(), _T("searchString"), true);
     Delete(name.c_str(), _T("replaceString"), true);

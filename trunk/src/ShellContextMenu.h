@@ -24,7 +24,6 @@
 
 #pragma comment(lib, "shell32.lib")
 
-using namespace std;
 class CIShellFolderHook;
 class CSearchInfo;
 struct LineData;
@@ -32,7 +31,7 @@ struct LineData;
 class CShellContextMenu
 {
 public:
-    void SetObjects(const vector<CSearchInfo>& strVector, const vector<LineData>& lineVector);
+    void SetObjects(const std::vector<CSearchInfo>& strVector, const std::vector<LineData>& lineVector);
     UINT ShowContextMenu(HWND hWnd, POINT pt);
     CShellContextMenu();
     virtual ~CShellContextMenu();
@@ -44,8 +43,8 @@ private:
     IShellFolder * m_psfFolder;
     LPITEMIDLIST * m_pidlArray;
     int            m_pidlArrayItems;
-    vector<CSearchInfo> m_strVector;
-    vector<LineData> m_lineVector;
+    std::vector<CSearchInfo> m_strVector;
+    std::vector<LineData> m_lineVector;
 
     void InvokeCommand(LPCONTEXTMENU pContextMenu, UINT idCommand);
     BOOL GetContextMenu(HWND hWnd, void ** ppContextMenu, int & iMenuType);

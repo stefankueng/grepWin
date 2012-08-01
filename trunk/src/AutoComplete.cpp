@@ -129,27 +129,27 @@ bool CAutoComplete::RemoveSelected()
     return true;
 }
 
-CAutoCompleteEnum::CAutoCompleteEnum(const vector<wstring>& vec)
+CAutoCompleteEnum::CAutoCompleteEnum(const std::vector<std::wstring>& vec)
     : m_cRefCount(0)
     , m_iCur(0)
 {
     Init(vec);
 }
 
-CAutoCompleteEnum::CAutoCompleteEnum(const vector<wstring*>& vec)
+CAutoCompleteEnum::CAutoCompleteEnum(const std::vector<std::wstring*>& vec)
     : m_cRefCount(0)
     , m_iCur(0)
 {
     Init(vec);
 }
 
-void CAutoCompleteEnum::Init(const vector<wstring>& vec)
+void CAutoCompleteEnum::Init(const std::vector<std::wstring>& vec)
 {
     m_vecStrings.clear();
     for (size_t i = 0; i < vec.size(); ++i)
         m_vecStrings.push_back(vec[i]);
 }
-void CAutoCompleteEnum::Init(const vector<wstring*>& vec)
+void CAutoCompleteEnum::Init(const std::vector<std::wstring*>& vec)
 {
     m_vecStrings.clear();
     for (size_t i = 0; i < vec.size(); ++i)

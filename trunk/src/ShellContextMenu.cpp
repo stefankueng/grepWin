@@ -95,7 +95,7 @@ BOOL CShellContextMenu::GetContextMenu(HWND hWnd, void ** ppContextMenu, int & i
     }
     // find extension
     size_t dotpos = m_strVector[0].filepath.find_last_of('.');
-    wstring ext;
+    std::wstring ext;
     if (dotpos != std::string::npos)
     {
         ext = m_strVector[0].filepath.substr(dotpos);
@@ -265,7 +265,7 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
         case 1:
             {
                 // This is the command line for explorer which tells it to select the given file
-                wstring sFolder = _T( "/Select,\"" ) + m_strVector[0].filepath + _T("\"");
+                std::wstring sFolder = _T( "/Select,\"" ) + m_strVector[0].filepath + _T("\"");
 
                 // Prepare shell execution params
                 SHELLEXECUTEINFO shExecInfo   = { 0 };
@@ -282,7 +282,7 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
             break;
         case 2:
             {
-                wstring pathnames;
+                std::wstring pathnames;
                 for (auto it = m_strVector.begin(); it != m_strVector.end(); ++it)
                 {
                     if (pathnames.size())
@@ -294,12 +294,12 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
             break;
         case 3:
             {
-                wstring pathnames;
+                std::wstring pathnames;
                 for (auto it = m_strVector.begin(); it != m_strVector.end(); ++it)
                 {
                     if (pathnames.size())
                         pathnames += _T("\r\n");
-                    wstring p = it->filepath;
+                    std::wstring p = it->filepath;
                     p = p.substr(p.find_last_of('\\')+1);
                     pathnames += p;
                 }
@@ -308,14 +308,14 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
             break;
         case 4:
             {
-                wstring lines;
+                std::wstring lines;
                 for (auto it = m_lineVector.begin(); it != m_lineVector.end(); ++it)
                 {
                     if (lines.size())
                         lines += _T("\r\n");
                     for (auto it2 = it->lines.cbegin(); it2 != it->lines.cend(); ++it2)
                     {
-                        wstring l = it2->text;
+                        std::wstring l = it2->text;
                         std::replace(l.begin(), l.end(), '\n', ' ');
                         std::replace(l.begin(), l.end(), '\r', ' ');
 
@@ -399,7 +399,7 @@ void CShellContextMenu::InvokeCommand(LPCONTEXTMENU pContextMenu, UINT idCommand
     pContextMenu->InvokeCommand (&cmi);
 }
 
-void CShellContextMenu::SetObjects(const vector<CSearchInfo>& strVector, const vector<LineData>& lineVector)
+void CShellContextMenu::SetObjects(const std::vector<CSearchInfo>& strVector, const std::vector<LineData>& lineVector)
 {
     // free all allocated data
     if (m_psfFolder && bDelete)
