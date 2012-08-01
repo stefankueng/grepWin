@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008, 2011 - Stefan Kueng
+// Copyright (C) 2007-2008, 2011-2012 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -106,11 +106,11 @@ LRESULT CRegexTestDlg::DoCommand(int id, int msg)
     {
     case IDOK:
         {
-            TCHAR buf[MAX_PATH*4] = {0};
-            GetDlgItemText(*this, IDC_SEARCHTEXT, buf, MAX_PATH*4);
-            m_searchText = buf;
-            GetDlgItemText(*this, IDC_REPLACETEXT, buf, MAX_PATH*4);
-            m_replaceText = buf;
+            std::unique_ptr<TCHAR[]> buf(new TCHAR[10*1024*1024]);
+            GetDlgItemText(*this, IDC_SEARCHTEXT, buf.get(), MAX_PATH*4);
+            m_searchText = buf.get();
+            GetDlgItemText(*this, IDC_REPLACETEXT, buf.get(), MAX_PATH*4);
+            m_replaceText = buf.get();
         }
         // fall through
     case IDCANCEL:
@@ -120,10 +120,9 @@ LRESULT CRegexTestDlg::DoCommand(int id, int msg)
         {
             if (msg == EN_CHANGE)
             {
-                TCHAR * buf = new TCHAR[10*1024*1024];
-                GetDlgItemText(*this, IDC_TEXTCONTENT, buf, 10*1024*1024);
-                m_textContent = wstring(buf);
-                delete [] buf;
+                std::unique_ptr<TCHAR[]> buf(new TCHAR[10*1024*1024]);
+                GetDlgItemText(*this, IDC_TEXTCONTENT, buf.get(), 10*1024*1024);
+                m_textContent = wstring(buf.get());
 
                 SetTimer(*this, ID_REGEXTIMER, 300, NULL);
             }

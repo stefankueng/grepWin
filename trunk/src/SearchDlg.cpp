@@ -145,10 +145,9 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             ret = ::GetLongPathName(m_searchpath.c_str(), NULL, 0);
             if (ret)
             {
-                TCHAR * pathbuf = new TCHAR[ret+2];
-                ret = ::GetLongPathName(m_searchpath.c_str(), pathbuf, ret+1);
-                m_searchpath = wstring(pathbuf, ret);
-                delete [] pathbuf;
+                std::unique_ptr<TCHAR[]> pathbuf(new TCHAR[ret+2]);
+                ret = ::GetLongPathName(m_searchpath.c_str(), pathbuf.get(), ret+1);
+                m_searchpath = wstring(pathbuf.get(), ret);
             }
 
             if (m_patternregex.size() == 0)
@@ -523,20 +522,18 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 
                 if (m_bReplace)
                 {
-                    TCHAR * msgtext = new TCHAR[m_searchString.size() + m_replaceString.size() + MAX_PATH * 4];
-                    _stprintf_s(msgtext, m_searchString.size() + m_replaceString.size() + MAX_PATH * 4,
+                    std::unique_ptr<TCHAR[]> msgtext(new TCHAR[m_searchString.size() + m_replaceString.size() + MAX_PATH * 4]);
+                    _stprintf_s(msgtext.get(), m_searchString.size() + m_replaceString.size() + MAX_PATH * 4,
                         _T("Are you sure you want to replace\n%s\nwith\n%s\nwithout creating backups?"),
                         m_searchString.c_str(),
                         m_replaceString.empty() ? _T("an empty string") : m_replaceString.c_str());
                     if (!m_bCreateBackup)
                     {
-                        if (::MessageBox(*this, msgtext, _T("grepWin"), MB_ICONQUESTION | MB_YESNO) != IDYES)
+                        if (::MessageBox(*this, msgtext.get(), _T("grepWin"), MB_ICONQUESTION | MB_YESNO) != IDYES)
                         {
-                            delete [] msgtext;
                             break;
                         }
                     }
-                    delete [] msgtext;
                 }
 
                 InterlockedExchange(&m_dwThreadRunning, TRUE);
@@ -745,9 +742,9 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
         {
             int uID = (id == IDC_EDITMULTILINE1 ? IDC_SEARCHTEXT : IDC_REPLACETEXT);
             int textlen = ::GetWindowTextLength(GetDlgItem(*this, (int)uID));
-            TCHAR * buf = new TCHAR[textlen+10];
-            GetDlgItemText(*this, (int)uID, buf, textlen+10);
-            std::wstring ctrlText = buf;
+            std::unique_ptr<TCHAR[]> buf(new TCHAR[textlen+10]);
+            GetDlgItemText(*this, (int)uID, buf.get(), textlen+10);
+            std::wstring ctrlText = buf.get();
 
             // replace all \r\n strings with real CRLFs
             try
@@ -782,7 +779,6 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 
                 SetDlgItemText(*this, (int)uID, text.c_str());
             }
-            delete [] buf;
             ::SetFocus(GetDlgItem(*this, uID));
         }
         break;
@@ -896,14 +892,13 @@ bool CSearchDlg::AddFoundEntry(CSearchInfo * pInfo, bool bOnlyListControl)
     int ret = 0;
     if (filelist)
     {
-        TCHAR * pBuf = new TCHAR[pInfo->filepath.size()+1];
+        std::unique_ptr<TCHAR[]> pBuf(new TCHAR[pInfo->filepath.size()+1]);
         wstring name = pInfo->filepath.substr(pInfo->filepath.find_last_of('\\')+1);
-        _tcscpy_s(pBuf, pInfo->filepath.size()+1, name.c_str());
-        lv.pszText = pBuf;
+        _tcscpy_s(pBuf.get(), pInfo->filepath.size()+1, name.c_str());
+        lv.pszText = pBuf.get();
         lv.mask = LVIF_TEXT | LVIF_IMAGE | LVIF_PARAM;
         lv.iImage = pInfo->folder ? CSysImageList::GetInstance().GetDirIconIndex() : CSysImageList::GetInstance().GetFileIconIndex(pInfo->filepath);
         ret = ListView_InsertItem(hListControl, &lv);
-        delete [] pBuf;
 
         lv.mask = LVIF_TEXT;
         lv.iItem = ret;
@@ -952,13 +947,12 @@ bool CSearchDlg::AddFoundEntry(CSearchInfo * pInfo, bool bOnlyListControl)
         if (pInfo->encoding == CTextFile::BINARY)
         {
             lv.mask = LVIF_TEXT | LVIF_IMAGE | LVIF_PARAM;
-            TCHAR * pBuf = new TCHAR[pInfo->filepath.size()+1];
+            std::unique_ptr<TCHAR[]> pBuf(new TCHAR[pInfo->filepath.size()+1]);
             wstring name = pInfo->filepath.substr(pInfo->filepath.find_last_of('\\')+1);
-            _tcscpy_s(pBuf, pInfo->filepath.size()+1, name.c_str());
-            lv.pszText = pBuf;
+            _tcscpy_s(pBuf.get(), pInfo->filepath.size()+1, name.c_str());
+            lv.pszText = pBuf.get();
             lv.iImage = pInfo->folder ? CSysImageList::GetInstance().GetDirIconIndex() : CSysImageList::GetInstance().GetFileIconIndex(pInfo->filepath);
             ret = ListView_InsertItem(hListControl, &lv);
-            delete [] pBuf;
             if (ret >= 0)
             {
                 lv.mask = LVIF_TEXT;
@@ -974,16 +968,15 @@ bool CSearchDlg::AddFoundEntry(CSearchInfo * pInfo, bool bOnlyListControl)
             for (size_t subIndex = 0; subIndex < pInfo->matchlinesnumbers.size(); ++subIndex)
             {
                 lv.mask = LVIF_TEXT | LVIF_IMAGE | LVIF_PARAM;
-                TCHAR * pBuf = new TCHAR[pInfo->filepath.size()+1];
+                std::unique_ptr<TCHAR[]> pBuf(new TCHAR[pInfo->filepath.size()+1]);
                 wstring name = pInfo->filepath.substr(pInfo->filepath.find_last_of('\\')+1);
-                _tcscpy_s(pBuf, pInfo->filepath.size()+1, name.c_str());
-                lv.pszText = pBuf;
+                _tcscpy_s(pBuf.get(), pInfo->filepath.size()+1, name.c_str());
+                lv.pszText = pBuf.get();
                 lv.iImage = pInfo->folder ? CSysImageList::GetInstance().GetDirIconIndex() : CSysImageList::GetInstance().GetFileIconIndex(pInfo->filepath);
                 lv.iItem = ListView_GetItemCount(hListControl);
                 lv.iSubItem = 0;
                 lv.lParam = nEntryCount;
                 ret = ListView_InsertItem(hListControl, &lv);
-                delete [] pBuf;
                 if (ret >= 0)
                 {
                     lv.mask = LVIF_TEXT;
@@ -1402,16 +1395,14 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
             }
 
             AssocQueryString(ASSOCF_INIT_DEFAULTTOSTAR, ASSOCSTR_COMMAND, ext.c_str(), NULL, NULL, &buflen);
-            TCHAR * cmdbuf = new TCHAR[buflen + 1];
-            AssocQueryString(ASSOCF_INIT_DEFAULTTOSTAR, ASSOCSTR_COMMAND, ext.c_str(), NULL, cmdbuf, &buflen);
-            wstring application = cmdbuf;
-            delete [] cmdbuf;
+            std::unique_ptr<TCHAR[]> cmdbuf(new TCHAR[buflen + 1]);
+            AssocQueryString(ASSOCF_INIT_DEFAULTTOSTAR, ASSOCSTR_COMMAND, ext.c_str(), NULL, cmdbuf.get(), &buflen);
+            wstring application = cmdbuf.get();
             // normalize application path
             DWORD len = ExpandEnvironmentStrings (application.c_str(), NULL, 0);
-            cmdbuf = new TCHAR[len+1];
-            ExpandEnvironmentStrings (application.c_str(), cmdbuf, len);
-            application = cmdbuf;
-            delete [] cmdbuf;
+            cmdbuf = std::unique_ptr<TCHAR[]>(new TCHAR[len+1]);
+            ExpandEnvironmentStrings (application.c_str(), cmdbuf.get(), len);
+            application = cmdbuf.get();
 
             // resolve parameters
             if (application.find(_T("%1")) == wstring::npos)
