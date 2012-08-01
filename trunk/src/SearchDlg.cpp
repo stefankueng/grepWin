@@ -854,13 +854,15 @@ bool CSearchDlg::InitResultList()
     ListView_SetExtendedListViewStyle(hListControl, exStyle);
     ListView_SetImageList(hListControl, (WPARAM)(HIMAGELIST)CSysImageList::GetInstance(), LVSIL_SMALL);
     LVCOLUMN lvc = {0};
-    lvc.mask = LVCF_TEXT;
+    lvc.mask = LVCF_TEXT|LVCF_FMT;
     lvc.fmt = LVCFMT_LEFT;
     lvc.cx = -1;
     lvc.pszText = _T("Name");
     ListView_InsertColumn(hListControl, 0, &lvc);
     lvc.pszText = filelist ? _T("Size") : _T("Line");
+    lvc.fmt = filelist ? LVCFMT_RIGHT : LVCFMT_LEFT;
     ListView_InsertColumn(hListControl, 1, &lvc);
+    lvc.fmt = LVCFMT_LEFT;
     lvc.pszText = filelist ? _T("Matches") : _T("Text");
     ListView_InsertColumn(hListControl, 2, &lvc);
     if (filelist)
