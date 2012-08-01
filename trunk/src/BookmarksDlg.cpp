@@ -195,6 +195,7 @@ LRESULT CBookmarksDlg::DoCommand(int id, int /*msg*/)
                 }
             }
         }
+        break;
     }
     return 1;
 }
