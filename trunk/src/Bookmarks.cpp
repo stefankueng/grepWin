@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2009 - Stefan Kueng
+// Copyright (C) 2007-2009, 2012 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -20,7 +20,6 @@
 #include "Bookmarks.h"
 #include "maxpath.h"
 #include "CmdLineParser.h"
-#include "auto_buffer.h"
 #include <shlobj.h>
 
 CBookmarks::CBookmarks(void)
@@ -33,18 +32,18 @@ CBookmarks::~CBookmarks(void)
 
 void CBookmarks::Load()
 {
-    auto_buffer<TCHAR> path(MAX_PATH_NEW);
-    GetModuleFileName(NULL, path, MAX_PATH_NEW);
+    std::unique_ptr<TCHAR[]> path(new TCHAR[MAX_PATH_NEW]);
+    GetModuleFileName(NULL, path.get(), MAX_PATH_NEW);
     CCmdLineParser parser(GetCommandLine());
-    if ((_tcsstr(path, _T("portable")))||(parser.HasKey(_T("portable"))))
+    if ((_tcsstr(path.get(), _T("portable")))||(parser.HasKey(_T("portable"))))
     {
-        m_iniPath = path;
+        m_iniPath = path.get();
         m_iniPath = m_iniPath.substr(0, m_iniPath.rfind('\\'));
     }
     else
     {
-        SHGetFolderPath(NULL, CSIDL_APPDATA, NULL, SHGFP_TYPE_CURRENT, path);
-        m_iniPath = path;
+        SHGetFolderPath(NULL, CSIDL_APPDATA, NULL, SHGFP_TYPE_CURRENT, path.get());
+        m_iniPath = path.get();
         m_iniPath += _T("\\grepWin");
     }
     CreateDirectory(m_iniPath.c_str(), NULL);
@@ -54,18 +53,18 @@ void CBookmarks::Load()
 
 void CBookmarks::Save()
 {
-    auto_buffer<TCHAR> path(MAX_PATH_NEW);
-    GetModuleFileName(NULL, path, MAX_PATH_NEW);
+    std::unique_ptr<TCHAR[]> path(new TCHAR[MAX_PATH_NEW]);
+    GetModuleFileName(NULL, path.get(), MAX_PATH_NEW);
     CCmdLineParser parser(GetCommandLine());
-    if ((_tcsstr(path, _T("portable")))||(parser.HasKey(_T("portable"))))
+    if ((_tcsstr(path.get(), _T("portable")))||(parser.HasKey(_T("portable"))))
     {
-        m_iniPath = path;
+        m_iniPath = path.get();
         m_iniPath = m_iniPath.substr(0, m_iniPath.rfind('\\'));
     }
     else
     {
-        SHGetFolderPath(NULL, CSIDL_APPDATA, NULL, SHGFP_TYPE_CURRENT, path);
-        m_iniPath = path;
+        SHGetFolderPath(NULL, CSIDL_APPDATA, NULL, SHGFP_TYPE_CURRENT, path.get());
+        m_iniPath = path.get();
         m_iniPath += _T("\\grepWin");
     }
     CreateDirectory(m_iniPath.c_str(), NULL);

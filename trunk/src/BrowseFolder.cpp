@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2009 - Stefan Kueng
+// Copyright (C) 2007-2009, 2012 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -20,7 +20,7 @@
 #include <windowsx.h>
 #include "BrowseFolder.h"
 #include "maxpath.h"
-#include "auto_buffer.h"
+#include <memory>
 
 BOOL CBrowseFolder::m_bCheck = FALSE;
 BOOL CBrowseFolder::m_bCheck2 = FALSE;
@@ -88,11 +88,11 @@ CBrowseFolder::retVal CBrowseFolder::Show(HWND parent, std::wstring& path, const
 
     if (ret != CANCEL)
     {
-        auto_buffer<TCHAR> buf(MAX_PATH_NEW);
-        if (!SHGetPathFromIDList(itemIDList, buf))
+        std::unique_ptr<TCHAR[]> buf(new TCHAR[MAX_PATH_NEW]);
+        if (!SHGetPathFromIDList(itemIDList, buf.get()))
             ret = NOPATH;
 
-        path = buf;
+        path = buf.get();
 
         LPMALLOC    shellMalloc;
         HRESULT     hr;
@@ -264,10 +264,10 @@ int CBrowseFolder::BrowseCallBackProc(HWND hwnd, UINT uMsg, LPARAM lParam, LPARA
     if (uMsg == BFFM_SELCHANGED)
     {
         // Set the status window to the currently selected path.
-        auto_buffer<TCHAR> szDir(MAX_PATH_NEW);
-        if (SHGetPathFromIDList((LPITEMIDLIST)lParam, szDir))
+        std::unique_ptr<TCHAR[]> szDir(new TCHAR[MAX_PATH_NEW]);
+        if (SHGetPathFromIDList((LPITEMIDLIST)lParam, szDir.get()))
         {
-            SendMessage(hwnd,BFFM_SETSTATUSTEXT, 0, (LPARAM)szDir);
+            SendMessage(hwnd,BFFM_SETSTATUSTEXT, 0, (LPARAM)szDir.get());
         }
     }
 

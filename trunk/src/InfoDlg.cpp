@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2009, 2011 - Stefan Kueng
+// Copyright (C) 2007-2009, 2011-2012 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -19,8 +19,8 @@
 #include "stdafx.h"
 #include "InfoDlg.h"
 #include "maxpath.h"
-#include "auto_buffer.h"
 
+#include <memory>
 #include <mshtmhst.h>
 
 #pragma comment(lib, "Urlmon.lib")
@@ -52,19 +52,18 @@ BOOL CInfoDlg::ShowDialog(UINT idAboutHTMLID, HINSTANCE hInstance)
         pfnShowHTMLDialog =     (SHOWHTMLDIALOGFN*)GetProcAddress(hinstMSHTML, "ShowHTMLDialog");
         if(pfnShowHTMLDialog)
         {
-            LPTSTR lpszModule = new TCHAR[MAX_PATH_NEW];
+            std::unique_ptr<TCHAR[]> lpszModule(new TCHAR[MAX_PATH_NEW]);
             //Get The Application Path
-            if (GetModuleFileName(hInstance, lpszModule, MAX_PATH_NEW))
+            if (GetModuleFileName(hInstance, lpszModule.get(), MAX_PATH_NEW))
             {
                 //Add the IE Res protocol
-                auto_buffer<TCHAR> strResourceURL(MAX_PATH_NEW);
-                _stprintf_s(strResourceURL, MAX_PATH_NEW, _T("res://%s/%d"), lpszModule, idAboutHTMLID);
-                int iLength = (int)_tcslen(strResourceURL);
-                LPWSTR lpWideCharStr = NULL;
-                lpWideCharStr =  new wchar_t[iLength+1];
+                std::unique_ptr<TCHAR[]> strResourceURL(new TCHAR[MAX_PATH_NEW]);
+                _stprintf_s(strResourceURL.get(), MAX_PATH_NEW, _T("res://%s/%d"), lpszModule.get(), idAboutHTMLID);
+                int iLength = (int)_tcslen(strResourceURL.get());
+                std::unique_ptr<wchar_t[]> lpWideCharStr(new wchar_t[iLength+1]);
                 //Attempt to Create the URL Moniker to the specified in the URL String
                 IMoniker *pmk;
-                if(SUCCEEDED(CreateURLMoniker(NULL,strResourceURL,&pmk)))
+                if(SUCCEEDED(CreateURLMoniker(NULL,strResourceURL.get(),&pmk)))
                 {
                     //Invoke the ShowHTMLDialog function by pointer
                     //passing the HWND of your Application , the Moniker,
@@ -72,9 +71,7 @@ BOOL CInfoDlg::ShowDialog(UINT idAboutHTMLID, HINSTANCE hInstance)
                     pfnShowHTMLDialog(NULL,pmk,NULL,L"resizable:yes",NULL);
                     bSuccess = TRUE;
                 }
-                delete [] lpWideCharStr;
             }
-            delete [] lpszModule;
         }
         FreeLibrary(hinstMSHTML);
     }
