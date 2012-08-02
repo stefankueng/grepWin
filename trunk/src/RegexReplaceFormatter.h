@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2011 - Stefan Kueng
+// Copyright (C) 2011-2012 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -115,7 +115,7 @@ public:
             for (auto it = m_replaceMap.cbegin(); it != m_replaceMap.cend(); ++it)
             {
                 auto it_begin = std::search(sReplace.begin(), sReplace.end(), it->first.begin(), it->first.end());
-                if (it_begin != sReplace.end())
+                while (it_begin != sReplace.end())
                 {
                     if ((it_begin == sReplace.begin())||((*(it_begin-1)) != '\\'))
                     {
@@ -126,6 +126,7 @@ public:
                     {
                         sReplace.erase(it_begin-1);
                     };
+                    it_begin = std::search(sReplace.begin(), sReplace.end(), it->first.begin(), it->first.end());
                 }
             }
         }
