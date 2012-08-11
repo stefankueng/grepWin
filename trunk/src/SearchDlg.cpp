@@ -908,6 +908,7 @@ bool CSearchDlg::AddFoundEntry(CSearchInfo * pInfo, bool bOnlyListControl)
         lv.iItem = ret;
         lv.iSubItem = 1;
         std::unique_ptr<TCHAR[]> sb(new TCHAR[MAX_PATH_NEW]);
+        sb[0] = 0;
         if (!pInfo->folder)
             StrFormatByteSizeW(pInfo->filesize, sb.get(), 20);
         lv.pszText = sb.get();
@@ -1048,6 +1049,7 @@ void CSearchDlg::FillResultList()
                 lv.iItem = ret;
 
                 lv.iSubItem = 1;
+                sb[0] = 0;
                 if (!pInfo->folder)
                     StrFormatByteSizeW(pInfo->filesize, sb.get(), 20);
                 lv.pszText = sb.get();
