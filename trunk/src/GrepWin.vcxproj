@@ -187,6 +187,7 @@
     <ClCompile Include="DirFileEnum.cpp" />
     <ClCompile Include="DlgResizer.cpp" />
     <ClCompile Include="DropFiles.cpp" />
+    <ClCompile Include="EditDoubleClick.cpp" />
     <ClCompile Include="FileDropTarget.cpp" />
     <ClCompile Include="GrepWin.cpp" />
     <ClCompile Include="hyperlink.cpp" />
@@ -209,6 +210,7 @@
     </ClCompile>
     <ClCompile Include="StringUtils.cpp" />
     <ClCompile Include="SysImageList.cpp" />
+    <ClCompile Include="SysInfo.cpp" />
     <ClCompile Include="TextFile.cpp" />
     <ClCompile Include="UnicodeUtils.cpp" />
   </ItemGroup>
@@ -227,6 +229,7 @@
     <ClInclude Include="DirFileEnum.h" />
     <ClInclude Include="DlgResizer.h" />
     <ClInclude Include="DropFiles.h" />
+    <ClInclude Include="EditDoubleClick.h" />
     <ClInclude Include="FileDropTarget.h" />
     <ClInclude Include="GrepWin.h" />
     <ClInclude Include="hyperlink.h" />
@@ -247,6 +250,7 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="StringUtils.h" />
     <ClInclude Include="SysImageList.h" />
+    <ClInclude Include="SysInfo.h" />
     <ClInclude Include="TextFile.h" />
     <ClInclude Include="UnicodeUtils.h" />
   </ItemGroup>

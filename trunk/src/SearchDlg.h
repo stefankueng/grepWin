@@ -25,6 +25,7 @@
 #include "Registry.h"
 #include "hyperlink.h"
 #include "AeroControls.h"
+#include "EditDoubleClick.h"
 #include <string>
 #include <vector>
 
@@ -159,6 +160,13 @@ private:
     CAutoComplete           m_AutoCompleteSearchPatterns;
     CAutoComplete           m_AutoCompleteReplacePatterns;
     CAutoComplete           m_AutoCompleteSearchPaths;
+
+    CEditDoubleClick        m_editFilePatterns;
+    CEditDoubleClick        m_editExcludeDirsPatterns;
+    CEditDoubleClick        m_editSearchPatterns;
+    CEditDoubleClick        m_editReplacePatterns;
+    CEditDoubleClick        m_editSearchPaths;
+
     CRegStdWORD             m_regUseRegex;
     CRegStdWORD             m_regAllSize;
     CRegStdWORD             m_regSize;
