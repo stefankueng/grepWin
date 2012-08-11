@@ -129,6 +129,18 @@ bool CAutoComplete::RemoveSelected()
     return true;
 }
 
+void CAutoComplete::SetOptions( DWORD dwFlags )
+{
+    if (m_pac)
+    {
+        m_pac->SetOptions(dwFlags);
+        if (m_pcacs)
+            m_pcacs->Init(m_arEntries);
+        if (m_pdrop)
+            m_pdrop->ResetEnumerator();
+    }
+}
+
 CAutoCompleteEnum::CAutoCompleteEnum(const std::vector<std::wstring>& vec)
     : m_cRefCount(0)
     , m_iCur(0)
