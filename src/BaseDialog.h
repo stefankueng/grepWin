@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007, 2009 - Stefan Kueng
+// Copyright (C) 2007, 2009, 2012 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -42,6 +42,7 @@ public:
     bool    DialogEnableWindow(UINT nID, bool bEnable);
     void    OnCompositionChanged();
     void    ExtendFrameIntoClientArea(UINT leftControl, UINT topControl, UINT rightControl, UINT botomControl);
+    int     GetDlgItemTextLength(UINT nId);
 
     virtual LRESULT CALLBACK DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) = 0;
     virtual bool PreTranslateMessage(MSG* pMsg);

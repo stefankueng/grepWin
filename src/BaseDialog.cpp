@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007, 2009-2010 - Stefan Kueng
+// Copyright (C) 2007, 2009-2010, 2012 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -384,4 +384,10 @@ void CDialog::ExtendFrameIntoClientArea(UINT leftControl, UINT topControl, UINT 
     {
         m_Dwm.DwmExtendFrameIntoClientArea(*this, &m_margins);
     }
+}
+
+int CDialog::GetDlgItemTextLength( UINT nId )
+{
+    HWND hWnd = GetDlgItem(*this, nId);
+    return GetWindowTextLength(hWnd);
 }
