@@ -137,7 +137,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
                 searchDlg.SetReplaceWith(parser.GetVal(_T("replacewith")));
 
             if (parser.HasVal(_T("i")))
-                searchDlg.SetCaseSensitive(_tcsicmp(parser.GetVal(_T("i")), _T("yes"))==0);
+                searchDlg.SetCaseSensitive(_tcsicmp(parser.GetVal(_T("i")), _T("yes"))!=0);
             if (parser.HasVal(_T("n")))
                 searchDlg.SetMatchesNewline(_tcsicmp(parser.GetVal(_T("n")), _T("yes"))==0);
             if (parser.HasVal(_T("k")))
