@@ -1910,6 +1910,7 @@ DWORD CSearchDlg::SearchThread()
                 {
                     bool bSearch = false;
                     DWORD nFileSizeLow = 0;
+                    __int64 fullfilesize = 0;
                     FILETIME ft = {0};
                     if (bAlwaysSearch)
                     {
@@ -1920,6 +1921,7 @@ DWORD CSearchDlg::SearchThread()
                             BY_HANDLE_FILE_INFORMATION bhfi = {0};
                             GetFileInformationByHandle(hFile, &bhfi);
                             nFileSizeLow = bhfi.nFileSizeLow;
+                            fullfilesize = (((__int64) bhfi.nFileSizeHigh) << 32) | bhfi.nFileSizeLow;
                             ft = bhfi.ftLastWriteTime;
                             CloseHandle(hFile);
                         }
@@ -1930,6 +1932,7 @@ DWORD CSearchDlg::SearchThread()
                         bSearch = ((m_bIncludeHidden)||((pFindData->dwFileAttributes & FILE_ATTRIBUTE_HIDDEN) == 0));
                         bSearch = bSearch && ((m_bIncludeSystem)||((pFindData->dwFileAttributes & FILE_ATTRIBUTE_SYSTEM) == 0));
                         nFileSizeLow = pFindData->nFileSizeLow;
+                        fullfilesize = (((__int64) pFindData->nFileSizeHigh) << 32) | pFindData->nFileSizeLow;
                         ft = pFindData->ftLastWriteTime;
                         if (!m_bAllSize)
                         {
@@ -1954,7 +1957,7 @@ DWORD CSearchDlg::SearchThread()
                     if ((bSearch && bPattern)||(bAlwaysSearch))
                     {
                         CSearchInfo sinfo(pathbuf.get());
-                        sinfo.filesize = nFileSizeLow;
+                        sinfo.filesize = fullfilesize;
                         sinfo.modifiedtime = ft;
                         if (m_searchString.empty())
                         {

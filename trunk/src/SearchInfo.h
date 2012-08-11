@@ -31,7 +31,7 @@ public:
     ~CSearchInfo(void);
 
     std::wstring                filepath;
-    DWORD                       filesize;
+    __int64                     filesize;
     std::vector<DWORD>          matchlinesnumbers;
     std::vector<std::wstring>   matchlines;
     CTextFile::UnicodeType      encoding;
