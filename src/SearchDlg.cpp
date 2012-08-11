@@ -38,6 +38,7 @@
 #include "RegexReplaceFormatter.h"
 #include "LineData.h"
 #include "Settings.h"
+#include "SysInfo.h"
 #include <string>
 #include <iostream>
 #include <fstream>
@@ -190,6 +191,12 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             m_AutoCompleteReplacePatterns.Init(GetDlgItem(hwndDlg, IDC_REPLACETEXT));
             m_AutoCompleteSearchPaths.Load(_T("Software\\grepWin\\History"), _T("SearchPaths"));
             m_AutoCompleteSearchPaths.Init(GetDlgItem(hwndDlg, IDC_SEARCHPATH));
+
+            m_editFilePatterns.Subclass(hwndDlg, IDC_PATTERN);
+            m_editExcludeDirsPatterns.Subclass(hwndDlg, IDC_EXCLUDEDIRSPATTERN);
+            m_editSearchPatterns.Subclass(hwndDlg, IDC_SEARCHTEXT);
+            m_editReplacePatterns.Subclass(hwndDlg, IDC_REPLACETEXT);
+            m_editSearchPaths.Subclass(hwndDlg, IDC_SEARCHPATH);
 
             // add an "About" entry to the system menu
             HMENU hSysMenu = GetSystemMenu(hwndDlg, FALSE);
@@ -482,6 +489,48 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             return TRUE;
         }
         break;
+    case WM_EDITDBLCLICK:
+        {
+            switch (wParam)
+            {
+            case IDC_PATTERN:
+                {
+                    m_AutoCompleteFilePatterns.SetOptions(ACO_UPDOWNKEYDROPSLIST|ACO_AUTOSUGGEST|ACO_NOPREFIXFILTERING);
+                    ::SetFocus(GetDlgItem(*this, IDC_PATTERN));
+                    SendDlgItemMessage(*this, IDC_PATTERN, WM_KEYDOWN, VK_DOWN, 0);
+                }
+                break;
+            case IDC_EXCLUDEDIRSPATTERN:
+                {
+                    m_AutoCompleteExcludeDirsPatterns.SetOptions(ACO_UPDOWNKEYDROPSLIST|ACO_AUTOSUGGEST|ACO_NOPREFIXFILTERING);
+                    ::SetFocus(GetDlgItem(*this, IDC_EXCLUDEDIRSPATTERN));
+                    SendDlgItemMessage(*this, IDC_EXCLUDEDIRSPATTERN, WM_KEYDOWN, VK_DOWN, 0);
+                }
+                break;
+            case IDC_SEARCHTEXT:
+                {
+                    m_AutoCompleteSearchPatterns.SetOptions(ACO_UPDOWNKEYDROPSLIST|ACO_AUTOSUGGEST|ACO_NOPREFIXFILTERING);
+                    ::SetFocus(GetDlgItem(*this, IDC_SEARCHTEXT));
+                    SendDlgItemMessage(*this, IDC_SEARCHTEXT, WM_KEYDOWN, VK_DOWN, 0);
+                }
+                break;
+            case IDC_REPLACETEXT:
+                {
+                    m_AutoCompleteReplacePatterns.SetOptions(ACO_UPDOWNKEYDROPSLIST|ACO_AUTOSUGGEST|ACO_NOPREFIXFILTERING);
+                    ::SetFocus(GetDlgItem(*this, IDC_REPLACETEXT));
+                    SendDlgItemMessage(*this, IDC_REPLACETEXT, WM_KEYDOWN, VK_DOWN, 0);
+                }
+                break;
+            case IDC_SEARCHPATH:
+                {
+                    m_AutoCompleteSearchPaths.SetOptions(ACO_UPDOWNKEYDROPSLIST|ACO_AUTOSUGGEST|ACO_NOPREFIXFILTERING);
+                    ::SetFocus(GetDlgItem(*this, IDC_SEARCHPATH));
+                    SendDlgItemMessage(*this, IDC_SEARCHPATH, WM_KEYDOWN, VK_DOWN, 0);
+                }
+                break;
+            }
+        }
+        break;
     default:
         return FALSE;
     }
@@ -608,6 +657,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
         {
             if (msg == EN_CHANGE)
             {
+                m_AutoCompleteSearchPaths.SetOptions(ACO_UPDOWNKEYDROPSLIST|ACO_AUTOSUGGEST);
                 std::unique_ptr<TCHAR[]> buf(new TCHAR[MAX_PATH_NEW]);
                 GetDlgItemText(*this, IDC_SEARCHTEXT, buf.get(), MAX_PATH_NEW);
                 int len = (int)_tcslen(buf.get());
@@ -650,6 +700,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
         {
             if (msg == EN_CHANGE)
             {
+                m_AutoCompleteSearchPatterns.SetOptions(ACO_UPDOWNKEYDROPSLIST|ACO_AUTOSUGGEST);
                 int len = CheckRegex();
                 DialogEnableWindow(IDC_ADDTOBOOKMARKS, len > 0);
                 DialogEnableWindow(IDC_INCLUDEBINARY, len > 0);
@@ -785,38 +836,65 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
         break;
     case IDC_PATHMRU:
         {
-            TCHAR buf[MAX_PATH*4] = {0};
-            GetDlgItemText(*this, IDC_SEARCHPATH, buf, MAX_PATH*4);
-            m_searchpath = buf;
-
-            m_AutoCompleteSearchPaths.AddEntry(m_searchpath.c_str());
-            SetDlgItemText(*this, IDC_SEARCHPATH, L"");
+            if (!SysInfo::Instance().IsVistaOrLater())
+            {
+                int textlen = GetDlgItemTextLength(IDC_SEARCHPATH);
+                std::unique_ptr<WCHAR[]> buf(new WCHAR[textlen+1]);
+                GetDlgItemText(*this, IDC_SEARCHPATH, buf.get(), textlen+1);
+                m_AutoCompleteSearchPaths.AddEntry(buf.get());
+                SetDlgItemText(*this, IDC_SEARCHPATH, L"");
+            }
+            m_AutoCompleteSearchPaths.SetOptions(ACO_UPDOWNKEYDROPSLIST|ACO_AUTOSUGGEST|ACO_NOPREFIXFILTERING);
             ::SetFocus(GetDlgItem(*this, IDC_SEARCHPATH));
             SendDlgItemMessage(*this, IDC_SEARCHPATH, WM_KEYDOWN, VK_DOWN, 0);
         }
         break;
     case IDC_EXCLUDEDIRMRU:
         {
-            TCHAR buf[MAX_PATH*4] = {0};
-            GetDlgItemText(*this, IDC_EXCLUDEDIRSPATTERN, buf, MAX_PATH*4);
-            m_searchpath = buf;
-
-            m_AutoCompleteExcludeDirsPatterns.AddEntry(m_excludedirspatternregex.c_str());
-            SetDlgItemText(*this, IDC_EXCLUDEDIRSPATTERN, L"");
+            if (!SysInfo::Instance().IsVistaOrLater())
+            {
+                int textlen = GetDlgItemTextLength(IDC_EXCLUDEDIRSPATTERN);
+                std::unique_ptr<WCHAR[]> buf(new WCHAR[textlen+1]);
+                GetDlgItemText(*this, IDC_EXCLUDEDIRSPATTERN, buf.get(), textlen+1);
+                m_AutoCompleteExcludeDirsPatterns.AddEntry(buf.get());
+                SetDlgItemText(*this, IDC_EXCLUDEDIRSPATTERN, L"");
+            }
+            m_AutoCompleteExcludeDirsPatterns.SetOptions(ACO_UPDOWNKEYDROPSLIST|ACO_AUTOSUGGEST|ACO_NOPREFIXFILTERING);
             ::SetFocus(GetDlgItem(*this, IDC_EXCLUDEDIRSPATTERN));
             SendDlgItemMessage(*this, IDC_EXCLUDEDIRSPATTERN, WM_KEYDOWN, VK_DOWN, 0);
         }
         break;
     case IDC_PATTERNMRU:
         {
-            TCHAR buf[MAX_PATH*4] = {0};
-            GetDlgItemText(*this, IDC_PATTERN, buf, MAX_PATH*4);
-            m_searchpath = buf;
-
-            m_AutoCompleteFilePatterns.AddEntry(m_searchpath.c_str());
-            SetDlgItemText(*this, IDC_PATTERN, L"");
+            if (!SysInfo::Instance().IsVistaOrLater())
+            {
+                int textlen = GetDlgItemTextLength(IDC_PATTERN);
+                std::unique_ptr<WCHAR[]> buf(new WCHAR[textlen+1]);
+                GetDlgItemText(*this, IDC_PATTERN, buf.get(), textlen+1);
+                m_AutoCompleteFilePatterns.AddEntry(buf.get());
+                SetDlgItemText(*this, IDC_PATTERN, L"");
+            }
+            m_AutoCompleteFilePatterns.SetOptions(ACO_UPDOWNKEYDROPSLIST|ACO_AUTOSUGGEST|ACO_NOPREFIXFILTERING);
             ::SetFocus(GetDlgItem(*this, IDC_PATTERN));
             SendDlgItemMessage(*this, IDC_PATTERN, WM_KEYDOWN, VK_DOWN, 0);
+        }
+        break;
+    case IDC_PATTERN:
+        {
+            if (msg == EN_CHANGE)
+                m_AutoCompleteFilePatterns.SetOptions(ACO_UPDOWNKEYDROPSLIST|ACO_AUTOSUGGEST);
+        }
+        break;
+    case IDC_EXCLUDEDIRSPATTERN:
+        {
+            if (msg == EN_CHANGE)
+                m_AutoCompleteExcludeDirsPatterns.SetOptions(ACO_UPDOWNKEYDROPSLIST|ACO_AUTOSUGGEST);
+        }
+        break;
+    case IDC_REPLACETEXT:
+        {
+            if (msg == EN_CHANGE)
+                m_AutoCompleteReplacePatterns.SetOptions(ACO_UPDOWNKEYDROPSLIST|ACO_AUTOSUGGEST);
         }
         break;
     }
