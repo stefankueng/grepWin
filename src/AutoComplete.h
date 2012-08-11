@@ -67,6 +67,7 @@ public:
     bool        AddEntry(LPCTSTR szText);
 
     bool        RemoveSelected();
+    void        SetOptions(DWORD dwFlags);
 private:
     CAutoCompleteEnum *         m_pcacs;
     IAutoComplete2 *            m_pac;
