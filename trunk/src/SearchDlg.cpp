@@ -1072,7 +1072,9 @@ bool CSearchDlg::AddFoundEntry(CSearchInfo * pInfo, bool bOnlyListControl)
                     ListView_SetItem(hListControl, &lv);
 
                     lv.iSubItem = 2;
-                    std::wstring line = pInfo->matchlines[subIndex];
+                    std::wstring line;
+                    if (pInfo->matchlines.size() > subIndex)
+                        line = pInfo->matchlines[subIndex];
                     std::replace(line.begin(), line.end(), '\t', ' ');
                     std::replace(line.begin(), line.end(), '\n', ' ');
                     std::replace(line.begin(), line.end(), '\r', ' ');
@@ -1219,7 +1221,9 @@ void CSearchDlg::FillResultList()
                         ListView_SetItem(hListControl, &lv);
 
                         lv.iSubItem = 2;
-                        std::wstring line = pInfo->matchlines[subIndex];
+                        std::wstring line;
+                        if (pInfo->matchlines.size() > subIndex)
+                            line = pInfo->matchlines[subIndex];
                         std::replace(line.begin(), line.end(), '\t', ' ');
                         std::replace(line.begin(), line.end(), '\n', ' ');
                         std::replace(line.begin(), line.end(), '\r', ' ');
