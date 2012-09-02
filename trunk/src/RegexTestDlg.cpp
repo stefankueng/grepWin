@@ -105,10 +105,9 @@ LRESULT CRegexTestDlg::DoCommand(int id, int msg)
     {
     case IDOK:
         {
-            std::unique_ptr<TCHAR[]> buf(new TCHAR[10*1024*1024]);
-            GetDlgItemText(*this, IDC_SEARCHTEXT, buf.get(), MAX_PATH*4);
+            auto buf = GetDlgItemText(IDC_SEARCHTEXT);
             m_searchText = buf.get();
-            GetDlgItemText(*this, IDC_REPLACETEXT, buf.get(), MAX_PATH*4);
+            buf = GetDlgItemText(IDC_REPLACETEXT);
             m_replaceText = buf.get();
         }
         // fall through
@@ -119,8 +118,7 @@ LRESULT CRegexTestDlg::DoCommand(int id, int msg)
         {
             if (msg == EN_CHANGE)
             {
-                std::unique_ptr<TCHAR[]> buf(new TCHAR[10*1024*1024]);
-                GetDlgItemText(*this, IDC_TEXTCONTENT, buf.get(), 10*1024*1024);
+                auto buf = GetDlgItemText(IDC_TEXTCONTENT);
                 m_textContent = std::wstring(buf.get());
 
                 SetTimer(*this, ID_REGEXTIMER, 300, NULL);
@@ -131,9 +129,8 @@ LRESULT CRegexTestDlg::DoCommand(int id, int msg)
         {
             if (msg == EN_CHANGE)
             {
-                TCHAR buf[MAX_PATH*4] = {0};
-                GetDlgItemText(*this, IDC_SEARCHTEXT, buf, MAX_PATH*4);
-                m_searchText = buf;
+                auto buf = GetDlgItemText(IDC_SEARCHTEXT);
+                m_searchText = buf.get();
 
                 SetTimer(*this, ID_REGEXTIMER, 300, NULL);
             }
@@ -143,9 +140,8 @@ LRESULT CRegexTestDlg::DoCommand(int id, int msg)
         {
             if (msg == EN_CHANGE)
             {
-                TCHAR buf[MAX_PATH*4] = {0};
-                GetDlgItemText(*this, IDC_REPLACETEXT, buf, MAX_PATH*4);
-                m_replaceText = buf;
+                auto buf = GetDlgItemText(IDC_REPLACETEXT);
+                m_replaceText = buf.get();
 
                 SetTimer(*this, ID_REGEXTIMER, 300, NULL);
             }

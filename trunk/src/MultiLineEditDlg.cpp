@@ -88,8 +88,7 @@ LRESULT CMultiLineEditDlg::DoCommand(int id, int msg)
     {
     case IDOK:
         {
-            std::unique_ptr<TCHAR[]> buf(new TCHAR[10*1024*1024]);
-            GetDlgItemText(*this, IDC_TEXTCONTENT, buf.get(), 10*1024*1024);
+            auto buf = GetDlgItemText(IDC_TEXTCONTENT);
             m_RegexText = std::wstring(buf.get());
         }
         // fall through
@@ -100,8 +99,7 @@ LRESULT CMultiLineEditDlg::DoCommand(int id, int msg)
         {
             if (msg == EN_CHANGE)
             {
-                std::unique_ptr<TCHAR[]> buf(new TCHAR[10*1024*1024]);
-                GetDlgItemText(*this, IDC_TEXTCONTENT, buf.get(), 10*1024*1024);
+                auto buf = GetDlgItemText(IDC_TEXTCONTENT);
                 m_RegexText = std::wstring(buf.get());
             }
         }

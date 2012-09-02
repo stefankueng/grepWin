@@ -87,10 +87,8 @@ LRESULT CSettingsDlg::DoCommand(int id, int /*msg*/)
     {
     case IDOK:
         {
-            TCHAR buf[MAX_PATH*4] = {0};
-
-            GetDlgItemText(*this, IDC_EDITORCMD, buf, MAX_PATH*4);
-            m_regEditorCmd = buf;
+            auto buf = GetDlgItemText(IDC_EDITORCMD);
+            m_regEditorCmd = buf.get();
         }
         // fall through
     case IDCANCEL:
