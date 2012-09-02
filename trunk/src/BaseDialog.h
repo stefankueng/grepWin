@@ -19,6 +19,7 @@
 #pragma once
 #include <string>
 #include "AeroGlass.h"
+#include <memory>
 
 /**
  * A base window class.
@@ -43,6 +44,7 @@ public:
     void    OnCompositionChanged();
     void    ExtendFrameIntoClientArea(UINT leftControl, UINT topControl, UINT rightControl, UINT botomControl);
     int     GetDlgItemTextLength(UINT nId);
+    std::unique_ptr<TCHAR[]> GetDlgItemText(UINT nId);
 
     virtual LRESULT CALLBACK DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) = 0;
     virtual bool PreTranslateMessage(MSG* pMsg);
