@@ -83,9 +83,8 @@ LRESULT CNameDlg::DoCommand(int id, int /*msg*/)
     {
     case IDOK:
         {
-            TCHAR buf[MAX_PATH] = {0};
-            GetDlgItemText(*this, IDC_NAME, buf, MAX_PATH);
-            m_name = buf;
+            auto buf = GetDlgItemText(IDC_NAME);
+            m_name = buf.get();
         }
         // fall through
     case IDCANCEL:

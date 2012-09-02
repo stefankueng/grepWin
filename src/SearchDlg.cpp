@@ -473,9 +473,8 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                 std::wstring newpath = std::wstring((LPCTSTR)pCopyData->lpData, pCopyData->cbData/sizeof(wchar_t));
                 if (!newpath.empty())
                 {
-                    TCHAR buf[MAX_PATH*4] = {0};
-                    GetDlgItemText(*this, IDC_SEARCHPATH, buf, MAX_PATH*4);
-                    m_searchpath = buf;
+                    auto buf = GetDlgItemText(IDC_SEARCHPATH);
+                    m_searchpath = buf.get();
 
                     if (wParam == 1)
                         m_searchpath.clear();
@@ -619,10 +618,9 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
     case IDC_TESTREGEX:
         {
             // get all the information we need from the dialog
-            std::unique_ptr<TCHAR[]> buf(new TCHAR[MAX_PATH_NEW]);
-            GetDlgItemText(*this, IDC_SEARCHTEXT, buf.get(), MAX_PATH_NEW);
+            auto buf = GetDlgItemText(IDC_SEARCHTEXT);
             m_searchString = buf.get();
-            GetDlgItemText(*this, IDC_REPLACETEXT, buf.get(), MAX_PATH_NEW);
+            buf = GetDlgItemText(IDC_REPLACETEXT);
             m_replaceString = buf.get();
 
             SaveSettings();
@@ -641,10 +639,9 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
         break;
     case IDC_SEARCHPATHBROWSE:
         {
-            std::unique_ptr<TCHAR[]> path(new TCHAR[MAX_PATH_NEW]);
             CBrowseFolder browse;
 
-            GetDlgItemText(*this, IDC_SEARCHPATH, path.get(), MAX_PATH_NEW);
+            auto path = GetDlgItemText(IDC_SEARCHPATH);
             browse.SetInfo(_T("Select path to search"));
             if (browse.Show(*this, path.get(), MAX_PATH_NEW, m_searchpath.c_str()) == CBrowseFolder::OK)
             {
@@ -658,10 +655,8 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
             if (msg == EN_CHANGE)
             {
                 m_AutoCompleteSearchPaths.SetOptions(ACO_UPDOWNKEYDROPSLIST|ACO_AUTOSUGGEST);
-                std::unique_ptr<TCHAR[]> buf(new TCHAR[MAX_PATH_NEW]);
-                GetDlgItemText(*this, IDC_SEARCHTEXT, buf.get(), MAX_PATH_NEW);
-                int len = (int)_tcslen(buf.get());
-                GetDlgItemText(*this, IDC_SEARCHPATH, buf.get(), MAX_PATH_NEW);
+                int len = GetDlgItemTextLength(IDC_SEARCHTEXT);
+                auto buf = GetDlgItemText(IDC_SEARCHPATH);
                 bool bIsDir = !!PathIsDirectory(buf.get());
                 if ((!bIsDir) && _tcschr(buf.get(), '|'))
                     bIsDir = true;  // assume directories in case of multiple paths
@@ -711,8 +706,8 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
         {
             if (msg == EN_CHANGE)
             {
-                TCHAR buf[10] = {0};
-                GetDlgItemText(*this, IDC_SIZEEDIT, buf, 10);
+                TCHAR buf[20] = {0};
+                ::GetDlgItemText(*this, IDC_SIZEEDIT, buf, _countof(buf));
                 if (_tcslen(buf))
                 {
                     if (IsDlgButtonChecked(*this, IDC_ALLSIZERADIO) == BST_CHECKED)
@@ -738,10 +733,9 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
         break;
     case IDC_ADDTOBOOKMARKS:
         {
-            std::unique_ptr<TCHAR[]> buf(new TCHAR[MAX_PATH_NEW]);
-            GetDlgItemText(*this, IDC_SEARCHTEXT, buf.get(), MAX_PATH_NEW);
+            auto buf = GetDlgItemText(IDC_SEARCHTEXT);
             m_searchString = buf.get();
-            GetDlgItemText(*this, IDC_REPLACETEXT, buf.get(), MAX_PATH_NEW);
+            buf = GetDlgItemText(IDC_REPLACETEXT);
             m_replaceString = buf.get();
             bool bUseRegex = (IsDlgButtonChecked(*this, IDC_REGEXRADIO) == BST_CHECKED);
 
@@ -793,9 +787,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
     case IDC_EDITMULTILINE2:
         {
             int uID = (id == IDC_EDITMULTILINE1 ? IDC_SEARCHTEXT : IDC_REPLACETEXT);
-            int textlen = ::GetWindowTextLength(GetDlgItem(*this, (int)uID));
-            std::unique_ptr<TCHAR[]> buf(new TCHAR[textlen+10]);
-            GetDlgItemText(*this, (int)uID, buf.get(), textlen+10);
+            auto buf = GetDlgItemText((int)uID);
             std::wstring ctrlText = buf.get();
 
             // replace all \r\n strings with real CRLFs
@@ -838,9 +830,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
         {
             if (!SysInfo::Instance().IsVistaOrLater())
             {
-                int textlen = GetDlgItemTextLength(IDC_SEARCHPATH);
-                std::unique_ptr<WCHAR[]> buf(new WCHAR[textlen+1]);
-                GetDlgItemText(*this, IDC_SEARCHPATH, buf.get(), textlen+1);
+                auto buf = GetDlgItemText(IDC_SEARCHPATH);
                 m_AutoCompleteSearchPaths.AddEntry(buf.get());
                 SetDlgItemText(*this, IDC_SEARCHPATH, L"");
             }
@@ -853,9 +843,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
         {
             if (!SysInfo::Instance().IsVistaOrLater())
             {
-                int textlen = GetDlgItemTextLength(IDC_EXCLUDEDIRSPATTERN);
-                std::unique_ptr<WCHAR[]> buf(new WCHAR[textlen+1]);
-                GetDlgItemText(*this, IDC_EXCLUDEDIRSPATTERN, buf.get(), textlen+1);
+                auto buf = GetDlgItemText(IDC_EXCLUDEDIRSPATTERN);
                 m_AutoCompleteExcludeDirsPatterns.AddEntry(buf.get());
                 SetDlgItemText(*this, IDC_EXCLUDEDIRSPATTERN, L"");
             }
@@ -868,9 +856,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
         {
             if (!SysInfo::Instance().IsVistaOrLater())
             {
-                int textlen = GetDlgItemTextLength(IDC_PATTERN);
-                std::unique_ptr<WCHAR[]> buf(new WCHAR[textlen+1]);
-                GetDlgItemText(*this, IDC_PATTERN, buf.get(), textlen+1);
+                auto buf = GetDlgItemText(IDC_PATTERN);
                 m_AutoCompleteFilePatterns.AddEntry(buf.get());
                 SetDlgItemText(*this, IDC_PATTERN, L"");
             }
@@ -1727,26 +1713,24 @@ bool grepWin_is_regex_valid(const std::wstring& m_searchString)
 bool CSearchDlg::SaveSettings()
 {
     // get all the information we need from the dialog
-    TCHAR buf[MAX_PATH*4] = {0};
+    auto buf = GetDlgItemText(IDC_SEARCHPATH);
+    m_searchpath = buf.get();
 
-    GetDlgItemText(*this, IDC_SEARCHPATH, buf, MAX_PATH*4);
-    m_searchpath = buf;
+    buf = GetDlgItemText(IDC_SEARCHTEXT);
+    m_searchString = buf.get();
 
-    GetDlgItemText(*this, IDC_SEARCHTEXT, buf, MAX_PATH*4);
-    m_searchString = buf;
+    buf = GetDlgItemText(IDC_REPLACETEXT);
+    m_replaceString = buf.get();
 
-    GetDlgItemText(*this, IDC_REPLACETEXT, buf, MAX_PATH*4);
-    m_replaceString = buf;
+    buf = GetDlgItemText(IDC_EXCLUDEDIRSPATTERN);
+    m_excludedirspatternregex = buf.get();
 
-    GetDlgItemText(*this, IDC_EXCLUDEDIRSPATTERN, buf, MAX_PATH*4);
-    m_excludedirspatternregex = buf;
-
-    GetDlgItemText(*this, IDC_PATTERN, buf, MAX_PATH*4);
-    m_patternregex = buf;
+    buf = GetDlgItemText(IDC_PATTERN);
+    m_patternregex = buf.get();
 
     // split the pattern string into single patterns and
     // add them to an array
-    TCHAR * pBuf = buf;
+    TCHAR * pBuf = buf.get();
     size_t pos = 0;
     m_patterns.clear();
     do
@@ -1798,8 +1782,8 @@ bool CSearchDlg::SaveSettings()
     m_sizeCmp = 0;
     if (!m_bAllSize)
     {
-        GetDlgItemText(*this, IDC_SIZEEDIT, buf, MAX_PATH*4);
-        m_lSize = _tstol(buf);
+        buf = GetDlgItemText(IDC_SIZEEDIT);
+        m_lSize = _tstol(buf.get());
         m_regSize = m_lSize;
         m_lSize *= 1024;
         m_sizeCmp = (int)SendDlgItemMessage(*this, IDC_SIZECOMBO, CB_GETCURSEL, 0, 0);
@@ -2354,9 +2338,8 @@ void CSearchDlg::formatDate(TCHAR date_native[], const FILETIME& filetime, bool 
 
 int CSearchDlg::CheckRegex()
 {
-    TCHAR buf[MAX_PATH*4] = {0};
-    GetDlgItemText(*this, IDC_SEARCHTEXT, buf, MAX_PATH*4);
-    int len = (int)_tcslen(buf);
+    auto buf = GetDlgItemText(IDC_SEARCHTEXT);
+    int len = (int)_tcslen(buf.get());
     if (IsDlgButtonChecked(*this, IDC_REGEXRADIO) == BST_CHECKED)
     {
         // check if the regex is valid
@@ -2365,7 +2348,7 @@ int CSearchDlg::CheckRegex()
         {
             try
             {
-                boost::wregex expression = boost::wregex(buf);
+                boost::wregex expression = boost::wregex(buf.get());
             }
             catch (const std::exception&)
             {
