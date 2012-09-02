@@ -1275,7 +1275,8 @@ void CSearchDlg::ShowContextMenu(int x, int y)
                     {
                         LineDataLine dataline;
                         dataline.number = info.matchlinesnumbers[lineindex];
-                        dataline.text = info.matchlines[lineindex];
+                        if (info.matchlines.size() > lineindex)
+                            dataline.text = info.matchlines[lineindex];
                         data.lines.push_back(dataline);
                     }
                     ++lineindex;
