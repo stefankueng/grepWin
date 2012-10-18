@@ -642,11 +642,13 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
             CBrowseFolder browse;
 
             auto path = GetDlgItemText(IDC_SEARCHPATH);
+            std::unique_ptr<WCHAR[]> pathbuf(new WCHAR[MAX_PATH_NEW]);
+            wcscpy_s(pathbuf.get(), MAX_PATH_NEW, path.get());
             browse.SetInfo(_T("Select path to search"));
-            if (browse.Show(*this, path.get(), MAX_PATH_NEW, m_searchpath.c_str()) == CBrowseFolder::OK)
+            if (browse.Show(*this, pathbuf.get(), MAX_PATH_NEW, m_searchpath.c_str()) == CBrowseFolder::OK)
             {
-                SetDlgItemText(*this, IDC_SEARCHPATH, path.get());
-                m_searchpath = path.get();
+                SetDlgItemText(*this, IDC_SEARCHPATH, pathbuf.get());
+                m_searchpath = pathbuf.get();
             }
         }
         break;
