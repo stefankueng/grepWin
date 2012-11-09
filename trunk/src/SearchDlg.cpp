@@ -1392,12 +1392,21 @@ bool CSearchDlg::PreTranslateMessage(MSG* pMsg)
             }
             break;
         case 'K':
-        case 'L':
         case 'S':
+        case 'F':
+        case 'E':
             {
                 if (GetKeyState(VK_CONTROL)&0x8000)
                 {
                     SetFocus(GetDlgItem(*this, IDC_SEARCHTEXT));
+                }
+            }
+            break;
+        case 'L':
+            {
+                if (GetKeyState(VK_CONTROL)&0x8000)
+                {
+                    SetFocus(GetDlgItem(*this, IDC_PATTERN));
                 }
             }
             break;
