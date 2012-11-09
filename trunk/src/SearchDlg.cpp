@@ -366,6 +366,17 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
         return FALSE;
     case WM_CLOSE:
         {
+            if (m_dwThreadRunning)
+                InterlockedExchange(&m_Cancelled, TRUE);
+            else
+            {
+                SaveSettings();
+                m_AutoCompleteFilePatterns.Save();
+                m_AutoCompleteSearchPatterns.Save();
+                m_AutoCompleteReplacePatterns.Save();
+                m_AutoCompleteSearchPaths.Save();
+                EndDialog(*this, IDCANCEL);
+            }
         }
         break;
     case WM_COMMAND:
@@ -600,19 +611,6 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                     0,                 // not suspended
                     &dwThreadId);      // returns thread ID
             }
-        }
-        break;
-    case IDCANCEL:
-        if (m_dwThreadRunning)
-            InterlockedExchange(&m_Cancelled, TRUE);
-        else
-        {
-            SaveSettings();
-            m_AutoCompleteFilePatterns.Save();
-            m_AutoCompleteSearchPatterns.Save();
-            m_AutoCompleteReplacePatterns.Save();
-            m_AutoCompleteSearchPaths.Save();
-            EndDialog(*this, id);
         }
         break;
     case IDC_TESTREGEX:
