@@ -3,8 +3,8 @@
     <target name="setversioninfo">
         <setenv>
             <variable name="MajorVersion" value="1" />
-            <variable name="MinorVersion" value="5" />
-            <variable name="MicroVersion" value="9" />
+            <variable name="MinorVersion" value="6" />
+            <variable name="MicroVersion" value="0" />
             <variable name="WCREV" value="$WCREV$" />
             <variable name="WCDATE" value="$WCDATE$" />
         </setenv>
