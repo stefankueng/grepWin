@@ -100,7 +100,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
             SetForegroundWindow(hWnd);                                  //set the window to front
             bQuit = true;
         }
-        else if (DWORD(CRegStdWORD(_T("Software\\grepWin\\onlyone"), 0)))
+        else if (DWORD(CRegStdDWORD(_T("Software\\grepWin\\onlyone"), 0)))
         {
             std::wstring spath = parser.GetVal(_T("searchpath"));
             COPYDATASTRUCT CopyData = {0};

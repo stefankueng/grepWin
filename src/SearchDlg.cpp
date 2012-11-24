@@ -1981,9 +1981,10 @@ DWORD CSearchDlg::SearchThread()
             bool bIsDirectory = false;
             CDirFileEnum fileEnumerator(searchpath.c_str());
             bool bRecurse = m_bIncludeSubfolders;
-
-            while (((fileEnumerator.NextFile(pathbuf.get(), bRecurse, &bIsDirectory))&&(!m_Cancelled))||(bAlwaysSearch))
+            std::wstring sPath;
+            while (((fileEnumerator.NextFile(sPath, &bIsDirectory, bRecurse))&&(!m_Cancelled))||(bAlwaysSearch))
             {
+                _tcscpy_s(pathbuf.get(), MAX_PATH_NEW, sPath.c_str());
                 if (!bIsDirectory)
                 {
                     bool bSearch = false;
