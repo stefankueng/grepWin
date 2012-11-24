@@ -92,7 +92,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>Resources;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\sktoolslib;Resources</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -114,7 +114,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>Resources;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\sktoolslib;Resources</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN64;WIN32;_DEBUG;_WINDOWS;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -133,7 +133,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>Resources;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\sktoolslib;Resources</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -154,7 +154,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>Resources;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\sktoolslib;Resources</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN64;WIN32;NDEBUG;_WINDOWS;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -172,32 +172,47 @@
       </DataExecutionPrevention>
     </Link>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\sktoolslib;Resources</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\sktoolslib;Resources</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\sktoolslib\AeroControls.cpp" />
+    <ClCompile Include="..\sktoolslib\AeroGlass.cpp" />
+    <ClCompile Include="..\sktoolslib\AutoComplete.cpp" />
+    <ClCompile Include="..\sktoolslib\BaseDialog.cpp" />
+    <ClCompile Include="..\sktoolslib\BaseWindow.cpp" />
+    <ClCompile Include="..\sktoolslib\BrowseFolder.cpp" />
+    <ClCompile Include="..\sktoolslib\CmdLineParser.cpp" />
+    <ClCompile Include="..\sktoolslib\DirFileEnum.cpp" />
+    <ClCompile Include="..\sktoolslib\DlgResizer.cpp" />
+    <ClCompile Include="..\sktoolslib\DropFiles.cpp" />
+    <ClCompile Include="..\sktoolslib\EditDoubleClick.cpp" />
+    <ClCompile Include="..\sktoolslib\FileDropTarget.cpp" />
+    <ClCompile Include="..\sktoolslib\hyperlink.cpp" />
+    <ClCompile Include="..\sktoolslib\RegHistory.cpp" />
+    <ClCompile Include="..\sktoolslib\Registry.cpp" />
+    <ClCompile Include="..\sktoolslib\StringUtils.cpp" />
+    <ClCompile Include="..\sktoolslib\SysImageList.cpp" />
+    <ClCompile Include="..\sktoolslib\SysInfo.cpp" />
+    <ClCompile Include="..\sktoolslib\TextFile.cpp" />
+    <ClCompile Include="..\sktoolslib\UnicodeUtils.cpp" />
     <ClCompile Include="AboutDlg.cpp" />
-    <ClCompile Include="AeroControls.cpp" />
-    <ClCompile Include="AeroGlass.cpp" />
-    <ClCompile Include="AutoComplete.cpp" />
-    <ClCompile Include="BaseDialog.cpp" />
-    <ClCompile Include="BaseWindow.cpp" />
     <ClCompile Include="Bookmarks.cpp" />
     <ClCompile Include="BookmarksDlg.cpp" />
-    <ClCompile Include="BrowseFolder.cpp" />
-    <ClCompile Include="CmdLineParser.cpp" />
     <ClCompile Include="Debug.cpp" />
-    <ClCompile Include="DirFileEnum.cpp" />
-    <ClCompile Include="DlgResizer.cpp" />
-    <ClCompile Include="DropFiles.cpp" />
-    <ClCompile Include="EditDoubleClick.cpp" />
-    <ClCompile Include="FileDropTarget.cpp" />
     <ClCompile Include="GrepWin.cpp" />
-    <ClCompile Include="hyperlink.cpp" />
     <ClCompile Include="InfoDlg.cpp" />
     <ClCompile Include="MultiLineEditDlg.cpp" />
     <ClCompile Include="NameDlg.cpp" />
     <ClCompile Include="RegexReplaceFormatter.cpp" />
     <ClCompile Include="RegexTestDlg.cpp" />
-    <ClCompile Include="RegHistory.cpp" />
-    <ClCompile Include="Registry.cpp" />
     <ClCompile Include="SearchDlg.cpp" />
     <ClCompile Include="SearchInfo.cpp" />
     <ClCompile Include="Settings.cpp" />
@@ -208,51 +223,46 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="StringUtils.cpp" />
-    <ClCompile Include="SysImageList.cpp" />
-    <ClCompile Include="SysInfo.cpp" />
-    <ClCompile Include="TextFile.cpp" />
-    <ClCompile Include="UnicodeUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\sktoolslib\AeroControls.h" />
+    <ClInclude Include="..\sktoolslib\AeroGlass.h" />
+    <ClInclude Include="..\sktoolslib\AutoComplete.h" />
+    <ClInclude Include="..\sktoolslib\BaseDialog.h" />
+    <ClInclude Include="..\sktoolslib\BaseWindow.h" />
+    <ClInclude Include="..\sktoolslib\BrowseFolder.h" />
+    <ClInclude Include="..\sktoolslib\CmdLineParser.h" />
+    <ClInclude Include="..\sktoolslib\DirFileEnum.h" />
+    <ClInclude Include="..\sktoolslib\DlgResizer.h" />
+    <ClInclude Include="..\sktoolslib\DropFiles.h" />
+    <ClInclude Include="..\sktoolslib\EditDoubleClick.h" />
+    <ClInclude Include="..\sktoolslib\FileDropTarget.h" />
+    <ClInclude Include="..\sktoolslib\hyperlink.h" />
+    <ClInclude Include="..\sktoolslib\maxpath.h" />
+    <ClInclude Include="..\sktoolslib\RegHistory.h" />
+    <ClInclude Include="..\sktoolslib\Registry.h" />
+    <ClInclude Include="..\sktoolslib\StringUtils.h" />
+    <ClInclude Include="..\sktoolslib\SysImageList.h" />
+    <ClInclude Include="..\sktoolslib\SysInfo.h" />
+    <ClInclude Include="..\sktoolslib\TextFile.h" />
+    <ClInclude Include="..\sktoolslib\UnicodeUtils.h" />
     <ClInclude Include="AboutDlg.h" />
-    <ClInclude Include="AeroControls.h" />
-    <ClInclude Include="AeroGlass.h" />
-    <ClInclude Include="AutoComplete.h" />
-    <ClInclude Include="BaseDialog.h" />
-    <ClInclude Include="BaseWindow.h" />
     <ClInclude Include="Bookmarks.h" />
     <ClInclude Include="BookmarksDlg.h" />
-    <ClInclude Include="BrowseFolder.h" />
-    <ClInclude Include="CmdLineParser.h" />
     <ClInclude Include="Debug.h" />
-    <ClInclude Include="DirFileEnum.h" />
-    <ClInclude Include="DlgResizer.h" />
-    <ClInclude Include="DropFiles.h" />
-    <ClInclude Include="EditDoubleClick.h" />
-    <ClInclude Include="FileDropTarget.h" />
     <ClInclude Include="GrepWin.h" />
-    <ClInclude Include="hyperlink.h" />
     <ClInclude Include="InfoDlg.h" />
     <ClInclude Include="LineData.h" />
     <ClInclude Include="MultiLineEditDlg.h" />
     <ClInclude Include="NameDlg.h" />
     <ClInclude Include="RegexReplaceFormatter.h" />
     <ClInclude Include="RegexTestDlg.h" />
-    <ClInclude Include="RegHistory.h" />
-    <ClInclude Include="Registry.h" />
     <ClInclude Include="Resources\resource.h" />
     <ClInclude Include="SearchDlg.h" />
     <ClInclude Include="SearchInfo.h" />
     <ClInclude Include="Settings.h" />
     <ClInclude Include="ShellContextMenu.h" />
-    <ClInclude Include="SimpleIni.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="StringUtils.h" />
-    <ClInclude Include="SysImageList.h" />
-    <ClInclude Include="SysInfo.h" />
-    <ClInclude Include="TextFile.h" />
-    <ClInclude Include="UnicodeUtils.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\GrepWin.ico" />
