@@ -28,7 +28,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{0049F8CF-1BEC-4E6E-B457-0187A33AD522}</ProjectGuid>
-    <RootNamespace>GrepWin</RootNamespace>
+    <RootNamespace>grepWin</RootNamespace>
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -207,7 +207,7 @@
     <ClCompile Include="Bookmarks.cpp" />
     <ClCompile Include="BookmarksDlg.cpp" />
     <ClCompile Include="Debug.cpp" />
-    <ClCompile Include="GrepWin.cpp" />
+    <ClCompile Include="grepWin.cpp" />
     <ClCompile Include="InfoDlg.cpp" />
     <ClCompile Include="MultiLineEditDlg.cpp" />
     <ClCompile Include="NameDlg.cpp" />
@@ -250,7 +250,7 @@
     <ClInclude Include="Bookmarks.h" />
     <ClInclude Include="BookmarksDlg.h" />
     <ClInclude Include="Debug.h" />
-    <ClInclude Include="GrepWin.h" />
+    <ClInclude Include="grepWin.h" />
     <ClInclude Include="InfoDlg.h" />
     <ClInclude Include="LineData.h" />
     <ClInclude Include="MultiLineEditDlg.h" />
@@ -265,7 +265,7 @@
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\GrepWin.ico" />
+    <None Include="Resources\grepWin.ico" />
     <None Include="Resources\small.ico" />
     <None Include="..\default.build">
       <SubType>Designer</SubType>
@@ -280,14 +280,14 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="Resources\GrepWin.rc" />
+    <ResourceCompile Include="Resources\grepWin.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties RESOURCE_FILE="Resources\GrepWin.rc" />
+      <UserProperties RESOURCE_FILE="Resources\grepWin.rc" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

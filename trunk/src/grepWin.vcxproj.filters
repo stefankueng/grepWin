@@ -33,7 +33,7 @@
     <ClCompile Include="Debug.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GrepWin.cpp">
+    <ClCompile Include="grepWin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="InfoDlg.cpp">
@@ -140,7 +140,7 @@
     <ClInclude Include="Debug.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GrepWin.h">
+    <ClInclude Include="grepWin.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="InfoDlg.h">
@@ -244,7 +244,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\GrepWin.ico">
+    <None Include="Resources\grepWin.ico">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="Resources\small.ico">
@@ -271,7 +271,7 @@
     <None Include="Resources\infodlg.htm" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="Resources\GrepWin.rc">
+    <ResourceCompile Include="Resources\grepWin.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>
