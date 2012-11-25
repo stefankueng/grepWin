@@ -32,12 +32,12 @@
       <exec program="signtool">
         <arg value="sign" />
         <arg value="${signinfo}" />
-        <arg value="..\..\bin\release\GrepWin.exe" />
+        <arg value="..\..\bin\release\grepWin.exe" />
       </exec>
       <exec program="signtool">
         <arg value="sign" />
         <arg value="${signinfo}" />
-        <arg value="..\..\bin\release64\GrepWin.exe" />
+        <arg value="..\..\bin\release64\grepWin.exe" />
       </exec>
     </if>
     <exec program="candle">

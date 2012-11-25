@@ -1,5 +1,5 @@
 // stdafx.cpp : source file that includes just the standard includes
-// GrepWin.pch will be the pre-compiled header
+// grepWin.pch will be the pre-compiled header
 // stdafx.obj will contain the pre-compiled type information
 
 #include "stdafx.h"

@@ -17,7 +17,7 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 #include "stdafx.h"
-#include "GrepWin.h"
+#include "grepWin.h"
 #include "SearchDlg.h"
 #include "AboutDlg.h"
 #include "CmdLineParser.h"
