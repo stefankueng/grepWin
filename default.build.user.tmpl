@@ -2,21 +2,21 @@
 
 <!-- use this file to set the paths to the required tools
      grepWin needs to build everything.
-     
-     first make a copy of this file and rename the copy to
+
+     First make a copy of this file and rename the copy to
      default.build.user
      then adjust the paths in the "value" field.
-     
+
      Note: make sure you don't forget the path separator (";")
-     if you're appending your paths to the system PATH variable!
+     if you're prepending/appending your paths to the system PATH variable!
      You will get linker errors if you forget them.
 -->
 
 <project name="ToolPaths" default="env">
 
-	<target name="VSNET" description="Checks if the env variables for VS.NET2008 are set">
+	<target name="VSNET" description="Checks if the env variables for VS2010 are set">
 		<if test="${not environment::variable-exists('VCINSTALLDIR')}">
-			<fail>You must first call "%VS90COMNTOOLS%\vsvars32.bat"</fail>
+			<fail>You must first call "%VS100COMNTOOLS%\vsvars32.bat"</fail>
 		</if>
 		<!-- Uncomment the line below to allow limited building using VC Express instead of VS.NET. -->
 		<!-- <property name="buildtool" value="vcexpress.exe" /> -->

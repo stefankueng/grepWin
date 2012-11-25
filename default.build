@@ -3,12 +3,6 @@
 
     <include buildfile="default.build.user" />
 
-    <!-- default: we build with VS2008 -->
-    <property name="studioversion" value="2008"/>
-
-    <!-- build with VS2010, if there is a 10.0 in the VC path -->
-    <property name="studioversion" value="2010" if="${string::contains (environment::get-variable('VCINSTALLDIR'), '10.0')}"/>
-
     <property name="configuration" value="release" />
     <!-- the signinfo.txt file has to contain one line with parameters for signtool.exe,
          for example:
@@ -16,8 +10,7 @@
     -->
     <loadfile file="signinfo.txt" property="signinfo" failonerror="false" />
 
-    <property name="solutionname" value="GrepWin.sln" if="${studioversion == '2008'}"/>
-    <property name="solutionname" value="GrepWin-VS10.sln" if="${studioversion == '2010'}"/>
+    <property name="solutionname" value="grepWin.sln"/>
 
     <!-- ====================================================================== -->
     <!-- Configuration targets                                                  -->
