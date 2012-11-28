@@ -49,7 +49,7 @@ extern std::vector<NumberReplacer> g_incVec;
 class RegexReplaceFormatter
 {
 public:
-    RegexReplaceFormatter(const std::wstring sReplace)
+    RegexReplaceFormatter(const std::wstring &sReplace)
         : m_sReplace(sReplace)
     {
         g_incVec.clear();
@@ -92,7 +92,7 @@ public:
             {
                 if (start == end)
                     break;
-                start++;
+                ++start;
             }
             else
                 start = whatc[0].second;
@@ -110,7 +110,7 @@ public:
     std::wstring operator()(boost::match_results<std::wstring::const_iterator> what) const
     {
         std::wstring sReplace = what.format(m_sReplace);
-        if (m_replaceMap.size())
+        if (!m_replaceMap.empty())
         {
             for (auto it = m_replaceMap.cbegin(); it != m_replaceMap.cend(); ++it)
             {
@@ -130,7 +130,7 @@ public:
                 }
             }
         }
-        if (g_incVec.size())
+        if (!g_incVec.empty())
         {
             for (auto it = g_incVec.begin(); it != g_incVec.end(); ++it)
             {

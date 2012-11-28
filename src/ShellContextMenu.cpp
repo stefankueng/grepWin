@@ -47,6 +47,8 @@ CShellContextMenu::CShellContextMenu()
     , m_psfFolder(NULL)
     , m_pidlArray(NULL)
     , m_pidlArrayItems(0)
+    , nItems(0)
+    , bDelete(FALSE)
     , m_Menu(NULL)
 {
 }
@@ -76,7 +78,7 @@ BOOL CShellContextMenu::GetContextMenu(HWND hWnd, void ** ppContextMenu, int & i
         return FALSE;
     if (m_psfFolder == NULL)
         return FALSE;
-    if (m_strVector.size()==0)
+    if (m_strVector.empty())
         return FALSE;
 
     HKEY ahkeys[16];
@@ -215,7 +217,7 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
         ::InsertMenu(m_Menu, 1, MF_BYPOSITION | MF_STRING, 1, _T("Open Containing Folder"));
         ::InsertMenu(m_Menu, 2, MF_BYPOSITION | MF_STRING, 2, _T("Copy path to clipboard"));
         ::InsertMenu(m_Menu, 3, MF_BYPOSITION | MF_STRING, 3, _T("Copy filename to clipboard"));
-        if (m_lineVector.size())
+        if (!m_lineVector.empty())
             ::InsertMenu(m_Menu, 4, MF_BYPOSITION | MF_STRING, 4, _T("Copy text result to clipboard"));
         ::InsertMenu(m_Menu, 5, MF_SEPARATOR|MF_BYPOSITION, 0, NULL);
     }
@@ -228,7 +230,7 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
         }
         ::InsertMenu(m_Menu, 2, MF_BYPOSITION | MF_STRING, 2, _T("Copy paths to clipboard"));
         ::InsertMenu(m_Menu, 3, MF_BYPOSITION | MF_STRING, 3, _T("Copy filenames to clipboard"));
-        if (m_lineVector.size())
+        if (!m_lineVector.empty())
             ::InsertMenu(m_Menu, 4, MF_BYPOSITION | MF_STRING, 4, _T("Copy text results to clipboard"));
         ::InsertMenu(m_Menu, 5, MF_SEPARATOR|MF_BYPOSITION, 0, NULL);
     }
@@ -327,7 +329,7 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
             break;
         case 5:
             {
-                if (m_lineVector.size())
+                if (!m_lineVector.empty())
                 {
                     for (auto it = m_lineVector.cbegin(); it != m_lineVector.cend(); ++it)
                     {

@@ -26,8 +26,10 @@
 
 
 CRegexTestDlg::CRegexTestDlg(HWND hParent)
+    : m_hParent(hParent)
+    , bDotMatchesNewline(false)
+    , bCaseSensitive(false)
 {
-    m_hParent = hParent;
 }
 
 CRegexTestDlg::~CRegexTestDlg(void)
@@ -217,7 +219,7 @@ void CRegexTestDlg::DoRegex()
                     {
                         if (start == end)
                             break;
-                        start++;
+                        ++start;
                     }
                     else
                         start = whatc[0].second;

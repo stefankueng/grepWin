@@ -68,6 +68,7 @@ CSearchDlg::CSearchDlg(HWND hParent) : m_searchedItems(0)
     , m_hParent(hParent)
     , m_bExecuteImmediately(false)
     , m_bUseRegexForPaths(false)
+    , m_bUseRegex(false)
     , m_bIncludeSystem(false)
     , m_bIncludeSystemC(false)
     , m_bIncludeHidden(false)
@@ -85,6 +86,12 @@ CSearchDlg::CSearchDlg(HWND hParent) : m_searchedItems(0)
     , m_bDotMatchesNewline(false)
     , m_bDotMatchesNewlineC(false)
     , m_bSizeC(false)
+    , m_bAllSize(false)
+    , m_bReplace(false)
+    , m_lSize(0)
+    , m_sizeCmp(0)
+    , m_totalmatches(0)
+    , m_hSearchThread(NULL)
     , m_regUseRegex(_T("Software\\grepWin\\UseRegex"), 1)
     , m_regAllSize(_T("Software\\grepWin\\AllSize"))
     , m_regSize(_T("Software\\grepWin\\Size"), 2000)
@@ -1249,7 +1256,7 @@ void CSearchDlg::ShowContextMenu(int x, int y)
         paths.push_back(m_items[selIndex]);
     }
 
-    if (paths.size() == 0)
+    if (paths.empty())
         return;
 
 
@@ -1433,8 +1440,6 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
             if (cmd.size())
             {
                 bool filelist = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
-                std::wstring linenumberparam_before;
-                std::wstring linenumberparam;
                 if (!filelist)
                 {
                     HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
@@ -1465,8 +1470,6 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
                 CloseHandle(processInfo.hProcess);
                 return;
             }
-
-            std::wstring verb = _T("open");
 
             DWORD buflen = 0;
             AssocQueryString(ASSOCF_INIT_DEFAULTTOSTAR, ASSOCSTR_DDECOMMAND, ext.c_str(), NULL, NULL, &buflen);
@@ -1825,24 +1828,24 @@ bool CSearchDlg::SaveSettings()
     return true;
 }
 
-bool CSearchDlg::NameCompareAsc(const CSearchInfo Entry1, const CSearchInfo Entry2)
+bool CSearchDlg::NameCompareAsc(const CSearchInfo &Entry1, const CSearchInfo Entry2)
 {
     std::wstring name1 = Entry1.filepath.substr(Entry1.filepath.find_last_of('\\')+1);
     std::wstring name2 = Entry2.filepath.substr(Entry2.filepath.find_last_of('\\')+1);
     return StrCmpLogicalW(name1.c_str(), name2.c_str()) < 0;
 }
 
-bool CSearchDlg::SizeCompareAsc(const CSearchInfo Entry1, const CSearchInfo Entry2)
+bool CSearchDlg::SizeCompareAsc(const CSearchInfo &Entry1, const CSearchInfo Entry2)
 {
     return Entry1.filesize < Entry2.filesize;
 }
 
-bool CSearchDlg::MatchesCompareAsc(const CSearchInfo Entry1, const CSearchInfo Entry2)
+bool CSearchDlg::MatchesCompareAsc(const CSearchInfo &Entry1, const CSearchInfo Entry2)
 {
     return Entry1.matchlinesnumbers.size() < Entry2.matchlinesnumbers.size();
 }
 
-bool CSearchDlg::PathCompareAsc(const CSearchInfo Entry1, const CSearchInfo Entry2)
+bool CSearchDlg::PathCompareAsc(const CSearchInfo &Entry1, const CSearchInfo Entry2)
 {
     std::wstring name1 = Entry1.filepath.substr(Entry1.filepath.find_last_of('\\')+1);
     std::wstring name2 = Entry2.filepath.substr(Entry2.filepath.find_last_of('\\')+1);
@@ -1854,34 +1857,34 @@ bool CSearchDlg::PathCompareAsc(const CSearchInfo Entry1, const CSearchInfo Entr
     return StrCmpLogicalW(name1.c_str(), name2.c_str()) < 0;
 }
 
-bool CSearchDlg::EncodingCompareAsc(const CSearchInfo Entry1, const CSearchInfo Entry2)
+bool CSearchDlg::EncodingCompareAsc(const CSearchInfo &Entry1, const CSearchInfo Entry2)
 {
     return Entry1.encoding < Entry2.encoding;
 }
 
-bool CSearchDlg::ModifiedTimeCompareAsc(const CSearchInfo Entry1, const CSearchInfo Entry2)
+bool CSearchDlg::ModifiedTimeCompareAsc(const CSearchInfo &Entry1, const CSearchInfo Entry2)
 {
     return CompareFileTime(&Entry1.modifiedtime, &Entry2.modifiedtime) < 0;
 }
 
-bool CSearchDlg::NameCompareDesc(const CSearchInfo Entry1, const CSearchInfo Entry2)
+bool CSearchDlg::NameCompareDesc(const CSearchInfo &Entry1, const CSearchInfo Entry2)
 {
     std::wstring name1 = Entry1.filepath.substr(Entry1.filepath.find_last_of('\\')+1);
     std::wstring name2 = Entry2.filepath.substr(Entry2.filepath.find_last_of('\\')+1);
     return StrCmpLogicalW(name1.c_str(), name2.c_str()) > 0;
 }
 
-bool CSearchDlg::SizeCompareDesc(const CSearchInfo Entry1, const CSearchInfo Entry2)
+bool CSearchDlg::SizeCompareDesc(const CSearchInfo &Entry1, const CSearchInfo Entry2)
 {
     return Entry1.filesize > Entry2.filesize;
 }
 
-bool CSearchDlg::MatchesCompareDesc(const CSearchInfo Entry1, const CSearchInfo Entry2)
+bool CSearchDlg::MatchesCompareDesc(const CSearchInfo &Entry1, const CSearchInfo Entry2)
 {
     return Entry1.matchlinesnumbers.size() > Entry2.matchlinesnumbers.size();
 }
 
-bool CSearchDlg::PathCompareDesc(const CSearchInfo Entry1, const CSearchInfo Entry2)
+bool CSearchDlg::PathCompareDesc(const CSearchInfo &Entry1, const CSearchInfo Entry2)
 {
     std::wstring name1 = Entry1.filepath.substr(Entry1.filepath.find_last_of('\\')+1);
     std::wstring name2 = Entry2.filepath.substr(Entry2.filepath.find_last_of('\\')+1);
@@ -1893,12 +1896,12 @@ bool CSearchDlg::PathCompareDesc(const CSearchInfo Entry1, const CSearchInfo Ent
     return StrCmpLogicalW(name1.c_str(), name2.c_str()) > 0;
 }
 
-bool CSearchDlg::EncodingCompareDesc(const CSearchInfo Entry1, const CSearchInfo Entry2)
+bool CSearchDlg::EncodingCompareDesc(const CSearchInfo &Entry1, const CSearchInfo Entry2)
 {
     return Entry1.encoding > Entry2.encoding;
 }
 
-bool CSearchDlg::ModifiedTimeCompareDesc(const CSearchInfo Entry1, const CSearchInfo Entry2)
+bool CSearchDlg::ModifiedTimeCompareDesc(const CSearchInfo &Entry1, const CSearchInfo Entry2)
 {
     return CompareFileTime(&Entry1.modifiedtime, &Entry2.modifiedtime) > 0;
 }
@@ -2099,14 +2102,14 @@ bool CSearchDlg::MatchPath(LPCTSTR pathbuf)
         pName++;    // skip the last '\\' char
     if (m_bUseRegexForPaths)
     {
-        if ( (m_patterns.size()==0) || grepWin_match_i(m_patternregex, pName) )
+        if ( (m_patterns.empty()) || grepWin_match_i(m_patternregex, pName) )
         {
             bPattern = true;
         }
     }
     else
     {
-        if (m_patterns.size())
+        if (!m_patterns.empty())
         {
             if (m_patterns[0].size() && (m_patterns[0][0]=='-'))
                 bPattern = true;
@@ -2184,7 +2187,7 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
                 {
                     if (start == end)
                         break;
-                    start++;
+                    ++start;
                 }
                 else
                     start = whatc[0].second;
