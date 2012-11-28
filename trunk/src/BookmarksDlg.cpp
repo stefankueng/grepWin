@@ -27,8 +27,9 @@
 
 
 CBookmarksDlg::CBookmarksDlg(HWND hParent)
+    : m_hParent(hParent)
+    , m_bUseRegex(false)
 {
-    m_hParent = hParent;
 }
 
 CBookmarksDlg::~CBookmarksDlg(void)
