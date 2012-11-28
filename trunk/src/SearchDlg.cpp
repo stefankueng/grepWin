@@ -1828,24 +1828,24 @@ bool CSearchDlg::SaveSettings()
     return true;
 }
 
-bool CSearchDlg::NameCompareAsc(const CSearchInfo &Entry1, const CSearchInfo Entry2)
+bool CSearchDlg::NameCompareAsc(const CSearchInfo &Entry1, const CSearchInfo& Entry2)
 {
     std::wstring name1 = Entry1.filepath.substr(Entry1.filepath.find_last_of('\\')+1);
     std::wstring name2 = Entry2.filepath.substr(Entry2.filepath.find_last_of('\\')+1);
     return StrCmpLogicalW(name1.c_str(), name2.c_str()) < 0;
 }
 
-bool CSearchDlg::SizeCompareAsc(const CSearchInfo &Entry1, const CSearchInfo Entry2)
+bool CSearchDlg::SizeCompareAsc(const CSearchInfo &Entry1, const CSearchInfo& Entry2)
 {
     return Entry1.filesize < Entry2.filesize;
 }
 
-bool CSearchDlg::MatchesCompareAsc(const CSearchInfo &Entry1, const CSearchInfo Entry2)
+bool CSearchDlg::MatchesCompareAsc(const CSearchInfo &Entry1, const CSearchInfo& Entry2)
 {
     return Entry1.matchlinesnumbers.size() < Entry2.matchlinesnumbers.size();
 }
 
-bool CSearchDlg::PathCompareAsc(const CSearchInfo &Entry1, const CSearchInfo Entry2)
+bool CSearchDlg::PathCompareAsc(const CSearchInfo &Entry1, const CSearchInfo& Entry2)
 {
     std::wstring name1 = Entry1.filepath.substr(Entry1.filepath.find_last_of('\\')+1);
     std::wstring name2 = Entry2.filepath.substr(Entry2.filepath.find_last_of('\\')+1);
@@ -1857,34 +1857,34 @@ bool CSearchDlg::PathCompareAsc(const CSearchInfo &Entry1, const CSearchInfo Ent
     return StrCmpLogicalW(name1.c_str(), name2.c_str()) < 0;
 }
 
-bool CSearchDlg::EncodingCompareAsc(const CSearchInfo &Entry1, const CSearchInfo Entry2)
+bool CSearchDlg::EncodingCompareAsc(const CSearchInfo &Entry1, const CSearchInfo& Entry2)
 {
     return Entry1.encoding < Entry2.encoding;
 }
 
-bool CSearchDlg::ModifiedTimeCompareAsc(const CSearchInfo &Entry1, const CSearchInfo Entry2)
+bool CSearchDlg::ModifiedTimeCompareAsc(const CSearchInfo &Entry1, const CSearchInfo& Entry2)
 {
     return CompareFileTime(&Entry1.modifiedtime, &Entry2.modifiedtime) < 0;
 }
 
-bool CSearchDlg::NameCompareDesc(const CSearchInfo &Entry1, const CSearchInfo Entry2)
+bool CSearchDlg::NameCompareDesc(const CSearchInfo &Entry1, const CSearchInfo& Entry2)
 {
     std::wstring name1 = Entry1.filepath.substr(Entry1.filepath.find_last_of('\\')+1);
     std::wstring name2 = Entry2.filepath.substr(Entry2.filepath.find_last_of('\\')+1);
     return StrCmpLogicalW(name1.c_str(), name2.c_str()) > 0;
 }
 
-bool CSearchDlg::SizeCompareDesc(const CSearchInfo &Entry1, const CSearchInfo Entry2)
+bool CSearchDlg::SizeCompareDesc(const CSearchInfo &Entry1, const CSearchInfo& Entry2)
 {
     return Entry1.filesize > Entry2.filesize;
 }
 
-bool CSearchDlg::MatchesCompareDesc(const CSearchInfo &Entry1, const CSearchInfo Entry2)
+bool CSearchDlg::MatchesCompareDesc(const CSearchInfo &Entry1, const CSearchInfo& Entry2)
 {
     return Entry1.matchlinesnumbers.size() > Entry2.matchlinesnumbers.size();
 }
 
-bool CSearchDlg::PathCompareDesc(const CSearchInfo &Entry1, const CSearchInfo Entry2)
+bool CSearchDlg::PathCompareDesc(const CSearchInfo &Entry1, const CSearchInfo& Entry2)
 {
     std::wstring name1 = Entry1.filepath.substr(Entry1.filepath.find_last_of('\\')+1);
     std::wstring name2 = Entry2.filepath.substr(Entry2.filepath.find_last_of('\\')+1);
@@ -1896,12 +1896,12 @@ bool CSearchDlg::PathCompareDesc(const CSearchInfo &Entry1, const CSearchInfo En
     return StrCmpLogicalW(name1.c_str(), name2.c_str()) > 0;
 }
 
-bool CSearchDlg::EncodingCompareDesc(const CSearchInfo &Entry1, const CSearchInfo Entry2)
+bool CSearchDlg::EncodingCompareDesc(const CSearchInfo &Entry1, const CSearchInfo& Entry2)
 {
     return Entry1.encoding > Entry2.encoding;
 }
 
-bool CSearchDlg::ModifiedTimeCompareDesc(const CSearchInfo &Entry1, const CSearchInfo Entry2)
+bool CSearchDlg::ModifiedTimeCompareDesc(const CSearchInfo &Entry1, const CSearchInfo& Entry2)
 {
     return CompareFileTime(&Entry1.modifiedtime, &Entry2.modifiedtime) > 0;
 }
