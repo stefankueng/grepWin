@@ -24,6 +24,8 @@ CSearchInfo::CSearchInfo(void)
     , readerror(false)
     , folder(false)
 {
+    modifiedtime.dwHighDateTime = 0;
+    modifiedtime.dwLowDateTime  = 0;
 }
 
 CSearchInfo::CSearchInfo(const std::wstring& path)
@@ -32,6 +34,8 @@ CSearchInfo::CSearchInfo(const std::wstring& path)
     , readerror(false)
     , folder(false)
 {
+    modifiedtime.dwHighDateTime = 0;
+    modifiedtime.dwLowDateTime  = 0;
 }
 
 CSearchInfo::~CSearchInfo(void)
