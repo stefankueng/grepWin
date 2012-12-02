@@ -41,13 +41,13 @@ CInfoDlg::~CInfoDlg()
 BOOL CInfoDlg::ShowDialog(UINT idAboutHTMLID, HINSTANCE hInstance)
 {
     //Load the IE Specific MSTML Interface DKK
-    HINSTANCE   hinstMSHTML = LoadLibrary(TEXT("MSHTML.DLL"));
+    HINSTANCE hinstMSHTML = LoadLibrary(TEXT("mshtml.dll"));
     BOOL bSuccess = FALSE;
     if(hinstMSHTML)
     {
         SHOWHTMLDIALOGFN  *pfnShowHTMLDialog;
-        //Locate The Function ShowHTMLDialog in the Loaded MSHTML.DLL
-        pfnShowHTMLDialog =     (SHOWHTMLDIALOGFN*)GetProcAddress(hinstMSHTML, "ShowHTMLDialog");
+        //Locate The Function ShowHTMLDialog in the Loaded mshtml.dll
+        pfnShowHTMLDialog = (SHOWHTMLDIALOGFN*)GetProcAddress(hinstMSHTML, "ShowHTMLDialog");
         if(pfnShowHTMLDialog)
         {
             std::unique_ptr<TCHAR[]> lpszModule(new TCHAR[MAX_PATH_NEW]);
