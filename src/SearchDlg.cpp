@@ -1274,7 +1274,7 @@ void CSearchDlg::ShowContextMenu(int x, int y)
                 const CSearchInfo info = m_items[GetSelectedListIndex(iItem)];
                 data.path = info.filepath;
                 const auto matchlinesnumbers = info.matchlinesnumbers;
-                int lineindex = 0;
+                size_t lineindex = 0;
                 for (auto it = matchlinesnumbers.cbegin(); it != matchlinesnumbers.cend(); ++it)
                 {
                     if (*it == line)
