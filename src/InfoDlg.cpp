@@ -23,7 +23,6 @@
 #include <memory>
 #include <mshtmhst.h>
 
-#pragma comment(lib, "Urlmon.lib")
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction

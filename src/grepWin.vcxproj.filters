@@ -268,7 +268,9 @@
     <None Include="Setup\WixUI_Custom.wxs">
       <Filter>Scripts</Filter>
     </None>
-    <None Include="Resources\infodlg.htm" />
+    <None Include="Resources\infodlg.htm">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resources\grepWin.rc">
