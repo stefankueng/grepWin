@@ -1,7 +1,7 @@
 #define FILEVER        $MajorVersion$,$MinorVersion$,$MicroVersion$,$WCREV$
 #define PRODUCTVER     $MajorVersion$,$MinorVersion$,$MicroVersion$,$WCREV$
-#define STRFILEVER     "$MajorVersion$, $MinorVersion$, $MicroVersion$, $WCREV$\0"
-#define STRPRODUCTVER  "$MajorVersion$, $MinorVersion$, $MicroVersion$, $WCREV$\0"
+#define STRFILEVER     "$MajorVersion$.$MinorVersion$.$MicroVersion$.$WCREV$"
+#define STRPRODUCTVER  "$MajorVersion$.$MinorVersion$.$MicroVersion$.$WCREV$"
 
 #define CM_VERMAJOR     $MajorVersion$
 #define CM_VERMINOR     $MinorVersion$
