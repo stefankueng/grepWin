@@ -23,7 +23,6 @@
 #include "BrowseFolder.h"
 #include <Commdlg.h>
 
-#pragma comment(lib, "Comdlg32")
 
 CSettingsDlg::CSettingsDlg(HWND hParent)
     : m_hParent(hParent)

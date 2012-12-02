@@ -49,17 +49,16 @@
 #include <boost/regex.hpp>
 #include <boost/spirit/include/classic_file_iterator.hpp>
 
-#pragma comment(lib, "UxTheme.lib")
 
 #define GREPWIN_DATEBUFFER 100
-
-#define LABELUPDATETIMER 10
+#define LABELUPDATETIMER   10
 
 DWORD WINAPI SearchThreadEntry(LPVOID lpParam);
 
 UINT CSearchDlg::GREPWIN_STARTUPMSG = RegisterWindowMessage(_T("grepWin_StartupMessage"));
 
-CSearchDlg::CSearchDlg(HWND hParent) : m_searchedItems(0)
+CSearchDlg::CSearchDlg(HWND hParent)
+    : m_searchedItems(0)
     , m_totalitems(0)
     , m_dwThreadRunning(FALSE)
     , m_Cancelled(FALSE)

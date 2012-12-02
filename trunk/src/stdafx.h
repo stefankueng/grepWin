@@ -7,8 +7,8 @@
 
 // Modify the following defines if you have to target a platform prior to the ones specified below.
 // Refer to MSDN for the latest info on corresponding values for different platforms.
-#ifndef WINVER              // Allow use of features specific to Windows XP or later.
-#define WINVER 0x0600       // Change this to the appropriate value to target other versions of Windows.
+#ifndef WINVER                  // Allow use of features specific to Windows XP or later.
+#define WINVER 0x0600           // Change this to the appropriate value to target other versions of Windows.
 #endif
 
 #ifndef _WIN32_WINNT            // Allow use of features specific to Windows XP or later.
@@ -19,7 +19,7 @@
 #define _WIN32_WINDOWS 0x0410   // Change this to the appropriate value to target Windows Me or later.
 #endif
 
-#ifndef _WIN32_IE               // Allow use of features specific to IE 6.0 or later.
+#ifndef _WIN32_IE               // Allow use of features specific to IE 7.0 or later.
 #define _WIN32_IE 0x0700        // Change this to the appropriate value to target other versions of IE.
 #endif
 
@@ -38,13 +38,10 @@
 #include <memory.h>
 #include <tchar.h>
 
-
 #include <commctrl.h>
 #include <shlwapi.h>
 
 #include "Debug.h"
 
-#pragma comment(lib, "comctl32.lib")
-#pragma comment(lib, "shlwapi.lib")
 
 #pragma comment(linker, "\"/manifestdependency:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
