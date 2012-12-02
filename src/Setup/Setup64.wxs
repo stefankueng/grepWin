@@ -22,7 +22,7 @@
     </Upgrade>
 
     <Media Id="1" Cabinet="grepWin.cab" EmbedCab="yes" CompressionLevel="high" />
-    <Icon Id="grepWinIcon" SourceFile="..\Resource\grepWin.ico" />
+    <Icon Id="grepWinIcon" SourceFile="..\Resources\grepWin.ico" />
     <Property Id="ARPPRODUCTICON">grepWinIcon</Property>
     <Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR" />
     <Condition Message="This application requires an 64-bit OS">VersionNT64</Condition>
