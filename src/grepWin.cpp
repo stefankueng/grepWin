@@ -24,7 +24,7 @@
 #include "Registry.h"
 
 // Global Variables:
-HINSTANCE hInst;                                // current instance
+HINSTANCE hInst;            // current instance
 
 // Forward declarations of functions included in this code module:
 
@@ -42,9 +42,9 @@ BOOL CALLBACK windowenumerator(__in  HWND hwnd,__in  LPARAM lParam)
 }
 
 int APIENTRY _tWinMain(HINSTANCE hInstance,
-                     HINSTANCE hPrevInstance,
-                     LPTSTR    lpCmdLine,
-                     int       nCmdShow)
+                       HINSTANCE hPrevInstance,
+                       LPTSTR    lpCmdLine,
+                       int       nCmdShow)
 {
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
@@ -172,6 +172,3 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
     CloseHandle(hReloadProtection);
     return ret;
 }
-
-
-

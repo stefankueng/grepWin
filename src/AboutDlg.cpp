@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008, 2010 - Stefan Kueng
+// Copyright (C) 2007-2012 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -16,16 +16,16 @@
 // along with this program; if not, write to the Free Software Foundation,
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
-#include "StdAfx.h"
-#include "Resource.h"
+#include "stdafx.h"
+#include "resource.h"
 #include "AboutDlg.h"
 #include "version.h"
 #include <string>
 
 
 CAboutDlg::CAboutDlg(HWND hParent)
+    : m_hParent(hParent)
 {
-    m_hParent = hParent;
 }
 
 CAboutDlg::~CAboutDlg(void)
