@@ -31,12 +31,10 @@
 
 CInfoDlg::CInfoDlg()
 {
-
 }
 
 CInfoDlg::~CInfoDlg()
 {
-
 }
 
 //Function which takes input of An HTML Resource Id

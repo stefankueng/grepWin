@@ -95,4 +95,3 @@ protected:
     LPSHELLFOLDER m_iSF;
     CShellContextMenu * m_pShellContextMenu;
 };
-
