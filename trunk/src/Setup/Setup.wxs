@@ -22,6 +22,8 @@
     </Upgrade>
 
     <Media Id="1" Cabinet="grepWin.cab" EmbedCab="yes" CompressionLevel="high" />
+    <Icon Id="grepWinIcon" SourceFile="..\Resource\grepWin.ico" />
+    <Property Id="ARPPRODUCTICON">grepWinIcon</Property>
     <Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR" />
     <Condition Message="This application only runs on Windows XP with Service Pack 3 and later.">
       <![CDATA[Installed OR ((VersionNT > 501) OR ((VersionNT = 501) AND (ServicePackLevel >= 3)))]]>
