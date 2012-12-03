@@ -140,9 +140,6 @@
     <ClInclude Include="Debug.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="grepWin.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="InfoDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>

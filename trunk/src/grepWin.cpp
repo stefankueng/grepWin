@@ -17,7 +17,7 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 #include "stdafx.h"
-#include "grepWin.h"
+#include "resource.h"
 #include "SearchDlg.h"
 #include "AboutDlg.h"
 #include "CmdLineParser.h"
@@ -26,7 +26,6 @@
 // Global Variables:
 HINSTANCE hInst;            // current instance
 
-// Forward declarations of functions included in this code module:
 
 BOOL CALLBACK windowenumerator(__in  HWND hwnd,__in  LPARAM lParam)
 {
