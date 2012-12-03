@@ -221,7 +221,6 @@
     <ClInclude Include="Bookmarks.h" />
     <ClInclude Include="BookmarksDlg.h" />
     <ClInclude Include="Debug.h" />
-    <ClInclude Include="grepWin.h" />
     <ClInclude Include="InfoDlg.h" />
     <ClInclude Include="LineData.h" />
     <ClInclude Include="MultiLineEditDlg.h" />
