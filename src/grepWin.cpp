@@ -31,7 +31,7 @@ BOOL CALLBACK windowenumerator(__in  HWND hwnd,__in  LPARAM lParam)
 {
     HWND * pWnd = (HWND*)lParam;
     WCHAR buf[MAX_PATH] = {0};
-    GetWindowText(hwnd, buf, MAX_PATH);
+    GetWindowText(hwnd, buf, _countof(buf));
     if (_wcsnicmp(buf, L"grepwin :", 9) == 0)
     {
         *pWnd = hwnd;

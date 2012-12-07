@@ -224,14 +224,14 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             TCHAR buf[MAX_PATH] = {0};
             if (m_bSizeC)
             {
-                _stprintf_s(buf, MAX_PATH, _T("%ld"), m_lSize);
+                _stprintf_s(buf, _countof(buf), _T("%ld"), m_lSize);
                 SetDlgItemText(hwndDlg, IDC_SIZEEDIT, buf);
             }
             else
             {
                 if (DWORD(m_regSize) > 0)
                 {
-                    _stprintf_s(buf, MAX_PATH, _T("%ld"), DWORD(m_regSize));
+                    _stprintf_s(buf, _countof(buf), _T("%ld"), DWORD(m_regSize));
                     SetDlgItemText(hwndDlg, IDC_SIZEEDIT, buf);
                 }
                 else
@@ -1448,7 +1448,7 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
                     lv.iSubItem = 1;    // line number
                     lv.mask = LVIF_TEXT;
                     lv.pszText = textlinebuf;
-                    lv.cchTextMax = MAX_PATH;
+                    lv.cchTextMax = _countof(textlinebuf);
                     if (ListView_GetItem(hListControl, &lv))
                     {
                         SearchReplace(cmd, L"%line%", textlinebuf);
@@ -1507,7 +1507,7 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
                 lv.iSubItem = 1;    // line number
                 lv.mask = LVIF_TEXT;
                 lv.pszText = textlinebuf;
-                lv.cchTextMax = MAX_PATH;
+                lv.cchTextMax = _countof(textlinebuf);
                 if (ListView_GetItem(hListControl, &lv))
                 {
                     std::wstring appname = application;
@@ -1520,35 +1520,35 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
                     {
                         // notepad++
                         TCHAR buf[MAX_PATH] = {0};
-                        _stprintf_s(buf, MAX_PATH, _T("-n%s"), textlinebuf);
+                        _stprintf_s(buf, _countof(buf), _T("-n%s"), textlinebuf);
                         linenumberparam = buf;
                     }
                     else if (appname.find(_T("xemacs.exe")) != std::wstring::npos)
                     {
                         // XEmacs
                         TCHAR buf[MAX_PATH] = {0};
-                        _stprintf_s(buf, MAX_PATH, _T("+%s"), textlinebuf);
+                        _stprintf_s(buf, _countof(buf), _T("+%s"), textlinebuf);
                         linenumberparam = buf;
                     }
                     else if (appname.find(_T("uedit32.exe")) != std::wstring::npos)
                     {
                         // UltraEdit
                         TCHAR buf[MAX_PATH] = {0};
-                        _stprintf_s(buf, MAX_PATH, _T("-l%s"), textlinebuf);
+                        _stprintf_s(buf, _countof(buf), _T("-l%s"), textlinebuf);
                         linenumberparam = buf;
                     }
                     else if (appname.find(_T("codewright.exe")) != std::wstring::npos)
                     {
                         // CodeWright
                         TCHAR buf[MAX_PATH] = {0};
-                        _stprintf_s(buf, MAX_PATH, _T("-G%s"), textlinebuf);
+                        _stprintf_s(buf, _countof(buf), _T("-G%s"), textlinebuf);
                         linenumberparam = buf;
                     }
                     else if (appname.find(_T("notepad2.exe")) != std::wstring::npos)
                     {
                         // Notepad2
                         TCHAR buf[MAX_PATH] = {0};
-                        _stprintf_s(buf, MAX_PATH, _T("/g %s"), textlinebuf);
+                        _stprintf_s(buf, _countof(buf), _T("/g %s"), textlinebuf);
                         linenumberparam_before = buf;
                     }
                 }
