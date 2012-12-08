@@ -41,9 +41,9 @@ LRESULT CAboutDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
         {
             InitDialog(hwndDlg, IDI_GREPWIN);
             TCHAR buf[MAX_PATH] = {0};
-            _stprintf_s(buf, _countof(buf), _T("grepWin version %ld.%ld.%ld.%ld"), CM_VERMAJOR, CM_VERMINOR, CM_VERMICRO, CM_VERBUILD);
+            _stprintf_s(buf, _countof(buf), _T("grepWin version %ld.%ld.%ld.%ld"), GREPWIN_VERMAJOR, GREPWIN_VERMINOR, GREPWIN_VERMICRO, GREPWIN_VERBUILD);
             SetDlgItemText(*this, IDC_VERSIONINFO, buf);
-            SetDlgItemText(*this, IDC_DATE, _T(CM_VERDATE));
+            SetDlgItemText(*this, IDC_DATE, _T(GREPWIN_VERDATE));
             m_link.ConvertStaticToHyperlink(hwndDlg, IDC_WEBLINK, _T("http://tools.tortoisesvn.net"));
         }
         return TRUE;

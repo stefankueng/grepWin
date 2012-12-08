@@ -28,7 +28,7 @@ void TRACE(LPCTSTR str, ...)
     va_list ap;
     va_start(ap, str);
 
-    _vstprintf_s(buf, 20*1024, str, ap);
+    _vstprintf_s(buf, _countof(buf), str, ap);
     OutputDebugString(buf);
     va_end(ap);
 
