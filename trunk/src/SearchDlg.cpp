@@ -904,7 +904,7 @@ void CSearchDlg::SaveWndPosition()
 void CSearchDlg::UpdateInfoLabel()
 {
     TCHAR buf[1024] = {0};
-    _stprintf_s(buf, 1024, _T("Searched %ld files, skipped %ld files. Found %ld matches in %ld files."),
+    _stprintf_s(buf, _countof(buf), _T("Searched %ld files, skipped %ld files. Found %ld matches in %ld files."),
         m_searchedItems, m_totalitems-m_searchedItems, m_totalmatches, m_items.size());
     SetDlgItemText(*this, IDC_SEARCHINFOLABEL, buf);
 }
