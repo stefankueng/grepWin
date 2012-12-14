@@ -21,6 +21,7 @@
 #include "maxpath.h"
 #include "CmdLineParser.h"
 #include <shlobj.h>
+#include <memory>
 
 CBookmarks::CBookmarks(void)
 {
