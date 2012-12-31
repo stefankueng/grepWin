@@ -1,8 +1,8 @@
 /* This script is a local pre-commit hook script.
  * It's used to check whether the copyright year of modified files has been
- * bumped up to the current (2012) year.
+ * bumped up to the current (2013) year.
  *
- * Only *.cpp and *.h files are checked
+ * Only *.cpp, *.h and *.idl files are checked
  *
  * Set the local hook scripts like this (pre-commit hook):
  * WScript path/to/this/script/file.js
@@ -20,9 +20,9 @@ if (num !== 4)
     WScript.Quit(1);
 }
 
-var re = /^\/\/ Copyright.+(2012)(.*)/;
+var re = /^\/\/ Copyright.+(2013)(.*)/;
 var basere = /^\/\/ Copyright(.*)/;
-var filere = /(\.cpp$)|(\.h$)/;
+var filere = /(\.cpp$)|(\.h$)|(\.idl$)/;
 var found = true;
 var fs, a, rv, r;
 fs = new ActiveXObject("Scripting.FileSystemObject");
