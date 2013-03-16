@@ -44,7 +44,7 @@ while (fileindex--)
             var yearFound = false;
             while ((!a.AtEndOfStream) && (!yearFound))
             {
-                r =  a.ReadLine();
+                r = a.ReadLine();
                 rv = r.match(basere);
                 if (rv !== null)
                 {
