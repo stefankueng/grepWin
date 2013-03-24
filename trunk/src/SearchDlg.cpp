@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2012 - Stefan Kueng
+// Copyright (C) 2007-2013 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -135,14 +135,15 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
     {
     case WM_INITDIALOG:
         {
-            AddToolTip(IDC_PATTERN, _T("only files that match this pattern are searched.\r\nUse \"|\" as the delimiter.\r\nExample: *.cpp|*.h"));
-            AddToolTip(IDC_EXCLUDEDIRSPATTERN, _T("you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."));
-            AddToolTip(IDC_SEARCHPATH, _T("the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"));
-            AddToolTip(IDC_DOTMATCHNEWLINE, _T("\\n is matched by '.'"));
-            AddToolTip(IDC_SEARCHTEXT, _T("a regular expression used for searching. Press F1 for more info."));
-            AddToolTip(IDC_ONLYONE, _T("reuse grepWin instances."));
-            AddToolTip(IDC_EDITMULTILINE1, L"click to edit the search text as a multiline text");
-            AddToolTip(IDC_EDITMULTILINE2, L"click to edit the replace text as a multiline text");
+            CLanguage::Instance().TranslateWindow(*this);
+            AddToolTip(IDC_PATTERN, TranslatedString(hResource, IDS_PATTERN_TT).c_str());
+            AddToolTip(IDC_EXCLUDEDIRSPATTERN, TranslatedString(hResource, IDS_EXCLUDEDIR_TT).c_str());
+            AddToolTip(IDC_SEARCHPATH, TranslatedString(hResource, IDS_SEARCHPATH_TT).c_str());
+            AddToolTip(IDC_DOTMATCHNEWLINE, TranslatedString(hResource, IDS_DOTMATCHNEWLINE_TT).c_str());
+            AddToolTip(IDC_SEARCHTEXT, TranslatedString(hResource, IDS_SEARCHTEXT_TT).c_str());
+            AddToolTip(IDC_ONLYONE, TranslatedString(hResource, IDS_ONLYONE_TT).c_str());
+            AddToolTip(IDC_EDITMULTILINE1, TranslatedString(hResource, IDS_EDITMULTILINE_TT).c_str());
+            AddToolTip(IDC_EDITMULTILINE2, TranslatedString(hResource, IDS_EDITMULTILINE_TT).c_str());
 
             if (m_searchpath.empty())
             {
@@ -211,13 +212,13 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                 int menuItemsCount = GetMenuItemCount(hSysMenu);
                 if (menuItemsCount > 2)
                 {
-                    InsertMenu(hSysMenu, menuItemsCount - 2, MF_STRING | MF_BYPOSITION, ID_ABOUTBOX, _T("&About grepWin..."));
+                    InsertMenu(hSysMenu, menuItemsCount - 2, MF_STRING | MF_BYPOSITION, ID_ABOUTBOX, TranslatedString(hResource, IDS_ABOUT).c_str());
                     InsertMenu(hSysMenu, menuItemsCount - 2, MF_SEPARATOR | MF_BYPOSITION, NULL, NULL);
                 }
                 else
                 {
                     AppendMenu(hSysMenu, MF_SEPARATOR, NULL, NULL);
-                    AppendMenu(hSysMenu, MF_STRING, ID_ABOUTBOX, _T("&About grepWin..."));
+                    AppendMenu(hSysMenu, MF_STRING, ID_ABOUTBOX, TranslatedString(hResource, IDS_ABOUT).c_str());
                 }
             }
 
@@ -238,9 +239,9 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                     SetDlgItemText(hwndDlg, IDC_SIZEEDIT, _T("2000"));
             }
 
-            SendDlgItemMessage(hwndDlg, IDC_SIZECOMBO, CB_INSERTSTRING, (WPARAM)-1, (LPARAM)_T("less than"));
-            SendDlgItemMessage(hwndDlg, IDC_SIZECOMBO, CB_INSERTSTRING, (WPARAM)-1, (LPARAM)_T("equal to"));
-            SendDlgItemMessage(hwndDlg, IDC_SIZECOMBO, CB_INSERTSTRING, (WPARAM)-1, (LPARAM)_T("greater than"));
+            SendDlgItemMessage(hwndDlg, IDC_SIZECOMBO, CB_INSERTSTRING, (WPARAM)-1, (LPARAM)(LPCWSTR)TranslatedString(hResource, IDS_LESSTHAN).c_str());
+            SendDlgItemMessage(hwndDlg, IDC_SIZECOMBO, CB_INSERTSTRING, (WPARAM)-1, (LPARAM)(LPCWSTR)TranslatedString(hResource, IDS_EQUALTO).c_str());
+            SendDlgItemMessage(hwndDlg, IDC_SIZECOMBO, CB_INSERTSTRING, (WPARAM)-1, (LPARAM)(LPCWSTR)TranslatedString(hResource, IDS_GREATERTHAN).c_str());
             if (!m_bIncludeSubfoldersC)
                 m_bIncludeSubfolders = !!DWORD(m_regIncludeSubfolders);
             if (!m_bIncludeSystemC)
@@ -284,7 +285,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             DialogEnableWindow(IDC_ADDTOBOOKMARKS, FALSE);
             DialogEnableWindow(IDC_EXCLUDEDIRSPATTERN, !!m_bIncludeSubfolders);
 
-            ::SetDlgItemText(*this, IDOK, _T("&Search"));
+            ::SetDlgItemText(*this, IDOK, TranslatedString(hResource, IDS_SEARCH).c_str());
             CheckRadioButton(*this, IDC_RESULTFILES, IDC_RESULTCONTENT, IDC_RESULTFILES);
 
             SetFocus(GetDlgItem(hwndDlg, IDC_SEARCHTEXT));
@@ -311,7 +312,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             m_resizer.AddControl(hwndDlg, IDC_DOTMATCHNEWLINE, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_REGEXOKLABEL, RESIZER_TOPRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_CREATEBACKUP, RESIZER_TOPLEFT);
-            m_resizer.AddControl(hwndDlg, IDC_UTF8, RESIZER_TOPLEFT);
+            m_resizer.AddControl(hwndDlg, IDC_UTF8, RESIZER_TOPLEFTRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_TESTREGEX, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_ADDTOBOOKMARKS, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_BOOKMARKS, RESIZER_TOPLEFT);
@@ -454,7 +455,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
         {
             AutoSizeAllColumns();
             UpdateInfoLabel();
-            ::SetDlgItemText(*this, IDOK, _T("&Search"));
+            ::SetDlgItemText(*this, IDOK, TranslatedString(hResource, IDS_SEARCH).c_str());
             DialogEnableWindow(IDC_RESULTFILES, true);
             DialogEnableWindow(IDC_RESULTCONTENT, true);
             ShowWindow(GetDlgItem(*this, IDC_PROGRESS), SW_HIDE);
@@ -590,9 +591,9 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 {
                     std::unique_ptr<TCHAR[]> msgtext(new TCHAR[m_searchString.size() + m_replaceString.size() + MAX_PATH * 4]);
                     _stprintf_s(msgtext.get(), m_searchString.size() + m_replaceString.size() + MAX_PATH * 4,
-                        _T("Are you sure you want to replace\n%s\nwith\n%s\nwithout creating backups?"),
+                        (LPCWSTR)TranslatedString(hResource, IDS_REPLACECONFIRM).c_str(),
                         m_searchString.c_str(),
-                        m_replaceString.empty() ? _T("an empty string") : m_replaceString.c_str());
+                        m_replaceString.empty() ? (LPCWSTR)TranslatedString(hResource, IDS_ANEMPTYSTRING).c_str() : m_replaceString.c_str());
                     if (!m_bCreateBackup)
                     {
                         if (::MessageBox(*this, msgtext.get(), _T("grepWin"), MB_ICONQUESTION | MB_YESNO) != IDYES)
@@ -604,7 +605,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 
                 InterlockedExchange(&m_dwThreadRunning, TRUE);
                 InterlockedExchange(&m_Cancelled, FALSE);
-                SetDlgItemText(*this, IDOK, _T("S&top"));
+                SetDlgItemText(*this, IDOK, TranslatedString(hResource, IDS_STOP).c_str());
                 ShowWindow(GetDlgItem(*this, IDC_PROGRESS), SW_SHOW);
                 SendDlgItemMessage(*this, IDC_PROGRESS, PBM_SETMARQUEE, 1, 0);
                 // now start the thread which does the searching
@@ -648,7 +649,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
             auto path = GetDlgItemText(IDC_SEARCHPATH);
             std::unique_ptr<WCHAR[]> pathbuf(new WCHAR[MAX_PATH_NEW]);
             wcscpy_s(pathbuf.get(), MAX_PATH_NEW, path.get());
-            browse.SetInfo(_T("Select path to search"));
+            browse.SetInfo(TranslatedString(hResource, IDS_SELECTPATHTOSEARCH).c_str());
             if (browse.Show(*this, pathbuf.get(), MAX_PATH_NEW, m_searchpath.c_str()) == CBrowseFolder::OK)
             {
                 SetDlgItemText(*this, IDC_SEARCHPATH, pathbuf.get());
@@ -904,7 +905,7 @@ void CSearchDlg::SaveWndPosition()
 void CSearchDlg::UpdateInfoLabel()
 {
     TCHAR buf[1024] = {0};
-    _stprintf_s(buf, _countof(buf), _T("Searched %ld files, skipped %ld files. Found %ld matches in %ld files."),
+    _stprintf_s(buf, _countof(buf), TranslatedString(hResource, IDS_INFOLABEL).c_str(),
         m_searchedItems, m_totalitems-m_searchedItems, m_totalmatches, m_items.size());
     SetDlgItemText(*this, IDC_SEARCHINFOLABEL, buf);
 }
@@ -923,25 +924,35 @@ bool CSearchDlg::InitResultList()
 
     ListView_SetExtendedListViewStyle(hListControl, exStyle);
     ListView_SetImageList(hListControl, (WPARAM)(HIMAGELIST)CSysImageList::GetInstance(), LVSIL_SMALL);
+
+    std::wstring sName              = TranslatedString(hResource, IDS_NAME);
+    std::wstring sSize              = TranslatedString(hResource, IDS_SIZE);
+    std::wstring sLine              = TranslatedString(hResource, IDS_LINE);
+    std::wstring sMatches           = TranslatedString(hResource, IDS_MATCHES);
+    std::wstring sText              = TranslatedString(hResource, IDS_TEXT);
+    std::wstring sPath              = TranslatedString(hResource, IDS_PATH);
+    std::wstring sEncoding          = TranslatedString(hResource, IDS_ENCODING);
+    std::wstring sDateModified      = TranslatedString(hResource, IDS_DATEMODIFIED);
+
     LVCOLUMN lvc = {0};
     lvc.mask = LVCF_TEXT|LVCF_FMT;
     lvc.fmt = LVCFMT_LEFT;
     lvc.cx = -1;
-    lvc.pszText = _T("Name");
+    lvc.pszText = const_cast<LPWSTR>((LPCWSTR)sName.c_str());
     ListView_InsertColumn(hListControl, 0, &lvc);
-    lvc.pszText = filelist ? _T("Size") : _T("Line");
+    lvc.pszText = filelist ? const_cast<LPWSTR>((LPCWSTR)sSize.c_str()) : const_cast<LPWSTR>((LPCWSTR)sLine.c_str());
     lvc.fmt = filelist ? LVCFMT_RIGHT : LVCFMT_LEFT;
     ListView_InsertColumn(hListControl, 1, &lvc);
     lvc.fmt = LVCFMT_LEFT;
-    lvc.pszText = filelist ? _T("Matches") : _T("Text");
+    lvc.pszText = filelist ? const_cast<LPWSTR>((LPCWSTR)sMatches.c_str()) : const_cast<LPWSTR>((LPCWSTR)sText.c_str());
     ListView_InsertColumn(hListControl, 2, &lvc);
     if (filelist)
     {
-        lvc.pszText = _T("Path");
+        lvc.pszText = const_cast<LPWSTR>((LPCWSTR)sPath.c_str());
         ListView_InsertColumn(hListControl, 3, &lvc);
-        lvc.pszText = _T("Encoding");
+        lvc.pszText = const_cast<LPWSTR>((LPCWSTR)sEncoding.c_str());
         ListView_InsertColumn(hListControl, 4, &lvc);
-        lvc.pszText = _T("Date modified");
+        lvc.pszText = const_cast<LPWSTR>((LPCWSTR)sDateModified.c_str());
         ListView_InsertColumn(hListControl, 5, &lvc);
     }
 
@@ -985,7 +996,7 @@ bool CSearchDlg::AddFoundEntry(CSearchInfo * pInfo, bool bOnlyListControl)
         ListView_SetItem(hListControl, &lv);
         lv.iSubItem = 2;
         if (pInfo->readerror)
-            _tcscpy_s(sb.get(), MAX_PATH_NEW, _T("read error"));
+            _tcscpy_s(sb.get(), MAX_PATH_NEW, TranslatedString(hResource, IDS_READERROR).c_str());
         else
             _stprintf_s(sb.get(), MAX_PATH_NEW, _T("%ld"), pInfo->matchlinesnumbers.size());
         ListView_SetItem(hListControl, &lv);
@@ -1030,11 +1041,12 @@ bool CSearchDlg::AddFoundEntry(CSearchInfo * pInfo, bool bOnlyListControl)
             ret = ListView_InsertItem(hListControl, &lv);
             if (ret >= 0)
             {
+                std::wstring sBinary = TranslatedString(hResource, IDS_BINARY);
                 lv.mask = LVIF_TEXT;
                 lv.iItem = ret;
 
                 lv.iSubItem = 1;
-                lv.pszText = _T("binary");
+                lv.pszText = const_cast<LPWSTR>((LPCWSTR)sBinary.c_str());
                 ListView_SetItem(hListControl, &lv);
             }
         }
@@ -1129,7 +1141,7 @@ void CSearchDlg::FillResultList()
 
                 lv.iSubItem = 2;
                 if (pInfo->readerror)
-                    _tcscpy_s(sb.get(), MAX_PATH_NEW, _T("read error"));
+                    _tcscpy_s(sb.get(), MAX_PATH_NEW, TranslatedString(hResource, IDS_READERROR).c_str());
                 else
                     _stprintf_s(sb.get(), MAX_PATH_NEW, _T("%ld"), pInfo->matchlinesnumbers.size());
                 ListView_SetItem(hListControl, &lv);
@@ -1181,11 +1193,12 @@ void CSearchDlg::FillResultList()
                 int ret = ListView_InsertItem(hListControl, &lv);
                 if (ret >= 0)
                 {
+                    std::wstring sBinary = TranslatedString(hResource, IDS_BINARY);
                     lv.mask = LVIF_TEXT;
                     lv.iItem = ret;
 
                     lv.iSubItem = 1;
-                    lv.pszText = _T("binary");
+                    lv.pszText = const_cast<LPWSTR>((LPCWSTR)sBinary.c_str());
                     ListView_SetItem(hListControl, &lv);
                 }
             }
@@ -2372,14 +2385,14 @@ int CSearchDlg::CheckRegex()
         {
             if (bValid)
             {
-                SetDlgItemText(*this, IDC_REGEXOKLABEL, _T("regex ok"));
+                SetDlgItemText(*this, IDC_REGEXOKLABEL, TranslatedString(hResource, IDS_REGEXOK).c_str());
                 DialogEnableWindow(IDOK, true);
                 DialogEnableWindow(IDC_REPLACE, true);
                 DialogEnableWindow(IDC_CREATEBACKUP, true);
             }
             else
             {
-                SetDlgItemText(*this, IDC_REGEXOKLABEL, _T("invalid regex!"));
+                SetDlgItemText(*this, IDC_REGEXOKLABEL, TranslatedString(hResource, IDS_REGEXINVALID).c_str());
                 DialogEnableWindow(IDOK, false);
                 DialogEnableWindow(IDC_REPLACE, false);
                 DialogEnableWindow(IDC_CREATEBACKUP, false);

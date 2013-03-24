@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008, 2011-2012 - Stefan Kueng
+// Copyright (C) 2007-2008, 2011-2013 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -44,6 +44,7 @@ LRESULT CRegexTestDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lP
     case WM_INITDIALOG:
         {
             InitDialog(hwndDlg, IDI_GREPWIN);
+            CLanguage::Instance().TranslateWindow(*this);
             // initialize the controls
             SetDlgItemText(hwndDlg, IDC_SEARCHTEXT, m_searchText.c_str());
             SetDlgItemText(hwndDlg, IDC_REPLACETEXT, m_replaceText.c_str());
@@ -163,17 +164,17 @@ void CRegexTestDlg::DoRegex()
 {
     if (m_textContent.empty())
     {
-        SetDlgItemText(*this, IDC_REGEXMATCH, _T("no text to test with available"));
-        SetDlgItemText(*this, IDC_REGEXREPLACED, _T("no text to test with available"));
+        SetDlgItemText(*this, IDC_REGEXMATCH, TranslatedString(hResource, IDS_NOTESTTEXTAVAILABLE).c_str());
+        SetDlgItemText(*this, IDC_REGEXREPLACED, TranslatedString(hResource, IDS_NOTESTTEXTAVAILABLE).c_str());
     }
     else if (m_searchText.empty())
     {
-        SetDlgItemText(*this, IDC_REGEXMATCH, _T("search string is empty"));
-        SetDlgItemText(*this, IDC_REGEXREPLACED, _T("search string is empty"));
+        SetDlgItemText(*this, IDC_REGEXMATCH, TranslatedString(hResource, IDS_SEARCHSTRINGEMPTY).c_str());
+        SetDlgItemText(*this, IDC_REGEXREPLACED, TranslatedString(hResource, IDS_SEARCHSTRINGEMPTY).c_str());
     }
     else if (m_replaceText.empty())
     {
-        SetDlgItemText(*this, IDC_REGEXREPLACED, _T("no text to replace with"));
+        SetDlgItemText(*this, IDC_REGEXREPLACED, TranslatedString(hResource, IDS_NOREPLACETEXT).c_str());
     }
 
     if (!m_textContent.empty())
@@ -233,7 +234,7 @@ void CRegexTestDlg::DoRegex()
 
             }
             if (searchresult.empty())
-                SetDlgItemText(*this, IDC_REGEXMATCH, _T("no match"));
+                SetDlgItemText(*this, IDC_REGEXMATCH, TranslatedString(hResource, IDS_NOMATCH).c_str());
             else
                 SetDlgItemText(*this, IDC_REGEXMATCH, searchresult.c_str());
         }

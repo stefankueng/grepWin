@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2010, 2012 - Stefan Kueng
+// Copyright (C) 2007-2010, 2012-2013 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -44,6 +44,7 @@ LRESULT CBookmarksDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lP
     case WM_INITDIALOG:
         {
             InitDialog(hwndDlg, IDI_GREPWIN);
+            CLanguage::Instance().TranslateWindow(*this);
             // initialize the controls
             InitBookmarks();
 
@@ -212,15 +213,20 @@ void CBookmarksDlg::InitBookmarks()
         ListView_DeleteColumn(hListControl, c--);
 
     ListView_SetExtendedListViewStyle(hListControl, exStyle);
+
+    std::wstring sName          = TranslatedString(hResource, IDS_NAME);
+    std::wstring sSearchString  = TranslatedString(hResource, IDS_SEARCHSTRING);
+    std::wstring sReplaceString = TranslatedString(hResource, IDS_REPLACESTRING);
+
     LVCOLUMN lvc = {0};
     lvc.mask = LVCF_TEXT;
     lvc.fmt = LVCFMT_LEFT;
     lvc.cx = -1;
-    lvc.pszText = _T("Name");
+    lvc.pszText = const_cast<LPWSTR>((LPCWSTR)sName.c_str());
     ListView_InsertColumn(hListControl, 0, &lvc);
-    lvc.pszText = _T("Search string");
+    lvc.pszText = const_cast<LPWSTR>((LPCWSTR)sSearchString.c_str());
     ListView_InsertColumn(hListControl, 1, &lvc);
-    lvc.pszText = _T("Replace string");
+    lvc.pszText = const_cast<LPWSTR>((LPCWSTR)sReplaceString.c_str());
     ListView_InsertColumn(hListControl, 2, &lvc);
 
 
