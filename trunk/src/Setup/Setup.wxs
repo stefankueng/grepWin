@@ -38,8 +38,8 @@
         <Directory Id="INSTALLDIR" Name="grepWin">
 
           <Component Id="MainEXE" Guid="A9818B4B-B626-4455-AA31-588EAFAFA213">
-            <File Id="grepWin.EXE" Name="grepWin.exe" DiskId="1" Source="../../bin/release/grepWin.exe" Vital="yes">
-            </File>
+            <File Id="grepWin.EXE" Name="grepWin.exe" DiskId="1" Source="../../bin/release/grepWin.exe" Vital="yes" />
+            <File Id="Deutsch.lang" Name="Deutsch.lang" DiskId="1" Source="../../translations/Deutsch.lang" />
             <RegistryKey Root="HKLM" Key="Software\Classes\Directory\shell\grepWin..." />
             <RegistryValue Root="HKLM" Key="Software\Classes\Directory\shell\grepWin...\command" Value='[INSTALLDIR]grepWin.exe /searchpath:"%1"' Type="string" />
             <RegistryKey Root="HKLM" Key="Software\Classes\Directory\Background\shell\grepWin..." />
