@@ -50,7 +50,9 @@ while (fileindex--)
                 {
                     rv = r.match(re);
                     if (rv !== null)
+                    {
                         yearFound = true;
+                    }
 
                     copyrightFound = true;
                 }
@@ -60,7 +62,9 @@ while (fileindex--)
             if (copyrightFound && (!yearFound))
             {
                 if (errormsg !== "")
+                {
                     errormsg += "\n";
+                }
                 errormsg += f;
                 found = false;
             }
@@ -80,7 +84,7 @@ WScript.Quit(!found);
 // readFileLines
 function readPaths(path)
 {
-    var retPaths = new Array();
+    var retPaths = [];
     var fs = new ActiveXObject("Scripting.FileSystemObject");
     if (fs.FileExists(path))
     {
