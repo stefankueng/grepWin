@@ -245,6 +245,7 @@
     <None Include="Setup\Setup.wxs" />
     <None Include="..\version.build.in" />
     <None Include="..\versioninfo.build" />
+    <None Include="Setup\Setup64.wxs" />
     <None Include="Setup\WixUI_Custom.wxs" />
     <None Include="Resources\infodlg.htm">
       <DeploymentContent>true</DeploymentContent>

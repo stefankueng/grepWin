@@ -277,6 +277,9 @@
     <None Include="Resources\infodlg.htm">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="Setup\Setup64.wxs">
+      <Filter>Scripts</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resources\grepWin.rc">
