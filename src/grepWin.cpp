@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008, 2010-2012 - Stefan Kueng
+// Copyright (C) 2007-2008, 2010-2013 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -22,6 +22,7 @@
 #include "AboutDlg.h"
 #include "CmdLineParser.h"
 #include "Registry.h"
+#include "Language.h"
 
 // Global Variables:
 HINSTANCE hInst;            // current instance
@@ -50,6 +51,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
     UNREFERENCED_PARAMETER(nCmdShow);
 
     SetDllDirectory(L"");
+    hInst = hInstance;
     ::OleInitialize(NULL);
     ::CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
     // we need some of the common controls
@@ -114,6 +116,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
     int ret = 0;
     if (!bQuit)
     {
+        CLanguage::Instance().LoadFile(CRegStdString(L"Software\\grepWin\\languagefile"));
         if (parser.HasKey(_T("about"))||parser.HasKey(_T("?"))||parser.HasKey(_T("help")))
         {
             CAboutDlg aboutDlg(NULL);

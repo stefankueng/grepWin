@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2012 - Stefan Kueng
+// Copyright (C) 2007-2013 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -23,6 +23,8 @@
 #include "Registry.h"
 #include "SearchInfo.h"
 #include "LineData.h"
+#include "ResString.h"
+#include "resource.h"
 #include <set>
 #include <algorithm>
 
@@ -210,28 +212,28 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
     {
         if (editorcmd.size())
         {
-            ::InsertMenu(m_Menu, 1, MF_BYPOSITION | MF_STRING, 5, _T("Open with Editor"));
+            ::InsertMenu(m_Menu, 1, MF_BYPOSITION | MF_STRING, 5, TranslatedString(hInst, IDS_OPENWITHEDITOR).c_str());
             ::InsertMenu(m_Menu, 5, MF_SEPARATOR|MF_BYPOSITION, 0, NULL);
         }
 
-        ::InsertMenu(m_Menu, 1, MF_BYPOSITION | MF_STRING, 1, _T("Open Containing Folder"));
-        ::InsertMenu(m_Menu, 2, MF_BYPOSITION | MF_STRING, 2, _T("Copy path to clipboard"));
-        ::InsertMenu(m_Menu, 3, MF_BYPOSITION | MF_STRING, 3, _T("Copy filename to clipboard"));
+        ::InsertMenu(m_Menu, 1, MF_BYPOSITION | MF_STRING, 1, TranslatedString(hInst, IDS_OPENCONTAININGFOLDER).c_str());
+        ::InsertMenu(m_Menu, 2, MF_BYPOSITION | MF_STRING, 2, TranslatedString(hInst, IDS_COPYPATH).c_str());
+        ::InsertMenu(m_Menu, 3, MF_BYPOSITION | MF_STRING, 3, TranslatedString(hInst, IDS_COPYFILENAME).c_str());
         if (!m_lineVector.empty())
-            ::InsertMenu(m_Menu, 4, MF_BYPOSITION | MF_STRING, 4, _T("Copy text result to clipboard"));
+            ::InsertMenu(m_Menu, 4, MF_BYPOSITION | MF_STRING, 4, TranslatedString(hInst, IDS_COPYRESULT).c_str());
         ::InsertMenu(m_Menu, 5, MF_SEPARATOR|MF_BYPOSITION, 0, NULL);
     }
     else if (m_strVector.size() > 1)
     {
         if (editorcmd.size())
         {
-            ::InsertMenu(m_Menu, 1, MF_BYPOSITION | MF_STRING, 5, _T("Open with Editor"));
+            ::InsertMenu(m_Menu, 1, MF_BYPOSITION | MF_STRING, 5, TranslatedString(hInst, IDS_OPENWITHEDITOR).c_str());
             ::InsertMenu(m_Menu, 5, MF_SEPARATOR|MF_BYPOSITION, 0, NULL);
         }
-        ::InsertMenu(m_Menu, 2, MF_BYPOSITION | MF_STRING, 2, _T("Copy paths to clipboard"));
-        ::InsertMenu(m_Menu, 3, MF_BYPOSITION | MF_STRING, 3, _T("Copy filenames to clipboard"));
+        ::InsertMenu(m_Menu, 2, MF_BYPOSITION | MF_STRING, 2, TranslatedString(hInst, IDS_COPYPATHS).c_str());
+        ::InsertMenu(m_Menu, 3, MF_BYPOSITION | MF_STRING, 3, TranslatedString(hInst, IDS_COPYFILENAMES).c_str());
         if (!m_lineVector.empty())
-            ::InsertMenu(m_Menu, 4, MF_BYPOSITION | MF_STRING, 4, _T("Copy text results to clipboard"));
+            ::InsertMenu(m_Menu, 4, MF_BYPOSITION | MF_STRING, 4, TranslatedString(hInst, IDS_COPYRESULTS).c_str());
         ::InsertMenu(m_Menu, 5, MF_SEPARATOR|MF_BYPOSITION, 0, NULL);
     }
     // lets fill the our popup menu

@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2011-2012 - Stefan Kueng
+// Copyright (C) 2011-2013 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -41,6 +41,7 @@ LRESULT CMultiLineEditDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARA
     case WM_INITDIALOG:
         {
             InitDialog(hwndDlg, IDI_GREPWIN);
+            CLanguage::Instance().TranslateWindow(*this);
             // initialize the controls
             SetDlgItemText(hwndDlg, IDC_TEXTCONTENT, m_RegexText.c_str());
 
