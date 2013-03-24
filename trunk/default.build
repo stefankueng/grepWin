@@ -5,9 +5,9 @@
 
   <property name="configuration" value="release" />
   <!-- the signinfo.txt file has to contain one line with parameters for signtool.exe,
-         for example:
-         /t "url/to/timestamp/server" /q
-    -->
+       for example:
+       /t "url/to/timestamp/server" /q
+  -->
   <loadfile file="signinfo.txt" property="signinfo" failonerror="false" />
 
   <property name="solutionname" value="grepWin.sln"/>
@@ -122,5 +122,3 @@
 
 
 </project>
-
-
