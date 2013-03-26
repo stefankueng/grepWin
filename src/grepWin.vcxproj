@@ -117,6 +117,7 @@
     <ClCompile>
       <AdditionalIncludeDirectories>..\sktoolslib</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <EnableEnhancedInstructionSet>NoExtensions</EnableEnhancedInstructionSet>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -236,20 +237,20 @@
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\grepWin.ico" />
-    <None Include="Resources\small.ico" />
     <None Include="..\default.build">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Setup\setup.build" />
-    <None Include="Setup\Setup.wxs" />
     <None Include="..\version.build.in" />
     <None Include="..\versioninfo.build" />
-    <None Include="Setup\Setup64.wxs" />
-    <None Include="Setup\WixUI_Custom.wxs" />
+    <None Include="Resources\grepWin.ico" />
     <None Include="Resources\infodlg.htm">
       <DeploymentContent>true</DeploymentContent>
     </None>
+    <None Include="Resources\small.ico" />
+    <None Include="Setup\setup.build" />
+    <None Include="Setup\Setup.wxs" />
+    <None Include="Setup\Setup64.wxs" />
+    <None Include="Setup\WixUI_Custom.wxs" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resources\grepWin.rc" />
