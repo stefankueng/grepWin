@@ -18,7 +18,7 @@
 //
 #include "stdafx.h"
 #include "ShellContextMenu.h"
-#include "shellapi.h"
+#include <shellapi.h>
 #include "StringUtils.h"
 #include "Registry.h"
 #include "SearchInfo.h"

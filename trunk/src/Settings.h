@@ -17,7 +17,7 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 #pragma once
-#include "basedialog.h"
+#include "BaseDialog.h"
 #include "DlgResizer.h"
 #include "AeroControls.h"
 #include <string>
