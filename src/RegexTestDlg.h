@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008, 2012 - Stefan Kueng
+// Copyright (C) 2007-2008, 2012-2013 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -17,7 +17,7 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 #pragma once
-#include "basedialog.h"
+#include "BaseDialog.h"
 #include "DlgResizer.h"
 #include "AeroControls.h"
 #include <string>
