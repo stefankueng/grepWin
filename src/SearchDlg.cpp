@@ -546,6 +546,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                 }
                 break;
             }
+            return TRUE;
         }
         break;
     default:
