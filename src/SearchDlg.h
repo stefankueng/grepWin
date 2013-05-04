@@ -26,6 +26,7 @@
 #include "hyperlink.h"
 #include "AeroControls.h"
 #include "EditDoubleClick.h"
+#include "StringUtils.h"
 #include <string>
 #include <vector>
 
@@ -47,7 +48,7 @@ public:
     ~CSearchDlg(void);
 
     DWORD                   SearchThread();
-    void                    SetSearchPath(const std::wstring& path) {m_searchpath = path;}
+    void                    SetSearchPath(const std::wstring& path) {m_searchpath = path; SearchReplace(m_searchpath, L"/", L"\\"); }
     void                    SetSearchString(const std::wstring& search) {m_searchString = search;}
     void                    SetFileMask(const std::wstring& mask, bool reg) {m_patternregex = mask; m_bUseRegexForPaths = reg;}
     void                    SetExcludeFileMask(const std::wstring& mask) {m_excludedirspatternregex = mask;}
