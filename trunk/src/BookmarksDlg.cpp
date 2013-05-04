@@ -29,6 +29,15 @@
 CBookmarksDlg::CBookmarksDlg(HWND hParent)
     : m_hParent(hParent)
     , m_bUseRegex(false)
+    , m_bCaseSensitive(false)
+    , m_bDotMatchesNewline(false)
+    , m_bBackup(false)
+    , m_bUtf8(false)
+    , m_bIncludeSystem(false)
+    , m_bIncludeFolder(false)
+    , m_bIncludeHidden(false)
+    , m_bIncludeBinary(false)
+    , m_bFileMatchRegex(false)
 {
 }
 
@@ -140,9 +149,22 @@ LRESULT CBookmarksDlg::DoCommand(int id, int /*msg*/)
                 ListView_GetItem(GetDlgItem(*this, IDC_BOOKMARKS), &lv);
                 m_searchString = m_bookmarks.GetValue(buf.get(), _T("searchString"), _T(""));
                 m_replaceString = m_bookmarks.GetValue(buf.get(), _T("replaceString"), _T(""));
+                m_sExcludeDirs = m_bookmarks.GetValue(buf.get(), _T("excludedirs"), _T(""));
+                m_sFileMatch = m_bookmarks.GetValue(buf.get(), _T("filematch"), _T(""));
                 RemoveQuotes(m_searchString);
                 RemoveQuotes(m_replaceString);
-                m_bUseRegex = _tcscmp(m_bookmarks.GetValue(buf.get(), _T("useregex"), _T("false")), _T("true")) == 0;
+                RemoveQuotes(m_sExcludeDirs);
+                RemoveQuotes(m_sFileMatch);
+                m_bUseRegex             = _tcscmp(m_bookmarks.GetValue(buf.get(), _T("useregex"),           _T("false")), _T("true")) == 0;
+                m_bCaseSensitive        = _tcscmp(m_bookmarks.GetValue(buf.get(), _T("casesensitive"),      _T("false")), _T("true")) == 0;
+                m_bDotMatchesNewline    = _tcscmp(m_bookmarks.GetValue(buf.get(), _T("dotmatchesnewline"),  _T("false")), _T("true")) == 0;
+                m_bBackup               = _tcscmp(m_bookmarks.GetValue(buf.get(), _T("backup"),             _T("false")), _T("true")) == 0;
+                m_bUtf8                 = _tcscmp(m_bookmarks.GetValue(buf.get(), _T("utf8"),               _T("false")), _T("true")) == 0;
+                m_bIncludeSystem        = _tcscmp(m_bookmarks.GetValue(buf.get(), _T("includesystem"),      _T("false")), _T("true")) == 0;
+                m_bIncludeFolder        = _tcscmp(m_bookmarks.GetValue(buf.get(), _T("includefolder"),      _T("false")), _T("true")) == 0;
+                m_bIncludeHidden        = _tcscmp(m_bookmarks.GetValue(buf.get(), _T("includehidden"),      _T("false")), _T("true")) == 0;
+                m_bIncludeBinary        = _tcscmp(m_bookmarks.GetValue(buf.get(), _T("includebinary"),      _T("false")), _T("true")) == 0;
+                m_bFileMatchRegex       = _tcscmp(m_bookmarks.GetValue(buf.get(), _T("filematchregex"),     _T("false")), _T("true")) == 0;
             }
         }
         // fall through
@@ -184,12 +206,11 @@ LRESULT CBookmarksDlg::DoCommand(int id, int /*msg*/)
                 {
                     if (nameDlg.GetName().compare(buf.get()))
                     {
-                        std::wstring searchString = m_bookmarks.GetValue(buf.get(), _T("searchString"), _T(""));
-                        std::wstring replaceString = m_bookmarks.GetValue(buf.get(), _T("replaceString"), _T(""));
-                        RemoveQuotes(searchString);
-                        RemoveQuotes(replaceString);
-                        bool bUseRegex = _tcscmp(m_bookmarks.GetValue(buf.get(), _T("useregex"), _T("false")), _T("true")) == 0;
-                        m_bookmarks.AddBookmark(nameDlg.GetName(), searchString, replaceString, bUseRegex);
+                        Bookmark bk = m_bookmarks.GetBookmark(buf.get());
+                        RemoveQuotes(bk.Search);
+                        RemoveQuotes(bk.Replace);
+                        bk.Name = nameDlg.GetName();
+                        m_bookmarks.AddBookmark(bk);
                         m_bookmarks.RemoveBookmark(buf.get());
                         m_bookmarks.Save();
                         InitBookmarks();

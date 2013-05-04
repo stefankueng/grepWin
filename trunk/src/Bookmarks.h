@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008, 2012 - Stefan Kueng
+// Copyright (C) 2007-2008, 2012-2013 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -21,6 +21,41 @@
 #include <string>
 #include <vector>
 
+class Bookmark
+{
+public:
+    Bookmark()
+        : UseRegex(false)
+        , CaseSensitive(false)
+        , DotMatchesNewline(false)
+        , Backup(false)
+        , Utf8(false)
+        , IncludeSystem(false)
+        , IncludeFolder(false)
+        , IncludeHidden(false)
+        , IncludeBinary(false)
+        , FileMatchRegex(false)
+    {
+    }
+    ~Bookmark() {};
+
+    std::wstring            Name;
+    std::wstring            Search;
+    std::wstring            Replace;
+    bool                    UseRegex;
+    bool                    CaseSensitive;
+    bool                    DotMatchesNewline;
+    bool                    Backup;
+    bool                    Utf8;
+    bool                    IncludeSystem;
+    bool                    IncludeFolder;
+    bool                    IncludeHidden;
+    bool                    IncludeBinary;
+    std::wstring            ExcludeDirs;
+    std::wstring            FileMatch;
+    bool                    FileMatchRegex;
+
+};
 
 class CBookmarks : public CSimpleIni
 {
@@ -30,8 +65,9 @@ public:
 
     void                Load();
     void                Save();
-    void                AddBookmark(const std::wstring& name, const std::wstring& search, const std::wstring& replace, bool bRegex);
+    void                AddBookmark(const Bookmark& bm);
     void                RemoveBookmark(const std::wstring& name);
+    Bookmark            GetBookmark(const std::wstring& name);
 
 protected:
     std::wstring        m_iniPath;

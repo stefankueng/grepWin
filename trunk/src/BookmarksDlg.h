@@ -34,10 +34,20 @@ public:
     ~CBookmarksDlg(void);
 
     std::wstring            GetName() {return m_name;}
-    std::wstring            GetSelectedSearchString() {return m_searchString;}
-    std::wstring            GetSelectedReplaceString() {return m_replaceString;}
-    bool                    GetSelectedUseRegex() {return m_bUseRegex;}
-
+    std::wstring            GetSelectedSearchString() const { return m_searchString; }
+    std::wstring            GetSelectedReplaceString() const { return m_replaceString; }
+    bool                    GetSelectedUseRegex() const { return m_bUseRegex; }
+    bool                    GetSelectedSearchCase() const { return m_bCaseSensitive; }
+    bool                    GetSelectedDotMatchNewline() const { return m_bDotMatchesNewline; }
+    bool                    GetSelectedBackup() const { return m_bBackup; }
+    bool                    GetSelectedTreatAsUtf8() const { return m_bUtf8; }
+    bool                    GetSelectedIncludeSystem() const { return m_bIncludeSystem; }
+    bool                    GetSelectedIncludeFolder() const { return m_bIncludeFolder; }
+    bool                    GetSelectedIncludeHidden() const { return m_bIncludeHidden; }
+    bool                    GetSelectedIncludeBinary() const { return m_bIncludeBinary; }
+    std::wstring            GetSelectedExcludeDirs() const { return m_sExcludeDirs; }
+    std::wstring            GetSelectedFileMatch() const { return m_sFileMatch; }
+    bool                    GetSelectedFileMatchRegex() const { return m_bFileMatchRegex; }
 protected:
     LRESULT CALLBACK        DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
     LRESULT                 DoCommand(int id, int msg);
@@ -51,6 +61,18 @@ private:
     std::wstring            m_searchString;
     std::wstring            m_replaceString;
     bool                    m_bUseRegex;
+    bool                    m_bCaseSensitive;
+    bool                    m_bDotMatchesNewline;
+    bool                    m_bBackup;
+    bool                    m_bUtf8;
+    bool                    m_bIncludeSystem;
+    bool                    m_bIncludeFolder;
+    bool                    m_bIncludeHidden;
+    bool                    m_bIncludeBinary;
+    std::wstring            m_sExcludeDirs;
+    std::wstring            m_sFileMatch;
+    bool                    m_bFileMatchRegex;
+
 
     CDlgResizer             m_resizer;
     AeroControlBase         m_aerocontrols;

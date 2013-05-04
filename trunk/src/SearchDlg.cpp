@@ -670,6 +670,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 bool bIsDir = !!PathIsDirectory(buf.get());
                 if ((!bIsDir) && _tcschr(buf.get(), '|'))
                     bIsDir = true;  // assume directories in case of multiple paths
+                bool bIncludeSubfolders = (IsDlgButtonChecked(*this, IDC_INCLUDESUBFOLDERS) == BST_CHECKED);
                 DialogEnableWindow(IDC_ALLSIZERADIO, bIsDir);
                 DialogEnableWindow(IDC_SIZERADIO, bIsDir);
                 DialogEnableWindow(IDC_SIZECOMBO, bIsDir);
@@ -679,7 +680,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 DialogEnableWindow(IDC_INCLUDESUBFOLDERS, bIsDir);
                 DialogEnableWindow(IDC_INCLUDEBINARY, bIsDir && len > 0);
                 DialogEnableWindow(IDC_PATTERN, bIsDir);
-                DialogEnableWindow(IDC_EXCLUDEDIRSPATTERN, bIsDir);
+                DialogEnableWindow(IDC_EXCLUDEDIRSPATTERN, bIsDir || bIncludeSubfolders);
                 DialogEnableWindow(IDC_FILEPATTERNREGEX, bIsDir);
                 DialogEnableWindow(IDC_FILEPATTERNTEXT, bIsDir);
 
@@ -696,8 +697,12 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
         {
             if (msg == BN_CLICKED)
             {
+                auto buf = GetDlgItemText(IDC_SEARCHPATH);
                 bool bIncludeSubfolders = (IsDlgButtonChecked(*this, IDC_INCLUDESUBFOLDERS) == BST_CHECKED);
-                DialogEnableWindow(IDC_EXCLUDEDIRSPATTERN, bIncludeSubfolders);
+                bool bIsDir = !!PathIsDirectory(buf.get());
+                if ((!bIsDir) && _tcschr(buf.get(), '|'))
+                    bIsDir = true;  // assume directories in case of multiple paths
+                DialogEnableWindow(IDC_EXCLUDEDIRSPATTERN, bIsDir || bIncludeSubfolders);
             }
         }
         break;
@@ -747,6 +752,10 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
             m_searchString = buf.get();
             buf = GetDlgItemText(IDC_REPLACETEXT);
             m_replaceString = buf.get();
+            buf = GetDlgItemText(IDC_EXCLUDEDIRSPATTERN);
+            m_excludedirspatternregex = buf.get();
+            buf = GetDlgItemText(IDC_PATTERN);
+            m_patternregex = buf.get();
             bool bUseRegex = (IsDlgButtonChecked(*this, IDC_REGEXRADIO) == BST_CHECKED);
 
             CNameDlg nameDlg(*this);
@@ -754,8 +763,24 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
             {
                 // add the bookmark
                 CBookmarks bks;
+                Bookmark bk;
+                bk.Name = nameDlg.GetName();
+                bk.Search = m_searchString;
+                bk.Replace = m_replaceString;
+                bk.UseRegex = bUseRegex;
+                bk.CaseSensitive = (IsDlgButtonChecked(*this, IDC_CASE_SENSITIVE) == BST_CHECKED);
+                bk.DotMatchesNewline = (IsDlgButtonChecked(*this, IDC_DOTMATCHNEWLINE) == BST_CHECKED);
+                bk.Backup = (IsDlgButtonChecked(*this, IDC_CREATEBACKUP) == BST_CHECKED);
+                bk.Utf8 = (IsDlgButtonChecked(*this, IDC_UTF8) == BST_CHECKED);
+                bk.IncludeSystem = (IsDlgButtonChecked(*this, IDC_INCLUDESYSTEM) == BST_CHECKED);
+                bk.IncludeFolder = (IsDlgButtonChecked(*this, IDC_INCLUDESUBFOLDERS) == BST_CHECKED);
+                bk.IncludeHidden = (IsDlgButtonChecked(*this, IDC_INCLUDEHIDDEN) == BST_CHECKED);
+                bk.IncludeBinary = (IsDlgButtonChecked(*this, IDC_INCLUDEBINARY) == BST_CHECKED);
+                bk.ExcludeDirs = m_excludedirspatternregex;
+                bk.FileMatch = m_patternregex;
+                bk.FileMatchRegex = (IsDlgButtonChecked(*this, IDC_FILEPATTERNREGEX) == BST_CHECKED);
                 bks.Load();
-                bks.AddBookmark(nameDlg.GetName(), m_searchString, m_replaceString, bUseRegex);
+                bks.AddBookmark(bk);
                 bks.Save();
             }
         }
@@ -765,12 +790,39 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
             CBookmarksDlg dlg(*this);
             if (dlg.DoModal(hResource, IDD_BOOKMARKS, *this, IDC_GREPWIN) == IDOK)
             {
-                m_searchString = dlg.GetSelectedSearchString();
-                m_replaceString = dlg.GetSelectedReplaceString();
-                m_bUseRegex = dlg.GetSelectedUseRegex();
+                m_searchString              = dlg.GetSelectedSearchString();
+                m_replaceString             = dlg.GetSelectedReplaceString();
+                m_bUseRegex                 = dlg.GetSelectedUseRegex();
+
+                m_bCaseSensitive            = dlg.GetSelectedSearchCase();
+                m_bDotMatchesNewline        = dlg.GetSelectedDotMatchNewline();
+                m_bCreateBackup             = dlg.GetSelectedBackup();
+                m_bUTF8                     = dlg.GetSelectedTreatAsUtf8();
+                m_bIncludeSystem            = dlg.GetSelectedIncludeSystem();
+                m_bIncludeSubfolders        = dlg.GetSelectedIncludeFolder();
+                m_bIncludeHidden            = dlg.GetSelectedIncludeHidden();
+                m_bIncludeBinary            = dlg.GetSelectedIncludeBinary();
+                m_excludedirspatternregex   = dlg.GetSelectedExcludeDirs();
+                m_patternregex              = dlg.GetSelectedFileMatch();
+                m_bUseRegexForPaths         = dlg.GetSelectedFileMatchRegex();
+
+
                 SetDlgItemText(*this, IDC_SEARCHTEXT, m_searchString.c_str());
                 SetDlgItemText(*this, IDC_REPLACETEXT, m_replaceString.c_str());
                 CheckRadioButton(*this, IDC_REGEXRADIO, IDC_TEXTRADIO, m_bUseRegex ? IDC_REGEXRADIO : IDC_TEXTRADIO);
+
+                SendDlgItemMessage(*this, IDC_INCLUDESUBFOLDERS, BM_SETCHECK, m_bIncludeSubfolders ? BST_CHECKED : BST_UNCHECKED, 0);
+                SendDlgItemMessage(*this, IDC_CREATEBACKUP, BM_SETCHECK, m_bCreateBackup ? BST_CHECKED : BST_UNCHECKED, 0);
+                SendDlgItemMessage(*this, IDC_UTF8, BM_SETCHECK, m_bUTF8 ? BST_CHECKED : BST_UNCHECKED, 0);
+                SendDlgItemMessage(*this, IDC_INCLUDESYSTEM, BM_SETCHECK, m_bIncludeSystem ? BST_CHECKED : BST_UNCHECKED, 0);
+                SendDlgItemMessage(*this, IDC_INCLUDEHIDDEN, BM_SETCHECK, m_bIncludeHidden ? BST_CHECKED : BST_UNCHECKED, 0);
+                SendDlgItemMessage(*this, IDC_INCLUDEBINARY, BM_SETCHECK, m_bIncludeBinary ? BST_CHECKED : BST_UNCHECKED, 0);
+                SendDlgItemMessage(*this, IDC_CASE_SENSITIVE, BM_SETCHECK, m_bCaseSensitive ? BST_CHECKED : BST_UNCHECKED, 0);
+                SendDlgItemMessage(*this, IDC_DOTMATCHNEWLINE, BM_SETCHECK, m_bDotMatchesNewline ? BST_CHECKED : BST_UNCHECKED, 0);
+
+                CheckRadioButton(*this, IDC_FILEPATTERNREGEX, IDC_FILEPATTERNTEXT, m_bUseRegexForPaths ? IDC_FILEPATTERNREGEX : IDC_FILEPATTERNTEXT);
+                SetDlgItemText(*this, IDC_EXCLUDEDIRSPATTERN, m_excludedirspatternregex.c_str());
+                SetDlgItemText(*this, IDC_PATTERN, m_patternregex.c_str());
             }
         }
         break;
