@@ -39,6 +39,8 @@
 #include "LineData.h"
 #include "Settings.h"
 #include "SysInfo.h"
+#include "Language.h"
+
 #include <string>
 #include <iostream>
 #include <fstream>
@@ -1716,7 +1718,21 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
         if ((int)m_items.size() > iItem)
         {
             CSearchInfo inf = m_items[iItem];
-            lstrcpyn(pInfoTip->pszText,inf.filepath.c_str(), pInfoTip->cchTextMax);
+
+            std::wstring matchString = inf.filepath + L"\n";
+            for (size_t i = 0; i < min(inf.matchlines.size(), 5); ++i)
+            {
+                std::wstring matchtext = inf.matchlines[i];
+                CStringUtils::trim(matchtext);
+                matchString += CStringUtils::Format(L"Line %5ld : %30s\n", inf.matchlinesnumbers[i], matchtext.c_str());
+            }
+            if (inf.matchlines.size() >= 5)
+            {
+                std::wstring sx = TranslatedString(hResource, IDS_XMOREMATCHES);
+                std::wstring ssx = CStringUtils::Format(sx.c_str(), int(inf.matchlines.size() - 5));
+                matchString += ssx;
+            }
+            lstrcpyn(pInfoTip->pszText, matchString.c_str(), pInfoTip->cchTextMax);
         }
     }
 }
