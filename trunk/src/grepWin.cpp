@@ -23,6 +23,7 @@
 #include "CmdLineParser.h"
 #include "Registry.h"
 #include "Language.h"
+#include "StringUtils.h"
 
 // Global Variables:
 HINSTANCE hInst;            // current instance
@@ -94,6 +95,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
         if (SendMessage(hWnd, GREPWIN_STARTUPMSG, 0, 0))                // send the new path
         {
             std::wstring spath = parser.GetVal(_T("searchpath"));
+            SearchReplace(spath, L"/", L"\\");
             COPYDATASTRUCT CopyData = {0};
             CopyData.lpData = (LPVOID)spath.c_str();
             CopyData.cbData = (DWORD)spath.size()*sizeof(wchar_t);
@@ -104,6 +106,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
         else if (DWORD(CRegStdDWORD(_T("Software\\grepWin\\onlyone"), 0)))
         {
             std::wstring spath = parser.GetVal(_T("searchpath"));
+            SearchReplace(spath, L"/", L"\\");
             COPYDATASTRUCT CopyData = {0};
             CopyData.lpData = (LPVOID)spath.c_str();
             CopyData.cbData = (DWORD)spath.size()*sizeof(wchar_t);
