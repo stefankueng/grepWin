@@ -1772,11 +1772,12 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
             CSearchInfo inf = m_items[iItem];
 
             std::wstring matchString = inf.filepath + L"\n";
+            std::wstring sFormat = TranslatedString(hResource, IDS_CONTEXTLINE);
             for (size_t i = 0; i < min(inf.matchlines.size(), 5); ++i)
             {
                 std::wstring matchtext = inf.matchlines[i];
                 CStringUtils::trim(matchtext);
-                matchString += CStringUtils::Format(L"Line %5ld : %30s\n", inf.matchlinesnumbers[i], matchtext.c_str());
+                matchString += CStringUtils::Format(sFormat.c_str(), inf.matchlinesnumbers[i], matchtext.c_str());
             }
             if (inf.matchlines.size() >= 5)
             {
