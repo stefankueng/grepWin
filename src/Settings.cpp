@@ -149,7 +149,8 @@ LRESULT CSettingsDlg::DoCommand(int id, int /*msg*/)
             ofn.hwndOwner = *this;
             ofn.lpstrFile = szFile;
             ofn.nMaxFile = _countof(szFile);
-            ofn.lpstrTitle = TranslatedString(hResource, IDS_SELECTEDITOR).c_str();
+            std::wstring sTitle = TranslatedString(hResource, IDS_SELECTEDITOR);
+            ofn.lpstrTitle = sTitle.c_str();
             ofn.Flags = OFN_FILEMUSTEXIST|OFN_HIDEREADONLY|OFN_PATHMUSTEXIST|OFN_DONTADDTORECENT;
             ofn.lpstrFilter = _T("Programs\0*.exe;*.com\0All files\0*.*\0\0");
             ofn.nFilterIndex = 1;
