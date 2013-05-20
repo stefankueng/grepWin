@@ -62,14 +62,20 @@ LRESULT CSettingsDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
             SendDlgItemMessage(hwndDlg, IDC_LANGUAGE, CB_INSERTSTRING, (WPARAM)-1, (LPARAM)L"English");
             while (fileEnumerator.NextFile(sPath, &bIsDirectory, bRecurse))
             {
-                std::wstring ext = sPath.substr(sPath.find_last_of('.'));
+                size_t dotpos = sPath.find_last_of('.');
+                if (dotpos == std::wstring::npos)
+                    continue;
+                std::wstring ext = sPath.substr(dotpos);
                 if (ext.compare(L".lang"))
                     continue;
                 m_langpaths.push_back(sPath);
                 if (sPath.compare(regLang)==0)
                     langIndex = index;
-                sPath = sPath.substr(sPath.find_last_of('\\')+1);
-                sPath = sPath.substr(0, sPath.find_last_of('.'));
+                size_t slashpos = sPath.find_last_of('\\');
+                if (slashpos == std::wstring::npos)
+                    continue;
+                sPath = sPath.substr(slashpos+1);
+                sPath = sPath.substr(0, dotpos);
                 SendDlgItemMessage(hwndDlg, IDC_LANGUAGE, CB_INSERTSTRING, (WPARAM)-1, (LPARAM)sPath.c_str());
                 ++index;
             }
