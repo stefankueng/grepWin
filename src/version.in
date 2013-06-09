@@ -1,3 +1,5 @@
+#pragma once
+
 #define FILEVER         $MajorVersion$, $MinorVersion$, $MicroVersion$, $WCREV$
 #define PRODUCTVER      $MajorVersion$, $MinorVersion$, $MicroVersion$, $WCREV$
 #define STRFILEVER      "$MajorVersion$.$MinorVersion$.$MicroVersion$.$WCREV$\0"
