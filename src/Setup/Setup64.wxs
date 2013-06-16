@@ -13,7 +13,7 @@
 
     <Package Id="*" Keywords="Installer"
           Description="Stefans grepWin x64"
-          Comments="http://tools.tortoisesvn.net" Manufacturer="Stefans Tools"
+          Comments="http://stefanstools.sourceforge.net" Manufacturer="Stefans Tools"
           InstallerVersion="200" Platform="x64" Languages="1033" Compressed="yes" SummaryCodepage="1252" />
 
     <Upgrade Id="C73ED533-953E-47E5-9A42-A48292BB7C6C" >
