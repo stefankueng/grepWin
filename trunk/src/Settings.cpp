@@ -46,7 +46,7 @@ LRESULT CSettingsDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 
             CLanguage::Instance().TranslateWindow(*this);
 
-            SetDlgItemText(hwndDlg, IDC_EDITORCMD, std::wstring(m_regEditorCmd).c_str());
+            SetDlgItemText(hwndDlg, IDC_EDITORCMD, bPortable ? g_iniFile.GetValue(L"global", L"editorcmd", L"") : std::wstring(m_regEditorCmd).c_str());
 
             wchar_t modulepath[MAX_PATH] = {0};
             GetModuleFileName(NULL, modulepath, MAX_PATH);
@@ -57,6 +57,10 @@ LRESULT CSettingsDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
             bool bIsDirectory = false;
             std::wstring sPath;
             CRegStdString regLang(L"Software\\grepWin\\languagefile");
+            std::wstring setLang = regLang;
+            if (bPortable)
+                setLang = g_iniFile.GetValue(L"global", L"languagefile", L"");
+
             int index = 1;
             int langIndex = 0;
             SendDlgItemMessage(hwndDlg, IDC_LANGUAGE, CB_INSERTSTRING, (WPARAM)-1, (LPARAM)L"English");
@@ -69,7 +73,7 @@ LRESULT CSettingsDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
                 if (ext.compare(L".lang"))
                     continue;
                 m_langpaths.push_back(sPath);
-                if (sPath.compare(regLang)==0)
+                if (sPath.compare(setLang)==0)
                     langIndex = index;
                 size_t slashpos = sPath.find_last_of('\\');
                 if (slashpos == std::wstring::npos)
@@ -127,19 +131,27 @@ LRESULT CSettingsDlg::DoCommand(int id, int /*msg*/)
     case IDOK:
         {
             auto buf = GetDlgItemText(IDC_EDITORCMD);
-            m_regEditorCmd = buf.get();
+            if (bPortable)
+                g_iniFile.SetValue(L"global", L"editorcmd", buf.get());
+            else
+                m_regEditorCmd = buf.get();
             int langIndex = (int)SendDlgItemMessage(*this, IDC_LANGUAGE, CB_GETCURSEL, 0, 0);
-            CRegStdString regLang(L"Software\\grepWin\\languagefile");
-            if (langIndex==0)
-            {
-                regLang.removeValue();
-                CLanguage::Instance().LoadFile(L"");
-            }
+            std::wstring langpath = langIndex==0 ? L"" : m_langpaths[langIndex-1];
+            if (bPortable)
+                g_iniFile.SetValue(L"global", L"languagefile", langpath.c_str());
             else
             {
-                regLang = m_langpaths[langIndex-1];
-                CLanguage::Instance().LoadFile(m_langpaths[langIndex-1]);
+                CRegStdString regLang(L"Software\\grepWin\\languagefile");
+                if (langIndex==0)
+                {
+                    regLang.removeValue();
+                }
+                else
+                {
+                    regLang = langpath;
+                }
             }
+            CLanguage::Instance().LoadFile(langpath);
             CLanguage::Instance().TranslateWindow(::GetParent(*this));
         }
         // fall through

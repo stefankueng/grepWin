@@ -111,6 +111,11 @@ CSearchDlg::CSearchDlg(HWND hParent)
     , m_regSearchPath(_T("Software\\grepWin\\searchpath"))
     , m_regOnlyOne(_T("Software\\grepWin\\onlyone"), 0)
     , m_regEditorCmd(_T("Software\\grepWin\\editorcmd"))
+    , m_AutoCompleteFilePatterns(bPortable ? &g_iniFile : NULL)
+    , m_AutoCompleteExcludeDirsPatterns(bPortable ? &g_iniFile : NULL)
+    , m_AutoCompleteSearchPatterns(bPortable ? &g_iniFile : NULL)
+    , m_AutoCompleteReplacePatterns(bPortable ? &g_iniFile : NULL)
+    , m_AutoCompleteSearchPaths(bPortable ? &g_iniFile : NULL)
 {
     m_startTime = GetTickCount();
 }
@@ -149,7 +154,10 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 
             if (m_searchpath.empty())
             {
-                m_searchpath = std::wstring(m_regSearchPath);
+                if (bPortable)
+                    m_searchpath = g_iniFile.GetValue(L"global", L"searchpath", L"");
+                else
+                    m_searchpath = std::wstring(m_regSearchPath);
             }
             // expand a possible 'short' path
             DWORD ret = 0;
@@ -163,11 +171,24 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 
             if (m_patternregex.size() == 0)
             {
-                m_patternregex = std::wstring(m_regPattern);
-                m_bUseRegexForPaths = !!DWORD(m_regUseRegexForPaths);
+                if (bPortable)
+                {
+                    m_patternregex = g_iniFile.GetValue(L"global", L"pattern", L"");
+                    m_bUseRegexForPaths = !!_wtoi(g_iniFile.GetValue(L"global", L"UseFileMatchRegex", L""));
+                }
+                else
+                {
+                    m_patternregex = std::wstring(m_regPattern);
+                    m_bUseRegexForPaths = !!DWORD(m_regUseRegexForPaths);
+                }
             }
             if (m_excludedirspatternregex.size() == 0)
-                m_excludedirspatternregex = std::wstring(m_regExcludeDirsPattern);
+            {
+                if (bPortable)
+                    m_excludedirspatternregex = g_iniFile.GetValue(L"global", L"ExcludeDirsPattern", L"");
+                else
+                    m_excludedirspatternregex = std::wstring(m_regExcludeDirsPattern);
+            }
             // initialize the controls
             SetDlgItemText(hwndDlg, IDC_SEARCHPATH, m_searchpath.c_str());
             SetDlgItemText(hwndDlg, IDC_SEARCHTEXT, m_searchString.c_str());
@@ -232,40 +253,38 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             }
             else
             {
-                if (DWORD(m_regSize) > 0)
-                {
-                    _stprintf_s(buf, _countof(buf), _T("%ld"), DWORD(m_regSize));
-                    SetDlgItemText(hwndDlg, IDC_SIZEEDIT, buf);
-                }
-                else
-                    SetDlgItemText(hwndDlg, IDC_SIZEEDIT, _T("2000"));
+                int s = DWORD(m_regSize);
+                if (bPortable)
+                    s = _wtoi(g_iniFile.GetValue(L"global", L"size", L"2000"));
+                _stprintf_s(buf, _countof(buf), _T("%ld"), s);
+                SetDlgItemText(hwndDlg, IDC_SIZEEDIT, buf);
             }
 
             SendDlgItemMessage(hwndDlg, IDC_SIZECOMBO, CB_INSERTSTRING, (WPARAM)-1, (LPARAM)(LPCWSTR)TranslatedString(hResource, IDS_LESSTHAN).c_str());
             SendDlgItemMessage(hwndDlg, IDC_SIZECOMBO, CB_INSERTSTRING, (WPARAM)-1, (LPARAM)(LPCWSTR)TranslatedString(hResource, IDS_EQUALTO).c_str());
             SendDlgItemMessage(hwndDlg, IDC_SIZECOMBO, CB_INSERTSTRING, (WPARAM)-1, (LPARAM)(LPCWSTR)TranslatedString(hResource, IDS_GREATERTHAN).c_str());
             if (!m_bIncludeSubfoldersC)
-                m_bIncludeSubfolders = !!DWORD(m_regIncludeSubfolders);
+                m_bIncludeSubfolders = bPortable ? !!_wtoi(g_iniFile.GetValue(L"global", L"IncludeSubfolders", L"0")) : !!DWORD(m_regIncludeSubfolders);
             if (!m_bIncludeSystemC)
-                m_bIncludeSystem = !!DWORD(m_regIncludeSystem);
+                m_bIncludeSystem = bPortable ? !!_wtoi(g_iniFile.GetValue(L"global", L"IncludeSystem", L"0")) : !!DWORD(m_regIncludeSystem);
             if (!m_bIncludeHiddenC)
-                m_bIncludeHidden = !!DWORD(m_regIncludeHidden);
+                m_bIncludeHidden = bPortable ? !!_wtoi(g_iniFile.GetValue(L"global", L"IncludeHidden", L"0")) : !!DWORD(m_regIncludeHidden);
             if (!m_bIncludeBinaryC)
-                m_bIncludeBinaryC = !!DWORD(m_regIncludeBinary);
+                m_bIncludeBinaryC = bPortable ? !!_wtoi(g_iniFile.GetValue(L"global", L"IncludeBinary", L"0")) : !!DWORD(m_regIncludeBinary);
             if (!m_bCaseSensitiveC)
-                m_bCaseSensitive = !!DWORD(m_regCaseSensitive);
+                m_bCaseSensitive = bPortable ? !!_wtoi(g_iniFile.GetValue(L"global", L"CaseSensitive", L"0")) : !!DWORD(m_regCaseSensitive);
             if (!m_bDotMatchesNewlineC)
-                m_bDotMatchesNewline = !!DWORD(m_regDotMatchesNewline);
+                m_bDotMatchesNewline = bPortable ? !!_wtoi(g_iniFile.GetValue(L"global", L"DotMatchesNewline", L"0")) : !!DWORD(m_regDotMatchesNewline);
             if (!m_bCreateBackupC)
-                m_bCreateBackup = !!DWORD(m_regCreateBackup);
+                m_bCreateBackup = bPortable ? !!_wtoi(g_iniFile.GetValue(L"global", L"CreateBackup", L"0")) : !!DWORD(m_regCreateBackup);
             if (!m_bUTF8C)
-                m_bUTF8 = !!DWORD(m_regUTF8);
+                m_bUTF8 = bPortable ? !!_wtoi(g_iniFile.GetValue(L"global", L"UTF8", L"0")) : !!DWORD(m_regUTF8);
             if (!m_bDotMatchesNewlineC)
-                m_bDotMatchesNewline = !!DWORD(m_regDotMatchesNewline);
+                m_bDotMatchesNewline = bPortable ? !!_wtoi(g_iniFile.GetValue(L"global", L"DotMatchesNewline", L"0")) : !!DWORD(m_regDotMatchesNewline);
             if (!m_bSizeC)
             {
-                m_bAllSize = !!DWORD(m_regAllSize);
-                m_sizeCmp = (int)DWORD(m_regSizeCombo);
+                m_bAllSize = bPortable ? !!_wtoi(g_iniFile.GetValue(L"global", L"AllSize", L"0")) : !!DWORD(m_regAllSize);
+                m_sizeCmp = bPortable ? _wtoi(g_iniFile.GetValue(L"global", L"SizeCombo", L"0")) : (int)DWORD(m_regSizeCombo);
             }
 
             SendDlgItemMessage(hwndDlg, IDC_SIZECOMBO, CB_SETCURSEL, m_sizeCmp, 0);
@@ -278,9 +297,9 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             SendDlgItemMessage(hwndDlg, IDC_INCLUDEBINARY, BM_SETCHECK, m_bIncludeBinary ? BST_CHECKED : BST_UNCHECKED, 0);
             SendDlgItemMessage(hwndDlg, IDC_CASE_SENSITIVE, BM_SETCHECK, m_bCaseSensitive ? BST_CHECKED : BST_UNCHECKED, 0);
             SendDlgItemMessage(hwndDlg, IDC_DOTMATCHNEWLINE, BM_SETCHECK, m_bDotMatchesNewline ? BST_CHECKED : BST_UNCHECKED, 0);
-            SendDlgItemMessage(hwndDlg, IDC_ONLYONE, BM_SETCHECK, DWORD(m_regOnlyOne) ? BST_CHECKED : BST_UNCHECKED, 0);
+            SendDlgItemMessage(hwndDlg, IDC_ONLYONE, BM_SETCHECK, bPortable ? _wtoi(g_iniFile.GetValue(L"global", L"onlyone", L"0")) : DWORD(m_regOnlyOne) ? BST_CHECKED : BST_UNCHECKED, 0);
 
-            CheckRadioButton(hwndDlg, IDC_REGEXRADIO, IDC_TEXTRADIO, DWORD(m_regUseRegex) ? IDC_REGEXRADIO : IDC_TEXTRADIO);
+            CheckRadioButton(hwndDlg, IDC_REGEXRADIO, IDC_TEXTRADIO, bPortable ? _wtoi(g_iniFile.GetValue(L"global", L"UseRegex", L"0")) : DWORD(m_regUseRegex) ? IDC_REGEXRADIO : IDC_TEXTRADIO);
             CheckRadioButton(hwndDlg, IDC_ALLSIZERADIO, IDC_SIZERADIO, m_bAllSize ? IDC_ALLSIZERADIO : IDC_SIZERADIO);
             CheckRadioButton(hwndDlg, IDC_FILEPATTERNREGEX, IDC_FILEPATTERNTEXT, m_bUseRegexForPaths ? IDC_FILEPATTERNREGEX : IDC_FILEPATTERNTEXT);
 
@@ -1504,6 +1523,8 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
 
             CRegStdString regEditorCmd(L"Software\\grepWin\\editorcmd");
             std::wstring cmd = regEditorCmd;
+            if (bPortable)
+                cmd = g_iniFile.GetValue(L"global", L"editorcmd", L"");
             if (cmd.size())
             {
                 bool filelist = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
@@ -1844,9 +1865,15 @@ bool CSearchDlg::SaveSettings()
 
     if (m_searchpath.empty())
         return false;
-    m_regSearchPath = m_searchpath;
+    if (bPortable)
+        g_iniFile.SetValue(L"global", L"searchpath", m_searchpath.c_str());
+    else
+        m_regSearchPath = m_searchpath;
     m_bUseRegex = (IsDlgButtonChecked(*this, IDC_REGEXRADIO) == BST_CHECKED);
-    m_regUseRegex = (DWORD)m_bUseRegex;
+    if (bPortable)
+        g_iniFile.SetValue(L"global", L"UseRegex", m_bUseRegex ? L"1" : L"0");
+    else
+        m_regUseRegex = (DWORD)m_bUseRegex;
     if (m_bUseRegex)
     {
         // check if the regex is valid before doing the search
@@ -1856,7 +1883,10 @@ bool CSearchDlg::SaveSettings()
         }
     }
     m_bUseRegexForPaths = (IsDlgButtonChecked(*this, IDC_FILEPATTERNREGEX) == BST_CHECKED);
-    m_regUseRegexForPaths = (DWORD)m_bUseRegexForPaths;
+    if (bPortable)
+        g_iniFile.SetValue(L"global", L"UseFileMatchRegex", m_bUseRegexForPaths ? L"1" : L"0");
+    else
+        m_regUseRegexForPaths = (DWORD)m_bUseRegexForPaths;
     if (m_bUseRegexForPaths)
     {
         // check if the regex is valid before doing the search
@@ -1873,17 +1903,26 @@ bool CSearchDlg::SaveSettings()
     }
 
     m_bAllSize = (IsDlgButtonChecked(*this, IDC_ALLSIZERADIO) == BST_CHECKED);
-    m_regAllSize = (DWORD)m_bAllSize;
+    if (bPortable)
+        g_iniFile.SetValue(L"global", L"AllSize", m_bAllSize ? L"1" : L"0");
+    else
+        m_regAllSize = (DWORD)m_bAllSize;
     m_lSize = 0;
     m_sizeCmp = 0;
     if (!m_bAllSize)
     {
         buf = GetDlgItemText(IDC_SIZEEDIT);
         m_lSize = _tstol(buf.get());
-        m_regSize = m_lSize;
+        if (bPortable)
+            g_iniFile.SetValue(L"global", L"Size", CStringUtils::Format(L"%d", m_lSize).c_str());
+        else
+            m_regSize = m_lSize;
         m_lSize *= 1024;
         m_sizeCmp = (int)SendDlgItemMessage(*this, IDC_SIZECOMBO, CB_GETCURSEL, 0, 0);
-        m_regSizeCombo = m_sizeCmp;
+        if (bPortable)
+            g_iniFile.SetValue(L"global", L"SizeCombo", CStringUtils::Format(L"%d", m_sizeCmp).c_str());
+        else
+            m_regSizeCombo = m_sizeCmp;
     }
     m_bIncludeSystem = (IsDlgButtonChecked(*this, IDC_INCLUDESYSTEM) == BST_CHECKED);
     m_bIncludeHidden = (IsDlgButtonChecked(*this, IDC_INCLUDEHIDDEN) == BST_CHECKED);
@@ -1894,17 +1933,34 @@ bool CSearchDlg::SaveSettings()
     m_bCaseSensitive = (IsDlgButtonChecked(*this, IDC_CASE_SENSITIVE) == BST_CHECKED);
     m_bDotMatchesNewline = (IsDlgButtonChecked(*this, IDC_DOTMATCHNEWLINE) == BST_CHECKED);
 
-    m_regOnlyOne = IsDlgButtonChecked(*this, IDC_ONLYONE) == BST_CHECKED;
-    m_regIncludeSystem = (DWORD)m_bIncludeSystem;
-    m_regIncludeHidden = (DWORD)m_bIncludeHidden;
-    m_regIncludeSubfolders = (DWORD)m_bIncludeSubfolders;
-    m_regIncludeBinary = (DWORD)m_bIncludeBinary;
-    m_regCreateBackup = (DWORD)m_bCreateBackup;
-    m_regUTF8 = (DWORD)m_bUTF8;
-    m_regCaseSensitive = (DWORD)m_bCaseSensitive;
-    m_regDotMatchesNewline = (DWORD)m_bDotMatchesNewline;
-    m_regPattern = m_patternregex;
-    m_regExcludeDirsPattern = m_excludedirspatternregex;
+    if (bPortable)
+    {
+        g_iniFile.SetValue(L"global", L"onlyone", IsDlgButtonChecked(*this, IDC_ONLYONE) == BST_CHECKED ? L"1" : L"0");
+        g_iniFile.SetValue(L"global", L"IncludeSystem", m_bIncludeSystem ? L"1" : L"0");
+        g_iniFile.SetValue(L"global", L"IncludeHidden", m_bIncludeHidden ? L"1" : L"0");
+        g_iniFile.SetValue(L"global", L"IncludeSubfolders", m_bIncludeSubfolders ? L"1" : L"0");
+        g_iniFile.SetValue(L"global", L"IncludeBinary", m_bIncludeBinary ? L"1" : L"0");
+        g_iniFile.SetValue(L"global", L"CreateBackup", m_bCreateBackup ? L"1" : L"0");
+        g_iniFile.SetValue(L"global", L"UTF8", m_bUTF8 ? L"1" : L"0");
+        g_iniFile.SetValue(L"global", L"CaseSensitive", m_bCaseSensitive ? L"1" : L"0");
+        g_iniFile.SetValue(L"global", L"DotMatchesNewline", m_bDotMatchesNewline ? L"1" : L"0");
+        g_iniFile.SetValue(L"global", L"pattern", m_patternregex.c_str());
+        g_iniFile.SetValue(L"global", L"ExcludeDirsPattern", m_excludedirspatternregex.c_str());
+    }
+    else
+    {
+        m_regOnlyOne = IsDlgButtonChecked(*this, IDC_ONLYONE) == BST_CHECKED;
+        m_regIncludeSystem = (DWORD)m_bIncludeSystem;
+        m_regIncludeHidden = (DWORD)m_bIncludeHidden;
+        m_regIncludeSubfolders = (DWORD)m_bIncludeSubfolders;
+        m_regIncludeBinary = (DWORD)m_bIncludeBinary;
+        m_regCreateBackup = (DWORD)m_bCreateBackup;
+        m_regUTF8 = (DWORD)m_bUTF8;
+        m_regCaseSensitive = (DWORD)m_bCaseSensitive;
+        m_regDotMatchesNewline = (DWORD)m_bDotMatchesNewline;
+        m_regPattern = m_patternregex;
+        m_regExcludeDirsPattern = m_excludedirspatternregex;
+    }
 
     SaveWndPosition();
 

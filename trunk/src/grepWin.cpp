@@ -27,7 +27,8 @@
 
 // Global Variables:
 HINSTANCE hInst;            // current instance
-
+bool bPortable = false;
+CSimpleIni g_iniFile;
 
 BOOL CALLBACK windowenumerator(__in  HWND hwnd,__in  LPARAM lParam)
 {
@@ -89,8 +90,25 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
         timeout--;
     } while ((hWnd == NULL) && alreadyRunning && timeout);
 
+    std::unique_ptr<TCHAR[]> path(new TCHAR[MAX_PATH_NEW]);
+    GetModuleFileName(NULL, path.get(), MAX_PATH_NEW);
+    bPortable = ((_tcsstr(path.get(), _T("portable")))||(parser.HasKey(_T("portable"))));
+
+    std::wstring iniPath = path.get();
+    iniPath = iniPath.substr(0, iniPath.rfind('\\'));
+    iniPath += L"\\grepwin.ini";
+    if (parser.HasVal(L"inipath"))
+        iniPath = parser.GetVal(L"inipath");
+
+    if (bPortable)
+        g_iniFile.LoadFile(iniPath.c_str());
+
+
     if (hWnd)
     {
+        bool bOnlyOne = !!DWORD(CRegStdDWORD(_T("Software\\grepWin\\onlyone"), 0));
+        if (bPortable)
+            bOnlyOne = !!_wtoi(g_iniFile.GetValue(L"global", L"onlyone", L"0"));
         UINT GREPWIN_STARTUPMSG = RegisterWindowMessage(_T("grepWin_StartupMessage"));
         if (SendMessage(hWnd, GREPWIN_STARTUPMSG, 0, 0))                // send the new path
         {
@@ -103,7 +121,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
             SetForegroundWindow(hWnd);                                  //set the window to front
             bQuit = true;
         }
-        else if (DWORD(CRegStdDWORD(_T("Software\\grepWin\\onlyone"), 0)))
+        else if (bOnlyOne)
         {
             std::wstring spath = parser.GetVal(_T("searchpath"));
             SearchReplace(spath, L"/", L"\\");
@@ -119,7 +137,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
     int ret = 0;
     if (!bQuit)
     {
-        CLanguage::Instance().LoadFile(CRegStdString(L"Software\\grepWin\\languagefile"));
+        CLanguage::Instance().LoadFile(bPortable ? g_iniFile.GetValue(L"global", L"languagefile", L"") : std::wstring(CRegStdString(L"Software\\grepWin\\languagefile")));
         if (parser.HasKey(_T("about"))||parser.HasKey(_T("?"))||parser.HasKey(_T("help")))
         {
             CAboutDlg aboutDlg(NULL);
@@ -167,7 +185,15 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 
             if (parser.HasKey(_T("execute")))
                 searchDlg.SetExecute(true);
+
             ret = (int)searchDlg.DoModal(hInstance, IDD_SEARCHDLG, NULL, IDR_SEARCHDLG);
+        }
+        if (bPortable)
+        {
+            FILE * pFile = NULL;
+            _tfopen_s(&pFile, iniPath.c_str(), _T("wb"));
+            g_iniFile.SaveFile(pFile);
+            fclose(pFile);
         }
     }
 
