@@ -75,7 +75,7 @@ protected:
 
     bool                    InitResultList();
     void                    FillResultList();
-    bool                    AddFoundEntry(CSearchInfo * pInfo, bool bOnlyListControl = false);
+    bool                    AddFoundEntry(CSearchInfo * pInfo, int index, bool bOnlyListControl = false);
     void                    ShowContextMenu(int x, int y);
     void                    DoListNotify(LPNMITEMACTIVATE lpNMItemActivate);
     void                    UpdateInfoLabel();
