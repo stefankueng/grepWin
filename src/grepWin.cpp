@@ -123,7 +123,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
         }
         else if (bOnlyOne)
         {
-            std::wstring spath = parser.GetVal(_T("searchpath"));
+            std::wstring spath = parser.HasVal(L"searchpath") ? parser.GetVal(_T("searchpath")) : L"";
             SearchReplace(spath, L"/", L"\\");
             COPYDATASTRUCT CopyData = {0};
             CopyData.lpData = (LPVOID)spath.c_str();
