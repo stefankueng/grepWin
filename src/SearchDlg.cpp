@@ -442,7 +442,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
         m_totalmatches += (int)((CSearchInfo*)lParam)->matchlinesnumbers.size();
         if ((wParam != 0)||(m_searchString.empty())||((CSearchInfo*)lParam)->readerror)
         {
-            AddFoundEntry((CSearchInfo*)lParam);
+            AddFoundEntry((CSearchInfo*)lParam, -1);
             UpdateInfoLabel();
         }
         break;
@@ -1021,13 +1021,13 @@ bool CSearchDlg::InitResultList()
     return true;
 }
 
-bool CSearchDlg::AddFoundEntry(CSearchInfo * pInfo, bool bOnlyListControl)
+bool CSearchDlg::AddFoundEntry(CSearchInfo * pInfo, int index, bool bOnlyListControl)
 {
     bool filelist = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
     HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
     LVITEM lv = {0};
     lv.iItem = ListView_GetItemCount(hListControl);
-    LPARAM nEntryCount = filelist ? lv.iItem : m_items.size();
+    LPARAM nEntryCount = index < 0 ? lv.iItem : index;
     lv.lParam = nEntryCount;
     int ret = 0;
     if (filelist)
@@ -1737,9 +1737,10 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
         HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
         SendMessage(hListControl, WM_SETREDRAW, FALSE, 0);
         ListView_DeleteAllItems(hListControl);
+        int index = 0;
         for (auto it = m_items.begin(); it != m_items.end(); ++it)
         {
-            AddFoundEntry(&(*it), true);
+            AddFoundEntry(&(*it), index++, true);
         }
 
         AutoSizeAllColumns();
