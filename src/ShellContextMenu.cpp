@@ -208,6 +208,9 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
 
     CRegStdString regEditorCmd(L"Software\\grepWin\\editorcmd");
     std::wstring editorcmd = regEditorCmd;
+    if (bPortable)
+        editorcmd = g_iniFile.GetValue(L"global", L"editorcmd", L"");
+
     if (m_strVector.size() == 1)
     {
         if (editorcmd.size())

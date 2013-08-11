@@ -35,8 +35,7 @@ void CBookmarks::Load()
 {
     std::unique_ptr<TCHAR[]> path(new TCHAR[MAX_PATH_NEW]);
     GetModuleFileName(NULL, path.get(), MAX_PATH_NEW);
-    CCmdLineParser parser(GetCommandLine());
-    if ((_tcsstr(path.get(), _T("portable")))||(parser.HasKey(_T("portable"))))
+    if (bPortable)
     {
         m_iniPath = path.get();
         m_iniPath = m_iniPath.substr(0, m_iniPath.rfind('\\'));
@@ -56,8 +55,7 @@ void CBookmarks::Save()
 {
     std::unique_ptr<TCHAR[]> path(new TCHAR[MAX_PATH_NEW]);
     GetModuleFileName(NULL, path.get(), MAX_PATH_NEW);
-    CCmdLineParser parser(GetCommandLine());
-    if ((_tcsstr(path.get(), _T("portable")))||(parser.HasKey(_T("portable"))))
+    if (bPortable)
     {
         m_iniPath = path.get();
         m_iniPath = m_iniPath.substr(0, m_iniPath.rfind('\\'));
