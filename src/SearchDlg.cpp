@@ -2055,6 +2055,30 @@ DWORD CSearchDlg::SearchThread()
         pBufSearchPath++;
     } while(*pBufSearchPath && (*(pBufSearchPath-1)));
 
+    if (!m_bUseRegex && !m_replaceString.empty())
+    {
+        // escape all characters in the replace string
+        std::wstring srepl;
+        for (const auto& c : m_replaceString)
+        {
+            switch (c)
+            {
+            case '$':
+            case '\\':
+            case '(':
+            case ')':
+            case '?':
+            case ':':
+                srepl += L"\\";
+                break;
+            default:
+                break;
+            }
+            srepl += c;
+        }
+        m_replaceString = srepl;
+    }
+
     SendMessage(*this, SEARCH_START, 0, 0);
     for (auto it = pathvector.begin(); it != pathvector.end(); ++it)
     {
