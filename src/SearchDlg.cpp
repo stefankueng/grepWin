@@ -1640,6 +1640,13 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
                         _stprintf_s(buf, _countof(buf), _T("/g %s"), textlinebuf);
                         linenumberparam_before = buf;
                     }
+                    else if ((appname.find(_T("bowpad.exe")) != std::wstring::npos)||(appname.find(_T("bowpad64.exe")) != std::wstring::npos))
+                    {
+                        // BowPad
+                        TCHAR buf[MAX_PATH] = {0};
+                        _stprintf_s(buf, _countof(buf), _T("/line:%s"), textlinebuf);
+                        linenumberparam_before = buf;
+                    }
                 }
             }
 
