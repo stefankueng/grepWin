@@ -458,7 +458,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
         }
         break;
     case SEARCH_FOUND:
-        m_totalmatches += (int)((CSearchInfo*)lParam)->matchlinesnumbers.size();
+        m_totalmatches += (int)((CSearchInfo*)lParam)->matchcount;
         if ((wParam != 0)||(m_searchString.empty())||((CSearchInfo*)lParam)->readerror)
         {
             AddFoundEntry((CSearchInfo*)lParam, -1);
@@ -1072,7 +1072,7 @@ bool CSearchDlg::AddFoundEntry(CSearchInfo * pInfo, int index, bool bOnlyListCon
         if (pInfo->readerror)
             _tcscpy_s(sb.get(), MAX_PATH_NEW, TranslatedString(hResource, IDS_READERROR).c_str());
         else
-            _stprintf_s(sb.get(), MAX_PATH_NEW, _T("%ld"), pInfo->matchlinesnumbers.size());
+            _stprintf_s(sb.get(), MAX_PATH_NEW, _T("%lld"), pInfo->matchcount);
         ListView_SetItem(hListControl, &lv);
         lv.iSubItem = 3;
         _tcscpy_s(sb.get(), MAX_PATH_NEW, pInfo->filepath.substr(0, pInfo->filepath.size()-name.size()-1).c_str());
@@ -1217,7 +1217,7 @@ void CSearchDlg::FillResultList()
                 if (pInfo->readerror)
                     _tcscpy_s(sb.get(), MAX_PATH_NEW, TranslatedString(hResource, IDS_READERROR).c_str());
                 else
-                    _stprintf_s(sb.get(), MAX_PATH_NEW, _T("%ld"), pInfo->matchlinesnumbers.size());
+                    _stprintf_s(sb.get(), MAX_PATH_NEW, _T("%lld"), pInfo->matchcount);
                 ListView_SetItem(hListControl, &lv);
 
                 lv.iSubItem = 3;
@@ -2340,8 +2340,11 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
                         {
                             sinfo.matchlines.push_back(textfile.GetLineString(l));
                             sinfo.matchlinesnumbers.push_back(l);
+                            ++sinfo.matchcount;
                         }
                     }
+                    else
+                        ++sinfo.matchcount;
                     prevlinestart = linestart;
                     prevlineend   = lineend;
                 }
@@ -2454,6 +2457,7 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
                 {
                     nFound++;
                     sinfo.matchlinesnumbers.push_back(DWORD(whatc[0].first-fbeg));
+                    ++sinfo.matchcount;
                     // update search position:
                     start = whatc[0].second;
                     // update flags:
