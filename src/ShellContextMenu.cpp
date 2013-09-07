@@ -44,7 +44,7 @@ struct icompare
 };
 
 
-CShellContextMenu::CShellContextMenu() 
+CShellContextMenu::CShellContextMenu()
     : m_pFolderhook(NULL)
     , m_psfFolder(NULL)
     , m_pidlArray(NULL)
@@ -540,7 +540,7 @@ HRESULT STDMETHODCALLTYPE CIShellFolderHook::GetUIObjectOf( HWND hwndOwner, UINT
         }
         return E_OUTOFMEMORY;
     }
-    else 
+    else
     {
         // just pass it on to the base object
         return m_iSF->GetUIObjectOf(hwndOwner, cidl, apidl, riid, rgfReserved, ppv);
