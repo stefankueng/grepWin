@@ -82,7 +82,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
     bool bQuit = false;
     HWND hWnd = NULL;
     int timeout = 20;
-    do 
+    do
     {
         EnumWindows(windowenumerator, (LPARAM)&hWnd);
         if (alreadyRunning && (hWnd == NULL))
