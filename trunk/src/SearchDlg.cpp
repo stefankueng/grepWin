@@ -42,6 +42,7 @@
 #include "Language.h"
 
 #include <string>
+#include <map>
 #include <iostream>
 #include <fstream>
 #include <iterator>
@@ -58,6 +59,7 @@
 DWORD WINAPI SearchThreadEntry(LPVOID lpParam);
 
 UINT CSearchDlg::GREPWIN_STARTUPMSG = RegisterWindowMessage(_T("grepWin_StartupMessage"));
+std::map<size_t, DWORD> linepositions;
 
 CSearchDlg::CSearchDlg(HWND hParent)
     : m_searchedItems(0)
@@ -2456,20 +2458,91 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
             boost::match_flag_type flags = boost::match_default | boost::format_all;
             if (!bDotMatchesNewline)
                 flags |= boost::match_not_dot_newline;
+
             try
             {
                 boost::regex expression = boost::regex(searchfor);
                 boost::match_results<boost::spirit::classic::file_iterator<>> whatc;
+                std::vector<DWORD> matchlinesnumbers;
+                bool bFound = false;
                 while (boost::regex_search(start, end, whatc, expression, flags))
                 {
                     nFound++;
-                    sinfo.matchlinesnumbers.push_back(DWORD(whatc[0].first-fbeg));
+                    matchlinesnumbers.push_back(DWORD(whatc[0].first-fbeg));
                     ++sinfo.matchcount;
                     // update search position:
                     start = whatc[0].second;
                     // update flags:
                     flags |= boost::match_prev_avail;
                     flags |= boost::match_not_bob;
+                    bFound = true;
+                }
+
+                if (bFound)
+                {
+                    if (!bLoadResult && (type != CTextFile::BINARY))
+                    {
+                        linepositions.clear();
+                        // open the file and set up a vector of all lines
+                        HANDLE hFile = INVALID_HANDLE_VALUE;
+                        int retrycounter = 0;
+                        do
+                        {
+                            if (retrycounter)
+                                Sleep(20);
+                            hFile = CreateFile(sinfo.filepath.c_str(), GENERIC_READ, FILE_SHARE_READ,
+                                NULL, OPEN_EXISTING, FILE_FLAG_SEQUENTIAL_SCAN, NULL);
+                            retrycounter++;
+                        } while (hFile == INVALID_HANDLE_VALUE && retrycounter < 5);
+                        if (hFile != INVALID_HANDLE_VALUE)
+                        {
+                            std::unique_ptr<char[]> fbuf(new char[4096]);
+                            DWORD bytesread = 0;
+                            size_t pos = 0;
+                            while (ReadFile(hFile, fbuf.get(), 4096, &bytesread, NULL))
+                            {
+                                if (bytesread == 0)
+                                    break;
+                                for (DWORD br = 0; br < bytesread; ++br)
+                                {
+                                    if (fbuf[br] == '\r')
+                                    {
+                                        ++br;
+                                        ++pos;
+                                        if (br < bytesread)
+                                        {
+                                            if (fbuf[br] == '\n')
+                                            {
+                                                // crlf lineending
+                                                linepositions[pos] = (DWORD)linepositions.size();
+                                            }
+                                            else
+                                            {
+                                                // cr lineending
+                                                linepositions[pos-1] = (DWORD)linepositions.size();
+                                            }
+                                        }
+                                        else
+                                            break;
+                                    }
+                                    else if (fbuf[br] == '\n')
+                                    {
+                                        // lf lineending
+                                        linepositions[pos] = (DWORD)linepositions.size();
+                                    }
+                                    ++pos;
+                                }
+                            }
+                            CloseHandle(hFile);
+                            for (int mp = 0; mp < matchlinesnumbers.size(); ++mp)
+                            {
+                                auto fp = linepositions.lower_bound(matchlinesnumbers[mp]);
+                                if (fp != linepositions.end())
+                                    matchlinesnumbers[mp] = fp->second;
+                            }
+                        }
+                    }
+                    sinfo.matchlinesnumbers = matchlinesnumbers;
                 }
             }
             catch (const std::exception&)
