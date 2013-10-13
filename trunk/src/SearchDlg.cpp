@@ -250,7 +250,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             TCHAR buf[MAX_PATH] = {0};
             if (m_bSizeC)
             {
-                _stprintf_s(buf, _countof(buf), _T("%ld"), m_lSize);
+                _stprintf_s(buf, _countof(buf), _T("%lu"), m_lSize);
                 SetDlgItemText(hwndDlg, IDC_SIZEEDIT, buf);
             }
             else
@@ -258,7 +258,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                 int s = DWORD(m_regSize);
                 if (bPortable)
                     s = _wtoi(g_iniFile.GetValue(L"global", L"size", L"2000"));
-                _stprintf_s(buf, _countof(buf), _T("%ld"), s);
+                _stprintf_s(buf, _countof(buf), _T("%d"), s);
                 SetDlgItemText(hwndDlg, IDC_SIZEEDIT, buf);
             }
 
@@ -1147,7 +1147,7 @@ bool CSearchDlg::AddFoundEntry(CSearchInfo * pInfo, int index, bool bOnlyListCon
 
                     lv.iSubItem = 1;
                     std::unique_ptr<TCHAR[]> sb(new TCHAR[MAX_PATH_NEW]);
-                    _stprintf_s(sb.get(), MAX_PATH_NEW, _T("%ld"), pInfo->matchlinesnumbers[subIndex]);
+                    _stprintf_s(sb.get(), MAX_PATH_NEW, _T("%lu"), pInfo->matchlinesnumbers[subIndex]);
                     lv.pszText = sb.get();
                     ListView_SetItem(hListControl, &lv);
 
