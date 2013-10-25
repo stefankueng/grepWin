@@ -28,6 +28,7 @@
 CSettingsDlg::CSettingsDlg(HWND hParent)
     : m_hParent(hParent)
     , m_regEditorCmd(_T("Software\\grepWin\\editorcmd"))
+    , m_regEsc(_T("Software\\grepWin\\escclose"), FALSE)
 {
 }
 
@@ -84,15 +85,17 @@ LRESULT CSettingsDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
                 ++index;
             }
             SendDlgItemMessage(hwndDlg, IDC_LANGUAGE, CB_SETCURSEL, langIndex, 0);
+            SendDlgItemMessage(hwndDlg, IDC_ESCKEY, BM_SETCHECK, DWORD(CRegStdDWORD(L"Software\\grepWin\\escclose", FALSE)) ? BST_CHECKED : BST_UNCHECKED, 0);
 
             m_resizer.Init(hwndDlg);
-            m_resizer.AddControl(hwndDlg, IDC_EDITORGROUP, RESIZER_TOPLEFTBOTTOMRIGHT);
+            m_resizer.AddControl(hwndDlg, IDC_EDITORGROUP, RESIZER_TOPLEFTRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_EDITORCMD, RESIZER_TOPLEFTRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_STATIC1, RESIZER_TOPLEFTRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_STATIC2, RESIZER_TOPLEFTRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_STATIC3, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_STATIC4, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_LANGUAGE, RESIZER_TOPRIGHT);
+            m_resizer.AddControl(hwndDlg, IDC_ESCKEY, RESIZER_TOPLEFTRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_DWM, RESIZER_BOTTOMLEFT);
             m_resizer.AddControl(hwndDlg, IDOK, RESIZER_BOTTOMRIGHT);
             m_resizer.AddControl(hwndDlg, IDCANCEL, RESIZER_BOTTOMRIGHT);
@@ -113,8 +116,8 @@ LRESULT CSettingsDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
     case WM_GETMINMAXINFO:
         {
             MINMAXINFO * mmi = (MINMAXINFO*)lParam;
-            mmi->ptMinTrackSize.x = m_resizer.GetDlgRect()->right;
-            mmi->ptMinTrackSize.y = m_resizer.GetDlgRect()->bottom;
+            mmi->ptMinTrackSize.x = m_resizer.GetDlgRectScreen()->right;
+            mmi->ptMinTrackSize.y = m_resizer.GetDlgRectScreen()->bottom;
             return 0;
         }
         break;
@@ -153,6 +156,8 @@ LRESULT CSettingsDlg::DoCommand(int id, int /*msg*/)
             }
             CLanguage::Instance().LoadFile(langpath);
             CLanguage::Instance().TranslateWindow(::GetParent(*this));
+            CRegStdDWORD esc(L"Software\\grepWin\\escclose", FALSE);
+            esc = (IsDlgButtonChecked(*this, IDC_ESCKEY) == BST_CHECKED);
         }
         // fall through
     case IDCANCEL:

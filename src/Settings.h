@@ -40,6 +40,7 @@ private:
     HWND                    m_hParent;
     CRegStdString           m_regEditorCmd;
     std::vector<std::wstring> m_langpaths;
+    CRegStdDWORD            m_regEsc;
 
     CDlgResizer             m_resizer;
     AeroControlBase         m_aerocontrols;
