@@ -396,16 +396,19 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
         return FALSE;
     case WM_CLOSE:
         {
-            if (m_dwThreadRunning)
-                InterlockedExchange(&m_Cancelled, TRUE);
-            else
+            if (!DWORD(CRegStdDWORD(L"Software\\grepWin\\escclose", FALSE)))
             {
-                SaveSettings();
-                m_AutoCompleteFilePatterns.Save();
-                m_AutoCompleteSearchPatterns.Save();
-                m_AutoCompleteReplacePatterns.Save();
-                m_AutoCompleteSearchPaths.Save();
-                EndDialog(*this, IDCANCEL);
+                if (m_dwThreadRunning)
+                    InterlockedExchange(&m_Cancelled, TRUE);
+                else
+                {
+                    SaveSettings();
+                    m_AutoCompleteFilePatterns.Save();
+                    m_AutoCompleteSearchPatterns.Save();
+                    m_AutoCompleteReplacePatterns.Save();
+                    m_AutoCompleteSearchPaths.Save();
+                    EndDialog(*this, IDCANCEL);
+                }
             }
         }
         break;
@@ -641,6 +644,24 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                     (LPVOID)this,      // thread parameter
                     0,                 // not suspended
                     &dwThreadId);      // returns thread ID
+            }
+        }
+        break;
+    case IDCANCEL:
+        {
+            if (DWORD(CRegStdDWORD(L"Software\\grepWin\\escclose", FALSE)))
+            {
+                if (m_dwThreadRunning)
+                    InterlockedExchange(&m_Cancelled, TRUE);
+                else
+                {
+                    SaveSettings();
+                    m_AutoCompleteFilePatterns.Save();
+                    m_AutoCompleteSearchPatterns.Save();
+                    m_AutoCompleteReplacePatterns.Save();
+                    m_AutoCompleteSearchPaths.Save();
+                    EndDialog(*this, IDCANCEL);
+                }
             }
         }
         break;
