@@ -1583,7 +1583,13 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
                     }
                 }
                 else
-                    SearchReplace(cmd, L"%line%", L"0");
+                {
+                    // use the first matching line in this file
+                    if (!inf.matchlinesnumbers.empty())
+                        SearchReplace(cmd, L"%line%", CStringUtils::Format(L"%Id", inf.matchlinesnumbers[0]));
+                    else
+                        SearchReplace(cmd, L"%line%", L"0");
+                }
 
                 SearchReplace(cmd, L"%path%", inf.filepath.c_str());
 
