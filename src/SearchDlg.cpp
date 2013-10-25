@@ -685,7 +685,8 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
         {
             if (msg == EN_CHANGE)
             {
-                m_AutoCompleteSearchPaths.SetOptions(ACO_UPDOWNKEYDROPSLIST|ACO_AUTOSUGGEST);
+                if (m_AutoCompleteSearchPaths.GetOptions() & ACO_NOPREFIXFILTERING)
+                    m_AutoCompleteSearchPaths.SetOptions(ACO_UPDOWNKEYDROPSLIST|ACO_AUTOSUGGEST);
                 int len = GetDlgItemTextLength(IDC_SEARCHTEXT);
                 auto buf = GetDlgItemText(IDC_SEARCHPATH);
                 bool bIsDir = !!PathIsDirectory(buf.get());
@@ -731,7 +732,8 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
         {
             if (msg == EN_CHANGE)
             {
-                m_AutoCompleteSearchPatterns.SetOptions(ACO_UPDOWNKEYDROPSLIST|ACO_AUTOSUGGEST);
+                if (m_AutoCompleteSearchPatterns.GetOptions() & ACO_NOPREFIXFILTERING)
+                    m_AutoCompleteSearchPatterns.SetOptions(ACO_UPDOWNKEYDROPSLIST|ACO_AUTOSUGGEST);
                 int len = CheckRegex();
                 DialogEnableWindow(IDC_ADDTOBOOKMARKS, len > 0);
                 DialogEnableWindow(IDC_INCLUDEBINARY, len > 0);
@@ -917,7 +919,8 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 m_AutoCompleteSearchPaths.AddEntry(buf.get());
                 SetDlgItemText(*this, IDC_SEARCHPATH, L"");
             }
-            m_AutoCompleteSearchPaths.SetOptions(ACO_UPDOWNKEYDROPSLIST|ACO_AUTOSUGGEST|ACO_NOPREFIXFILTERING);
+            if (m_AutoCompleteSearchPaths.GetOptions() & ACO_NOPREFIXFILTERING)
+                m_AutoCompleteSearchPaths.SetOptions(ACO_UPDOWNKEYDROPSLIST|ACO_AUTOSUGGEST|ACO_NOPREFIXFILTERING);
             ::SetFocus(GetDlgItem(*this, IDC_SEARCHPATH));
             SendDlgItemMessage(*this, IDC_SEARCHPATH, WM_KEYDOWN, VK_DOWN, 0);
         }
@@ -930,7 +933,8 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 m_AutoCompleteExcludeDirsPatterns.AddEntry(buf.get());
                 SetDlgItemText(*this, IDC_EXCLUDEDIRSPATTERN, L"");
             }
-            m_AutoCompleteExcludeDirsPatterns.SetOptions(ACO_UPDOWNKEYDROPSLIST|ACO_AUTOSUGGEST|ACO_NOPREFIXFILTERING);
+            if (m_AutoCompleteSearchPatterns.GetOptions() & ACO_NOPREFIXFILTERING)
+                m_AutoCompleteExcludeDirsPatterns.SetOptions(ACO_UPDOWNKEYDROPSLIST|ACO_AUTOSUGGEST|ACO_NOPREFIXFILTERING);
             ::SetFocus(GetDlgItem(*this, IDC_EXCLUDEDIRSPATTERN));
             SendDlgItemMessage(*this, IDC_EXCLUDEDIRSPATTERN, WM_KEYDOWN, VK_DOWN, 0);
         }
@@ -943,7 +947,8 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 m_AutoCompleteFilePatterns.AddEntry(buf.get());
                 SetDlgItemText(*this, IDC_PATTERN, L"");
             }
-            m_AutoCompleteFilePatterns.SetOptions(ACO_UPDOWNKEYDROPSLIST|ACO_AUTOSUGGEST|ACO_NOPREFIXFILTERING);
+            if (m_AutoCompleteFilePatterns.GetOptions() & ACO_NOPREFIXFILTERING)
+                m_AutoCompleteFilePatterns.SetOptions(ACO_UPDOWNKEYDROPSLIST|ACO_AUTOSUGGEST|ACO_NOPREFIXFILTERING);
             ::SetFocus(GetDlgItem(*this, IDC_PATTERN));
             SendDlgItemMessage(*this, IDC_PATTERN, WM_KEYDOWN, VK_DOWN, 0);
         }
@@ -951,19 +956,28 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
     case IDC_PATTERN:
         {
             if (msg == EN_CHANGE)
-                m_AutoCompleteFilePatterns.SetOptions(ACO_UPDOWNKEYDROPSLIST|ACO_AUTOSUGGEST);
+            {
+                if (m_AutoCompleteFilePatterns.GetOptions() & ACO_NOPREFIXFILTERING)
+                    m_AutoCompleteFilePatterns.SetOptions(ACO_UPDOWNKEYDROPSLIST|ACO_AUTOSUGGEST);
+            }
         }
         break;
     case IDC_EXCLUDEDIRSPATTERN:
         {
             if (msg == EN_CHANGE)
-                m_AutoCompleteExcludeDirsPatterns.SetOptions(ACO_UPDOWNKEYDROPSLIST|ACO_AUTOSUGGEST);
+            {
+                if (m_AutoCompleteExcludeDirsPatterns.GetOptions() & ACO_NOPREFIXFILTERING)
+                    m_AutoCompleteExcludeDirsPatterns.SetOptions(ACO_UPDOWNKEYDROPSLIST|ACO_AUTOSUGGEST);
+            }
         }
         break;
     case IDC_REPLACETEXT:
         {
             if (msg == EN_CHANGE)
-                m_AutoCompleteReplacePatterns.SetOptions(ACO_UPDOWNKEYDROPSLIST|ACO_AUTOSUGGEST);
+            {
+                if (m_AutoCompleteReplacePatterns.GetOptions() & ACO_NOPREFIXFILTERING)
+                    m_AutoCompleteReplacePatterns.SetOptions(ACO_UPDOWNKEYDROPSLIST|ACO_AUTOSUGGEST);
+            }
         }
         break;
     }
