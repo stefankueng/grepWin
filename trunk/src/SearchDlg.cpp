@@ -1119,6 +1119,8 @@ bool CSearchDlg::AddFoundEntry(CSearchInfo * pInfo, int index, bool bOnlyListCon
     }
     else
     {
+        nEntryCount = index < 0 ? (LPARAM)m_items.size() : index;
+        lv.lParam = nEntryCount;
         // file contents
         if (pInfo->encoding == CTextFile::BINARY)
         {
