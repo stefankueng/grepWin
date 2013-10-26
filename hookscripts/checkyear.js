@@ -14,7 +14,7 @@ var objArgs, num;
 
 objArgs = WScript.Arguments;
 num = objArgs.length;
-if (num !== 4)
+if (num != 4 && num != 3)
 {
     WScript.Echo("Usage: [CScript | WScript] checkyear.js path/to/pathsfile depth path/to/messagefile path/to/CWD");
     WScript.Quit(1);
@@ -42,7 +42,7 @@ while (fileindex--)
             a = fs.OpenTextFile(f, ForReading, false);
             var copyrightFound = false;
             var yearFound = false;
-            while ((!a.AtEndOfStream) && (!yearFound))
+            while (!a.AtEndOfStream && !yearFound)
             {
                 r = a.ReadLine();
                 rv = r.match(basere);
@@ -59,7 +59,7 @@ while (fileindex--)
             }
             a.Close();
 
-            if (copyrightFound && (!yearFound))
+            if (copyrightFound && !yearFound)
             {
                 if (errormsg !== "")
                 {
