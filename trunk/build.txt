@@ -1,14 +1,14 @@
 First, you need to install the compiler package.
 
-- You need VS2012
+- You need VS2013.
   If you want to build the msi make sure the "Tools for Redistributing
   Applications" are installed.
 
 Next you need to install some utilities/programs:
 - Boost 1.47 or later   : http://www.boost.org/
 - TortoiseSVN           : http://tortoisesvn.net
-- WiX(*)                : http://wixtoolset.org/
-- NAnt(*)               : http://nant.sourceforge.net
+- WiX 3.8(*)            : http://wixtoolset.org/
+- NAnt 0.92(*)          : http://nant.sourceforge.net
 
 (*) Add the paths of the binaries to the PATH environment variable.
     You may have to logoff/logon to make the new environment variables take effect!
@@ -23,7 +23,7 @@ Now you're almost ready. Only a few more steps to do:
 Building packages
 
   Hint: before you can start building grepWin, you need to call the vsvars32.bat
-  file which is located in %VS110COMNTOOLS%.
+  file which is located in %VS120COMNTOOLS%.
 
   > nant
   will compile grepWin
@@ -42,4 +42,4 @@ Building packages
   After the script finished, the packages can be found in .\bin.
 
 Once grepWin has been built with the NAnt script, you can build it again
-with VS2012 alone.
+with VS2013 alone.
