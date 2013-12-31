@@ -18,9 +18,9 @@
   <!-- These two targets have to exist in doc.build.user                      -->
   <!-- ====================================================================== -->
 
-  <target name="VSNET" description="Checks if the env variables for VS2012 are set">
+  <target name="VSNET" description="Checks if the env variables for VS2013 are set">
     <if test="${not environment::variable-exists('VCINSTALLDIR')}">
-      <fail>You must first call "%VS110COMNTOOLS%\vsvars32.bat"</fail>
+      <fail>You must first call "%VS120COMNTOOLS%\vsvars32.bat"</fail>
     </if>
     <!-- Uncomment the line below to allow limited building using VC Express instead of VS.NET. -->
     <!-- <property name="buildtool" value="vcexpress.exe" /> -->
