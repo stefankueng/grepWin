@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2013 - Stefan Kueng
+// Copyright (C) 2007-2014 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -934,12 +934,6 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
         break;
     case IDC_PATHMRU:
         {
-            if (!SysInfo::Instance().IsVistaOrLater())
-            {
-                auto buf = GetDlgItemText(IDC_SEARCHPATH);
-                m_AutoCompleteSearchPaths.AddEntry(buf.get());
-                SetDlgItemText(*this, IDC_SEARCHPATH, L"");
-            }
             if (m_AutoCompleteSearchPaths.GetOptions() & ACO_NOPREFIXFILTERING)
                 m_AutoCompleteSearchPaths.SetOptions(ACO_UPDOWNKEYDROPSLIST|ACO_AUTOSUGGEST|ACO_NOPREFIXFILTERING);
             ::SetFocus(GetDlgItem(*this, IDC_SEARCHPATH));
@@ -948,12 +942,6 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
         break;
     case IDC_EXCLUDEDIRMRU:
         {
-            if (!SysInfo::Instance().IsVistaOrLater())
-            {
-                auto buf = GetDlgItemText(IDC_EXCLUDEDIRSPATTERN);
-                m_AutoCompleteExcludeDirsPatterns.AddEntry(buf.get());
-                SetDlgItemText(*this, IDC_EXCLUDEDIRSPATTERN, L"");
-            }
             if (m_AutoCompleteSearchPatterns.GetOptions() & ACO_NOPREFIXFILTERING)
                 m_AutoCompleteExcludeDirsPatterns.SetOptions(ACO_UPDOWNKEYDROPSLIST|ACO_AUTOSUGGEST|ACO_NOPREFIXFILTERING);
             ::SetFocus(GetDlgItem(*this, IDC_EXCLUDEDIRSPATTERN));
@@ -962,12 +950,6 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
         break;
     case IDC_PATTERNMRU:
         {
-            if (!SysInfo::Instance().IsVistaOrLater())
-            {
-                auto buf = GetDlgItemText(IDC_PATTERN);
-                m_AutoCompleteFilePatterns.AddEntry(buf.get());
-                SetDlgItemText(*this, IDC_PATTERN, L"");
-            }
             if (m_AutoCompleteFilePatterns.GetOptions() & ACO_NOPREFIXFILTERING)
                 m_AutoCompleteFilePatterns.SetOptions(ACO_UPDOWNKEYDROPSLIST|ACO_AUTOSUGGEST|ACO_NOPREFIXFILTERING);
             ::SetFocus(GetDlgItem(*this, IDC_PATTERN));
