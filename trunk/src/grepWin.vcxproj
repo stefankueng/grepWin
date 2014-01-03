@@ -244,7 +244,9 @@
     </None>
     <None Include="..\version.build.in" />
     <None Include="..\versioninfo.build" />
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Resources\grepWin.ico" />
     <None Include="Resources\infodlg.htm">
       <DeploymentContent>true</DeploymentContent>
@@ -264,5 +266,6 @@
     <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
     <Import Project="..\packages\boost_regex.1.54.0.157\build\native\boost_regex.targets" Condition="Exists('..\packages\boost_regex.1.54.0.157\build\native\boost_regex.targets')" />
     <Import Project="..\packages\boost.1.55.0.16\build\native\boost.targets" Condition="Exists('..\packages\boost.1.55.0.16\build\native\boost.targets')" />
+    <Import Project="..\packages\boost_regex.1.55.0.16\build\native\boost_regex.targets" Condition="Exists('..\packages\boost_regex.1.55.0.16\build\native\boost_regex.targets')" />
   </ImportGroup>
 </Project>
