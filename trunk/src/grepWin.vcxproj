@@ -262,9 +262,7 @@
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
-    <Import Project="..\packages\boost.1.54.0.157\build\native\boost.targets" Condition="Exists('..\packages\boost.1.54.0.157\build\native\boost.targets')" />
     <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
-    <Import Project="..\packages\boost_regex.1.54.0.157\build\native\boost_regex.targets" Condition="Exists('..\packages\boost_regex.1.54.0.157\build\native\boost_regex.targets')" />
     <Import Project="..\packages\boost.1.55.0.16\build\native\boost.targets" Condition="Exists('..\packages\boost.1.55.0.16\build\native\boost.targets')" />
     <Import Project="..\packages\boost_regex.1.55.0.16\build\native\boost_regex.targets" Condition="Exists('..\packages\boost_regex.1.55.0.16\build\native\boost_regex.targets')" />
   </ImportGroup>
