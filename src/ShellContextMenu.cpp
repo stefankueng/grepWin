@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2013 - Stefan Kueng
+// Copyright (C) 2007-2014 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -430,10 +430,19 @@ void CShellContextMenu::SetObjects(const std::vector<CSearchInfo>& strVector, co
     LPITEMIDLIST pidl = NULL;
     m_strVector.clear();
     m_lineVector.clear();
+    m_strVector.reserve(nItems);
+    m_lineVector.reserve(nItems);
+
+    int bufsize = 1024;
+    std::unique_ptr<WCHAR[]> filepath(new WCHAR[bufsize]);
     for (int i = 0; i < nItems; i++)
     {
-        std::unique_ptr<WCHAR[]> filepath(new WCHAR[strVector[i].filepath.size()+3]);
-        wcscpy_s(filepath.get(), strVector[i].filepath.size()+2, strVector[i].filepath.c_str());
+        if (bufsize < strVector[i].filepath.size())
+        {
+            bufsize = strVector[i].filepath.size() + 3;
+            filepath = std::unique_ptr<WCHAR[]>(new WCHAR[bufsize]);
+        }
+        wcscpy_s(filepath.get(), bufsize, strVector[i].filepath.c_str());
         if (SUCCEEDED(m_psfFolder->ParseDisplayName(NULL, 0, filepath.get(), NULL, &pidl, NULL)))
         {
             m_pidlArray[succeededItems++] = pidl;           // copy pidl to pidlArray
