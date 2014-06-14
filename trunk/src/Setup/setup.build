@@ -61,6 +61,24 @@
       <arg value="-nologo" />
       <arg value="-out" />
       <arg value="..\..\bin\" />
+      <arg value="Setup_user.wxs" />
+      <arg value="WixUI_Custom.wxs" />
+    </exec>
+    <exec program="light">
+      <arg value="-nologo" />
+      <arg value="-sice:ICE91" />
+      <arg value="-ext" />
+      <arg value="WixUIExtension" />
+      <arg value="-cultures:en-us" />
+      <arg value="-out" />
+      <arg value="..\..\bin\${msifilename}_user.msi" />
+      <arg value="..\..\bin\Setup_user.wixobj" />
+      <arg value="..\..\bin\WixUI_Custom.wixobj" />
+    </exec>
+    <exec program="candle">
+      <arg value="-nologo" />
+      <arg value="-out" />
+      <arg value="..\..\bin\" />
       <arg value="Setup64.wxs" />
       <arg value="WixUI_Custom.wxs" />
     </exec>
@@ -72,6 +90,24 @@
       <arg value="-out" />
       <arg value="..\..\bin\${msifilename}-64.msi" />
       <arg value="..\..\bin\Setup64.wixobj" />
+      <arg value="..\..\bin\WixUI_Custom.wixobj" />
+    </exec>
+    <exec program="candle">
+      <arg value="-nologo" />
+      <arg value="-out" />
+      <arg value="..\..\bin\" />
+      <arg value="Setup64_user.wxs" />
+      <arg value="WixUI_Custom.wxs" />
+    </exec>
+    <exec program="light">
+      <arg value="-nologo" />
+      <arg value="-sice:ICE91" />
+      <arg value="-ext" />
+      <arg value="WixUIExtension" />
+      <arg value="-cultures:en-us" />
+      <arg value="-out" />
+      <arg value="..\..\bin\${msifilename}-64_user.msi" />
+      <arg value="..\..\bin\Setup64_user.wixobj" />
       <arg value="..\..\bin\WixUI_Custom.wixobj" />
     </exec>
     <delete>
