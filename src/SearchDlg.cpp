@@ -2394,11 +2394,9 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
                         {
                             sinfo.matchlines.push_back(textfile.GetLineString(l));
                             sinfo.matchlinesnumbers.push_back(l);
-                            ++sinfo.matchcount;
                         }
                     }
-                    else
-                        ++sinfo.matchcount;
+                    ++sinfo.matchcount;
                     prevlinestart = linestart;
                     prevlineend   = lineend;
                 }
