@@ -693,6 +693,14 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
             CBrowseFolder browse;
 
             auto path = GetDlgItemText(IDC_SEARCHPATH);
+            if (!PathFileExists(path.get()))
+            {
+                auto ptr = wcsstr(path.get(), L"|");
+                if (ptr)
+                    *ptr = 0;
+                else
+                    path.get()[0] = 0;
+            }
             std::unique_ptr<WCHAR[]> pathbuf(new WCHAR[MAX_PATH_NEW]);
             wcscpy_s(pathbuf.get(), MAX_PATH_NEW, path.get());
             browse.SetInfo(TranslatedString(hResource, IDS_SELECTPATHTOSEARCH).c_str());
