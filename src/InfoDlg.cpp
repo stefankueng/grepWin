@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2009, 2011-2013 - Stefan Kueng
+// Copyright (C) 2007-2009, 2011-2014 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -44,9 +44,9 @@ BOOL CInfoDlg::ShowDialog(UINT idAboutHTMLID, HINSTANCE hInstance)
     BOOL bSuccess = FALSE;
     if(hinstMSHTML)
     {
-        SHOWHTMLDIALOGFN  *pfnShowHTMLDialog;
+        SHOWHTMLDIALOGEXFN  *pfnShowHTMLDialog;
         //Locate The Function ShowHTMLDialog in the Loaded mshtml.dll
-        pfnShowHTMLDialog = (SHOWHTMLDIALOGFN*)GetProcAddress(hinstMSHTML, "ShowHTMLDialog");
+        pfnShowHTMLDialog = (SHOWHTMLDIALOGEXFN*)GetProcAddress(hinstMSHTML, "ShowHTMLDialogEx");
         if(pfnShowHTMLDialog)
         {
             std::unique_ptr<TCHAR[]> lpszModule(new TCHAR[MAX_PATH_NEW]);
@@ -65,7 +65,7 @@ BOOL CInfoDlg::ShowDialog(UINT idAboutHTMLID, HINSTANCE hInstance)
                     //Invoke the ShowHTMLDialog function by pointer
                     //passing the HWND of your Application , the Moniker,
                     //the remaining parameters can be set to NULL
-                    pfnShowHTMLDialog(NULL,pmk,NULL,L"resizable:yes",NULL);
+                    pfnShowHTMLDialog(NULL, pmk, HTMLDLG_MODELESS, NULL, L"resizable:yes", NULL);
                     bSuccess = TRUE;
                 }
             }
