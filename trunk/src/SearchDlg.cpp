@@ -459,7 +459,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             m_totalitems = 0;
             m_searchedItems = 0;
             m_totalmatches = 0;
-            UpdateInfoLabel();
+            UpdateInfoLabel(false);
             SetTimer(*this, LABELUPDATETIMER, 200, NULL);
         }
         break;
@@ -468,7 +468,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
         if ((wParam != 0)||(m_searchString.empty())||((CSearchInfo*)lParam)->readerror)
         {
             AddFoundEntry((CSearchInfo*)lParam, -1);
-            UpdateInfoLabel();
+            UpdateInfoLabel(false);
         }
         break;
     case SEARCH_PROGRESS:
@@ -481,7 +481,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
     case SEARCH_END:
         {
             AutoSizeAllColumns();
-            UpdateInfoLabel();
+            UpdateInfoLabel(false);
             ::SetDlgItemText(*this, IDOK, TranslatedString(hResource, IDS_SEARCH).c_str());
             DialogEnableWindow(IDC_RESULTFILES, true);
             DialogEnableWindow(IDC_RESULTCONTENT, true);
@@ -493,7 +493,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
     case WM_TIMER:
         {
             if (wParam == LABELUPDATETIMER)
-                UpdateInfoLabel();
+                UpdateInfoLabel(true);
         }
         break;
     case WM_HELP:
@@ -1006,12 +1006,21 @@ void CSearchDlg::SaveWndPosition()
     SHSetValue(HKEY_CURRENT_USER, _T("Software\\grepWin"), _T("windowpos"), REG_NONE, &wpl, sizeof(wpl));
 }
 
-void CSearchDlg::UpdateInfoLabel()
+void CSearchDlg::UpdateInfoLabel( bool withCurrentFile )
 {
+    std::wstring sText;
     TCHAR buf[1024] = {0};
     _stprintf_s(buf, _countof(buf), TranslatedString(hResource, IDS_INFOLABEL).c_str(),
         m_searchedItems, m_totalitems-m_searchedItems, m_totalmatches, m_items.size());
-    SetDlgItemText(*this, IDC_SEARCHINFOLABEL, buf);
+    sText = buf;
+    if (withCurrentFile && !m_searchedFile.empty())
+    {
+        sText += L", ";
+        swprintf_s(buf, _countof(buf), TranslatedString(hResource, IDS_INFOLABELFILE).c_str(), m_searchedFile.c_str());
+        sText += buf;
+    }
+
+    SetDlgItemText(*this, IDC_SEARCHINFOLABEL, sText.c_str());
 }
 
 bool CSearchDlg::InitResultList()
@@ -2349,7 +2358,7 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
     if (!bUseRegex)
         localSearchString = _T("\\Q") + searchString + _T("\\E");
     CTextFile textfile;
-
+    m_searchedFile = sinfo.filepath;
     CTextFile::UnicodeType type = CTextFile::AUTOTYPE;
     bool bLoadResult = textfile.Load(sinfo.filepath.c_str(), type, m_bUTF8);
     sinfo.encoding = type;
@@ -2459,6 +2468,7 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
         }
         catch (const std::exception&)
         {
+            m_searchedFile.clear();
             return -1;
         }
     }
@@ -2467,6 +2477,7 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
         if (type == CTextFile::AUTOTYPE)
         {
             sinfo.readerror = true;
+            m_searchedFile.clear();
             return 0;
         }
 
@@ -2583,14 +2594,17 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
             }
             catch (const std::exception&)
             {
+                m_searchedFile.clear();
                 return -1;
             }
             catch (...)
             {
+                m_searchedFile.clear();
                 return -1;
             }
         }
     }
+    m_searchedFile.clear();
     return nFound;
 }
 
