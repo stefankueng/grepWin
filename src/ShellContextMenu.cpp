@@ -422,7 +422,7 @@ void CShellContextMenu::SetObjects(const std::vector<CSearchInfo>& strVector, co
     // but since we use the Desktop as our interface and the Desktop is the namespace root
     // that means that it's a fully qualified PIDL, which is what we need
 
-    nItems = (int)strVector.size();
+    nItems = strVector.size();
     m_pidlArray = (LPITEMIDLIST *)CoTaskMemAlloc((nItems + 10) * sizeof (LPITEMIDLIST));
     SecureZeroMemory(m_pidlArray, (nItems + 10) * sizeof (LPITEMIDLIST));
     m_pidlArrayItems = 0;
@@ -433,9 +433,9 @@ void CShellContextMenu::SetObjects(const std::vector<CSearchInfo>& strVector, co
     m_strVector.reserve(nItems);
     m_lineVector.reserve(nItems);
 
-    int bufsize = 1024;
+    size_t bufsize = 1024;
     std::unique_ptr<WCHAR[]> filepath(new WCHAR[bufsize]);
-    for (int i = 0; i < nItems; i++)
+    for (size_t i = 0; i < nItems; i++)
     {
         if (bufsize < strVector[i].filepath.size())
         {
