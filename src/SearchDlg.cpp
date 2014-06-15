@@ -2132,7 +2132,6 @@ DWORD CSearchDlg::SearchThread()
         std::wstring s = std::wstring(pBufSearchPath, pos);
         if (!s.empty())
         {
-
             TCHAR * pBuf2 = new TCHAR[s.size()+1];
             TCHAR * pBuf = new TCHAR[s.size()+1];
             TCHAR * prettypath = pBuf;
@@ -2160,6 +2159,8 @@ DWORD CSearchDlg::SearchThread()
             *pBuf = 0;
             s = prettypath;
             pathvector.push_back(s);
+            delete[] pBuf;
+            delete[] pBuf2;
         }
         pBufSearchPath += pos;
         pBufSearchPath++;
