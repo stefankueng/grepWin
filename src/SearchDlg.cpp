@@ -2132,35 +2132,17 @@ DWORD CSearchDlg::SearchThread()
         std::wstring s = std::wstring(pBufSearchPath, pos);
         if (!s.empty())
         {
-            TCHAR * pBuf2 = new TCHAR[s.size()+1];
-            TCHAR * pBuf = new TCHAR[s.size()+1];
-            TCHAR * prettypath = pBuf;
-            _tcscpy_s(pBuf2, s.size()+1, s.c_str());
-            // skip a possible UNC path start
-            if (*pBuf2 == '\\')
+            // Remove extra backslashes except for the UNC identifier
+            std::string::size_type found = s.find_first_of('\\', 1);
+            while (found != std::string::npos)
             {
-                for (int i=0; i<2 && (*pBuf2); ++i)
-                    *pBuf++ = *pBuf2++;
-            }
-            while(*pBuf2)
-            {
-                *pBuf = *pBuf2;
-                if (*pBuf2 == '\\')
+                while (s[found + 1] == '\\')
                 {
-                    do
-                    {
-                        pBuf2++;
-                    } while (*pBuf2 == '\\');
+                    s.erase(found + 1, 1);
                 }
-                else
-                    pBuf2++;
-                pBuf++;
+                found = s.find_first_of('\\', found + 1);
             }
-            *pBuf = 0;
-            s = prettypath;
             pathvector.push_back(s);
-            delete[] pBuf;
-            delete[] pBuf2;
         }
         pBufSearchPath += pos;
         pBufSearchPath++;
