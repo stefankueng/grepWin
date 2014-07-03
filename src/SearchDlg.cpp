@@ -1597,9 +1597,9 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
 
                 STARTUPINFO startupInfo;
                 PROCESS_INFORMATION processInfo;
-                memset(&startupInfo, 0, sizeof(STARTUPINFO));
+                SecureZeroMemory(&startupInfo, sizeof(startupInfo));
                 startupInfo.cb = sizeof(STARTUPINFO);
-                memset(&processInfo, 0, sizeof(PROCESS_INFORMATION));
+                SecureZeroMemory(&processInfo, sizeof(processInfo));
                 CreateProcess(NULL, const_cast<TCHAR*>(cmd.c_str()), NULL, NULL, FALSE, 0, 0, NULL, &startupInfo, &processInfo);
                 CloseHandle(processInfo.hThread);
                 CloseHandle(processInfo.hProcess);
@@ -1730,10 +1730,10 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
 
             STARTUPINFO startupInfo;
             PROCESS_INFORMATION processInfo;
-            memset(&startupInfo, 0, sizeof(STARTUPINFO));
+            SecureZeroMemory(&startupInfo, sizeof(startupInfo));
             startupInfo.cb = sizeof(STARTUPINFO);
 
-            memset(&processInfo, 0, sizeof(PROCESS_INFORMATION));
+            SecureZeroMemory(&processInfo, sizeof(processInfo));
             CreateProcess(NULL, const_cast<TCHAR*>(application.c_str()), NULL, NULL, FALSE, 0, 0, NULL, &startupInfo, &processInfo);
             CloseHandle(processInfo.hThread);
             CloseHandle(processInfo.hProcess);
