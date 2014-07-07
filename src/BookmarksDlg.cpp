@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2010, 2012-2013 - Stefan Kueng
+// Copyright (C) 2007-2010, 2012-2014 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -294,11 +294,11 @@ void CBookmarksDlg::InitBookmarks()
 
 void CBookmarksDlg::RemoveQuotes(std::wstring& str)
 {
-    if (str.size())
+    if (!str.empty())
     {
         if (str[0] == '"')
             str = str.substr(1);
-        if (str.size())
+        if (!str.empty())
         {
             if (str[str.size()-1] == '"')
                 str = str.substr(0, str.size()-1);

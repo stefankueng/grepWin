@@ -171,7 +171,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                 m_searchpath = std::wstring(pathbuf.get(), ret);
             }
 
-            if (m_patternregex.size() == 0)
+            if (m_patternregex.empty())
             {
                 if (bPortable)
                 {
@@ -184,7 +184,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                     m_bUseRegexForPaths = !!DWORD(m_regUseRegexForPaths);
                 }
             }
-            if (m_excludedirspatternregex.size() == 0)
+            if (m_excludedirspatternregex.empty())
             {
                 if (bPortable)
                     m_excludedirspatternregex = g_iniFile.GetValue(L"global", L"ExcludeDirsPattern", L"");
@@ -1566,7 +1566,7 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
             std::wstring cmd = regEditorCmd;
             if (bPortable)
                 cmd = g_iniFile.GetValue(L"global", L"editorcmd", L"");
-            if (cmd.size())
+            if (!cmd.empty())
             {
                 bool filelist = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
                 if (!filelist)
@@ -1712,7 +1712,7 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
                 repl = _T("\"") + inf.filepath + _T("\"");
             else
                 repl = inf.filepath;
-            if (linenumberparam_before.size())
+            if (!linenumberparam_before.empty())
             {
                 repl = linenumberparam_before + L" " + repl;
             }
@@ -1722,7 +1722,7 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
                 std::wstring::iterator it_end= it_begin + tag.size();
                 application.replace(it_begin, it_end, repl);
             }
-            if (linenumberparam.size())
+            if (!linenumberparam.empty())
             {
                 application += _T(" ");
                 application += linenumberparam;
@@ -2260,7 +2260,7 @@ DWORD CSearchDlg::SearchThread()
                     const WIN32_FIND_DATA * pFindData = fileEnumerator.GetFileInfo();
                     bool bSearch = ((m_bIncludeHidden)||((pFindData->dwFileAttributes & FILE_ATTRIBUTE_HIDDEN) == 0));
                     bSearch = bSearch && ((m_bIncludeSystem)||((pFindData->dwFileAttributes & FILE_ATTRIBUTE_SYSTEM) == 0));
-                    bool bExcludeDir = bSearch && m_excludedirspatternregex.size() && grepWin_match_i(m_excludedirspatternregex, pFindData->cFileName);
+                    bool bExcludeDir = bSearch && !m_excludedirspatternregex.empty() && grepWin_match_i(m_excludedirspatternregex, pFindData->cFileName);
                     bSearch = bSearch && !bExcludeDir;
                     bRecurse = ((bIsDirectory)&&(m_bIncludeSubfolders)&&(bSearch));
                     if (m_searchString.empty() && m_replaceString.empty())
@@ -2319,7 +2319,7 @@ bool CSearchDlg::MatchPath(LPCTSTR pathbuf)
 
             for (auto it = m_patterns.begin(); it != m_patterns.end(); ++it)
             {
-                if (it->size() && (it->at(0)=='-'))
+                if (!it->empty() && it->at(0)=='-')
                     bPattern = bPattern && !wcswildcmp(&(*it)[1], fname.c_str());
                 else
                     bPattern = bPattern || wcswildcmp(it->c_str(), fname.c_str());
