@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2011-2012 - Stefan Kueng
+// Copyright (C) 2011-2012, 2014 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -77,10 +77,10 @@ public:
                 nr.leadzero = (((std::wstring)whatc[L"leadzero"]) == L"0");
                 nr.padding = _wtoi(((std::wstring)whatc[L"length"]).c_str());
                 std::wstring s = (std::wstring)whatc[L"startval"];
-                if (s.size())
+                if (!s.empty())
                     nr.start = _wtoi(s.c_str());
                 s = (std::wstring)whatc[L"increment"];
-                if (s.size())
+                if (!s.empty())
                     nr.increment = _wtoi(s.c_str());
                 if (nr.increment == 0)
                     nr.increment = 1;
@@ -119,7 +119,7 @@ public:
                 {
                     if ((it_begin == sReplace.begin())||((*(it_begin-1)) != '\\'))
                     {
-                        auto it_end= it_begin + it->first.size();
+                        auto it_end = it_begin + it->first.size();
                         sReplace.replace(it_begin, it_end, it->second);
                     }
                     else if ((*(it_begin-1)) == '\\')
@@ -139,7 +139,7 @@ public:
                 {
                     if ((it_begin == sReplace.begin())||((*(it_begin-1)) != '\\'))
                     {
-                        auto it_end= it_begin + it->expression.size();
+                        auto it_end = it_begin + it->expression.size();
                         wchar_t format[10] = {0};
                         if (it->padding)
                         {

@@ -213,7 +213,7 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
 
     if (m_strVector.size() == 1)
     {
-        if (editorcmd.size())
+        if (!editorcmd.empty())
         {
             ::InsertMenu(m_Menu, 1, MF_BYPOSITION | MF_STRING, 5, TranslatedString(hInst, IDS_OPENWITHEDITOR).c_str());
             ::InsertMenu(m_Menu, 5, MF_SEPARATOR|MF_BYPOSITION, 0, NULL);
@@ -228,7 +228,7 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
     }
     else if (m_strVector.size() > 1)
     {
-        if (editorcmd.size())
+        if (!editorcmd.empty())
         {
             ::InsertMenu(m_Menu, 1, MF_BYPOSITION | MF_STRING, 5, TranslatedString(hInst, IDS_OPENWITHEDITOR).c_str());
             ::InsertMenu(m_Menu, 5, MF_SEPARATOR|MF_BYPOSITION, 0, NULL);
@@ -292,7 +292,7 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
                 std::wstring pathnames;
                 for (auto it = m_strVector.begin(); it != m_strVector.end(); ++it)
                 {
-                    if (pathnames.size())
+                    if (!pathnames.empty())
                         pathnames += _T("\r\n");
                     pathnames += it->filepath;
                 }
@@ -304,7 +304,7 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
                 std::wstring pathnames;
                 for (auto it = m_strVector.begin(); it != m_strVector.end(); ++it)
                 {
-                    if (pathnames.size())
+                    if (!pathnames.empty())
                         pathnames += _T("\r\n");
                     std::wstring p = it->filepath;
                     p = p.substr(p.find_last_of('\\')+1);
@@ -318,7 +318,7 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
                 std::wstring lines;
                 for (auto it = m_lineVector.begin(); it != m_lineVector.end(); ++it)
                 {
-                    if (lines.size())
+                    if (!lines.empty())
                         lines += _T("\r\n");
                     for (auto it2 = it->lines.cbegin(); it2 != it->lines.cend(); ++it2)
                     {
@@ -363,7 +363,7 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
                     {
                         std::wstring cmd = regEditorCmd;
                         SearchReplace(cmd, L"%path%", it->filepath.c_str());
-                        if (it->matchlinesnumbers.size())
+                        if (!it->matchlinesnumbers.empty())
                         {
                             wchar_t buf[40] = {0};
                             swprintf_s(buf, L"%ld", it->matchlinesnumbers[0]);
