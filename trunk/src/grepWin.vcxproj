@@ -78,6 +78,7 @@
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)obj\$(Configuration)64\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <NuGetPackageImportStamp>a422261f</NuGetPackageImportStamp>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -244,9 +245,7 @@
     </None>
     <None Include="..\version.build.in" />
     <None Include="..\versioninfo.build" />
-    <None Include="packages.config">
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="packages.config" />
     <None Include="Resources\grepWin.ico" />
     <None Include="Resources\infodlg.htm">
       <DeploymentContent>true</DeploymentContent>
@@ -265,7 +264,14 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
-    <Import Project="..\packages\boost.1.55.0.16\build\native\boost.targets" Condition="Exists('..\packages\boost.1.55.0.16\build\native\boost.targets')" />
-    <Import Project="..\packages\boost_regex.1.55.0.16\build\native\boost_regex.targets" Condition="Exists('..\packages\boost_regex.1.55.0.16\build\native\boost_regex.targets')" />
+    <Import Project="..\packages\boost_regex.1.56.0.0\build\native\boost_regex.targets" Condition="Exists('..\packages\boost_regex.1.56.0.0\build\native\boost_regex.targets')" />
+    <Import Project="..\packages\boost.1.56.0.0\build\native\boost.targets" Condition="Exists('..\packages\boost.1.56.0.0\build\native\boost.targets')" />
   </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\boost_regex.1.56.0.0\build\native\boost_regex.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_regex.1.56.0.0\build\native\boost_regex.targets'))" />
+    <Error Condition="!Exists('..\packages\boost.1.56.0.0\build\native\boost.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost.1.56.0.0\build\native\boost.targets'))" />
+  </Target>
 </Project>
