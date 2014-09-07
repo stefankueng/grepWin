@@ -29,15 +29,21 @@
     <description>
       Cleans every subproject.
     </description>
-    <exec program="devenv.com" >
+    <exec program="msbuild.exe" >
       <arg value="${solutionname}" />
-      <arg value="/clean" />
-      <arg value="${configuration}|win32" />
+      <arg value="/t:Clean" />
+      <arg value="/p:Configuration=${configuration}" />
+      <arg value="/p:Platform=Win32" />
+      <arg value="/verbosity:quiet" />
+      <arg value="/maxcpucount" />
     </exec>
-    <exec program="devenv.com" >
+    <exec program="msbuild.exe" >
       <arg value="${solutionname}" />
-      <arg value="/clean" />
-      <arg value="${configuration}|x64" />
+      <arg value="/t:Clean" />
+      <arg value="/p:Configuration=${configuration}" />
+      <arg value="/p:Platform=x64" />
+      <arg value="/verbosity:quiet" />
+      <arg value="/maxcpucount" />
     </exec>
   </target>
 
@@ -85,15 +91,21 @@
     <description>
       Builds grepWin.
     </description>
-    <exec program="devenv.com" >
+    <exec program="msbuild.exe" >
       <arg value="${solutionname}" />
-      <arg value="/rebuild" />
-      <arg value="${configuration}|win32" />
+      <arg value="/t:rebuild" />
+      <arg value="/p:Configuration=${configuration}" />
+      <arg value="/p:Platform=Win32" />
+      <arg value="/verbosity:minimal" />
+      <arg value="/maxcpucount" />
     </exec>
-    <exec program="devenv.com" >
+    <exec program="msbuild.exe" >
       <arg value="${solutionname}" />
-      <arg value="/rebuild" />
-      <arg value="${configuration}|x64" />
+      <arg value="/t:rebuild" />
+      <arg value="/p:Configuration=${configuration}" />
+      <arg value="/p:Platform=x64" />
+      <arg value="/verbosity:minimal" />
+      <arg value="/maxcpucount" />
     </exec>
   </target>
 
