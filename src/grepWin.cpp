@@ -109,7 +109,6 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
     bPortable = ((_tcsstr(modulename.c_str(), _T("portable"))) || (parser.HasKey(_T("portable"))));
 
     std::wstring iniPath = CPathUtils::GetModuleDir(0);
-    iniPath = iniPath.substr(0, iniPath.rfind('\\'));
     iniPath += L"\\grepwin.ini";
     if (parser.HasVal(L"inipath"))
         iniPath = parser.GetVal(L"inipath");
