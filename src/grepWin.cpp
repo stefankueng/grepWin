@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008, 2010-2013 - Stefan Kueng
+// Copyright (C) 2007-2008, 2010-2014 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -24,11 +24,26 @@
 #include "Registry.h"
 #include "Language.h"
 #include "StringUtils.h"
+#include "PathUtils.h"
 
 // Global Variables:
 HINSTANCE hInst;            // current instance
 bool bPortable = false;
 CSimpleIni g_iniFile;
+
+static std::wstring SanitizeSearchPaths(const std::wstring& searchpath)
+{
+    std::vector<std::wstring> container;
+    stringtok(container, searchpath, true);
+    std::wstring sResult;
+    for (const auto& path : container)
+    {
+        if (!sResult.empty())
+            sResult += L"|";
+        sResult += CPathUtils::GetLongPathname(path);
+    }
+    return sResult;
+}
 
 BOOL CALLBACK windowenumerator(__in  HWND hwnd,__in  LPARAM lParam)
 {
@@ -90,11 +105,10 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
         timeout--;
     } while ((hWnd == NULL) && alreadyRunning && timeout);
 
-    std::unique_ptr<TCHAR[]> path(new TCHAR[MAX_PATH_NEW]);
-    GetModuleFileName(NULL, path.get(), MAX_PATH_NEW);
-    bPortable = ((_tcsstr(path.get(), _T("portable")))||(parser.HasKey(_T("portable"))));
+    auto modulename = CPathUtils::GetFileName(CPathUtils::GetModulePath(0));
+    bPortable = ((_tcsstr(modulename.c_str(), _T("portable"))) || (parser.HasKey(_T("portable"))));
 
-    std::wstring iniPath = path.get();
+    std::wstring iniPath = CPathUtils::GetModuleDir(0);
     iniPath = iniPath.substr(0, iniPath.rfind('\\'));
     iniPath += L"\\grepwin.ini";
     if (parser.HasVal(L"inipath"))
@@ -114,6 +128,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
         {
             std::wstring spath = parser.GetVal(_T("searchpath"));
             SearchReplace(spath, L"/", L"\\");
+            spath = SanitizeSearchPaths(spath);
             COPYDATASTRUCT CopyData = {0};
             CopyData.lpData = (LPVOID)spath.c_str();
             CopyData.cbData = (DWORD)spath.size()*sizeof(wchar_t);
@@ -125,7 +140,8 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
         {
             std::wstring spath = parser.HasVal(L"searchpath") ? parser.GetVal(_T("searchpath")) : L"";
             SearchReplace(spath, L"/", L"\\");
-            COPYDATASTRUCT CopyData = {0};
+            spath = SanitizeSearchPaths(spath);
+            COPYDATASTRUCT CopyData = { 0 };
             CopyData.lpData = (LPVOID)spath.c_str();
             CopyData.cbData = (DWORD)spath.size()*sizeof(wchar_t);
             SendMessage(hWnd, WM_COPYDATA, 1, (LPARAM)&CopyData);
@@ -147,7 +163,11 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
         {
             CSearchDlg searchDlg(NULL);
             if (parser.HasVal(_T("searchpath")))
-                searchDlg.SetSearchPath(parser.GetVal(_T("searchpath")));
+            {
+                std::wstring spath = parser.GetVal(L"searchpath");
+                spath = SanitizeSearchPaths(spath);
+                searchDlg.SetSearchPath(spath);
+            }
             if (parser.HasVal(_T("searchfor")))
                 searchDlg.SetSearchString(parser.GetVal(_T("searchfor")));
             if (parser.HasVal(_T("filemaskregex")))
