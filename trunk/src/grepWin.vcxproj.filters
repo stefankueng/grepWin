@@ -129,6 +129,9 @@
     <ClCompile Include="..\sktoolslib\codecvt.cpp">
       <Filter>sktoolslib</Filter>
     </ClCompile>
+    <ClCompile Include="..\sktoolslib\PathUtils.cpp">
+      <Filter>sktoolslib</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AboutDlg.h">
@@ -246,6 +249,9 @@
       <Filter>sktoolslib</Filter>
     </ClInclude>
     <ClInclude Include="..\sktoolslib\ResString.h">
+      <Filter>sktoolslib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sktoolslib\PathUtils.h">
       <Filter>sktoolslib</Filter>
     </ClInclude>
   </ItemGroup>

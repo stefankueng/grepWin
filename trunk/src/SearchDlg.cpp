@@ -599,6 +599,12 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 if (!SaveSettings())
                     break;
 
+                if (m_searchpath.find(L"..") != std::wstring::npos)
+                {
+                    ShowEditBalloon(IDC_SEARCHPATH, TranslatedString(hResource, IDS_ERR_INVALID_PATH).c_str(), TranslatedString(hResource, IDS_ERR_RELATIVEPATH).c_str());
+                    break;
+                }
+
                 m_searchedItems = 0;
                 m_totalitems = 0;
 
@@ -612,6 +618,11 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 m_AutoCompleteSearchPatterns.AddEntry(m_searchString.c_str());
                 m_AutoCompleteReplacePatterns.AddEntry(m_replaceString.c_str());
                 m_AutoCompleteSearchPaths.AddEntry(m_searchpath.c_str());
+
+                m_AutoCompleteFilePatterns.Save();
+                m_AutoCompleteSearchPatterns.Save();
+                m_AutoCompleteReplacePatterns.Save();
+                m_AutoCompleteSearchPaths.Save();
 
                 m_bReplace = id == IDC_REPLACE;
 
@@ -701,6 +712,12 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 else
                     path.get()[0] = 0;
             }
+            if (wcsstr(path.get(), L"..") != NULL)
+            {
+                ShowEditBalloon(IDC_SEARCHPATH, TranslatedString(hResource, IDS_ERR_INVALID_PATH).c_str(), TranslatedString(hResource, IDS_ERR_RELATIVEPATH).c_str());
+                break;
+            }
+
             std::unique_ptr<WCHAR[]> pathbuf(new WCHAR[MAX_PATH_NEW]);
             wcscpy_s(pathbuf.get(), MAX_PATH_NEW, path.get());
             browse.SetInfo(TranslatedString(hResource, IDS_SELECTPATHTOSEARCH).c_str());
