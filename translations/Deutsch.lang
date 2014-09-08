@@ -147,6 +147,10 @@ msgstr "Kodierung"
 msgid "Enter a name for the regex:"
 msgstr "Name für die Regex:"
 
+#. Resource IDs: (1062)
+msgid "Escape key closes grepWin"
+msgstr "Escape Taste schliesst grepWin"
+
 #. Resource IDs: (1041)
 msgid "Exclude dirs (Regex):"
 msgstr "Ordner ausschliessen (Regex):"
@@ -179,6 +183,10 @@ msgstr "Inklusive Unterordner"
 msgid "Include system items"
 msgstr "Inklusive Systemdateien"
 
+#. Resource IDs: (10)
+msgid "Invalid path!"
+msgstr "Ungültiger Pfad!"
+
 #. Resource IDs: (1019)
 msgid "KB"
 msgstr "KB"
@@ -194,6 +202,11 @@ msgstr "Suche begrenzen"
 #. Resource IDs: (9)
 msgid "Line"
 msgstr "Linie"
+
+#. Resource IDs: (10)
+#, c-format
+msgid "Line %5ld : %30s\n"
+msgstr "Zeile %5ld : %30s\n"
 
 #. Resource IDs: (9)
 msgid "Matches"
@@ -267,6 +280,10 @@ msgstr "Regex Suche"
 msgid "Regex search string:"
 msgstr "Regex Suchstring"
 
+#. Resource IDs: (10)
+msgid "Relative paths are not allowed. Please enter an absolute path!"
+msgstr "Relative Pfade sind nicht erlaubt. Geben Sie einen absoluten Pfad ein!"
+
 #. Resource IDs: (32771)
 msgid "Remo&ve Preset"
 msgstr "Favoriten Löschen"
@@ -290,6 +307,10 @@ msgstr "Suche"
 #. Resource IDs: (1026)
 msgid "Search &for:"
 msgstr "Suche nach:"
+
+#. Resource IDs: (65535)
+msgid "Search &in"
+msgstr "Suche &in"
 
 #. Resource IDs: (1042)
 msgid "Search case-sensitive"
@@ -435,6 +456,11 @@ msgstr "Regex ok"
 #. Resource IDs: (8)
 msgid "reuse grepWin instances."
 msgstr "Benutze gleiche grepWin Instanz"
+
+#. Resource IDs: (10)
+#, c-format
+msgid "scanning file '%s'"
+msgstr "Durchsuche Datei '%s'"
 
 #. Resource IDs: (7)
 msgid "search string is empty"
