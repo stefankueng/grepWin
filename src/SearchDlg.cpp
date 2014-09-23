@@ -2579,7 +2579,7 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
                                 }
                             }
                             CloseHandle(hFile);
-                            for (int mp = 0; mp < matchlinesnumbers.size(); ++mp)
+                            for (size_t mp = 0; mp < matchlinesnumbers.size(); ++mp)
                             {
                                 auto fp = linepositions.lower_bound(matchlinesnumbers[mp]);
                                 if (fp != linepositions.end())
