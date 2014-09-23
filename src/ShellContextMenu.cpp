@@ -62,7 +62,7 @@ CShellContextMenu::~CShellContextMenu()
     if (m_psfFolder && bDelete)
         m_psfFolder->Release ();
     m_psfFolder = NULL;
-    FreePIDLArray (m_pidlArray, m_pidlArrayItems);
+    FreePIDLArray(m_pidlArray, m_pidlArrayItems);
     m_pidlArray = NULL;
     m_pidlArrayItems = 0;
 
@@ -463,8 +463,7 @@ void CShellContextMenu::FreePIDLArray(LPITEMIDLIST *pidlArray, int nItems)
 
     for (int i = 0; i < nItems; i++)
     {
-        if (pidlArray[i])
-            CoTaskMemFree(pidlArray[i]);
+        CoTaskMemFree(pidlArray[i]);
     }
     CoTaskMemFree(pidlArray);
 }
