@@ -1408,7 +1408,7 @@ void CSearchDlg::ShowContextMenu(int x, int y)
     bool filelist = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
     if (!filelist)
     {
-        WCHAR numbuf[40];
+        WCHAR numbuf[40] = { 0 };
         while ((iItem = ListView_GetNextItem(hListControl, iItem, LVNI_SELECTED)) != (-1))
         {
             ListView_GetItemText(hListControl, iItem, 1, numbuf, 40);
