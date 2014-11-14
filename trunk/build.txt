@@ -7,7 +7,7 @@ First, you need to install the compiler package.
 Next you need to install some utilities/programs:
 - Boost 1.47 or later   : http://www.boost.org/
 - TortoiseSVN           : http://tortoisesvn.net
-- WiX 3.8(*)            : http://wixtoolset.org/
+- WiX 3.9(*)            : http://wixtoolset.org/
 - NAnt 0.92(*)          : http://nant.sourceforge.net
 
 (*) Add the paths of the binaries to the PATH environment variable.
