@@ -4,7 +4,7 @@ setlocal
 pushd %~dp0
 
 rem you can set the COVDIR variable to your coverity path
-if not defined COVDIR set "COVDIR=C:\cov-analysis-win32-7.5.0"
+if not defined COVDIR set "COVDIR=C:\cov-analysis-win32"
 if defined COVDIR if not exist "%COVDIR%" (
   echo.
   echo ERROR: Coverity not found in "%COVDIR%"
