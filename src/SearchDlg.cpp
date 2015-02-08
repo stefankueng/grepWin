@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2014 - Stefan Kueng
+// Copyright (C) 2007-2015 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -2357,6 +2357,21 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
     std::wstring localSearchString = searchString;
     if (!bUseRegex)
         localSearchString = _T("\\Q") + searchString + _T("\\E");
+
+    SearchReplace(localSearchString, L"${filepath}", sinfo.filepath);
+    std::wstring filenamefull = sinfo.filepath.substr(sinfo.filepath.find_last_of('\\') + 1);
+    auto dotpos = filenamefull.find_last_of('.');
+    if (dotpos != std::string::npos)
+    {
+        std::wstring filename = filenamefull.substr(0, dotpos);
+        SearchReplace(localSearchString, L"${filepath}", filename);
+        if (filenamefull.size() > dotpos)
+        {
+            std::wstring fileext = filenamefull.substr(dotpos + 1);
+            SearchReplace(localSearchString, L"${fileext}", fileext);
+        }
+    }
+
     CTextFile textfile;
     m_searchedFile = sinfo.filepath;
     CTextFile::UnicodeType type = CTextFile::AUTOTYPE;
@@ -2657,7 +2672,12 @@ int CSearchDlg::CheckRegex()
         {
             try
             {
-                boost::wregex expression = boost::wregex(buf.get());
+                std::wstring localSearchString = buf.get();
+                SearchReplace(localSearchString, L"${filepath}", L"");
+                SearchReplace(localSearchString, L"${filepath}", L"");
+                SearchReplace(localSearchString, L"${fileext}", L"");
+
+                boost::wregex expression = boost::wregex(localSearchString);
             }
             catch (const std::exception&)
             {
