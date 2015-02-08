@@ -253,7 +253,9 @@
       <DeploymentContent>true</DeploymentContent>
     </None>
     <None Include="Resources\small.ico" />
-    <None Include="Setup\setup.build" />
+    <None Include="Setup\setup.build">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Setup\Setup.wxs" />
     <None Include="Setup\Setup64.wxs" />
     <None Include="Setup\Setup64_user.wxs" />
