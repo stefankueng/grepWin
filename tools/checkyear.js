@@ -10,42 +10,58 @@
  */
 
 var ForReading = 1;
-var objArgs, num;
-
+var objArgs;
+var num;
 objArgs = WScript.Arguments;
 num = objArgs.length;
-if (num != 4 && num != 3)
+if (num !== 4 && num !== 3)
 {
     WScript.Echo("Usage: [CScript | WScript] checkyear.js path/to/pathsfile depth path/to/messagefile path/to/CWD");
     WScript.Quit(1);
 }
 
-var re = /^\/\/ Copyright.+(2015)(.*)/;
-var basere = /^\/\/ Copyright(.*)/;
-var filere = /(\.cpp$)|(\.h$)|(\.idl$)/;
+// readFileLines
+function readPaths(path)
+{
+    var retPaths = [];
+    var fileSystem = new ActiveXObject("Scripting.FileSystemObject");
+    if (fileSystem.FileExists(path))
+    {
+        var textFile = fileSystem.OpenTextFile(path, ForReading);
+        while (!textFile.AtEndOfStream)
+        {
+            var line = textFile.ReadLine();
+            retPaths.push(line);
+        }
+        textFile.Close();
+    }
+    return retPaths;
+}
+
 var found = true;
-var fs, a, rv, r;
-fs = new ActiveXObject("Scripting.FileSystemObject");
-// remove the quotes
 var files = readPaths(objArgs(0));
-// going backwards with while is believed to be faster
 var fileindex = files.length;
 var errormsg = "";
 
 while (fileindex--)
 {
     var f = files[fileindex];
+    var fs = new ActiveXObject("Scripting.FileSystemObject");
+    var re = /^\/\/ Copyright.+(2015)(.*)/;
+    var basere = /^\/\/ Copyright(.*)/;
+    var filere = /(\.cpp$)|(\.h$)|(\.idl$)/;
+
     if (f.match(filere) !== null)
     {
         if (fs.FileExists(f))
         {
-            a = fs.OpenTextFile(f, ForReading, false);
+            var a = fs.OpenTextFile(f, ForReading, false);
             var copyrightFound = false;
             var yearFound = false;
             while (!a.AtEndOfStream && !yearFound)
             {
-                r = a.ReadLine();
-                rv = r.match(basere);
+                var r = a.ReadLine();
+                var rv = r.match(basere);
                 if (rv !== null)
                 {
                     rv = r.match(re);
@@ -79,22 +95,3 @@ if (found === false)
 }
 
 WScript.Quit(!found);
-
-
-// readFileLines
-function readPaths(path)
-{
-    var retPaths = [];
-    var fs = new ActiveXObject("Scripting.FileSystemObject");
-    if (fs.FileExists(path))
-    {
-        var a = fs.OpenTextFile(path, ForReading);
-        while (!a.AtEndOfStream)
-        {
-            var line = a.ReadLine();
-            retPaths.push(line);
-        }
-        a.Close();
-    }
-    return retPaths;
-}
