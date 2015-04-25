@@ -2518,10 +2518,13 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
             boost::match_flag_type flags = boost::match_default | boost::format_all;
             if (!bDotMatchesNewline)
                 flags |= boost::match_not_dot_newline;
+            int ft = boost::regex::normal;
+            if (!bCaseSensitive)
+                ft |= boost::regbase::icase;
 
             try
             {
-                boost::regex expression = boost::regex(searchfor);
+                boost::regex expression = boost::regex(searchfor, ft);
                 boost::match_results<boost::spirit::classic::file_iterator<>> whatc;
                 std::vector<DWORD> matchlinesnumbers;
                 bool bFound = false;
