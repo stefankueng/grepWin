@@ -2319,9 +2319,15 @@ bool CSearchDlg::MatchPath(LPCTSTR pathbuf)
         pName++;    // skip the last '\\' char
     if (m_bUseRegexForPaths)
     {
-        if ( (m_patterns.empty()) || grepWin_match_i(m_patternregex, pName) )
-        {
+        if (m_patterns.empty())
             bPattern = true;
+        else
+        {
+            if (grepWin_match_i(m_patternregex, pName))
+                bPattern = true;
+            // for a regex check, also test with the full path
+            else if (grepWin_match_i(m_patternregex, pathbuf))
+                bPattern = true;
         }
     }
     else
