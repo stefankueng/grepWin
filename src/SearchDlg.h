@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2014 - Stefan Kueng
+// Copyright (C) 2007-2015 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -52,7 +52,8 @@ public:
     void                    SetSearchString(const std::wstring& search) {m_searchString = search;}
     void                    SetFileMask(const std::wstring& mask, bool reg) {m_patternregex = mask; m_bUseRegexForPaths = reg;}
     void                    SetExcludeFileMask(const std::wstring& mask) {m_excludedirspatternregex = mask;}
-    void                    SetReplaceWith(const std::wstring& replace) {m_replaceString = replace;}
+    void                    SetReplaceWith(const std::wstring& replace) { m_replaceString = replace; }
+    void                    SetUseRegex(bool reg) { m_bUseRegex = reg; }
 
     void                    SetCaseSensitive(bool bSet) {m_bCaseSensitiveC = true; m_bCaseSensitive = bSet;}
     void                    SetMatchesNewline(bool bSet) {m_bDotMatchesNewlineC = true; m_bDotMatchesNewline = bSet;}
