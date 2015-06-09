@@ -248,7 +248,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             }
 
             TCHAR buf[MAX_PATH] = {0};
-            if (m_bSizeC)
+            if (m_bSizeC && (m_lSize != (DWORD)-1))
             {
                 _stprintf_s(buf, _countof(buf), _T("%lu"), m_lSize);
                 SetDlgItemText(hwndDlg, IDC_SIZEEDIT, buf);
