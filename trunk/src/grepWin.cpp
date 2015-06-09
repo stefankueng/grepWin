@@ -247,6 +247,10 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
                 searchDlg.SetIncludeSubfolders(_tcsicmp(parser.GetVal(_T("u")), _T("yes"))==0);
             if (parser.HasVal(_T("b")))
                 searchDlg.SetIncludeBinary(_tcsicmp(parser.GetVal(_T("b")), _T("yes"))==0);
+            if (parser.HasVal(_T("regex")))
+                searchDlg.SetUseRegex(_tcsicmp(parser.GetVal(_T("regex")), _T("yes")) == 0);
+            else if(parser.HasVal(_T("searchfor")))
+                searchDlg.SetUseRegex(true);
 
             if (parser.HasKey(_T("execute")))
                 searchDlg.SetExecute(true);
