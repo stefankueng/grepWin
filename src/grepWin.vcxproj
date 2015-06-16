@@ -78,7 +78,7 @@
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)obj\$(Configuration)64\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
-    <NuGetPackageImportStamp>a41f8289</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>fa218788</NuGetPackageImportStamp>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -252,7 +252,6 @@
     <None Include="Resources\infodlg.htm">
       <DeploymentContent>true</DeploymentContent>
     </None>
-    <None Include="Resources\small.ico" />
     <None Include="Setup\setup.build">
       <SubType>Designer</SubType>
     </None>
@@ -270,6 +269,7 @@
     <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
     <Import Project="..\packages\boost_regex.1.58.0.0\build\native\boost_regex.targets" Condition="Exists('..\packages\boost_regex.1.58.0.0\build\native\boost_regex.targets')" />
     <Import Project="..\packages\boost.1.58.0.0\build\native\boost.targets" Condition="Exists('..\packages\boost.1.58.0.0\build\native\boost.targets')" />
+    <Import Project="..\packages\boost_iostreams.1.58.0.0\build\native\boost_iostreams.targets" Condition="Exists('..\packages\boost_iostreams.1.58.0.0\build\native\boost_iostreams.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
@@ -277,5 +277,6 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\boost_regex.1.58.0.0\build\native\boost_regex.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_regex.1.58.0.0\build\native\boost_regex.targets'))" />
     <Error Condition="!Exists('..\packages\boost.1.58.0.0\build\native\boost.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost.1.58.0.0\build\native\boost.targets'))" />
+    <Error Condition="!Exists('..\packages\boost_iostreams.1.58.0.0\build\native\boost_iostreams.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_iostreams.1.58.0.0\build\native\boost_iostreams.targets'))" />
   </Target>
 </Project>

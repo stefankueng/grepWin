@@ -51,7 +51,7 @@
 
 #include <boost/regex.hpp>
 #include <boost/spirit/include/classic_file_iterator.hpp>
-
+#include <boost/iostreams/device/mapped_file.hpp>
 
 #define GREPWIN_DATEBUFFER 100
 #define LABELUPDATETIMER   10
@@ -2207,6 +2207,8 @@ DWORD CSearchDlg::SearchThread()
             std::wstring sPath;
             while (((fileEnumerator.NextFile(sPath, &bIsDirectory, bRecurse))&&(!m_Cancelled))||(bAlwaysSearch))
             {
+                if (sPath.find(L".grepwinreplaced") == (sPath.size() - 16))
+                    continue;
                 _tcscpy_s(pathbuf.get(), MAX_PATH_NEW, sPath.c_str());
                 if (!bIsDirectory)
                 {
@@ -2615,6 +2617,37 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
                         }
                     }
                     sinfo.matchlinesnumbers = matchlinesnumbers;
+
+
+                    if (m_bReplace)
+                    {
+                        flags &= ~boost::match_prev_avail;
+                        flags &= ~boost::match_not_bob;
+                        RegexReplaceFormatterA replaceFmt(CUnicodeUtils::StdGetUTF8(m_replaceString));
+                        replaceFmt.SetReplacePair("${filepath}", CUnicodeUtils::StdGetUTF8(sinfo.filepath));
+                        std::string filenamefull = CUnicodeUtils::StdGetUTF8(sinfo.filepath.substr(sinfo.filepath.find_last_of('\\') + 1));
+                        auto dotpos = filenamefull.find_last_of('.');
+                        if (dotpos != std::string::npos)
+                        {
+                            std::string filename = filenamefull.substr(0, dotpos);
+                            replaceFmt.SetReplacePair("${filename}", filename);
+                            if (filenamefull.size() > dotpos)
+                            {
+                                std::string fileext = filenamefull.substr(dotpos + 1);
+                                replaceFmt.SetReplacePair("${fileext}", fileext);
+                            }
+                        }
+                        std::string filepathout = filepath + ".grepwinreplaced";
+                        boost::iostreams::mapped_file replaceinfile(filepath.c_str());
+                        std::ofstream os(filepathout.c_str());
+                        std::ostream_iterator<char, char> out(os);
+                        regex_replace(out, replaceinfile.begin(), replaceinfile.end(), expression, replaceFmt, flags);
+                        os.close();
+                        replaceinfile.close();
+                        MoveFileExA(filepathout.c_str(), filepath.c_str(), MOVEFILE_REPLACE_EXISTING);
+                    }
+
+
                 }
             }
             catch (const std::exception&)
