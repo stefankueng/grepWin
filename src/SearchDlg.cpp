@@ -2521,9 +2521,6 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
                 searchfor += CUnicodeUtils::StdGetUTF8(searchString);
                 searchfor += "\\E";
             }
-            boost::spirit::classic::file_iterator<> start(filepath.c_str());
-            boost::spirit::classic::file_iterator<> fbeg = start;
-            boost::spirit::classic::file_iterator<> end = start.make_end();
 
             boost::match_results<std::string::const_iterator> what;
             boost::match_flag_type flags = boost::match_default | boost::format_all;
@@ -2536,22 +2533,27 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
             try
             {
                 boost::regex expression = boost::regex(searchfor, ft);
-                boost::match_results<boost::spirit::classic::file_iterator<>> whatc;
                 std::vector<DWORD> matchlinesnumbers;
                 bool bFound = false;
-                while (boost::regex_search(start, end, whatc, expression, flags))
                 {
-                    nFound++;
-                    matchlinesnumbers.push_back(DWORD(whatc[0].first-fbeg));
-                    ++sinfo.matchcount;
-                    // update search position:
-                    start = whatc[0].second;
-                    // update flags:
-                    flags |= boost::match_prev_avail;
-                    flags |= boost::match_not_bob;
-                    bFound = true;
+                    boost::spirit::classic::file_iterator<> start(filepath.c_str());
+                    boost::spirit::classic::file_iterator<> fbeg = start;
+                    boost::spirit::classic::file_iterator<> end = start.make_end();
+                    boost::match_results<boost::spirit::classic::file_iterator<>> whatc;
+                    while (boost::regex_search(start, end, whatc, expression, flags))
+                    {
+                        nFound++;
+                        matchlinesnumbers.push_back(DWORD(whatc[0].first - fbeg));
+                        ++sinfo.matchcount;
+                        // update search position:
+                        start = whatc[0].second;
+                        // update flags:
+                        flags |= boost::match_prev_avail;
+                        flags |= boost::match_not_bob;
+                        bFound = true;
+                    }
                 }
-
+                
                 if (bFound)
                 {
                     if (!bLoadResult && (type != CTextFile::BINARY))
