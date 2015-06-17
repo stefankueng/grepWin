@@ -2621,6 +2621,12 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
 
                     if (m_bReplace)
                     {
+                        std::wstring backupfile = sinfo.filepath + _T(".bak");
+                        if (m_bCreateBackup)
+                        {
+                            CopyFile(sinfo.filepath.c_str(), backupfile.c_str(), FALSE);
+                        }
+
                         flags &= ~boost::match_prev_avail;
                         flags &= ~boost::match_not_bob;
                         RegexReplaceFormatterA replaceFmt(CUnicodeUtils::StdGetUTF8(m_replaceString));
@@ -2637,14 +2643,15 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
                                 replaceFmt.SetReplacePair("${fileext}", fileext);
                             }
                         }
-                        std::string filepathout = filepath + ".grepwinreplaced";
-                        boost::iostreams::mapped_file replaceinfile(filepath.c_str());
-                        std::ofstream os(filepathout.c_str());
+                        std::string filepathout = m_bCreateBackup ? filepath : filepath + ".grepwinreplaced";
+                        boost::iostreams::mapped_file_source replaceinfile(m_bCreateBackup ? CUnicodeUtils::StdGetANSI(backupfile).c_str() : filepath.c_str());
+                        std::ofstream os(filepathout.c_str(), std::ios::out | std::ios::trunc);
                         std::ostream_iterator<char, char> out(os);
                         regex_replace(out, replaceinfile.begin(), replaceinfile.end(), expression, replaceFmt, flags);
                         os.close();
                         replaceinfile.close();
-                        MoveFileExA(filepathout.c_str(), filepath.c_str(), MOVEFILE_REPLACE_EXISTING);
+                        if (!m_bCreateBackup)
+                            MoveFileExA(filepathout.c_str(), filepath.c_str(), MOVEFILE_REPLACE_EXISTING);
                     }
 
 
