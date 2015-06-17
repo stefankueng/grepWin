@@ -29,6 +29,7 @@
 #include "StringUtils.h"
 #include <string>
 #include <vector>
+#include <set>
 
 
 #define SEARCH_FOUND        (WM_APP+1)
@@ -142,6 +143,7 @@ private:
     HANDLE                  m_hSearchThread;
 
     std::vector<CSearchInfo> m_items;
+    std::set<std::wstring>  m_backupandtempfiles;
     int                     m_totalitems;
     int                     m_searchedItems;
     int                     m_totalmatches;
