@@ -612,6 +612,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 m_totalitems = 0;
 
                 m_items.clear();
+                m_backupandtempfiles.clear();
                 InitResultList();
                 DialogEnableWindow(IDC_RESULTFILES, false);
                 DialogEnableWindow(IDC_RESULTCONTENT, false);
@@ -2207,7 +2208,7 @@ DWORD CSearchDlg::SearchThread()
             std::wstring sPath;
             while (((fileEnumerator.NextFile(sPath, &bIsDirectory, bRecurse))&&(!m_Cancelled))||(bAlwaysSearch))
             {
-                if (sPath.find(L".grepwinreplaced") == (sPath.size() - 16))
+                if (m_backupandtempfiles.find(sPath) != m_backupandtempfiles.end())
                     continue;
                 _tcscpy_s(pathbuf.get(), MAX_PATH_NEW, sPath.c_str());
                 if (!bIsDirectory)
@@ -2627,6 +2628,7 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
                         if (m_bCreateBackup)
                         {
                             CopyFile(sinfo.filepath.c_str(), backupfile.c_str(), FALSE);
+                            m_backupandtempfiles.insert(backupfile);
                         }
 
                         flags &= ~boost::match_prev_avail;
@@ -2646,6 +2648,8 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
                             }
                         }
                         std::string filepathout = m_bCreateBackup ? filepath : filepath + ".grepwinreplaced";
+                        if (!m_bCreateBackup)
+                            m_backupandtempfiles.insert(sinfo.filepath + L".grepwinreplaced");
                         boost::iostreams::mapped_file_source replaceinfile(m_bCreateBackup ? CUnicodeUtils::StdGetANSI(backupfile).c_str() : filepath.c_str());
                         std::ofstream os(filepathout.c_str(), std::ios::out | std::ios::trunc);
                         std::ostream_iterator<char, char> out(os);
