@@ -102,6 +102,20 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
     UNREFERENCED_PARAMETER(lpCmdLine);
     UNREFERENCED_PARAMETER(nCmdShow);
 
+    // uncomment the following lines for low-memory tests.
+    // note: process needs to run elevated for this to work.
+    //
+    //auto job = CreateJobObject(NULL, NULL);
+    //JOBOBJECT_EXTENDED_LIMIT_INFORMATION joblimit = { 0 };
+    //joblimit.BasicLimitInformation.LimitFlags = JOB_OBJECT_LIMIT_WORKINGSET;
+    //joblimit.JobMemoryLimit = 30 * 1024 * 1024;
+    //joblimit.ProcessMemoryLimit = 30 * 1024 * 1024;
+    //joblimit.PeakProcessMemoryUsed = 30 * 1024 * 1024;
+    //joblimit.BasicLimitInformation.MaximumWorkingSetSize = 30 * 1024 * 1024;
+    //joblimit.BasicLimitInformation.MinimumWorkingSetSize = 30 * 1024;
+    //SetInformationJobObject(job, JobObjectExtendedLimitInformation, &joblimit, sizeof(joblimit));
+    //AssignProcessToJobObject(job, GetCurrentProcess());
+
     SetDllDirectory(L"");
     hInst = hInstance;
     ::OleInitialize(NULL);
