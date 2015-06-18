@@ -2466,6 +2466,7 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
                     {
                         std::wstring backupfile = sinfo.filepath + _T(".bak");
                         CopyFile(sinfo.filepath.c_str(), backupfile.c_str(), FALSE);
+                        m_backupandtempfiles.insert(backupfile);
                     }
                     if (!textfile.Save(sinfo.filepath.c_str()))
                     {
