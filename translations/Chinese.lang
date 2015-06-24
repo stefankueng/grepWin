@@ -1,16 +1,17 @@
-# Chinese Language for grepWin
-# Copyright (C) 2013 -=XARA=-
-# This file is distributed under the same license as the grepWin package.
-# -=XARA=- <x1983@msn.com>, 2013.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: 1.6.1\n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-04-02 21:00\n"
-"PO-Revision-Date: 2013-05-08 10:12\n"
-"Last-Translator: -=XARA=- <x1983@msn.com>\n"
+"POT-Creation-Date: 1900-01-01 00:00+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -32,7 +33,7 @@ msgstr ""
 # ONLY change the msgstr field. Do NOT change any other.
 # If you do not want to change an Accelerator Key, copy msgid to msgstr
 
-#. Resource IDs: (10)
+#. Resource IDs: (149)
 #, c-format
 msgid "%ld more matches"
 msgstr "还有 %ld 个匹配"
@@ -41,7 +42,7 @@ msgstr "还有 %ld 个匹配"
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to"
 msgstr "%path%将被替换为文件的路径, %line%将被替换为要转至的行号."
 
-#. Resource IDs: (8)
+#. Resource IDs: (119)
 msgid "&About grepWin..."
 msgstr "关于grepWin(&A)..."
 
@@ -49,7 +50,7 @@ msgstr "关于grepWin(&A)..."
 msgid "&Replace"
 msgstr "替换(&R)"
 
-#. Resource IDs: (8)
+#. Resource IDs: (123)
 msgid "&Search"
 msgstr "搜索(&S)"
 
@@ -61,7 +62,7 @@ msgstr ""
 msgid "/"
 msgstr ""
 
-#. Resource IDs: (1052)
+#. Resource IDs: (135, 1052)
 msgid "About grepWin"
 msgstr "关于gerpWin"
 
@@ -73,7 +74,7 @@ msgstr "添至预置"
 msgid "All sizes"
 msgstr "所有大小"
 
-#. Resource IDs: (8)
+#. Resource IDs: (124)
 #, c-format
 msgid "Are you sure you want to replace\n%s\nwith\n%s\nwithout creating backups?"
 msgstr "您确定想要将\n%s\n与\n%s\n替换而不创建备份吗?"
@@ -90,27 +91,27 @@ msgstr "用于在指定的行号来启动编辑器的命令行:"
 msgid "Content"
 msgstr "内容"
 
-#. Resource IDs: (10)
+#. Resource IDs: (145)
 msgid "Copy filename to clipboard"
 msgstr "复制文件名称到剪贴板"
 
-#. Resource IDs: (10)
+#. Resource IDs: (146)
 msgid "Copy filenames to clipboard"
-msgstr ""复制文件名称到剪贴版
+msgstr ""复制文件名称到剪贴"
 
-#. Resource IDs: (9)
+#. Resource IDs: (143)
 msgid "Copy path to clipboard"
 msgstr "复制路径到剪贴板"
 
-#. Resource IDs: (10)
+#. Resource IDs: (144)
 msgid "Copy paths to clipboard"
 msgstr "复制路径到剪贴板"
 
-#. Resource IDs: (10)
+#. Resource IDs: (147)
 msgid "Copy text result to clipboard"
 msgstr "复制文本结果到剪贴板"
 
-#. Resource IDs: (10)
+#. Resource IDs: (148)
 msgid "Copy text results to clipboard"
 msgstr "复制文本结果到剪贴板"
 
@@ -118,11 +119,11 @@ msgstr "复制文本结果到剪贴板"
 msgid "Create backup files"
 msgstr "创建备份文件"
 
-#. Resource IDs: (9)
+#. Resource IDs: (139)
 msgid "Date modified"
 msgstr "修改日期"
 
-#. Resource IDs: (135, 137)
+#. Resource IDs: (137)
 msgid "Dialog"
 msgstr "对话框"
 
@@ -138,7 +139,7 @@ msgstr ""
 msgid "Editor"
 msgstr "编辑器"
 
-#. Resource IDs: (9)
+#. Resource IDs: (138)
 msgid "Encoding"
 msgstr "编码"
 
@@ -146,19 +147,23 @@ msgstr "编码"
 msgid "Enter a name for the regex:"
 msgstr "为正则输入一个名称:"
 
+#. Resource IDs: (1062)
+msgid "Escape key closes grepWin"
+msgstr ""
+
 #. Resource IDs: (1041)
 msgid "Exclude dirs (Regex):"
 msgstr "排除目录(正则):"
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
-msgstr "文件名称匹配:\n使用 \"|\" 号来分隔多个文本匹配规则,前置 \"-\" 用于排除(&D)'
+msgstr "文件名称匹配:\n使用 \"|\" 号来分隔多个文本匹配规则,前置 \"-\" 用于排除(&D)"
 
 #. Resource IDs: (1059)
 msgid "Files"
 msgstr "文件"
 
-#. Resource IDs: (7)
+#. Resource IDs: (109)
 msgid "GREPWIN"
 msgstr ""
 
@@ -178,6 +183,10 @@ msgstr "包含子文件夹"
 msgid "Include system items"
 msgstr "包含系统项目"
 
+#. Resource IDs: (153)
+msgid "Invalid path!"
+msgstr ""
+
 #. Resource IDs: (1019)
 msgid "KB"
 msgstr ""
@@ -190,19 +199,24 @@ msgstr "语言"
 msgid "Limit search"
 msgstr "限定搜索"
 
-#. Resource IDs: (9)
+#. Resource IDs: (134)
 msgid "Line"
 msgstr "行号"
 
-#. Resource IDs: (9)
+#. Resource IDs: (150)
+#, c-format
+msgid "Line %5ld : %30s\n"
+msgstr ""
+
+#. Resource IDs: (135)
 msgid "Matches"
 msgstr "匹配"
 
-#. Resource IDs: (7)
+#. Resource IDs: (104)
 msgid "Name"
 msgstr "名称"
 
-#. Resource IDs: (8)
+#. Resource IDs: (115)
 msgid "Newline is matched by '.'"
 msgstr "新行匹配 \".\" 号"
 
@@ -214,11 +228,11 @@ msgstr "确定"
 msgid "Only one instance"
 msgstr "仅单实例"
 
-#. Resource IDs: (9)
+#. Resource IDs: (142)
 msgid "Open containing folder"
 msgstr "打开包含的文件夹"
 
-#. Resource IDs: (9)
+#. Resource IDs: (141)
 msgid "Open with Editor"
 msgstr "使用编辑器打开"
 
@@ -226,7 +240,7 @@ msgstr "使用编辑器打开"
 msgid "Paste text to test the regex with:"
 msgstr "粘贴文本以测试正则:"
 
-#. Resource IDs: (9)
+#. Resource IDs: (137)
 msgid "Path"
 msgstr "路径"
 
@@ -266,11 +280,15 @@ msgstr "正则搜索"
 msgid "Regex search string:"
 msgstr "正则搜索字符串:"
 
+#. Resource IDs: (152)
+msgid "Relative paths are not allowed. Please enter an absolute path!"
+msgstr ""
+
 #. Resource IDs: (32771)
 msgid "Remo&ve Preset"
 msgstr "移除预置(&V)"
 
-#. Resource IDs: (7)
+#. Resource IDs: (106)
 msgid "Replace string"
 msgstr "替换字符串"
 
@@ -278,7 +296,7 @@ msgstr "替换字符串"
 msgid "Replace with:"
 msgstr "替换为:"
 
-#. Resource IDs: (8)
+#. Resource IDs: (126)
 msgid "S&top"
 msgstr "停止(&T)"
 
@@ -289,6 +307,10 @@ msgstr "搜索"
 #. Resource IDs: (1026)
 msgid "Search &for:"
 msgstr "搜索(&F):"
+
+#. Resource IDs: (65535)
+msgid "Search &in"
+msgstr ""
 
 #. Resource IDs: (1042)
 msgid "Search case-sensitive"
@@ -302,20 +324,20 @@ msgstr "搜索于"
 msgid "Search results"
 msgstr "搜索结果"
 
-#. Resource IDs: (7)
+#. Resource IDs: (105)
 msgid "Search string"
 msgstr "搜索字符串"
 
-#. Resource IDs: (9)
+#. Resource IDs: (128)
 #, c-format
 msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files."
 msgstr "已经搜索 %ld 个文件, 跳过 %ld 个文件.在 %ld 个文件中找到 %ld 个匹配."
 
-#. Resource IDs: (9)
+#. Resource IDs: (140)
 msgid "Select Editor Application..."
 msgstr "选择编辑器应用程序..."
 
-#. Resource IDs: (8)
+#. Resource IDs: (127)
 msgid "Select path to search"
 msgstr "选择要搜索的路径"
 
@@ -323,7 +345,7 @@ msgstr "选择要搜索的路径"
 msgid "Settings"
 msgstr "设置"
 
-#. Resource IDs: (9)
+#. Resource IDs: (133)
 msgid "Size"
 msgstr "大小"
 
@@ -335,7 +357,7 @@ msgstr "大小为"
 msgid "Test regex"
 msgstr "测试正则"
 
-#. Resource IDs: (9)
+#. Resource IDs: (136)
 msgid "Text"
 msgstr "文本"
 
@@ -355,7 +377,7 @@ msgstr "正则搜索字符串匹配:"
 msgid "The resulting text after replacing:"
 msgstr "替换后的结果文本:"
 
-#. Resource IDs: (65535)
+#. Resource IDs: (1074)
 msgid "This adds a new entry to the context menu named \"Open with Editor\""
 msgstr "这将在上下文菜单中添加一个名为\"使用编辑器打开\"的条目."
 
@@ -367,31 +389,31 @@ msgstr "将文件视为UTF8"
 msgid "Visit our website"
 msgstr "访问我们的网站"
 
-#. Resource IDs: (8)
+#. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
 msgstr "用于搜索的正则表达式. 按F1键获取更多信息."
 
-#. Resource IDs: (8)
+#. Resource IDs: (125)
 msgid "an empty string"
 msgstr "空字符串"
 
-#. Resource IDs: (9)
+#. Resource IDs: (130)
 msgid "binary"
 msgstr "二进制"
 
-#. Resource IDs: (8)
+#. Resource IDs: (118)
 msgid "click to edit the text as a multiline text"
 msgstr "点此以将该文本作为多行文本来编辑"
 
-#. Resource IDs: (8)
+#. Resource IDs: (121)
 msgid "equal to"
 msgstr "等于"
 
-#. Resource IDs: (8)
+#. Resource IDs: (122)
 msgid "greater than"
 msgstr "大于"
 
-#. Resource IDs: (7, 129)
+#. Resource IDs: (103, 129)
 msgid "grepWin"
 msgstr ""
 
@@ -399,51 +421,56 @@ msgstr ""
 msgid "grepWin Settings"
 msgstr "grepWin设置"
 
-#. Resource IDs: (9)
+#. Resource IDs: (132)
 msgid "invalid regex!"
 msgstr "无效的正则表达式"
 
-#. Resource IDs: (8)
+#. Resource IDs: (120)
 msgid "less than"
 msgstr "小于"
 
-#. Resource IDs: (7)
+#. Resource IDs: (111)
 msgid "no match"
 msgstr "无匹配"
 
-#. Resource IDs: (7)
+#. Resource IDs: (110)
 msgid "no text to replace with"
 msgstr "没有要替换为的文本"
 
-#. Resource IDs: (7)
+#. Resource IDs: (107)
 msgid "no text to test with available"
 msgstr "没有要测试的文本"
 
-#. Resource IDs: (8)
+#. Resource IDs: (112)
 msgid "only files that match this pattern are searched.\r\nUse \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
 msgstr "仅匹配此样式的文件被搜索.\r\n使用 \"|\" 作为分隔符.\r\n例如: *.cpp|*.h"
 
-#. Resource IDs: (9)
+#. Resource IDs: (129)
 msgid "read error"
 msgstr "读取错误"
 
-#. Resource IDs: (9)
+#. Resource IDs: (131)
 msgid "regex ok"
 msgstr "正则OK"
 
-#. Resource IDs: (8)
+#. Resource IDs: (117)
 msgid "reuse grepWin instances."
 msgstr "复用grepWin实例"
 
-#. Resource IDs: (7)
+#. Resource IDs: (151)
+#, c-format
+msgid "scanning file '%s'"
+msgstr ""
+
+#. Resource IDs: (108)
 msgid "search string is empty"
 msgstr "搜索字符串为空"
 
-#. Resource IDs: (8)
+#. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"
 msgstr "将被递归搜索的路径.\r\n使用 \"|\" 符号来分隔路径.\r\n比如:  c:\\temp|d:\\logs"
 
-#. Resource IDs: (8)
+#. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "你可以排除目录, 比如: CVS 和 images.\r\n例如: ^(CVS|images)$\r\n注意, \".svn\" 目录在Windows中是隐藏的,所以通常不扫描它们."
 
