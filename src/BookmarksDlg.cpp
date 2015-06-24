@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2010, 2012-2014 - Stefan Kueng
+// Copyright (C) 2007-2010, 2012-2015 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -108,6 +108,7 @@ LRESULT CBookmarksDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lP
                 }
                 HMENU hMenu = LoadMenu(hResource, MAKEINTRESOURCE(IDC_BKPOPUP));
                 HMENU hPopup = GetSubMenu(hMenu, 0);
+                CLanguage::Instance().TranslateMenu(hPopup);
                 TrackPopupMenu(hPopup, TPM_LEFTALIGN|TPM_RIGHTBUTTON, x, y, 0, *this, NULL);
             }
         }
