@@ -27,7 +27,7 @@
 #include "PathUtils.h"
 
 // Global Variables:
-HINSTANCE hInst;            // current instance
+HINSTANCE g_hInst;            // current instance
 bool bPortable = false;
 CSimpleIni g_iniFile;
 
@@ -117,7 +117,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
     //AssignProcessToJobObject(job, GetCurrentProcess());
 
     SetDllDirectory(L"");
-    hInst = hInstance;
+    g_hInst = hInstance;
     ::OleInitialize(NULL);
     ::CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
     // we need some of the common controls

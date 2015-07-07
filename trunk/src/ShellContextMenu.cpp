@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2014 - Stefan Kueng
+// Copyright (C) 2007-2015 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -49,7 +49,7 @@ CShellContextMenu::CShellContextMenu()
     , m_psfFolder(NULL)
     , m_pidlArray(NULL)
     , m_pidlArrayItems(0)
-    , nItems(0)
+    , m_nItems(0)
     , bDelete(FALSE)
     , m_Menu(NULL)
 {
@@ -215,28 +215,28 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
     {
         if (!editorcmd.empty())
         {
-            ::InsertMenu(m_Menu, 1, MF_BYPOSITION | MF_STRING, 5, TranslatedString(hInst, IDS_OPENWITHEDITOR).c_str());
+            ::InsertMenu(m_Menu, 1, MF_BYPOSITION | MF_STRING, 5, TranslatedString(g_hInst, IDS_OPENWITHEDITOR).c_str());
             ::InsertMenu(m_Menu, 5, MF_SEPARATOR|MF_BYPOSITION, 0, NULL);
         }
 
-        ::InsertMenu(m_Menu, 1, MF_BYPOSITION | MF_STRING, 1, TranslatedString(hInst, IDS_OPENCONTAININGFOLDER).c_str());
-        ::InsertMenu(m_Menu, 2, MF_BYPOSITION | MF_STRING, 2, TranslatedString(hInst, IDS_COPYPATH).c_str());
-        ::InsertMenu(m_Menu, 3, MF_BYPOSITION | MF_STRING, 3, TranslatedString(hInst, IDS_COPYFILENAME).c_str());
+        ::InsertMenu(m_Menu, 1, MF_BYPOSITION | MF_STRING, 1, TranslatedString(g_hInst, IDS_OPENCONTAININGFOLDER).c_str());
+        ::InsertMenu(m_Menu, 2, MF_BYPOSITION | MF_STRING, 2, TranslatedString(g_hInst, IDS_COPYPATH).c_str());
+        ::InsertMenu(m_Menu, 3, MF_BYPOSITION | MF_STRING, 3, TranslatedString(g_hInst, IDS_COPYFILENAME).c_str());
         if (!m_lineVector.empty())
-            ::InsertMenu(m_Menu, 4, MF_BYPOSITION | MF_STRING, 4, TranslatedString(hInst, IDS_COPYRESULT).c_str());
+            ::InsertMenu(m_Menu, 4, MF_BYPOSITION | MF_STRING, 4, TranslatedString(g_hInst, IDS_COPYRESULT).c_str());
         ::InsertMenu(m_Menu, 5, MF_SEPARATOR|MF_BYPOSITION, 0, NULL);
     }
     else if (m_strVector.size() > 1)
     {
         if (!editorcmd.empty())
         {
-            ::InsertMenu(m_Menu, 1, MF_BYPOSITION | MF_STRING, 5, TranslatedString(hInst, IDS_OPENWITHEDITOR).c_str());
+            ::InsertMenu(m_Menu, 1, MF_BYPOSITION | MF_STRING, 5, TranslatedString(g_hInst, IDS_OPENWITHEDITOR).c_str());
             ::InsertMenu(m_Menu, 5, MF_SEPARATOR|MF_BYPOSITION, 0, NULL);
         }
-        ::InsertMenu(m_Menu, 2, MF_BYPOSITION | MF_STRING, 2, TranslatedString(hInst, IDS_COPYPATHS).c_str());
-        ::InsertMenu(m_Menu, 3, MF_BYPOSITION | MF_STRING, 3, TranslatedString(hInst, IDS_COPYFILENAMES).c_str());
+        ::InsertMenu(m_Menu, 2, MF_BYPOSITION | MF_STRING, 2, TranslatedString(g_hInst, IDS_COPYPATHS).c_str());
+        ::InsertMenu(m_Menu, 3, MF_BYPOSITION | MF_STRING, 3, TranslatedString(g_hInst, IDS_COPYFILENAMES).c_str());
         if (!m_lineVector.empty())
-            ::InsertMenu(m_Menu, 4, MF_BYPOSITION | MF_STRING, 4, TranslatedString(hInst, IDS_COPYRESULTS).c_str());
+            ::InsertMenu(m_Menu, 4, MF_BYPOSITION | MF_STRING, 4, TranslatedString(g_hInst, IDS_COPYRESULTS).c_str());
         ::InsertMenu(m_Menu, 5, MF_SEPARATOR|MF_BYPOSITION, 0, NULL);
     }
     // lets fill the our popup menu
@@ -422,20 +422,20 @@ void CShellContextMenu::SetObjects(const std::vector<CSearchInfo>& strVector, co
     // but since we use the Desktop as our interface and the Desktop is the namespace root
     // that means that it's a fully qualified PIDL, which is what we need
 
-    nItems = strVector.size();
-    m_pidlArray = (LPITEMIDLIST *)CoTaskMemAlloc((nItems + 10) * sizeof (LPITEMIDLIST));
-    SecureZeroMemory(m_pidlArray, (nItems + 10) * sizeof (LPITEMIDLIST));
+    m_nItems = strVector.size();
+    m_pidlArray = (LPITEMIDLIST *)CoTaskMemAlloc((m_nItems + 10) * sizeof (LPITEMIDLIST));
+    SecureZeroMemory(m_pidlArray, (m_nItems + 10) * sizeof (LPITEMIDLIST));
     m_pidlArrayItems = 0;
     int succeededItems = 0;
     LPITEMIDLIST pidl = NULL;
     m_strVector.clear();
     m_lineVector.clear();
-    m_strVector.reserve(nItems);
-    m_lineVector.reserve(nItems);
+    m_strVector.reserve(m_nItems);
+    m_lineVector.reserve(m_nItems);
 
     size_t bufsize = 1024;
     std::unique_ptr<WCHAR[]> filepath(new WCHAR[bufsize]);
-    for (size_t i = 0; i < nItems; i++)
+    for (size_t i = 0; i < m_nItems; i++)
     {
         if (bufsize < strVector[i].filepath.size())
         {

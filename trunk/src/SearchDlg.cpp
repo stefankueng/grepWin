@@ -1668,7 +1668,7 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
                 if (ListView_GetItem(hListControl, &lv))
                 {
                     std::wstring appname = application;
-                    std::transform(appname.begin(), appname.end(), appname.begin(), std::tolower);
+                    std::transform(appname.begin(), appname.end(), appname.begin(), ::tolower);
 
                     // now find out if the application which opens the file is known to us
                     // and if it has a 'linenumber' switch to jump directly to a specific
@@ -2446,15 +2446,15 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
                 flags &= ~boost::match_not_bob;
                 RegexReplaceFormatter replaceFmt(m_replaceString);
                 replaceFmt.SetReplacePair(L"${filepath}", sinfo.filepath);
-                std::wstring filenamefull = sinfo.filepath.substr(sinfo.filepath.find_last_of('\\')+1);
-                auto dotpos = filenamefull.find_last_of('.');
-                if (dotpos != std::string::npos)
+                std::wstring filenamefullW = sinfo.filepath.substr(sinfo.filepath.find_last_of('\\')+1);
+                auto dotposW = filenamefullW.find_last_of('.');
+                if (dotposW != std::string::npos)
                 {
-                    std::wstring filename = filenamefull.substr(0, dotpos);
+                    std::wstring filename = filenamefullW.substr(0, dotposW);
                     replaceFmt.SetReplacePair(L"${filename}", filename);
-                    if (filenamefull.size() > dotpos)
+                    if (filenamefullW.size() > dotposW)
                     {
-                        std::wstring fileext = filenamefull.substr(dotpos+1);
+                        std::wstring fileext = filenamefullW.substr(dotposW+1);
                         replaceFmt.SetReplacePair(L"${fileext}", fileext);
                     }
                 }
@@ -2636,15 +2636,15 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
                         flags &= ~boost::match_not_bob;
                         RegexReplaceFormatterA replaceFmt(CUnicodeUtils::StdGetUTF8(m_replaceString));
                         replaceFmt.SetReplacePair("${filepath}", CUnicodeUtils::StdGetUTF8(sinfo.filepath));
-                        std::string filenamefull = CUnicodeUtils::StdGetUTF8(sinfo.filepath.substr(sinfo.filepath.find_last_of('\\') + 1));
-                        auto dotpos = filenamefull.find_last_of('.');
-                        if (dotpos != std::string::npos)
+                        std::string filenamefullA = CUnicodeUtils::StdGetUTF8(sinfo.filepath.substr(sinfo.filepath.find_last_of('\\') + 1));
+                        auto dotposA = filenamefullA.find_last_of('.');
+                        if (dotposA != std::string::npos)
                         {
-                            std::string filename = filenamefull.substr(0, dotpos);
+                            std::string filename = filenamefullA.substr(0, dotposA);
                             replaceFmt.SetReplacePair("${filename}", filename);
-                            if (filenamefull.size() > dotpos)
+                            if (filenamefull.size() > dotposA)
                             {
-                                std::string fileext = filenamefull.substr(dotpos + 1);
+                                std::string fileext = filenamefullA.substr(dotposA + 1);
                                 replaceFmt.SetReplacePair("${fileext}", fileext);
                             }
                         }
