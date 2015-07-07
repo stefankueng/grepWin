@@ -2056,7 +2056,7 @@ bool CSearchDlg::SizeCompareAsc(const CSearchInfo &Entry1, const CSearchInfo& En
 
 bool CSearchDlg::MatchesCompareAsc(const CSearchInfo &Entry1, const CSearchInfo& Entry2)
 {
-    return Entry1.matchlinesnumbers.size() < Entry2.matchlinesnumbers.size();
+    return Entry1.matchcount < Entry2.matchcount;
 }
 
 bool CSearchDlg::PathCompareAsc(const CSearchInfo &Entry1, const CSearchInfo& Entry2)
