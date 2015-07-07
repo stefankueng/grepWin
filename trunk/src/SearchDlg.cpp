@@ -1784,6 +1784,7 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
     {
         bool filelist = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
         m_bAscending = !m_bAscending;
+        bool bDidSort = false;
         switch (lpNMItemActivate->iSubItem)
         {
         case 0:
@@ -1791,6 +1792,7 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
                 sort(m_items.begin(), m_items.end(), NameCompareAsc);
             else
                 sort(m_items.begin(), m_items.end(), NameCompareDesc);
+            bDidSort = true;
             break;
         case 1:
             if (filelist)
@@ -1799,6 +1801,7 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
                     sort(m_items.begin(), m_items.end(), SizeCompareAsc);
                 else
                     sort(m_items.begin(), m_items.end(), SizeCompareDesc);
+                bDidSort = true;
             }
             break;
         case 2:
@@ -1808,6 +1811,7 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
                     sort(m_items.begin(), m_items.end(), MatchesCompareAsc);
                 else
                     sort(m_items.begin(), m_items.end(), MatchesCompareDesc);
+                bDidSort = true;
             }
             break;
         case 3:
@@ -1815,18 +1819,21 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
                 sort(m_items.begin(), m_items.end(), PathCompareAsc);
             else
                 sort(m_items.begin(), m_items.end(), PathCompareDesc);
+            bDidSort = true;
             break;
         case 4:
             if (m_bAscending)
                 sort(m_items.begin(), m_items.end(), EncodingCompareAsc);
             else
                 sort(m_items.begin(), m_items.end(), EncodingCompareDesc);
+            bDidSort = true;
             break;
         case 5:
             if (m_bAscending)
                 sort(m_items.begin(), m_items.end(), ModifiedTimeCompareAsc);
             else
                 sort(m_items.begin(), m_items.end(), ModifiedTimeCompareDesc);
+            bDidSort = true;
             break;
         }
 
@@ -1850,9 +1857,12 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
             hd.fmt &= ~(HDF_SORTDOWN | HDF_SORTUP);
             Header_SetItem(hHeader, i, &hd);
         }
-        Header_GetItem(hHeader, lpNMItemActivate->iSubItem, &hd);
-        hd.fmt |= (m_bAscending ? HDF_SORTUP : HDF_SORTDOWN);
-        Header_SetItem(hHeader, lpNMItemActivate->iSubItem, &hd);
+        if (bDidSort)
+        {
+            Header_GetItem(hHeader, lpNMItemActivate->iSubItem, &hd);
+            hd.fmt |= (m_bAscending ? HDF_SORTUP : HDF_SORTDOWN);
+            Header_SetItem(hHeader, lpNMItemActivate->iSubItem, &hd);
+        }
         SendMessage(hListControl, WM_SETREDRAW, TRUE, 0);
         RedrawWindow(hListControl, NULL, NULL, RDW_ERASE | RDW_FRAME | RDW_INVALIDATE | RDW_ALLCHILDREN);
     }
