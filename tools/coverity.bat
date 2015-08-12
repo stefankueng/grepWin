@@ -26,7 +26,7 @@ if exist "grepWin.tgz"  del "grepWin.tgz"
 
 
 :main
-call "%VS120COMNTOOLS%\vsvars32.bat"
+call "%VS140COMNTOOLS%\vsvars32.bat"
 if %ERRORLEVEL% neq 0 (
   echo vsvars32.bat call failed.
   goto End
