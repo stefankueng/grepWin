@@ -1663,67 +1663,73 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
             bool filelist = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
             std::wstring linenumberparam_before;
             std::wstring linenumberparam;
+            TCHAR textlinebuf[MAX_PATH] = { 0 };
             if (!filelist)
             {
                 HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
-                TCHAR textlinebuf[MAX_PATH] = {0};
-                LVITEM lv = {0};
+                LVITEM lv = { 0 };
                 lv.iItem = lpNMItemActivate->iItem;
                 lv.iSubItem = 1;    // line number
                 lv.mask = LVIF_TEXT;
                 lv.pszText = textlinebuf;
                 lv.cchTextMax = _countof(textlinebuf);
-                if (ListView_GetItem(hListControl, &lv))
+                if (!ListView_GetItem(hListControl, &lv))
                 {
-                    std::wstring appname = application;
-                    std::transform(appname.begin(), appname.end(), appname.begin(), ::tolower);
-
-                    // now find out if the application which opens the file is known to us
-                    // and if it has a 'linenumber' switch to jump directly to a specific
-                    // line number.
-                    if (appname.find(_T("notepad++.exe")) != std::wstring::npos)
-                    {
-                        // notepad++
-                        TCHAR buf[MAX_PATH] = {0};
-                        _stprintf_s(buf, _countof(buf), _T("-n%s"), textlinebuf);
-                        linenumberparam = buf;
-                    }
-                    else if (appname.find(_T("xemacs.exe")) != std::wstring::npos)
-                    {
-                        // XEmacs
-                        TCHAR buf[MAX_PATH] = {0};
-                        _stprintf_s(buf, _countof(buf), _T("+%s"), textlinebuf);
-                        linenumberparam = buf;
-                    }
-                    else if (appname.find(_T("uedit32.exe")) != std::wstring::npos)
-                    {
-                        // UltraEdit
-                        TCHAR buf[MAX_PATH] = {0};
-                        _stprintf_s(buf, _countof(buf), _T("-l%s"), textlinebuf);
-                        linenumberparam = buf;
-                    }
-                    else if (appname.find(_T("codewright.exe")) != std::wstring::npos)
-                    {
-                        // CodeWright
-                        TCHAR buf[MAX_PATH] = {0};
-                        _stprintf_s(buf, _countof(buf), _T("-G%s"), textlinebuf);
-                        linenumberparam = buf;
-                    }
-                    else if (appname.find(_T("notepad2.exe")) != std::wstring::npos)
-                    {
-                        // Notepad2
-                        TCHAR buf[MAX_PATH] = {0};
-                        _stprintf_s(buf, _countof(buf), _T("/g %s"), textlinebuf);
-                        linenumberparam_before = buf;
-                    }
-                    else if ((appname.find(_T("bowpad.exe")) != std::wstring::npos)||(appname.find(_T("bowpad64.exe")) != std::wstring::npos))
-                    {
-                        // BowPad
-                        TCHAR buf[MAX_PATH] = {0};
-                        _stprintf_s(buf, _countof(buf), _T("/line:%s"), textlinebuf);
-                        linenumberparam_before = buf;
-                    }
+                    textlinebuf[0] = '\0';
                 }
+            }
+            else if (!inf.matchlinesnumbers.empty())
+            {
+                // use the first matching line in this file
+                swprintf_s(textlinebuf, L"%ld", inf.matchlinesnumbers[0]);
+            }
+            std::wstring appname = application;
+            std::transform(appname.begin(), appname.end(), appname.begin(), ::tolower);
+
+            // now find out if the application which opens the file is known to us
+            // and if it has a 'linenumber' switch to jump directly to a specific
+            // line number.
+            if (appname.find(_T("notepad++.exe")) != std::wstring::npos)
+            {
+                // notepad++
+                TCHAR buf[MAX_PATH] = { 0 };
+                _stprintf_s(buf, _countof(buf), _T("-n%s"), textlinebuf);
+                linenumberparam = buf;
+            }
+            else if (appname.find(_T("xemacs.exe")) != std::wstring::npos)
+            {
+                // XEmacs
+                TCHAR buf[MAX_PATH] = { 0 };
+                _stprintf_s(buf, _countof(buf), _T("+%s"), textlinebuf);
+                linenumberparam = buf;
+            }
+            else if (appname.find(_T("uedit32.exe")) != std::wstring::npos)
+            {
+                // UltraEdit
+                TCHAR buf[MAX_PATH] = { 0 };
+                _stprintf_s(buf, _countof(buf), _T("-l%s"), textlinebuf);
+                linenumberparam = buf;
+            }
+            else if (appname.find(_T("codewright.exe")) != std::wstring::npos)
+            {
+                // CodeWright
+                TCHAR buf[MAX_PATH] = { 0 };
+                _stprintf_s(buf, _countof(buf), _T("-G%s"), textlinebuf);
+                linenumberparam = buf;
+            }
+            else if (appname.find(_T("notepad2.exe")) != std::wstring::npos)
+            {
+                // Notepad2
+                TCHAR buf[MAX_PATH] = { 0 };
+                _stprintf_s(buf, _countof(buf), _T("/g %s"), textlinebuf);
+                linenumberparam_before = buf;
+            }
+            else if ((appname.find(_T("bowpad.exe")) != std::wstring::npos) || (appname.find(_T("bowpad64.exe")) != std::wstring::npos))
+            {
+                // BowPad
+                TCHAR buf[MAX_PATH] = { 0 };
+                _stprintf_s(buf, _countof(buf), _T("/line:%s"), textlinebuf);
+                linenumberparam_before = buf;
             }
 
             // replace "%1" with %1
