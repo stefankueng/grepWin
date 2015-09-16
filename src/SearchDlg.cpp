@@ -1481,13 +1481,10 @@ bool CSearchDlg::PreTranslateMessage(MSG* pMsg)
                         int selItem = GetSelectedListIndex(iItem);
                         if ((selItem >= 0)&&(selItem < (int)m_items.size()))
                         {
-                            SHELLEXECUTEINFO shExInfo = {0};
-                            shExInfo.cbSize = sizeof(SHELLEXECUTEINFO);
-                            shExInfo.fMask = SEE_MASK_UNICODE;
-                            shExInfo.hwnd = *this;
-                            shExInfo.lpFile = m_items[selItem].filepath.c_str();
-                            shExInfo.nShow = SW_SHOW;
-                            ShellExecuteEx(&shExInfo);
+                            NMITEMACTIVATE itemactivate = { 0 };
+                            itemactivate.hdr.code = NM_DBLCLK;
+                            itemactivate.iItem = selItem;
+                            DoListNotify(&itemactivate);
                         }
                     }
                     return true;
