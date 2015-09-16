@@ -1088,10 +1088,10 @@ bool CSearchDlg::InitResultList()
     lvc.fmt = LVCFMT_LEFT;
     lvc.pszText = filelist ? const_cast<LPWSTR>((LPCWSTR)sMatches.c_str()) : const_cast<LPWSTR>((LPCWSTR)sText.c_str());
     ListView_InsertColumn(hListControl, 2, &lvc);
+    lvc.pszText = const_cast<LPWSTR>((LPCWSTR)sPath.c_str());
+    ListView_InsertColumn(hListControl, 3, &lvc);
     if (filelist)
     {
-        lvc.pszText = const_cast<LPWSTR>((LPCWSTR)sPath.c_str());
-        ListView_InsertColumn(hListControl, 3, &lvc);
         lvc.pszText = const_cast<LPWSTR>((LPCWSTR)sEncoding.c_str());
         ListView_InsertColumn(hListControl, 4, &lvc);
         lvc.pszText = const_cast<LPWSTR>((LPCWSTR)sDateModified.c_str());
@@ -1344,6 +1344,11 @@ void CSearchDlg::FillResultList()
                     lv.iSubItem = 1;
                     lv.pszText = const_cast<LPWSTR>((LPCWSTR)sBinary.c_str());
                     ListView_SetItem(hListControl, &lv);
+
+                    lv.iSubItem = 3;
+                    _tcscpy_s(sb.get(), MAX_PATH_NEW, pInfo->filepath.substr(0, pInfo->filepath.size() - name.size() - 1).c_str());
+                    lv.pszText = sb.get();
+                    ListView_SetItem(hListControl, &lv);
                 }
             }
             else
@@ -1377,6 +1382,11 @@ void CSearchDlg::FillResultList()
                         std::replace(line.begin(), line.end(), '\n', ' ');
                         std::replace(line.begin(), line.end(), '\r', ' ');
                         lv.pszText = (LPWSTR)line.c_str();
+                        ListView_SetItem(hListControl, &lv);
+
+                        lv.iSubItem = 3;
+                        _tcscpy_s(sb.get(), MAX_PATH_NEW, pInfo->filepath.substr(0, pInfo->filepath.size() - name.size() - 1).c_str());
+                        lv.pszText = sb.get();
                         ListView_SetItem(hListControl, &lv);
                         index++;
                     }
