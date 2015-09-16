@@ -88,7 +88,7 @@
       <arg value="WixUIExtension" />
       <arg value="-cultures:en-us" />
       <arg value="-out" />
-      <arg value="..\..\bin\${msifilename}-64.msi" />
+      <arg value="..\..\bin\${msifilename}-x64.msi" />
       <arg value="..\..\bin\Setup64.wixobj" />
       <arg value="..\..\bin\WixUI_Custom.wixobj" />
     </exec>
@@ -106,7 +106,7 @@
       <arg value="WixUIExtension" />
       <arg value="-cultures:en-us" />
       <arg value="-out" />
-      <arg value="..\..\bin\${msifilename}-64_user.msi" />
+      <arg value="..\..\bin\${msifilename}-x64_user.msi" />
       <arg value="..\..\bin\Setup64_user.wixobj" />
       <arg value="..\..\bin\WixUI_Custom.wixobj" />
     </exec>

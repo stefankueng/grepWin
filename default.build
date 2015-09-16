@@ -130,7 +130,7 @@
     </nant>
     <property name="verstring" value="${environment::get-variable('MajorVersion')}.${environment::get-variable('MinorVersion')}.${environment::get-variable('MicroVersion')}" />
     <copy file="bin\Release\grepWin.exe" tofile="bin\grepWin-${verstring}_portable.exe" />
-    <copy file="bin\Release64\grepWin.exe" tofile="bin\grepWin64-${verstring}_portable.exe" />
+    <copy file="bin\Release64\grepWin.exe" tofile="bin\grepWin-x64-${verstring}_portable.exe" />
   </target>
 
   <target name="msi" depends="VersionInfo">
