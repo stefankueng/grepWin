@@ -2105,7 +2105,7 @@ bool CSearchDlg::SizeCompareDesc(const CSearchInfo &Entry1, const CSearchInfo& E
 
 bool CSearchDlg::MatchesCompareDesc(const CSearchInfo &Entry1, const CSearchInfo& Entry2)
 {
-    return Entry1.matchlinesnumbers.size() > Entry2.matchlinesnumbers.size();
+    return Entry1.matchcount > Entry2.matchcount;
 }
 
 bool CSearchDlg::PathCompareDesc(const CSearchInfo &Entry1, const CSearchInfo& Entry2)
