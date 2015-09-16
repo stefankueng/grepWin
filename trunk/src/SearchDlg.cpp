@@ -2215,6 +2215,11 @@ DWORD CSearchDlg::SearchThread()
     for (auto it = pathvector.begin(); it != pathvector.end(); ++it)
     {
         std::wstring searchpath = *it;
+        size_t endpos = searchpath.find_last_not_of(L" \\");
+        if (std::wstring::npos != endpos)
+        {
+            searchpath = searchpath.substr(0, endpos + 1);
+        }
         if (!searchpath.empty())
         {
             bool bAlwaysSearch = false;
@@ -2301,7 +2306,9 @@ DWORD CSearchDlg::SearchThread()
                     const WIN32_FIND_DATA * pFindData = fileEnumerator.GetFileInfo();
                     bool bSearch = ((m_bIncludeHidden)||((pFindData->dwFileAttributes & FILE_ATTRIBUTE_HIDDEN) == 0));
                     bSearch = bSearch && ((m_bIncludeSystem)||((pFindData->dwFileAttributes & FILE_ATTRIBUTE_SYSTEM) == 0));
-                    bool bExcludeDir = bSearch && !m_excludedirspatternregex.empty() && grepWin_match_i(m_excludedirspatternregex, pFindData->cFileName);
+                    std::wstring fullpath = searchpath + L"\\" + pFindData->cFileName;
+                    bool bExcludeDir = bSearch && !m_excludedirspatternregex.empty() &&
+                        grepWin_match_i(m_excludedirspatternregex, pFindData->cFileName) || grepWin_match_i(m_excludedirspatternregex, fullpath.c_str());
                     bSearch = bSearch && !bExcludeDir;
                     bRecurse = ((bIsDirectory)&&(m_bIncludeSubfolders)&&(bSearch));
                     if (m_searchString.empty() && m_replaceString.empty())
