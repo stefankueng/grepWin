@@ -266,8 +266,10 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
             else if(parser.HasVal(_T("searchfor")))
                 searchDlg.SetUseRegex(true);
 
-            if (parser.HasKey(_T("execute")))
-                searchDlg.SetExecute(true);
+            if (parser.HasKey(L"execute") || parser.HasKey(L"executesearch"))
+                searchDlg.SetExecute(ExecuteAction::Search);
+            if (parser.HasKey(L"executereplace"))
+                searchDlg.SetExecute(ExecuteAction::Replace);
 
             ret = (int)searchDlg.DoModal(hInstance, IDD_SEARCHDLG, NULL, IDR_SEARCHDLG);
         }

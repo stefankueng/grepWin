@@ -69,7 +69,7 @@ CSearchDlg::CSearchDlg(HWND hParent)
     , m_bAscending(true)
     , m_pDropTarget(NULL)
     , m_hParent(hParent)
-    , m_bExecuteImmediately(false)
+    , m_ExecuteImmediately(ExecuteAction::None)
     , m_bUseRegexForPaths(false)
     , m_bUseRegex(false)
     , m_bIncludeSystem(false)
@@ -392,9 +392,17 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             if (m_Dwm.IsDwmCompositionEnabled())
                 m_resizer.ShowSizeGrip(false);
 
-            if (m_bExecuteImmediately)
+            switch (m_ExecuteImmediately)
             {
+                case Search:
                 DoCommand(IDOK, 0);
+                break;
+                case Replace:
+                DoCommand(IDC_REPLACE, 0);
+                break;
+                case None:
+                default:
+                break;
             }
         }
         return FALSE;

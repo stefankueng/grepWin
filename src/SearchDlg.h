@@ -39,6 +39,13 @@
 
 #define ID_ABOUTBOX         0x0010
 
+enum ExecuteAction
+{
+    None,
+    Search,
+    Replace
+};
+
 /**
  * search dialog.
  */
@@ -66,7 +73,7 @@ public:
     void                    SetIncludeSubfolders(bool bSet) {m_bIncludeSubfoldersC = true; m_bIncludeSubfolders = bSet;}
     void                    SetIncludeBinary(bool bSet) {m_bIncludeBinaryC = true; m_bIncludeBinary = bSet;}
 
-    void                    SetExecute(bool execute) {m_bExecuteImmediately = execute;}
+    void                    SetExecute(ExecuteAction execute) {m_ExecuteImmediately = execute;}
 protected:
     LRESULT CALLBACK        DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
     LRESULT                 DoCommand(int id, int msg);
@@ -137,7 +144,7 @@ private:
     bool                    m_bDotMatchesNewline;
     bool                    m_bDotMatchesNewlineC;
     bool                    m_bSizeC;
-    bool                    m_bExecuteImmediately;
+    ExecuteAction           m_ExecuteImmediately;
 
     bool                    m_bReplace;
     HANDLE                  m_hSearchThread;
