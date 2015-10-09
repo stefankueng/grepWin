@@ -9,28 +9,34 @@
  * and set "Wait for the script to finish"
  */
 
-var ForReading = 1;
-var objArgs;
-var num;
-objArgs = WScript.Arguments;
-num = objArgs.length;
+var forReading = 1;
+var objArgs = WScript.Arguments;
+var num = objArgs.length;
+
 if (num !== 4 && num !== 3)
 {
     WScript.Echo("Usage: [CScript | WScript] checkyear.js path/to/pathsfile depth path/to/messagefile path/to/CWD");
     WScript.Quit(1);
 }
 
+var re = /^\/\/ Copyright.+(2015)(.*)/;
+var basere = /^\/\/ Copyright(.*)/;
+var filere = /(\.cpp$)|(\.h$)|(\.idl$)/;
+
 // readFileLines
 function readPaths(path)
 {
     var retPaths = [];
     var fileSystem = new ActiveXObject("Scripting.FileSystemObject");
+
     if (fileSystem.FileExists(path))
     {
-        var textFile = fileSystem.OpenTextFile(path, ForReading);
+        var textFile = fileSystem.OpenTextFile(path, forReading);
+
         while (!textFile.AtEndOfStream)
         {
             var line = textFile.ReadLine();
+
             retPaths.push(line);
         }
         textFile.Close();
@@ -40,28 +46,27 @@ function readPaths(path)
 
 var found = true;
 var files = readPaths(objArgs(0));
-var fileindex = files.length;
-var errormsg = "";
+var fileIndex = files.length;
+var errorMessage = "";
 
-while (fileindex--)
+while (fileIndex--)
 {
-    var f = files[fileindex];
-    var fs = new ActiveXObject("Scripting.FileSystemObject");
-    var re = /^\/\/ Copyright.+(2015)(.*)/;
-    var basere = /^\/\/ Copyright(.*)/;
-    var filere = /(\.cpp$)|(\.h$)|(\.idl$)/;
+    var f = files[fileIndex];
+    var fso = new ActiveXObject("Scripting.FileSystemObject");
 
     if (f.match(filere) !== null)
     {
-        if (fs.FileExists(f))
+        if (fso.FileExists(f))
         {
-            var a = fs.OpenTextFile(f, ForReading, false);
+            var a = fso.OpenTextFile(f, forReading, false);
             var copyrightFound = false;
             var yearFound = false;
+
             while (!a.AtEndOfStream && !yearFound)
             {
                 var r = a.ReadLine();
                 var rv = r.match(basere);
+
                 if (rv !== null)
                 {
                     rv = r.match(re);
@@ -77,11 +82,11 @@ while (fileindex--)
 
             if (copyrightFound && !yearFound)
             {
-                if (errormsg !== "")
+                if (errorMessage !== "")
                 {
-                    errormsg += "\n";
+                    errorMessage += "\n";
                 }
-                errormsg += f;
+                errorMessage += f;
                 found = false;
             }
         }
@@ -90,8 +95,8 @@ while (fileindex--)
 
 if (found === false)
 {
-    errormsg = "the file(s):\n" + errormsg + "\nhave not the correct copyright year!";
-    WScript.stderr.writeLine(errormsg);
+    errorMessage = "the file(s):\n" + errorMessage + "\nhave not the correct copyright year!";
+    WScript.stderr.writeLine(errorMessage);
 }
 
 WScript.Quit(!found);
