@@ -78,9 +78,8 @@ protected:
     LRESULT CALLBACK        DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
     LRESULT                 DoCommand(int id, int msg);
     bool                    PreTranslateMessage(MSG* pMsg);
-    static LRESULT CALLBACK EditProc(HWND hWnd, UINT uMessage, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData);
 
-    int                     SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bIncludeBinary, bool bUseRegex, bool bCaseSensitive, bool bDotMatchesNewline, const std::wstring& searchString);
+    int                     SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bIncludeBinary, bool bUseRegex, bool bCaseSensitive, bool bDotMatchesNewline, const std::wstring& searchString, const std::wstring& searchStringUtf16le);
 
     bool                    InitResultList();
     void                    FillResultList();
@@ -88,7 +87,6 @@ protected:
     void                    ShowContextMenu(int x, int y);
     void                    DoListNotify(LPNMITEMACTIVATE lpNMItemActivate);
     void                    UpdateInfoLabel(bool withCurrentFile);
-    void                    UpdateSearchButton();
     bool                    SaveSettings();
     void                    SaveWndPosition();
     void                    formatDate(TCHAR date_native[], const FILETIME& filetime, bool force_short_fmt);

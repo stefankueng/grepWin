@@ -2225,6 +2225,14 @@ DWORD CSearchDlg::SearchThread()
     }
 
     SendMessage(*this, SEARCH_START, 0, 0);
+
+    std::wstring SearchStringutf16;
+    for (auto c : m_searchString)
+    {
+        SearchStringutf16 += c;
+        SearchStringutf16 += L"\\x00";
+    }
+
     for (auto it = pathvector.begin(); it != pathvector.end(); ++it)
     {
         std::wstring searchpath = *it;
@@ -2307,7 +2315,7 @@ DWORD CSearchDlg::SearchThread()
                         }
                         else
                         {
-                            nFound = SearchFile(sinfo, bAlwaysSearch, m_bIncludeBinary, m_bUseRegex, m_bCaseSensitive, m_bDotMatchesNewline, m_searchString);
+                            nFound = SearchFile(sinfo, bAlwaysSearch, m_bIncludeBinary, m_bUseRegex, m_bCaseSensitive, m_bDotMatchesNewline, m_searchString, SearchStringutf16);
                             if (nFound >= 0)
                                 SendMessage(*this, SEARCH_FOUND, nFound, (LPARAM)&sinfo);
                         }
@@ -2398,13 +2406,14 @@ bool CSearchDlg::MatchPath(LPCTSTR pathbuf)
     return bPattern;
 }
 
-int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bIncludeBinary, bool bUseRegex, bool bCaseSensitive, bool bDotMatchesNewline, const std::wstring& searchString)
+int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bIncludeBinary, bool bUseRegex, bool bCaseSensitive, bool bDotMatchesNewline, const std::wstring& searchString, const std::wstring& searchStringUtf16le)
 {
     int nFound = 0;
     // we keep it simple:
     // files bigger than 30MB are considered binary. Binary files are searched
     // as if they're ANSI text files.
     std::wstring localSearchString = searchString;
+
     if (!bUseRegex)
         localSearchString = _T("\\Q") + searchString + _T("\\E");
 
@@ -2477,6 +2486,43 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
                 // update flags:
                 flags |= boost::match_prev_avail;
                 flags |= boost::match_not_bob;
+            }
+            if (type == CTextFile::BINARY)
+            {
+                boost::wregex expressionutf16 = boost::wregex(searchStringUtf16le, ft);
+
+                while (regex_search(start, end, whatc, expressionutf16, flags))
+                {
+                    if (whatc[0].matched)
+                    {
+                        nFound++;
+                        long linestart = textfile.LineFromPosition(long(whatc[0].first - textfile.GetFileString().begin()));
+                        long lineend = textfile.LineFromPosition(long(whatc[0].second - textfile.GetFileString().begin()));
+                        if ((linestart != prevlinestart) || (lineend != prevlineend))
+                        {
+                            for (long l = linestart; l <= lineend; ++l)
+                            {
+                                sinfo.matchlines.push_back(textfile.GetLineString(l));
+                                sinfo.matchlinesnumbers.push_back(l);
+                            }
+                        }
+                        ++sinfo.matchcount;
+                        prevlinestart = linestart;
+                        prevlineend = lineend;
+                    }
+                    // update search position:
+                    if (start == whatc[0].second)
+                    {
+                        if (start == end)
+                            break;
+                        ++start;
+                    }
+                    else
+                        start = whatc[0].second;
+                    // update flags:
+                    flags |= boost::match_prev_avail;
+                    flags |= boost::match_not_bob;
+                }
             }
             if ((m_bReplace)&&(nFound))
             {
@@ -2593,7 +2639,27 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
                         bFound = true;
                     }
                 }
-                
+                if (type == CTextFile::BINARY)
+                {
+                    boost::regex expressionUtf16le = boost::regex(CUnicodeUtils::StdGetUTF8(searchStringUtf16le), ft);
+                    boost::spirit::classic::file_iterator<> start(filepath.c_str());
+                    boost::spirit::classic::file_iterator<> fbeg = start;
+                    boost::spirit::classic::file_iterator<> end = start.make_end();
+                    boost::match_results<boost::spirit::classic::file_iterator<>> whatc;
+                    while (boost::regex_search(start, end, whatc, expression, flags))
+                    {
+                        nFound++;
+                        matchlinesnumbers.push_back(DWORD(whatc[0].first - fbeg));
+                        ++sinfo.matchcount;
+                        // update search position:
+                        start = whatc[0].second;
+                        // update flags:
+                        flags |= boost::match_prev_avail;
+                        flags |= boost::match_not_bob;
+                        bFound = true;
+                    }
+                }
+
                 if (bFound)
                 {
                     if (!bLoadResult && (type != CTextFile::BINARY))
