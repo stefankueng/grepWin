@@ -70,6 +70,7 @@ CSearchDlg::CSearchDlg(HWND hParent)
     , m_pDropTarget(NULL)
     , m_hParent(hParent)
     , m_ExecuteImmediately(ExecuteAction::None)
+    , m_endDialog(false)
     , m_bUseRegexForPaths(false)
     , m_bUseRegex(false)
     , m_bIncludeSystem(false)
@@ -585,6 +586,12 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                 break;
             }
             return TRUE;
+        }
+        break;
+    case WM_GREPWIN_THREADEND:
+        {
+            if (m_endDialog)
+                EndDialog(m_hwnd, IDOK);
         }
         break;
     default:
@@ -2361,6 +2368,8 @@ DWORD CSearchDlg::SearchThread()
     POINT pt;
     GetCursorPos(&pt);
     SetCursorPos(pt.x, pt.y);
+
+    PostMessage(m_hwnd, WM_GREPWIN_THREADEND, 0, 0);
 
     return 0L;
 }

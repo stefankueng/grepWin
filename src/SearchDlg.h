@@ -36,6 +36,7 @@
 #define SEARCH_START        (WM_APP+2)
 #define SEARCH_PROGRESS     (WM_APP+3)
 #define SEARCH_END          (WM_APP+4)
+#define WM_GREPWIN_THREADEND (WM_APP+5)
 
 #define ID_ABOUTBOX         0x0010
 
@@ -74,6 +75,7 @@ public:
     void                    SetIncludeBinary(bool bSet) {m_bIncludeBinaryC = true; m_bIncludeBinary = bSet;}
 
     void                    SetExecute(ExecuteAction execute) {m_ExecuteImmediately = execute;}
+    void                    SetEndDialog() { m_endDialog = true; }
 protected:
     LRESULT CALLBACK        DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
     LRESULT                 DoCommand(int id, int msg);
@@ -142,6 +144,7 @@ private:
     bool                    m_bDotMatchesNewline;
     bool                    m_bDotMatchesNewlineC;
     bool                    m_bSizeC;
+    bool                    m_endDialog;
     ExecuteAction           m_ExecuteImmediately;
 
     bool                    m_bReplace;
