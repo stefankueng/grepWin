@@ -1228,6 +1228,11 @@ bool CSearchDlg::AddFoundEntry(CSearchInfo * pInfo, int index, bool bOnlyListCon
                     std::replace(line.begin(), line.end(), '\r', ' ');
                     lv.pszText = (LPWSTR)line.c_str();
                     ListView_SetItem(hListControl, &lv);
+
+                    lv.iSubItem = 3;
+                    _tcscpy_s(sb.get(), MAX_PATH_NEW, pInfo->filepath.substr(0, pInfo->filepath.size() - name.size() - 1).c_str());
+                    lv.pszText = sb.get();
+                    ListView_SetItem(hListControl, &lv);
                 }
             }
         }
