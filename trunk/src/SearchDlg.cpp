@@ -2252,6 +2252,8 @@ DWORD CSearchDlg::SearchThread()
         if (std::wstring::npos != endpos)
         {
             searchpath = searchpath.substr(0, endpos + 1);
+            if (searchpath[searchpath.length() - 1] == ':')
+                searchpath += L"\\";
         }
         if (!searchpath.empty())
         {
