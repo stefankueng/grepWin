@@ -277,6 +277,9 @@
   <ItemGroup>
     <ResourceCompile Include="Resources\grepWin.rc" />
   </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="compatibility.manifest" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
