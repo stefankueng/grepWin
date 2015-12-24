@@ -61,6 +61,8 @@ DWORD WINAPI SearchThreadEntry(LPVOID lpParam);
 UINT CSearchDlg::GREPWIN_STARTUPMSG = RegisterWindowMessage(_T("grepWin_StartupMessage"));
 std::map<size_t, DWORD> linepositions;
 
+extern ULONGLONG g_startTime;
+
 CSearchDlg::CSearchDlg(HWND hParent)
     : m_searchedItems(0)
     , m_totalitems(0)
@@ -120,7 +122,6 @@ CSearchDlg::CSearchDlg(HWND hParent)
     , m_AutoCompleteReplacePatterns(bPortable ? &g_iniFile : NULL)
     , m_AutoCompleteSearchPaths(bPortable ? &g_iniFile : NULL)
 {
-    m_startTime = GetTickCount();
 }
 
 CSearchDlg::~CSearchDlg(void)
@@ -134,11 +135,12 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
     UNREFERENCED_PARAMETER(lParam);
     if (uMsg == GREPWIN_STARTUPMSG)
     {
-        if ((GetTickCount() - 2000) < m_startTime)
+        if ((GetTickCount64() - 2000) < g_startTime)
         {
-            m_startTime = GetTickCount();
+            g_startTime = GetTickCount64();
             return TRUE;
         }
+        g_startTime = GetTickCount64();
         return FALSE;
     }
     switch (uMsg)
@@ -539,7 +541,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                         m_searchpath += _T("|");
                     m_searchpath += newpath;
                     SetDlgItemText(hwndDlg, IDC_SEARCHPATH, m_searchpath.c_str());
-                    m_startTime = GetTickCount();
+                    g_startTime = GetTickCount();
                 }
             }
             return TRUE;
