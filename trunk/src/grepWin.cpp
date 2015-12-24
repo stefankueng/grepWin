@@ -31,6 +31,8 @@ HINSTANCE g_hInst;            // current instance
 bool bPortable = false;
 CSimpleIni g_iniFile;
 
+ULONGLONG g_startTime = GetTickCount64();
+
 static std::wstring SanitizeSearchPaths(const std::wstring& searchpath)
 {
     std::vector<std::wstring> container;
@@ -117,6 +119,17 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
     //AssignProcessToJobObject(job, GetCurrentProcess());
 
     SetDllDirectory(L"");
+    // if multiple items are selected in explorer and grepWin is started for all of them,
+    // explorer starts multiple grepWin instances at once. In case there's already a grepWin instance
+    // running, sleep for a while to give that instance time to fully initialize
+    HANDLE hReloadProtection = ::CreateMutex(NULL, FALSE, L"{6473AA76-0EAE-4C96-8C99-AFDFEFFE42B5}");
+    bool alreadyRunning = false;
+    if ((!hReloadProtection) || (GetLastError() == ERROR_ALREADY_EXISTS))
+    {
+        // An instance of grepWin is already running
+        alreadyRunning = true;
+    }
+
     g_hInst = hInstance;
     ::OleInitialize(NULL);
     ::CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
@@ -141,17 +154,6 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
     {
         RegisterContextMenu(false);
         return FALSE;
-    }
-
-    // if multiple items are selected in explorer and grepWin is started for all of them,
-    // explorer starts multiple grepWin instances at once. In case there's already a grepWin instance
-    // running, sleep for a while to give that instance time to fully initialize
-    HANDLE hReloadProtection = ::CreateMutex(NULL, FALSE, L"{6473AA76-0EAE-4C96-8C99-AFDFEFFE42B5}");
-    bool alreadyRunning = false;
-    if ((!hReloadProtection) || (GetLastError() == ERROR_ALREADY_EXISTS))
-    {
-        // An instance of grepWin is already running
-        alreadyRunning = true;
     }
 
     bool bQuit = false;

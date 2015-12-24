@@ -165,7 +165,6 @@ private:
     CFileDropTarget *       m_pDropTarget;
     AeroControlBase         m_aerocontrols;
 
-    DWORD                   m_startTime;
     static UINT             GREPWIN_STARTUPMSG;
 
     CAutoComplete           m_AutoCompleteFilePatterns;
