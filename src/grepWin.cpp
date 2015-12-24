@@ -90,7 +90,6 @@ BOOL CALLBACK windowenumerator(__in  HWND hwnd,__in  LPARAM lParam)
     if (_wcsnicmp(buf, L"grepwin :", 9) == 0)
     {
         *pWnd = hwnd;
-        return FALSE;
     }
     return TRUE;
 }
