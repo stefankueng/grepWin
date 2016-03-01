@@ -85,6 +85,7 @@ CSearchDlg::CSearchDlg(HWND hParent)
     , m_bIncludeBinaryC(false)
     , m_bCreateBackup(false)
     , m_bCreateBackupC(false)
+    , m_bConfirmationOnReplace(true)
     , m_bUTF8(false)
     , m_bUTF8C(false)
     , m_bCaseSensitive(false)
@@ -647,7 +648,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 
                 m_bReplace = id == IDC_REPLACE;
 
-                if (m_bReplace && !m_bCreateBackup)
+                if (m_bReplace && !m_bCreateBackup && m_bConfirmationOnReplace)
                 {
                     std::unique_ptr<TCHAR[]> msgtext(new TCHAR[m_searchString.size() + m_replaceString.size() + MAX_PATH * 4]);
                     _stprintf_s(msgtext.get(), m_searchString.size() + m_replaceString.size() + MAX_PATH * 4,
@@ -659,6 +660,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                         break;
                     }
                 }
+                m_bConfirmationOnReplace = true;
 
                 InterlockedExchange(&m_dwThreadRunning, TRUE);
                 InterlockedExchange(&m_Cancelled, FALSE);
