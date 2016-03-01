@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2015 - Stefan Kueng
+// Copyright (C) 2007-2016 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -647,19 +647,16 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 
                 m_bReplace = id == IDC_REPLACE;
 
-                if (m_bReplace)
+                if (m_bReplace && !m_bCreateBackup)
                 {
                     std::unique_ptr<TCHAR[]> msgtext(new TCHAR[m_searchString.size() + m_replaceString.size() + MAX_PATH * 4]);
                     _stprintf_s(msgtext.get(), m_searchString.size() + m_replaceString.size() + MAX_PATH * 4,
-                        (LPCWSTR)TranslatedString(hResource, IDS_REPLACECONFIRM).c_str(),
-                        m_searchString.c_str(),
-                        m_replaceString.empty() ? (LPCWSTR)TranslatedString(hResource, IDS_ANEMPTYSTRING).c_str() : m_replaceString.c_str());
-                    if (!m_bCreateBackup)
+                                (LPCWSTR)TranslatedString(hResource, IDS_REPLACECONFIRM).c_str(),
+                                m_searchString.c_str(),
+                                m_replaceString.empty() ? (LPCWSTR)TranslatedString(hResource, IDS_ANEMPTYSTRING).c_str() : m_replaceString.c_str());
+                    if (::MessageBox(*this, msgtext.get(), _T("grepWin"), MB_ICONQUESTION | MB_YESNO) != IDYES)
                     {
-                        if (::MessageBox(*this, msgtext.get(), _T("grepWin"), MB_ICONQUESTION | MB_YESNO) != IDYES)
-                        {
-                            break;
-                        }
+                        break;
                     }
                 }
 
