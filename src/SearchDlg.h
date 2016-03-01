@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2015 - Stefan Kueng
+// Copyright (C) 2007-2016 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -66,7 +66,7 @@ public:
 
     void                    SetCaseSensitive(bool bSet) {m_bCaseSensitiveC = true; m_bCaseSensitive = bSet;}
     void                    SetMatchesNewline(bool bSet) {m_bDotMatchesNewlineC = true; m_bDotMatchesNewline = bSet;}
-    void                    SetCreateBackups(bool bSet) {m_bCreateBackupC = true; m_bCreateBackup = bSet;}
+    void                    SetCreateBackups(bool bSet) { m_bCreateBackupC = true; m_bCreateBackup = bSet; m_bConfirmationOnReplace = false; }
     void                    SetUTF8(bool bSet) {m_bUTF8C = true;m_bUTF8 = bSet;}
     void                    SetSize(DWORD size, int cmp) {m_bSizeC = true; m_lSize = size; m_sizeCmp = cmp; m_bAllSize = (size == (DWORD)-1);}
     void                    SetIncludeSystem(bool bSet) {m_bIncludeSystemC = true; m_bIncludeSystem = bSet;}
@@ -148,6 +148,7 @@ private:
     ExecuteAction           m_ExecuteImmediately;
 
     bool                    m_bReplace;
+    bool                    m_bConfirmationOnReplace;
     HANDLE                  m_hSearchThread;
 
     std::vector<CSearchInfo> m_items;
