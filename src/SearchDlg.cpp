@@ -2689,7 +2689,7 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
                         {
                             if (retrycounter)
                                 Sleep(20);
-                            hFile = CreateFile(sinfo.filepath.c_str(), GENERIC_READ, FILE_SHARE_READ,
+                            hFile = CreateFile(sinfo.filepath.c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
                                 NULL, OPEN_EXISTING, FILE_FLAG_SEQUENTIAL_SCAN, NULL);
                             retrycounter++;
                         } while (hFile == INVALID_HANDLE_VALUE && retrycounter < 5);
