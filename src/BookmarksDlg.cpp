@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2010, 2012-2015 - Stefan Kueng
+// Copyright (C) 2007-2010, 2012-2016 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -66,7 +66,14 @@ LRESULT CBookmarksDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lP
             m_aerocontrols.SubclassControl(GetDlgItem(*this, IDCANCEL));
             if (m_Dwm.IsDwmCompositionEnabled())
                 m_resizer.ShowSizeGrip(false);
-        }
+
+            WINDOWPLACEMENT wpl = { 0 };
+            DWORD size = sizeof(wpl);
+            if (SHGetValue(HKEY_CURRENT_USER, _T("Software\\grepWin"), _T("windowposBookmarks"), REG_NONE, &wpl, &size) == ERROR_SUCCESS)
+                SetWindowPlacement(*this, &wpl);
+            else
+                ShowWindow(*this, SW_SHOW);
+    }
         return TRUE;
     case WM_COMMAND:
         return DoCommand(LOWORD(wParam), HIWORD(wParam));
@@ -170,7 +177,13 @@ LRESULT CBookmarksDlg::DoCommand(int id, int /*msg*/)
         }
         // fall through
     case IDCANCEL:
-        EndDialog(*this, id);
+        {
+            WINDOWPLACEMENT wpl = { 0 };
+            wpl.length = sizeof(WINDOWPLACEMENT);
+            GetWindowPlacement(*this, &wpl);
+            SHSetValue(HKEY_CURRENT_USER, _T("Software\\grepWin"), _T("windowposBookmarks"), REG_NONE, &wpl, sizeof(wpl));
+            EndDialog(*this, id);
+        }
         break;
     case ID_REMOVEBOOKMARK:
         {
