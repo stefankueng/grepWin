@@ -2267,6 +2267,8 @@ DWORD CSearchDlg::SearchThread()
             std::wstring sPath;
             while (((fileEnumerator.NextFile(sPath, &bIsDirectory, bRecurse))&&(!m_Cancelled))||(bAlwaysSearch))
             {
+                if (bAlwaysSearch && wcsicmp(searchpath.c_str(), sPath.c_str()))
+                    bAlwaysSearch = false;
                 if (m_backupandtempfiles.find(sPath) != m_backupandtempfiles.end())
                     continue;
                 _tcscpy_s(pathbuf.get(), MAX_PATH_NEW, sPath.c_str());
