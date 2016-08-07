@@ -648,14 +648,12 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 
                 m_bReplace = id == IDC_REPLACE;
 
-                if (m_bReplace && !m_bCreateBackup && m_bConfirmationOnReplace)
+                if (m_bReplace && (!m_bCreateBackup || m_replaceString.empty()) && m_bConfirmationOnReplace)
                 {
-                    std::unique_ptr<TCHAR[]> msgtext(new TCHAR[m_searchString.size() + m_replaceString.size() + MAX_PATH * 4]);
-                    _stprintf_s(msgtext.get(), m_searchString.size() + m_replaceString.size() + MAX_PATH * 4,
-                                (LPCWSTR)TranslatedString(hResource, IDS_REPLACECONFIRM).c_str(),
-                                m_searchString.c_str(),
-                                m_replaceString.empty() ? (LPCWSTR)TranslatedString(hResource, IDS_ANEMPTYSTRING).c_str() : m_replaceString.c_str());
-                    if (::MessageBox(*this, msgtext.get(), _T("grepWin"), MB_ICONQUESTION | MB_YESNO) != IDYES)
+                    auto msgtext = CStringUtils::Format((LPCWSTR)TranslatedString(hResource, IDS_REPLACECONFIRM).c_str(),
+                                                        m_searchString.c_str(),
+                                                        m_replaceString.empty() ? (LPCWSTR)TranslatedString(hResource, IDS_ANEMPTYSTRING).c_str() : m_replaceString.c_str());
+                    if (::MessageBox(*this, msgtext.c_str(), _T("grepWin"), MB_ICONQUESTION | MB_YESNO) != IDYES)
                     {
                         break;
                     }
@@ -1712,44 +1710,32 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
             if (appname.find(_T("notepad++.exe")) != std::wstring::npos)
             {
                 // notepad++
-                TCHAR buf[MAX_PATH] = { 0 };
-                _stprintf_s(buf, _countof(buf), _T("-n%s"), textlinebuf);
-                linenumberparam = buf;
+                linenumberparam = CStringUtils::Format(L"-n%s", textlinebuf);
             }
             else if (appname.find(_T("xemacs.exe")) != std::wstring::npos)
             {
                 // XEmacs
-                TCHAR buf[MAX_PATH] = { 0 };
-                _stprintf_s(buf, _countof(buf), _T("+%s"), textlinebuf);
-                linenumberparam = buf;
+                linenumberparam = CStringUtils::Format(L"+%s", textlinebuf);
             }
             else if (appname.find(_T("uedit32.exe")) != std::wstring::npos)
             {
                 // UltraEdit
-                TCHAR buf[MAX_PATH] = { 0 };
-                _stprintf_s(buf, _countof(buf), _T("-l%s"), textlinebuf);
-                linenumberparam = buf;
+                linenumberparam = CStringUtils::Format(L"-l%s", textlinebuf);
             }
             else if (appname.find(_T("codewright.exe")) != std::wstring::npos)
             {
                 // CodeWright
-                TCHAR buf[MAX_PATH] = { 0 };
-                _stprintf_s(buf, _countof(buf), _T("-G%s"), textlinebuf);
-                linenumberparam = buf;
+                linenumberparam = CStringUtils::Format(L"-G%s", textlinebuf);
             }
             else if (appname.find(_T("notepad2.exe")) != std::wstring::npos)
             {
                 // Notepad2
-                TCHAR buf[MAX_PATH] = { 0 };
-                _stprintf_s(buf, _countof(buf), _T("/g %s"), textlinebuf);
-                linenumberparam_before = buf;
+                linenumberparam = CStringUtils::Format(L"/g %s", textlinebuf);
             }
             else if ((appname.find(_T("bowpad.exe")) != std::wstring::npos) || (appname.find(_T("bowpad64.exe")) != std::wstring::npos))
             {
                 // BowPad
-                TCHAR buf[MAX_PATH] = { 0 };
-                _stprintf_s(buf, _countof(buf), _T("/line:%s"), textlinebuf);
-                linenumberparam_before = buf;
+                linenumberparam = CStringUtils::Format(L"/line:%s", textlinebuf);
             }
 
             // replace "%1" with %1
@@ -1763,7 +1749,7 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
             }
             // replace %1 with "path/of/selected/file"
             tag = _T("%1");
-            if (application.find(L"rundll32.exe") == std::string::npos)
+            if (application.find(L"rundll32.exe") == std::wstring::npos)
                 repl = _T("\"") + inf.filepath + _T("\"");
             else
                 repl = inf.filepath;
