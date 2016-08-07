@@ -40,6 +40,7 @@
 #include "Settings.h"
 #include "SysInfo.h"
 #include "Language.h"
+#include "SmartHandle.h"
 
 #include <string>
 #include <map>
@@ -2267,7 +2268,7 @@ DWORD CSearchDlg::SearchThread()
                     if (bAlwaysSearch)
                     {
                         _tcscpy_s(pathbuf.get(), MAX_PATH_NEW, searchpath.c_str());
-                        HANDLE hFile = CreateFile(searchpath.c_str(), FILE_READ_EA, FILE_SHARE_DELETE|FILE_SHARE_READ|FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+                        CAutoFile hFile = CreateFile(searchpath.c_str(), FILE_READ_EA, FILE_SHARE_DELETE|FILE_SHARE_READ|FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
                         if (hFile != INVALID_HANDLE_VALUE)
                         {
                             BY_HANDLE_FILE_INFORMATION bhfi = {0};
@@ -2275,7 +2276,6 @@ DWORD CSearchDlg::SearchThread()
                             nFileSizeLow = bhfi.nFileSizeLow;
                             fullfilesize = (((__int64) bhfi.nFileSizeHigh) << 32) | bhfi.nFileSizeLow;
                             ft = bhfi.ftLastWriteTime;
-                            CloseHandle(hFile);
                         }
                     }
                     else
@@ -2671,7 +2671,7 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
                     {
                         linepositions.clear();
                         // open the file and set up a vector of all lines
-                        HANDLE hFile = INVALID_HANDLE_VALUE;
+                        CAutoFile hFile = INVALID_HANDLE_VALUE;
                         int retrycounter = 0;
                         do
                         {
@@ -2720,7 +2720,6 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
                                     ++pos;
                                 }
                             }
-                            CloseHandle(hFile);
                             for (size_t mp = 0; mp < matchlinesnumbers.size(); ++mp)
                             {
                                 auto fp = linepositions.lower_bound(matchlinesnumbers[mp]);
