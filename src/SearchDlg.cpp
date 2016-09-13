@@ -2252,7 +2252,7 @@ DWORD CSearchDlg::SearchThread()
             CDirFileEnum fileEnumerator(searchpath.c_str());
             bool bRecurse = m_bIncludeSubfolders;
             std::wstring sPath;
-            while (((fileEnumerator.NextFile(sPath, &bIsDirectory, bRecurse))&&(!m_Cancelled))||(bAlwaysSearch))
+            while ((fileEnumerator.NextFile(sPath, &bIsDirectory, bRecurse))&&((!m_Cancelled)||(bAlwaysSearch)))
             {
                 if (bAlwaysSearch && _wcsicmp(searchpath.c_str(), sPath.c_str()))
                     bAlwaysSearch = false;
@@ -2269,7 +2269,7 @@ DWORD CSearchDlg::SearchThread()
                     {
                         _tcscpy_s(pathbuf.get(), MAX_PATH_NEW, searchpath.c_str());
                         CAutoFile hFile = CreateFile(searchpath.c_str(), FILE_READ_EA, FILE_SHARE_DELETE|FILE_SHARE_READ|FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-                        if (hFile != INVALID_HANDLE_VALUE)
+                        if (hFile)
                         {
                             BY_HANDLE_FILE_INFORMATION bhfi = {0};
                             GetFileInformationByHandle(hFile, &bhfi);
@@ -2671,7 +2671,7 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
                     {
                         linepositions.clear();
                         // open the file and set up a vector of all lines
-                        CAutoFile hFile = INVALID_HANDLE_VALUE;
+                        CAutoFile hFile;
                         int retrycounter = 0;
                         do
                         {
@@ -2680,8 +2680,8 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
                             hFile = CreateFile(sinfo.filepath.c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
                                 NULL, OPEN_EXISTING, FILE_FLAG_SEQUENTIAL_SCAN, NULL);
                             retrycounter++;
-                        } while (hFile == INVALID_HANDLE_VALUE && retrycounter < 5);
-                        if (hFile != INVALID_HANDLE_VALUE)
+                        } while (!hFile && retrycounter < 5);
+                        if (hFile)
                         {
                             std::unique_ptr<char[]> fbuf(new char[4096]);
                             DWORD bytesread = 0;
