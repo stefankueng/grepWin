@@ -62,7 +62,7 @@ msgstr ""
 msgid "/"
 msgstr ""
 
-#. Resource IDs: (135, 1052)
+#. Resource IDs: (1052, 135)
 msgid "About grepWin"
 msgstr "关于gerpWin"
 
@@ -131,7 +131,11 @@ msgstr "对话框"
 msgid "Dot matches newline"
 msgstr "点号匹配新行"
 
-#. Resource IDs: (65535)
+#. Resource IDs: (1056)
+msgid "Double-Click to select a preset"
+msgstr ""
+
+#. Resource IDs: (65535 - PopupMenu)
 msgid "Dummy"
 msgstr ""
 
@@ -248,7 +252,7 @@ msgstr "路径"
 msgid "Preset name"
 msgstr "预置名称"
 
-#. Resource IDs: (132, 1022)
+#. Resource IDs: (1022, 132)
 msgid "Presets"
 msgstr "预置"
 
@@ -256,7 +260,7 @@ msgstr "预置"
 msgid "Press F1 for help"
 msgstr "按F1键查看帮助"
 
-#. Resource IDs: (32775)
+#. Resource IDs: (32775 - Menu)
 msgid "Re&name Preset"
 msgstr "重命名预置(&N)"
 
@@ -284,7 +288,7 @@ msgstr "正则搜索字符串:"
 msgid "Relative paths are not allowed. Please enter an absolute path!"
 msgstr ""
 
-#. Resource IDs: (32771)
+#. Resource IDs: (32771 - Menu)
 msgid "Remo&ve Preset"
 msgstr "移除预置(&V)"
 
