@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008, 2010-2015 - Stefan Kueng
+// Copyright (C) 2007-2008, 2010-2016 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -38,10 +38,20 @@ static std::wstring SanitizeSearchPaths(const std::wstring& searchpath)
     std::vector<std::wstring> container;
     stringtok(container, searchpath, true);
     std::wstring sResult;
-    for (const auto& path : container)
+    for (auto path : container)
     {
         if (!sResult.empty())
             sResult += L"|";
+        size_t endpos = path.find_last_not_of(L" \"\t");
+        if (std::wstring::npos != endpos)
+        {
+            path = path.substr(0, endpos + 1);
+        }
+        size_t startpos = path.find_first_not_of(L" \"\t");
+        if ((startpos > 0) && (std::wstring::npos != startpos))
+        {
+            path = path.substr(startpos);
+        }
         sResult += CPathUtils::GetLongPathname(path);
     }
     return sResult;
