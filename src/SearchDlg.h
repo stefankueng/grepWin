@@ -19,6 +19,7 @@
 #pragma once
 #include "BaseDialog.h"
 #include "SearchInfo.h"
+#include "BookmarksDlg.h"
 #include "DlgResizer.h"
 #include "FileDropTarget.h"
 #include "AutoComplete.h"
@@ -116,6 +117,9 @@ private:
     HWND                    m_hParent;
     volatile LONG           m_dwThreadRunning;
     volatile LONG           m_Cancelled;
+
+    CBookmarksDlg *         m_pBookmarksDlg;
+
     std::wstring            m_searchpath;
     std::wstring            m_searchString;
     std::wstring            m_replaceString;

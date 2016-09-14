@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2009, 2012-2013 - Stefan Kueng
+// Copyright (C) 2007-2009, 2012-2013, 2016 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -23,6 +23,7 @@
 #include "AeroControls.h"
 #include <string>
 
+#define WM_BOOKMARK         (WM_APP+20)
 
 /**
  * bookmarks dialog.
@@ -53,6 +54,7 @@ protected:
     LRESULT                 DoCommand(int id, int msg);
     void                    InitBookmarks();
     void                    RemoveQuotes(std::wstring& str);
+    void                    PrepareSelected();
 private:
     HWND                    m_hParent;
     std::wstring            m_name;
