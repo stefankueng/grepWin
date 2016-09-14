@@ -62,7 +62,7 @@ msgstr ""
 msgid "/"
 msgstr ""
 
-#. Resource IDs: (135, 1052)
+#. Resource IDs: (1052, 135)
 msgid "About grepWin"
 msgstr ""
 
@@ -131,7 +131,11 @@ msgstr ""
 msgid "Dot matches newline"
 msgstr ""
 
-#. Resource IDs: (65535)
+#. Resource IDs: (1056)
+msgid "Double-Click to select a preset"
+msgstr ""
+
+#. Resource IDs: (65535 - PopupMenu)
 msgid "Dummy"
 msgstr ""
 
@@ -248,7 +252,7 @@ msgstr ""
 msgid "Preset name"
 msgstr ""
 
-#. Resource IDs: (132, 1022)
+#. Resource IDs: (1022, 132)
 msgid "Presets"
 msgstr ""
 
@@ -256,7 +260,7 @@ msgstr ""
 msgid "Press F1 for help"
 msgstr ""
 
-#. Resource IDs: (32775)
+#. Resource IDs: (32775 - Menu)
 msgid "Re&name Preset"
 msgstr ""
 
@@ -284,7 +288,7 @@ msgstr ""
 msgid "Relative paths are not allowed. Please enter an absolute path!"
 msgstr ""
 
-#. Resource IDs: (32771)
+#. Resource IDs: (32771 - Menu)
 msgid "Remo&ve Preset"
 msgstr ""
 

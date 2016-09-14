@@ -62,7 +62,7 @@ msgstr "..."
 msgid "/"
 msgstr "/"
 
-#. Resource IDs: (135, 1052)
+#. Resource IDs: (1052, 135)
 msgid "About grepWin"
 msgstr "Über grepWin"
 
@@ -131,7 +131,11 @@ msgstr "Dialog"
 msgid "Dot matches newline"
 msgstr "Punkt passt auf Newline"
 
-#. Resource IDs: (65535)
+#. Resource IDs: (1056)
+msgid "Double-Click to select a preset"
+msgstr "Doppelklick um Favorit zu wählen"
+
+#. Resource IDs: (65535 - PopupMenu)
 msgid "Dummy"
 msgstr "Dummy"
 
@@ -248,7 +252,7 @@ msgstr "Pfad"
 msgid "Preset name"
 msgstr "Favoritenname"
 
-#. Resource IDs: (132, 1022)
+#. Resource IDs: (1022, 132)
 msgid "Presets"
 msgstr "Favoriten"
 
@@ -256,7 +260,7 @@ msgstr "Favoriten"
 msgid "Press F1 for help"
 msgstr "Drücke F1 für Hilfe"
 
-#. Resource IDs: (32775)
+#. Resource IDs: (32775 - Menu)
 msgid "Re&name Preset"
 msgstr "Favoriten umbenennen"
 
@@ -284,7 +288,7 @@ msgstr "Regex Suchstring"
 msgid "Relative paths are not allowed. Please enter an absolute path!"
 msgstr "Relative Pfade sind nicht erlaubt. Geben Sie einen absoluten Pfad ein!"
 
-#. Resource IDs: (32771)
+#. Resource IDs: (32771 - Menu)
 msgid "Remo&ve Preset"
 msgstr "Favoriten Löschen"
 
