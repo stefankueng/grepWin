@@ -1547,14 +1547,10 @@ bool CSearchDlg::PreTranslateMessage(MSG* pMsg)
                     int iItem = -1;
                     while ((iItem = ListView_GetNextItem(hListControl, iItem, LVNI_SELECTED)) != (-1))
                     {
-                        int selItem = GetSelectedListIndex(iItem);
-                        if ((selItem >= 0)&&(selItem < (int)m_items.size()))
-                        {
-                            NMITEMACTIVATE itemactivate = { 0 };
-                            itemactivate.hdr.code = NM_DBLCLK;
-                            itemactivate.iItem = selItem;
-                            DoListNotify(&itemactivate);
-                        }
+                        NMITEMACTIVATE itemactivate = { 0 };
+                        itemactivate.hdr.code = NM_DBLCLK;
+                        itemactivate.iItem = iItem;
+                        DoListNotify(&itemactivate);
                     }
                     return true;
                 }
