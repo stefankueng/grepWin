@@ -2503,7 +2503,7 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
                 flags |= boost::match_not_dot_newline;
             long prevlinestart = 0;
             long prevlineend   = 0;
-            while (regex_search(start, end, whatc, expression, flags))
+            while (regex_search(start, end, whatc, expression, flags) && !m_Cancelled)
             {
                 if (whatc[0].matched)
                 {
@@ -2539,7 +2539,7 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
             {
                 boost::wregex expressionutf16 = boost::wregex(searchStringUtf16le, ft);
 
-                while (regex_search(start, end, whatc, expressionutf16, flags))
+                while (regex_search(start, end, whatc, expressionutf16, flags) && !m_Cancelled)
                 {
                     if (whatc[0].matched)
                     {
@@ -2674,7 +2674,7 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
                     boost::spirit::classic::file_iterator<> fbeg = start;
                     boost::spirit::classic::file_iterator<> end = start.make_end();
                     boost::match_results<boost::spirit::classic::file_iterator<>> whatc;
-                    while (boost::regex_search(start, end, whatc, expression, flags))
+                    while (boost::regex_search(start, end, whatc, expression, flags) && !m_Cancelled)
                     {
                         nFound++;
                         matchlinesnumbers.push_back(DWORD(whatc[0].first - fbeg));
