@@ -924,44 +924,6 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
             if (m_pBookmarksDlg == nullptr)
                 m_pBookmarksDlg = new CBookmarksDlg(*this);
             m_pBookmarksDlg->ShowModeless(hResource, IDD_BOOKMARKS, *this);
-            //CBookmarksDlg dlg(*this);
-            //if (dlg.DoModal(hResource, IDD_BOOKMARKS, *this, IDC_GREPWIN) == IDOK)
-            //{
-            //    m_searchString              = dlg.GetSelectedSearchString();
-            //    m_replaceString             = dlg.GetSelectedReplaceString();
-            //    m_bUseRegex                 = dlg.GetSelectedUseRegex();
-
-            //    m_bCaseSensitive            = dlg.GetSelectedSearchCase();
-            //    m_bDotMatchesNewline        = dlg.GetSelectedDotMatchNewline();
-            //    m_bCreateBackup             = dlg.GetSelectedBackup();
-            //    m_bUTF8                     = dlg.GetSelectedTreatAsUtf8();
-            //    m_bIncludeSystem            = dlg.GetSelectedIncludeSystem();
-            //    m_bIncludeSubfolders        = dlg.GetSelectedIncludeFolder();
-            //    m_bIncludeHidden            = dlg.GetSelectedIncludeHidden();
-            //    m_bIncludeBinary            = dlg.GetSelectedIncludeBinary();
-            //    m_excludedirspatternregex   = dlg.GetSelectedExcludeDirs();
-            //    m_patternregex              = dlg.GetSelectedFileMatch();
-            //    m_bUseRegexForPaths         = dlg.GetSelectedFileMatchRegex();
-
-
-            //    SetDlgItemText(*this, IDC_SEARCHTEXT, m_searchString.c_str());
-            //    SetDlgItemText(*this, IDC_REPLACETEXT, m_replaceString.c_str());
-            //    CheckRadioButton(*this, IDC_REGEXRADIO, IDC_TEXTRADIO, m_bUseRegex ? IDC_REGEXRADIO : IDC_TEXTRADIO);
-            //    DialogEnableWindow(IDC_TESTREGEX, !IsDlgButtonChecked(*this, IDC_TEXTRADIO));
-
-            //    SendDlgItemMessage(*this, IDC_INCLUDESUBFOLDERS, BM_SETCHECK, m_bIncludeSubfolders ? BST_CHECKED : BST_UNCHECKED, 0);
-            //    SendDlgItemMessage(*this, IDC_CREATEBACKUP, BM_SETCHECK, m_bCreateBackup ? BST_CHECKED : BST_UNCHECKED, 0);
-            //    SendDlgItemMessage(*this, IDC_UTF8, BM_SETCHECK, m_bUTF8 ? BST_CHECKED : BST_UNCHECKED, 0);
-            //    SendDlgItemMessage(*this, IDC_INCLUDESYSTEM, BM_SETCHECK, m_bIncludeSystem ? BST_CHECKED : BST_UNCHECKED, 0);
-            //    SendDlgItemMessage(*this, IDC_INCLUDEHIDDEN, BM_SETCHECK, m_bIncludeHidden ? BST_CHECKED : BST_UNCHECKED, 0);
-            //    SendDlgItemMessage(*this, IDC_INCLUDEBINARY, BM_SETCHECK, m_bIncludeBinary ? BST_CHECKED : BST_UNCHECKED, 0);
-            //    SendDlgItemMessage(*this, IDC_CASE_SENSITIVE, BM_SETCHECK, m_bCaseSensitive ? BST_CHECKED : BST_UNCHECKED, 0);
-            //    SendDlgItemMessage(*this, IDC_DOTMATCHNEWLINE, BM_SETCHECK, m_bDotMatchesNewline ? BST_CHECKED : BST_UNCHECKED, 0);
-
-            //    CheckRadioButton(*this, IDC_FILEPATTERNREGEX, IDC_FILEPATTERNTEXT, m_bUseRegexForPaths ? IDC_FILEPATTERNREGEX : IDC_FILEPATTERNTEXT);
-            //    SetDlgItemText(*this, IDC_EXCLUDEDIRSPATTERN, m_excludedirspatternregex.c_str());
-            //    SetDlgItemText(*this, IDC_PATTERN, m_patternregex.c_str());
-            //}
         }
         break;
     case IDC_RESULTFILES:
