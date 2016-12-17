@@ -2647,6 +2647,8 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
                         flags |= boost::match_prev_avail;
                         flags |= boost::match_not_bob;
                         bFound = true;
+                        if (m_Cancelled)
+                            break;
                     }
                 }
                 if (type == CTextFile::BINARY)
@@ -2667,10 +2669,12 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
                         flags |= boost::match_prev_avail;
                         flags |= boost::match_not_bob;
                         bFound = true;
+                        if (m_Cancelled)
+                            break;
                     }
                 }
 
-                if (bFound)
+                if (bFound && !m_Cancelled)
                 {
                     if (!bLoadResult && (type != CTextFile::BINARY))
                     {
