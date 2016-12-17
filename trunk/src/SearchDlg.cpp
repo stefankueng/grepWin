@@ -923,6 +923,8 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
         {
             if (m_pBookmarksDlg == nullptr)
                 m_pBookmarksDlg = new CBookmarksDlg(*this);
+            else
+                m_pBookmarksDlg->InitBookmarks();
             m_pBookmarksDlg->ShowModeless(hResource, IDD_BOOKMARKS, *this);
         }
         break;
@@ -2710,12 +2712,14 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
                                             if (fbuf[br] == '\n')
                                             {
                                                 // crlf lineending
-                                                linepositions[pos] = (DWORD)linepositions.size();
+                                                auto lp = linepositions.size();
+                                                linepositions[pos] = (DWORD)lp;
                                             }
                                             else
                                             {
                                                 // cr lineending
-                                                linepositions[pos-1] = (DWORD)linepositions.size();
+                                                auto lp = linepositions.size();
+                                                linepositions[pos-1] = (DWORD)lp;
                                             }
                                         }
                                         else
@@ -2724,7 +2728,8 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
                                     else if (fbuf[br] == '\n')
                                     {
                                         // lf lineending
-                                        linepositions[pos] = (DWORD)linepositions.size();
+                                        auto lp = linepositions.size();
+                                        linepositions[pos] = (DWORD)lp;
                                     }
                                     ++pos;
                                 }
