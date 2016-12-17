@@ -34,6 +34,7 @@ public:
     CBookmarksDlg(HWND hParent);
     ~CBookmarksDlg(void);
 
+    void                    InitBookmarks();
     std::wstring            GetName() {return m_name;}
     std::wstring            GetSelectedSearchString() const { return m_searchString; }
     std::wstring            GetSelectedReplaceString() const { return m_replaceString; }
@@ -52,7 +53,6 @@ public:
 protected:
     LRESULT CALLBACK        DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
     LRESULT                 DoCommand(int id, int msg);
-    void                    InitBookmarks();
     void                    RemoveQuotes(std::wstring& str);
     void                    PrepareSelected();
 private:
