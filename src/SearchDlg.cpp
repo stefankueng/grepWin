@@ -2427,7 +2427,10 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
     std::wstring localSearchString = searchString;
 
     if (!bUseRegex)
-        localSearchString = _T("\\Q") + searchString + _T("\\E");
+    {
+        SearchReplace(localSearchString, L"\\E", L"\\\\E");
+        localSearchString = _T("\\Q") + localSearchString + _T("\\E");
+    }
 
     SearchReplace(localSearchString, L"${filepath}", sinfo.filepath);
     std::wstring filenamefull = sinfo.filepath.substr(sinfo.filepath.find_last_of('\\') + 1);
