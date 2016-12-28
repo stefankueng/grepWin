@@ -1,17 +1,17 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# Chinese language file for grepWin
+# Copyright (C) 2016 -=XARA=-
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# -=XARA=- (x1983@msn.com), 2016.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 1900-01-01 00:00+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"POT-Creation-Date: 2013-04-02 21:00\n"
+"PO-Revision-Date: 2016-12-19 20:04\n"
+"Last-Translator: =XARA=- <x1983@msn.com>\n"
+"Language-Team: Chinese\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -40,11 +40,11 @@ msgstr "还有 %ld 个匹配"
 
 #. Resource IDs: (1069)
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to"
-msgstr "%path%将被替换为文件的路径, %line%将被替换为要转至的行号."
+msgstr "%path% 将被替换为文件的路径, %line% 将被替换为要转至的行号."
 
 #. Resource IDs: (119)
 msgid "&About grepWin..."
-msgstr "关于grepWin(&A)..."
+msgstr "关于 grepWin(&A)..."
 
 #. Resource IDs: (1049)
 msgid "&Replace"
@@ -56,15 +56,15 @@ msgstr "搜索(&S)"
 
 #. Resource IDs: (1013)
 msgid "..."
-msgstr ""
+msgstr "..."
 
 #. Resource IDs: (1061, 1063, 1064, 1066, 1067)
 msgid "/"
-msgstr ""
+msgstr "/"
 
 #. Resource IDs: (1052, 135)
 msgid "About grepWin"
-msgstr "关于gerpWin"
+msgstr "关于 grepWin"
 
 #. Resource IDs: (1021)
 msgid "Add to Presets"
@@ -133,7 +133,7 @@ msgstr "点号匹配新行"
 
 #. Resource IDs: (1056)
 msgid "Double-Click to select a preset"
-msgstr ""
+msgstr "双击选择一个预置"
 
 #. Resource IDs: (65535 - PopupMenu)
 msgid "Dummy"
@@ -153,7 +153,7 @@ msgstr "为正则输入一个名称:"
 
 #. Resource IDs: (1062)
 msgid "Escape key closes grepWin"
-msgstr ""
+msgstr "ESC 键关闭 grepWin"
 
 #. Resource IDs: (1041)
 msgid "Exclude dirs (Regex):"
@@ -169,7 +169,7 @@ msgstr "文件"
 
 #. Resource IDs: (109)
 msgid "GREPWIN"
-msgstr ""
+msgstr "GREPWIN"
 
 #. Resource IDs: (1050)
 msgid "Include binary files"
@@ -189,11 +189,11 @@ msgstr "包含系统项目"
 
 #. Resource IDs: (153)
 msgid "Invalid path!"
-msgstr ""
+msgstr "无效路径！"
 
 #. Resource IDs: (1019)
 msgid "KB"
-msgstr ""
+msgstr "KB"
 
 #. Resource IDs: (1075)
 msgid "Language:"
@@ -210,7 +210,7 @@ msgstr "行号"
 #. Resource IDs: (150)
 #, c-format
 msgid "Line %5ld : %30s\n"
-msgstr ""
+msgstr "行 %5ld : %30s\n"
 
 #. Resource IDs: (135)
 msgid "Matches"
@@ -258,7 +258,7 @@ msgstr "预置"
 
 #. Resource IDs: (1065)
 msgid "Press F1 for help"
-msgstr "按F1键查看帮助"
+msgstr "按 F1 键查看帮助"
 
 #. Resource IDs: (32775 - Menu)
 msgid "Re&name Preset"
@@ -286,7 +286,7 @@ msgstr "正则搜索字符串:"
 
 #. Resource IDs: (152)
 msgid "Relative paths are not allowed. Please enter an absolute path!"
-msgstr ""
+msgstr "不允许不使用相对路径.请输入一个绝对路径！"
 
 #. Resource IDs: (32771 - Menu)
 msgid "Remo&ve Preset"
@@ -314,7 +314,7 @@ msgstr "搜索(&F):"
 
 #. Resource IDs: (65535)
 msgid "Search &in"
-msgstr ""
+msgstr "搜索于（&I）"
 
 #. Resource IDs: (1042)
 msgid "Search case-sensitive"
@@ -419,7 +419,7 @@ msgstr "大于"
 
 #. Resource IDs: (103, 129)
 msgid "grepWin"
-msgstr ""
+msgstr "grepWin"
 
 #. Resource IDs: (138)
 msgid "grepWin Settings"
@@ -427,7 +427,7 @@ msgstr "grepWin设置"
 
 #. Resource IDs: (132)
 msgid "invalid regex!"
-msgstr "无效的正则表达式"
+msgstr "无效的正则表达式！"
 
 #. Resource IDs: (120)
 msgid "less than"
@@ -464,7 +464,7 @@ msgstr "复用grepWin实例"
 #. Resource IDs: (151)
 #, c-format
 msgid "scanning file '%s'"
-msgstr ""
+msgstr "正在扫描文件 '%s'"
 
 #. Resource IDs: (108)
 msgid "search string is empty"
