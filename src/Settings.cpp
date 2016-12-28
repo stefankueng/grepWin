@@ -176,7 +176,13 @@ LRESULT CSettingsDlg::DoCommand(int id, int /*msg*/)
             std::wstring sTitle = TranslatedString(hResource, IDS_SELECTEDITOR);
             ofn.lpstrTitle = sTitle.c_str();
             ofn.Flags = OFN_FILEMUSTEXIST|OFN_HIDEREADONLY|OFN_PATHMUSTEXIST|OFN_DONTADDTORECENT;
-            ofn.lpstrFilter = _T("Programs\0*.exe;*.com\0All files\0*.*\0\0");
+            auto sProgs = TranslatedString(hResource, IDS_PROGRAMS);
+            auto sAllFiles = TranslatedString(hResource, IDS_ALLFILES);
+            auto sFilter = sProgs;
+            sFilter.append(L"\0*.exe;*.com\0", _countof(L"\0*.exe;*.com\0")-1);
+            sFilter.append(sAllFiles);
+            sFilter.append(L"\0*.*\0\0", _countof(L"\0*.*\0\0")-1);
+            ofn.lpstrFilter = sFilter.c_str();
             ofn.nFilterIndex = 1;
             // Display the Open dialog box.
             if (GetOpenFileName(&ofn)==TRUE)
