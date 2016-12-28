@@ -70,6 +70,10 @@ msgstr ""
 msgid "Add to Presets"
 msgstr ""
 
+#. Resource IDs: (155)
+msgid "All Files"
+msgstr ""
+
 #. Resource IDs: (1005)
 msgid "All sizes"
 msgstr ""
@@ -258,6 +262,10 @@ msgstr ""
 
 #. Resource IDs: (1065)
 msgid "Press F1 for help"
+msgstr ""
+
+#. Resource IDs: (154)
+msgid "Programs"
 msgstr ""
 
 #. Resource IDs: (32775 - Menu)

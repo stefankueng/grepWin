@@ -70,6 +70,10 @@ msgstr "Over grepWin"
 msgid "Add to Presets"
 msgstr "Naar Favorieten"
 
+#. Resource IDs: (155)
+msgid "All Files"
+msgstr ""
+
 #. Resource IDs: (1005)
 msgid "All sizes"
 msgstr "Alle afmetingen"
@@ -259,6 +263,10 @@ msgstr "Favorieten"
 #. Resource IDs: (1065)
 msgid "Press F1 for help"
 msgstr "Druk op F1 voor Help"
+
+#. Resource IDs: (154)
+msgid "Programs"
+msgstr ""
 
 #. Resource IDs: (32775 - Menu)
 msgid "Re&name Preset"

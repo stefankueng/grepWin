@@ -70,6 +70,10 @@ msgstr "Über grepWin"
 msgid "Add to Presets"
 msgstr "Zu Favoriten"
 
+#. Resource IDs: (155)
+msgid "All Files"
+msgstr "Alle Dateien"
+
 #. Resource IDs: (1005)
 msgid "All sizes"
 msgstr "Alle Grössen"
@@ -259,6 +263,10 @@ msgstr "Favoriten"
 #. Resource IDs: (1065)
 msgid "Press F1 for help"
 msgstr "Drücke F1 für Hilfe"
+
+#. Resource IDs: (154)
+msgid "Programs"
+msgstr "Programme"
 
 #. Resource IDs: (32775 - Menu)
 msgid "Re&name Preset"
