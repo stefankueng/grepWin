@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2010, 2012-2016 - Stefan Kueng
+// Copyright (C) 2007-2010, 2012-2017 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -156,7 +156,8 @@ LRESULT CBookmarksDlg::DoCommand(int id, int /*msg*/)
             wpl.length = sizeof(WINDOWPLACEMENT);
             GetWindowPlacement(*this, &wpl);
             SHSetValue(HKEY_CURRENT_USER, _T("Software\\grepWin"), _T("windowposBookmarks"), REG_NONE, &wpl, sizeof(wpl));
-            SendMessage(m_hParent, WM_BOOKMARK, 0, 0);
+            if ((id == IDOK) && (ListView_GetNextItem(GetDlgItem(*this, IDC_BOOKMARKS), -1, LVNI_SELECTED) >= 0))
+                SendMessage(m_hParent, WM_BOOKMARK, 0, 0);
             ShowWindow(*this, SW_HIDE);
         }
         break;
