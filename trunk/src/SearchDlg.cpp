@@ -94,6 +94,7 @@ CSearchDlg::CSearchDlg(HWND hParent)
     , m_bCaseSensitiveC(false)
     , m_bDotMatchesNewline(false)
     , m_bDotMatchesNewlineC(false)
+    , m_bNOTSearch(false)
     , m_bSizeC(false)
     , m_bAllSize(false)
     , m_bReplace(false)
@@ -163,6 +164,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             AddToolTip(IDC_ONLYONE, TranslatedString(hResource, IDS_ONLYONE_TT).c_str());
             AddToolTip(IDC_EDITMULTILINE1, TranslatedString(hResource, IDS_EDITMULTILINE_TT).c_str());
             AddToolTip(IDC_EDITMULTILINE2, TranslatedString(hResource, IDS_EDITMULTILINE_TT).c_str());
+            AddToolTip(IDOK, TranslatedString(hResource, IDS_SHIFT_NOTSEARCH).c_str());
 
             if (m_searchpath.empty())
             {
@@ -706,6 +708,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                     }
                 }
                 m_bConfirmationOnReplace = true;
+                m_bNOTSearch = (GetKeyState(VK_SHIFT) & 0x8000) != 0;
 
                 InterlockedExchange(&m_dwThreadRunning, TRUE);
                 InterlockedExchange(&m_Cancelled, FALSE);
@@ -2482,6 +2485,8 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, const std::wstring& searchRoot, b
                 if (whatc[0].matched)
                 {
                     nFound++;
+                    if (m_bNOTSearch)
+                        break;
                     long linestart = textfile.LineFromPosition(long(whatc[0].first-textfile.GetFileString().begin()));
                     long lineend   = textfile.LineFromPosition(long(whatc[0].second-textfile.GetFileString().begin()));
                     if ((linestart != prevlinestart)||(lineend != prevlineend))
@@ -2518,6 +2523,8 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, const std::wstring& searchRoot, b
                     if (whatc[0].matched)
                     {
                         nFound++;
+                        if (m_bNOTSearch)
+                            break;
                         long linestart = textfile.LineFromPosition(long(whatc[0].first - textfile.GetFileString().begin()));
                         long lineend = textfile.LineFromPosition(long(whatc[0].second - textfile.GetFileString().begin()));
                         if ((linestart != prevlinestart) || (lineend != prevlineend))
@@ -2659,6 +2666,8 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, const std::wstring& searchRoot, b
                     while (boost::regex_search(start, end, whatc, expression, flags) && !m_Cancelled)
                     {
                         nFound++;
+                        if (m_bNOTSearch)
+                            break;
                         matchlinesnumbers.push_back(DWORD(whatc[0].first - fbeg));
                         ++sinfo.matchcount;
                         // update search position:
@@ -2681,6 +2690,8 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, const std::wstring& searchRoot, b
                     while (boost::regex_search(start, end, whatc, expression, flags))
                     {
                         nFound++;
+                        if (m_bNOTSearch)
+                            break;
                         matchlinesnumbers.push_back(DWORD(whatc[0].first - fbeg));
                         ++sinfo.matchcount;
                         // update search position:
@@ -2696,7 +2707,7 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, const std::wstring& searchRoot, b
 
                 if (bFound && !m_Cancelled)
                 {
-                    if (!bLoadResult && (type != CTextFile::BINARY))
+                    if (!bLoadResult && (type != CTextFile::BINARY) && !m_bNOTSearch)
                     {
                         linepositions.clear();
                         // open the file and set up a vector of all lines
@@ -2825,6 +2836,8 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, const std::wstring& searchRoot, b
         }
     }
     m_searchedFile.clear();
+    if (m_bNOTSearch)
+        return (nFound ? 0 : 1);
     return nFound;
 }
 
