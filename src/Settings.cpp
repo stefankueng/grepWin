@@ -85,9 +85,10 @@ LRESULT CSettingsDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
                 SendDlgItemMessage(hwndDlg, IDC_LANGUAGE, CB_INSERTSTRING, (WPARAM)-1, (LPARAM)sPath.c_str());
                 ++index;
             }
+
             SendDlgItemMessage(hwndDlg, IDC_LANGUAGE, CB_SETCURSEL, langIndex, 0);
-            SendDlgItemMessage(hwndDlg, IDC_ESCKEY, BM_SETCHECK, DWORD(CRegStdDWORD(L"Software\\grepWin\\escclose", FALSE)) ? BST_CHECKED : BST_UNCHECKED, 0);
-            SendDlgItemMessage(hwndDlg, IDC_BACKUPINFOLDER, BM_SETCHECK, DWORD(CRegStdDWORD(L"Software\\grepWin\\backupinfolder", FALSE)) ? BST_CHECKED : BST_UNCHECKED, 0);
+            SendDlgItemMessage(hwndDlg, IDC_ESCKEY, BM_SETCHECK, bPortable ? !!_wtoi(g_iniFile.GetValue(L"settings", L"escclose", L"0")) : DWORD(CRegStdDWORD(L"Software\\grepWin\\escclose", FALSE)) ? BST_CHECKED : BST_UNCHECKED, 0);
+            SendDlgItemMessage(hwndDlg, IDC_BACKUPINFOLDER, BM_SETCHECK, bPortable ? !!_wtoi(g_iniFile.GetValue(L"settings", L"backupinfolder", L"0")) : DWORD(CRegStdDWORD(L"Software\\grepWin\\backupinfolder", FALSE)) ? BST_CHECKED : BST_UNCHECKED, 0);
 
             AddToolTip(IDC_BACKUPINFOLDER, TranslatedString(hResource, IDS_BACKUPINFOLDER_TT).c_str());
 
@@ -162,10 +163,19 @@ LRESULT CSettingsDlg::DoCommand(int id, int /*msg*/)
             }
             CLanguage::Instance().LoadFile(langpath);
             CLanguage::Instance().TranslateWindow(::GetParent(*this));
-            CRegStdDWORD esc(L"Software\\grepWin\\escclose", FALSE);
-            esc = (IsDlgButtonChecked(*this, IDC_ESCKEY) == BST_CHECKED);
-            CRegStdDWORD backup(L"Software\\grepWin\\backupinfolder", FALSE);
-            backup = (IsDlgButtonChecked(*this, IDC_BACKUPINFOLDER) == BST_CHECKED);
+
+            if (bPortable)
+            {
+                g_iniFile.SetValue(L"settings", L"escclose", (IsDlgButtonChecked(*this, IDC_ESCKEY) == BST_CHECKED) ? L"1" : L"0");
+                g_iniFile.SetValue(L"settings", L"backupinfolder", (IsDlgButtonChecked(*this, IDC_BACKUPINFOLDER) == BST_CHECKED) ? L"1" : L"0");
+            }
+            else
+            {
+                CRegStdDWORD esc(L"Software\\grepWin\\escclose", FALSE);
+                esc = (IsDlgButtonChecked(*this, IDC_ESCKEY) == BST_CHECKED);
+                CRegStdDWORD backup(L"Software\\grepWin\\backupinfolder", FALSE);
+                backup = (IsDlgButtonChecked(*this, IDC_BACKUPINFOLDER) == BST_CHECKED);
+            }
     }
         // fall through
     case IDCANCEL:
