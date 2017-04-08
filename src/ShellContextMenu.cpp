@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2015 - Stefan Kueng
+// Copyright (C) 2007-2015, 2017 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -340,7 +340,7 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
                     {
                         for (auto it2 = it->lines.cbegin(); it2 != it->lines.cend(); ++it2)
                         {
-                            std::wstring cmd = regEditorCmd;
+                            std::wstring cmd = editorcmd;
                             SearchReplace(cmd, L"%path%", it->path.c_str());
                             wchar_t buf[40] = {0};
                             swprintf_s(buf, L"%ld", it2->number);
@@ -361,7 +361,7 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
                 {
                     for (auto it = m_strVector.begin(); it != m_strVector.end(); ++it)
                     {
-                        std::wstring cmd = regEditorCmd;
+                        std::wstring cmd = editorcmd;
                         SearchReplace(cmd, L"%path%", it->filepath.c_str());
                         if (!it->matchlinesnumbers.empty())
                         {
