@@ -667,7 +667,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 if (!SaveSettings())
                     break;
 
-                if (m_searchpath.find(L"..") != std::wstring::npos)
+                if (PathIsRelative(m_searchpath.c_str()))
                 {
                     ShowEditBalloon(IDC_SEARCHPATH, TranslatedString(hResource, IDS_ERR_INVALID_PATH).c_str(), TranslatedString(hResource, IDS_ERR_RELATIVEPATH).c_str());
                     break;
