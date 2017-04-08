@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2016 - Stefan Kueng
+// Copyright (C) 2007-2017 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -1710,7 +1710,7 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
                 swprintf_s(textlinebuf, L"%ld", inf.matchlinesnumbers[0]);
             }
             std::wstring appname = application;
-            std::transform(appname.begin(), appname.end(), appname.begin(), ::tolower);
+            std::transform(appname.begin(), appname.end(), appname.begin(), ::towlower);
 
             // now find out if the application which opens the file is known to us
             // and if it has a 'linenumber' switch to jump directly to a specific
@@ -1969,7 +1969,7 @@ bool CSearchDlg::SaveSettings()
         std::wstring s = std::wstring(pBuf, pos);
         if (!s.empty())
         {
-            std::transform(s.begin(), s.end(), s.begin(), (int(*)(int)) std::tolower);
+            std::transform(s.begin(), s.end(), s.begin(), ::towlower);
             m_patterns.push_back(s);
         }
         pBuf += pos;
@@ -2402,7 +2402,7 @@ bool CSearchDlg::MatchPath(LPCTSTR pathbuf)
                 bPattern = true;
 
             std::wstring fname = pName;
-            std::transform(fname.begin(), fname.end(), fname.begin(), (int(*)(int)) std::tolower);
+            std::transform(fname.begin(), fname.end(), fname.begin(), ::towlower);
 
             for (auto it = m_patterns.begin(); it != m_patterns.end(); ++it)
             {
