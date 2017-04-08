@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2012-2013, 2016 - Stefan Kueng
+// Copyright (C) 2012-2013, 2016-2017 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -87,6 +87,10 @@ LRESULT CSettingsDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
             }
             SendDlgItemMessage(hwndDlg, IDC_LANGUAGE, CB_SETCURSEL, langIndex, 0);
             SendDlgItemMessage(hwndDlg, IDC_ESCKEY, BM_SETCHECK, DWORD(CRegStdDWORD(L"Software\\grepWin\\escclose", FALSE)) ? BST_CHECKED : BST_UNCHECKED, 0);
+            SendDlgItemMessage(hwndDlg, IDC_BACKUPINFOLDER, BM_SETCHECK, DWORD(CRegStdDWORD(L"Software\\grepWin\\backupinfolder", FALSE)) ? BST_CHECKED : BST_UNCHECKED, 0);
+
+            AddToolTip(IDC_BACKUPINFOLDER, TranslatedString(hResource, IDS_BACKUPINFOLDER_TT).c_str());
+
 
             m_resizer.Init(hwndDlg);
             m_resizer.AddControl(hwndDlg, IDC_EDITORGROUP, RESIZER_TOPLEFTRIGHT);
@@ -97,6 +101,7 @@ LRESULT CSettingsDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
             m_resizer.AddControl(hwndDlg, IDC_STATIC4, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_LANGUAGE, RESIZER_TOPRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_ESCKEY, RESIZER_TOPLEFTRIGHT);
+            m_resizer.AddControl(hwndDlg, IDC_BACKUPINFOLDER, RESIZER_TOPLEFTRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_DWM, RESIZER_BOTTOMLEFT);
             m_resizer.AddControl(hwndDlg, IDOK, RESIZER_BOTTOMRIGHT);
             m_resizer.AddControl(hwndDlg, IDCANCEL, RESIZER_BOTTOMRIGHT);
@@ -159,7 +164,9 @@ LRESULT CSettingsDlg::DoCommand(int id, int /*msg*/)
             CLanguage::Instance().TranslateWindow(::GetParent(*this));
             CRegStdDWORD esc(L"Software\\grepWin\\escclose", FALSE);
             esc = (IsDlgButtonChecked(*this, IDC_ESCKEY) == BST_CHECKED);
-        }
+            CRegStdDWORD backup(L"Software\\grepWin\\backupinfolder", FALSE);
+            backup = (IsDlgButtonChecked(*this, IDC_BACKUPINFOLDER) == BST_CHECKED);
+    }
         // fall through
     case IDCANCEL:
         EndDialog(*this, id);
