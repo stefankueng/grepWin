@@ -123,6 +123,10 @@ msgstr "Textresultate kopieren"
 msgid "Create backup files"
 msgstr "Erstelle Backupdateien"
 
+#. Resource IDs: (1077)
+msgid "Create backup files in a separate folder"
+msgstr "Erstelle Backups in separaten Ordnern"
+
 #. Resource IDs: (139)
 msgid "Date modified"
 msgstr "Verändert am"
@@ -174,6 +178,10 @@ msgstr "Dateien"
 #. Resource IDs: (109)
 msgid "GREPWIN"
 msgstr "GREPWIN"
+
+#. Resource IDs: (156)
+msgid "If enabled, a backup folder is created inside the folder that's searched/replaced in, and the files are backed up into that folder"
+msgstr "Wenn aktiv, wird ein Backup-Ordner erstellt im Ordner in dem gesucht wird, und die Dateien werden in diesen Ordner gesichert"
 
 #. Resource IDs: (1050)
 msgid "Include binary files"
@@ -432,6 +440,10 @@ msgstr "grepWin"
 #. Resource IDs: (138)
 msgid "grepWin Settings"
 msgstr "grepWin Einstellungen"
+
+#. Resource IDs: (157)
+msgid "hold down the shift key to find files that DO NOT contain the search string"
+msgstr "Halten Sie die Umschalttaste gedrückt beim Klick um Dateien zu finden welche den Suchstring NICHT enthalten"
 
 #. Resource IDs: (132)
 msgid "invalid regex!"
