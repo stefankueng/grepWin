@@ -123,6 +123,10 @@ msgstr "复制文本结果到剪贴板"
 msgid "Create backup files"
 msgstr "创建备份文件"
 
+#. Resource IDs: (1077)
+msgid "Create backup files in a separate folder"
+msgstr ""
+
 #. Resource IDs: (139)
 msgid "Date modified"
 msgstr "修改日期"
@@ -174,6 +178,10 @@ msgstr "文件"
 #. Resource IDs: (109)
 msgid "GREPWIN"
 msgstr "GREPWIN"
+
+#. Resource IDs: (156)
+msgid "If enabled, a backup folder is created inside the folder that's searched/replaced in, and the files are backed up into that folder"
+msgstr ""
 
 #. Resource IDs: (1050)
 msgid "Include binary files"
@@ -432,6 +440,10 @@ msgstr "grepWin"
 #. Resource IDs: (138)
 msgid "grepWin Settings"
 msgstr "grepWin设置"
+
+#. Resource IDs: (157)
+msgid "hold down the shift key to find files that DO NOT contain the search string"
+msgstr ""
 
 #. Resource IDs: (132)
 msgid "invalid regex!"
