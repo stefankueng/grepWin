@@ -393,10 +393,34 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 
             WINDOWPLACEMENT wpl = {0};
             DWORD size = sizeof(wpl);
-            if (SHGetValue(HKEY_CURRENT_USER, _T("Software\\grepWin"), _T("windowpos"), REG_NONE, &wpl, &size) == ERROR_SUCCESS)
-                SetWindowPlacement(*this, &wpl);
+            if (bPortable)
+            {
+                std::wstring sPos = g_iniFile.GetValue(L"global", L"windowpos", L"");
+
+                if (!sPos.empty())
+                {
+                    auto read = swscanf_s(sPos.c_str(), L"%d;%d;%d;%d;%d;%d;%d;%d;%d;%d",
+                                          &wpl.flags, &wpl.showCmd,
+                                          &wpl.ptMinPosition.x, &wpl.ptMinPosition.y,
+                                          &wpl.ptMaxPosition.x, &wpl.ptMaxPosition.y,
+                                          &wpl.rcNormalPosition.left, &wpl.rcNormalPosition.top,
+                                          &wpl.rcNormalPosition.right, &wpl.rcNormalPosition.bottom);
+                    wpl.length = sizeof(wpl);
+                    if (read == 10)
+                        SetWindowPlacement(*this, &wpl);
+                    else
+                        ShowWindow(*this, SW_SHOW);
+                }
+                else
+                    ShowWindow(*this, SW_SHOW);
+            }
             else
-                ShowWindow(*this, SW_SHOW);
+            {
+                if (SHGetValue(HKEY_CURRENT_USER, _T("Software\\grepWin"), _T("windowpos"), REG_NONE, &wpl, &size) == ERROR_SUCCESS)
+                    SetWindowPlacement(*this, &wpl);
+                else
+                    ShowWindow(*this, SW_SHOW);
+            }
 
             ExtendFrameIntoClientArea(0, IDC_GROUPSEARCHIN, 0, 0);
             m_aerocontrols.SubclassControl(GetDlgItem(*this, IDC_ABOUTLINK));
@@ -1056,7 +1080,19 @@ void CSearchDlg::SaveWndPosition()
     WINDOWPLACEMENT wpl = {0};
     wpl.length = sizeof(WINDOWPLACEMENT);
     GetWindowPlacement(*this, &wpl);
-    SHSetValue(HKEY_CURRENT_USER, _T("Software\\grepWin"), _T("windowpos"), REG_NONE, &wpl, sizeof(wpl));
+    if (bPortable)
+    {
+        auto sPos = CStringUtils::Format(L"%d;%d;%d;%d;%d;%d;%d;%d;%d;%d",
+                                         wpl.flags, wpl.showCmd,
+                                         wpl.ptMinPosition.x, wpl.ptMinPosition.y,
+                                         wpl.ptMaxPosition.x, wpl.ptMaxPosition.y,
+                                         wpl.rcNormalPosition.left, wpl.rcNormalPosition.top, wpl.rcNormalPosition.right, wpl.rcNormalPosition.bottom);
+        g_iniFile.SetValue(L"global", L"windowpos", sPos.c_str());
+    }
+    else
+    {
+        SHSetValue(HKEY_CURRENT_USER, _T("Software\\grepWin"), _T("windowpos"), REG_NONE, &wpl, sizeof(wpl));
+    }
 }
 
 void CSearchDlg::UpdateInfoLabel( bool withCurrentFile )
