@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2016 - Stefan Kueng
+// Copyright (C) 2007-2017 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -68,6 +68,7 @@ public:
     void                    SetCaseSensitive(bool bSet) {m_bCaseSensitiveC = true; m_bCaseSensitive = bSet;}
     void                    SetMatchesNewline(bool bSet) {m_bDotMatchesNewlineC = true; m_bDotMatchesNewline = bSet;}
     void                    SetCreateBackups(bool bSet) { m_bCreateBackupC = true; m_bCreateBackup = bSet; m_bConfirmationOnReplace = false; }
+    void                    SetCreateBackupsInFolders(bool bSet) { m_bCreateBackupInFoldersC = true; m_bCreateBackupInFolders = bSet; SetCreateBackups(bSet); }
     void                    SetUTF8(bool bSet) {m_bUTF8C = true;m_bUTF8 = bSet;}
     void                    SetSize(DWORD size, int cmp) {m_bSizeC = true; m_lSize = size; m_sizeCmp = cmp; m_bAllSize = (size == (DWORD)-1);}
     void                    SetIncludeSystem(bool bSet) {m_bIncludeSystemC = true; m_bIncludeSystem = bSet;}
@@ -82,7 +83,7 @@ protected:
     LRESULT                 DoCommand(int id, int msg);
     bool                    PreTranslateMessage(MSG* pMsg);
 
-    int                     SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bIncludeBinary, bool bUseRegex, bool bCaseSensitive, bool bDotMatchesNewline, const std::wstring& searchString, const std::wstring& searchStringUtf16le);
+    int                     SearchFile(CSearchInfo& sinfo, const std::wstring& searchRoot, bool bSearchAlways, bool bIncludeBinary, bool bUseRegex, bool bCaseSensitive, bool bDotMatchesNewline, const std::wstring& searchString, const std::wstring& searchStringUtf16le);
 
     bool                    InitResultList();
     void                    FillResultList();
@@ -141,6 +142,8 @@ private:
     bool                    m_bIncludeBinaryC;
     bool                    m_bCreateBackup;
     bool                    m_bCreateBackupC;
+    bool                    m_bCreateBackupInFolders;
+    bool                    m_bCreateBackupInFoldersC;
     bool                    m_bUTF8;
     bool                    m_bUTF8C;
     bool                    m_bCaseSensitive;
@@ -202,4 +205,5 @@ private:
     CRegStdString           m_regSearchPath;
     CRegStdDWORD            m_regOnlyOne;
     CRegStdString           m_regEditorCmd;
+    CRegStdDWORD            m_regBackupInFolder;
 };

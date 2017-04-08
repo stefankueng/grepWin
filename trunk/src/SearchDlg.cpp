@@ -41,6 +41,7 @@
 #include "SysInfo.h"
 #include "Language.h"
 #include "SmartHandle.h"
+#include "PathUtils.h"
 
 #include <string>
 #include <map>
@@ -118,6 +119,7 @@ CSearchDlg::CSearchDlg(HWND hParent)
     , m_regSearchPath(_T("Software\\grepWin\\searchpath"))
     , m_regOnlyOne(_T("Software\\grepWin\\onlyone"), 0)
     , m_regEditorCmd(_T("Software\\grepWin\\editorcmd"))
+    , m_regBackupInFolder(L"Software\\grepWin\\backupinfolder", FALSE)
     , m_AutoCompleteFilePatterns(bPortable ? &g_iniFile : NULL)
     , m_AutoCompleteExcludeDirsPatterns(bPortable ? &g_iniFile : NULL)
     , m_AutoCompleteSearchPatterns(bPortable ? &g_iniFile : NULL)
@@ -945,6 +947,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
         {
             CSettingsDlg dlgSettings(*this);
             dlgSettings.DoModal(hResource, IDD_SETTINGS, *this);
+            m_regBackupInFolder.read();
         }
         break;
     case IDC_EDITMULTILINE1:
@@ -2250,11 +2253,15 @@ DWORD CSearchDlg::SearchThread()
             if (searchpath[searchpath.length() - 1] == ':')
                 searchpath += L"\\";
         }
+        std::wstring searchRoot = searchpath;
         if (!searchpath.empty())
         {
             bool bAlwaysSearch = false;
             if (!PathIsDirectory(searchpath.c_str()))
+            {
                 bAlwaysSearch = true;
+                searchRoot = searchRoot.substr(0, searchRoot.find_last_of('\\'));
+            }
             bool bIsDirectory = false;
             CDirFileEnum fileEnumerator(searchpath.c_str());
             bool bRecurse = m_bIncludeSubfolders;
@@ -2325,7 +2332,7 @@ DWORD CSearchDlg::SearchThread()
                         }
                         else
                         {
-                            nFound = SearchFile(sinfo, bAlwaysSearch, m_bIncludeBinary, m_bUseRegex, m_bCaseSensitive, m_bDotMatchesNewline, m_searchString, SearchStringutf16);
+                            nFound = SearchFile(sinfo, searchRoot, bAlwaysSearch, m_bIncludeBinary, m_bUseRegex, m_bCaseSensitive, m_bDotMatchesNewline, m_searchString, SearchStringutf16);
                             if (nFound >= 0)
                                 SendMessage(*this, SEARCH_FOUND, nFound, (LPARAM)&sinfo);
                         }
@@ -2418,7 +2425,7 @@ bool CSearchDlg::MatchPath(LPCTSTR pathbuf)
     return bPattern;
 }
 
-int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bIncludeBinary, bool bUseRegex, bool bCaseSensitive, bool bDotMatchesNewline, const std::wstring& searchString, const std::wstring& searchStringUtf16le)
+int CSearchDlg::SearchFile(CSearchInfo& sinfo, const std::wstring& searchRoot, bool bSearchAlways, bool bIncludeBinary, bool bUseRegex, bool bCaseSensitive, bool bDotMatchesNewline, const std::wstring& searchString, const std::wstring& searchStringUtf16le)
 {
     int nFound = 0;
     // we keep it simple:
@@ -2564,6 +2571,14 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
                     if (m_bCreateBackup)
                     {
                         std::wstring backupfile = sinfo.filepath + _T(".bak");
+                        if (DWORD(m_regBackupInFolder))
+                        {
+                            std::wstring backupFolder = searchRoot + L"\\grepWin_backup\\";
+                            backupFolder += sinfo.filepath.substr(searchRoot.size() + 1);
+                            backupFolder = CPathUtils::GetParentDirectory(backupFolder);
+                            CPathUtils::CreateRecursiveDirectory(backupFolder);
+                            backupfile = backupFolder + L"\\" + CPathUtils::GetFileName(sinfo.filepath);
+                        }
                         CopyFile(sinfo.filepath.c_str(), backupfile.c_str(), FALSE);
                         m_backupandtempfiles.insert(backupfile);
                     }
@@ -2753,6 +2768,14 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, bool bSearchAlways, bool bInclude
                         std::wstring backupfile = sinfo.filepath + _T(".bak");
                         if (m_bCreateBackup)
                         {
+                            if (DWORD(m_regBackupInFolder))
+                            {
+                                std::wstring backupFolder = searchRoot + L"\\grepWin_backup\\";
+                                backupFolder += sinfo.filepath.substr(searchRoot.size() + 1);
+                                backupFolder = CPathUtils::GetParentDirectory(backupFolder);
+                                CPathUtils::CreateRecursiveDirectory(backupFolder);
+                                backupfile = backupFolder + L"\\" + CPathUtils::GetFileName(sinfo.filepath);
+                            }
                             CopyFile(sinfo.filepath.c_str(), backupfile.c_str(), FALSE);
                             m_backupandtempfiles.insert(backupfile);
                         }
