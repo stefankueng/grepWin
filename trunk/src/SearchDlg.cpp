@@ -1022,24 +1022,21 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
         break;
     case IDC_PATHMRU:
         {
-            if (m_AutoCompleteSearchPaths.GetOptions() & ACO_NOPREFIXFILTERING)
-                m_AutoCompleteSearchPaths.SetOptions(ACO_UPDOWNKEYDROPSLIST|ACO_AUTOSUGGEST|ACO_NOPREFIXFILTERING);
+            m_AutoCompleteSearchPaths.SetOptions(ACO_UPDOWNKEYDROPSLIST | ACO_AUTOSUGGEST | ACO_NOPREFIXFILTERING);
             ::SetFocus(GetDlgItem(*this, IDC_SEARCHPATH));
             SendDlgItemMessage(*this, IDC_SEARCHPATH, WM_KEYDOWN, VK_DOWN, 0);
         }
         break;
     case IDC_EXCLUDEDIRMRU:
         {
-            if (m_AutoCompleteSearchPatterns.GetOptions() & ACO_NOPREFIXFILTERING)
-                m_AutoCompleteExcludeDirsPatterns.SetOptions(ACO_UPDOWNKEYDROPSLIST|ACO_AUTOSUGGEST|ACO_NOPREFIXFILTERING);
+            m_AutoCompleteExcludeDirsPatterns.SetOptions(ACO_UPDOWNKEYDROPSLIST|ACO_AUTOSUGGEST|ACO_NOPREFIXFILTERING);
             ::SetFocus(GetDlgItem(*this, IDC_EXCLUDEDIRSPATTERN));
             SendDlgItemMessage(*this, IDC_EXCLUDEDIRSPATTERN, WM_KEYDOWN, VK_DOWN, 0);
         }
         break;
     case IDC_PATTERNMRU:
         {
-            if (m_AutoCompleteFilePatterns.GetOptions() & ACO_NOPREFIXFILTERING)
-                m_AutoCompleteFilePatterns.SetOptions(ACO_UPDOWNKEYDROPSLIST|ACO_AUTOSUGGEST|ACO_NOPREFIXFILTERING);
+            m_AutoCompleteFilePatterns.SetOptions(ACO_UPDOWNKEYDROPSLIST|ACO_AUTOSUGGEST|ACO_NOPREFIXFILTERING);
             ::SetFocus(GetDlgItem(*this, IDC_PATTERN));
             SendDlgItemMessage(*this, IDC_PATTERN, WM_KEYDOWN, VK_DOWN, 0);
         }
