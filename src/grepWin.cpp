@@ -63,19 +63,19 @@ static void RegisterContextMenu(bool bAdd)
     {
         std::wstring sIconPath = CStringUtils::Format(L"%s,-%d", CPathUtils::GetLongPathname(CPathUtils::GetModulePath()).c_str(), IDI_GREPWIN);
         std::wstring sExePath = CStringUtils::Format(L"%s /searchpath:\"%%1\"", CPathUtils::GetLongPathname(CPathUtils::GetModulePath()).c_str());
-        SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\Directory\\shell\\grepWin", NULL, REG_SZ, L"grepWin...", sizeof(L"grepWin...") + 2);
+        SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\Directory\\shell\\grepWin", NULL, REG_SZ, L"search with grepWin", sizeof(L"search with grepWin") + 2);
         SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\Directory\\shell\\grepWin", L"Icon", REG_SZ, sIconPath.c_str(), DWORD((sIconPath.size() + 1) * sizeof(WCHAR)));
         SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\Directory\\shell\\grepWin\\Command", NULL, REG_SZ, sExePath.c_str(), DWORD((sExePath.size() + 1) * sizeof(WCHAR)));
-        SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\Directory\\Background\\shell\\grepWin", NULL, REG_SZ, L"grepWin...", sizeof(L"grepWin...") + 2);
+        SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\Directory\\Background\\shell\\grepWin", NULL, REG_SZ, L"search with grepWin", sizeof(L"search with grepWin") + 2);
         SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\Directory\\Background\\shell\\grepWin", L"Icon", REG_SZ, sIconPath.c_str(), DWORD((sIconPath.size() + 1) * sizeof(WCHAR)));
 
-        SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\Folder\\shell\\grepWin", NULL, REG_SZ, L"grepWin...", sizeof(L"grepWin...") + 2);
+        SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\Folder\\shell\\grepWin", NULL, REG_SZ, L"search with grepWin", sizeof(L"search with grepWin") + 2);
         SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\Folder\\shell\\grepWin", L"Icon", REG_SZ, sIconPath.c_str(), DWORD((sIconPath.size() + 1) * sizeof(WCHAR)));
         SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\Folder\\shell\\grepWin\\Command", NULL, REG_SZ, sExePath.c_str(), DWORD((sExePath.size() + 1) * sizeof(WCHAR)));
-        SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\Drive\\shell\\grepWin", NULL, REG_SZ, L"grepWin...", sizeof(L"grepWin...") + 2);
+        SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\Drive\\shell\\grepWin", NULL, REG_SZ, L"search with grepWin", sizeof(L"search with grepWin") + 2);
         SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\Drive\\shell\\grepWin", L"Icon", REG_SZ, sIconPath.c_str(), DWORD((sIconPath.size() + 1) * sizeof(WCHAR)));
         SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\Drive\\shell\\grepWin\\Command", NULL, REG_SZ, sExePath.c_str(), DWORD((sExePath.size() + 1) * sizeof(WCHAR)));
-        SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\*\\shell\\grepWin", NULL, REG_SZ, L"grepWin...", sizeof(L"grepWin...") + 2);
+        SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\*\\shell\\grepWin", NULL, REG_SZ, L"search with grepWin", sizeof(L"search with grepWin") + 2);
         SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\*\\shell\\grepWin", L"Icon", REG_SZ, sIconPath.c_str(), DWORD((sIconPath.size() + 1) * sizeof(WCHAR)));
         SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\*\\shell\\grepWin\\Command", NULL, REG_SZ, sExePath.c_str(), DWORD((sExePath.size() + 1) * sizeof(WCHAR)));
         SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\*\\shell\\grepWin", L"MultiSelectModel", REG_SZ, L"Player", sizeof(L"Player") + 2);
