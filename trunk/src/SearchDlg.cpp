@@ -127,6 +127,7 @@ CSearchDlg::CSearchDlg(HWND hParent)
     , m_AutoCompleteReplacePatterns(bPortable ? &g_iniFile : NULL)
     , m_AutoCompleteSearchPaths(bPortable ? &g_iniFile : NULL)
     , m_pBookmarksDlg(nullptr)
+    , m_showContent(false)
 {
 }
 
@@ -325,7 +326,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             DialogEnableWindow(IDC_EXCLUDEDIRSPATTERN, !!m_bIncludeSubfolders);
 
             ::SetDlgItemText(*this, IDOK, TranslatedString(hResource, IDS_SEARCH).c_str());
-            CheckRadioButton(*this, IDC_RESULTFILES, IDC_RESULTCONTENT, IDC_RESULTFILES);
+            CheckRadioButton(*this, IDC_RESULTFILES, IDC_RESULTCONTENT, m_showContent ? IDC_RESULTCONTENT : IDC_RESULTFILES);
 
             SetFocus(GetDlgItem(hwndDlg, IDC_SEARCHTEXT));
 

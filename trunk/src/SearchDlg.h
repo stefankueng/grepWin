@@ -78,6 +78,7 @@ public:
 
     void                    SetExecute(ExecuteAction execute) {m_ExecuteImmediately = execute;}
     void                    SetEndDialog() { m_endDialog = true; }
+    void                    SetShowContent() { m_showContent = true; }
 protected:
     LRESULT CALLBACK        DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
     LRESULT                 DoCommand(int id, int msg);
@@ -157,6 +158,7 @@ private:
 
     bool                    m_bReplace;
     bool                    m_bConfirmationOnReplace;
+    bool                    m_showContent;
     HANDLE                  m_hSearchThread;
 
     std::vector<CSearchInfo> m_items;
