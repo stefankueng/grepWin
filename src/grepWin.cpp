@@ -284,6 +284,8 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
                 searchDlg.SetExecute(ExecuteAction::Replace);
             if (parser.HasKey(L"closedialog"))
                 searchDlg.SetEndDialog();
+            if (parser.HasKey(L"content"))
+                searchDlg.SetShowContent();
 
             ret = (int)searchDlg.DoModal(hInstance, IDD_SEARCHDLG, NULL, IDR_SEARCHDLG);
         }
