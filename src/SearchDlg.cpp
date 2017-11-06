@@ -1542,6 +1542,9 @@ bool CSearchDlg::PreTranslateMessage(MSG* pMsg)
     if (pMsg->message == WM_KEYDOWN)
     {
         HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
+        auto bCtrl = (GetKeyState(VK_CONTROL) & 0x8000) != 0;
+        auto bShift = (GetKeyState(VK_SHIFT) & 0x8000) != 0;
+        auto bAlt = (GetKeyState(VK_MENU) & 0x8000) != 0;
         switch (pMsg->wParam)
         {
         case VK_RETURN:
@@ -1562,7 +1565,7 @@ bool CSearchDlg::PreTranslateMessage(MSG* pMsg)
             break;
         case 'A':
             {
-                if ((GetFocus() == hListControl)&&(GetKeyState(VK_CONTROL)&0x8000))
+                if ((GetFocus() == hListControl) && bCtrl && !bShift && !bAlt)
                 {
                     // select all entries
                     int nCount = ListView_GetItemCount(hListControl);
@@ -1576,7 +1579,7 @@ bool CSearchDlg::PreTranslateMessage(MSG* pMsg)
             break;
         case 'C':
             {
-                if ((GetFocus() == hListControl)&&(GetKeyState(VK_CONTROL)&0x8000))
+                if ((GetFocus() == hListControl) && bCtrl && !bShift && !bAlt)
                 {
                     // copy all selected entries to the clipboard
                     std::wstring clipBoardText;
@@ -1625,7 +1628,7 @@ bool CSearchDlg::PreTranslateMessage(MSG* pMsg)
         case 'F':
         case 'E':
             {
-                if (GetKeyState(VK_CONTROL)&0x8000)
+                if (bCtrl && !bShift && !bAlt)
                 {
                     SetFocus(GetDlgItem(*this, IDC_SEARCHTEXT));
                 }
@@ -1633,7 +1636,7 @@ bool CSearchDlg::PreTranslateMessage(MSG* pMsg)
             break;
         case 'L':
             {
-                if (GetKeyState(VK_CONTROL)&0x8000)
+                if (bCtrl && !bShift && !bAlt)
                 {
                     SetFocus(GetDlgItem(*this, IDC_PATTERN));
                 }
