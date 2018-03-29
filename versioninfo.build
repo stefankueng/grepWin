@@ -3,7 +3,7 @@
 
     <target name="versioninfo">
 
-        <exec program="SubWCRev.exe">
+        <exec program="GitWCRev.exe">
             <arg value="." />
             <arg value="version.build.in" />
             <arg value="version.build" />

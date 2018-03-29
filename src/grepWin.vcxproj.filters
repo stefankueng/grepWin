@@ -289,6 +289,12 @@
     <None Include="Setup\Setup64_user.wxs">
       <Filter>Scripts</Filter>
     </None>
+    <None Include="Setup\VersionNumberInclude.in.wxi">
+      <Filter>Scripts</Filter>
+    </None>
+    <None Include="version.in">
+      <Filter>Header Files</Filter>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

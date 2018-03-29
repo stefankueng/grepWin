@@ -13,7 +13,7 @@
 
     <Package Id="*" Keywords="Installer"
           Description="Stefans grepWin"
-          Comments="http://stefanstools.sourceforge.net" Manufacturer="Stefans Tools"
+          Comments="http://tools.stefankueng.com" Manufacturer="Stefans Tools"
           InstallerVersion="200" Languages="1033" Compressed="yes" SummaryCodepage="1252"
           InstallScope="perUser" InstallPrivileges="limited" />
 

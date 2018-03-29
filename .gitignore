@@ -1,0 +1,9 @@
+/default.build.user
+/obj
+/bin
+/.vs
+/packages
+/src/grepWin.vcxproj.user
+/src/version.h
+/version.build
+/signinfo.txt

@@ -1,0 +1,3 @@
+[submodule "sktoolslib"]
+	path = sktoolslib
+	url = https://github.com/stefankueng/sktoolslib.git
