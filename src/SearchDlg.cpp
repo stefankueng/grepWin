@@ -1665,7 +1665,6 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
     {
         if (lpNMItemActivate->iItem >= 0)
         {
-            bool retflag;
             OpenFileAtListIndex(lpNMItemActivate->iItem);
         }
     }
