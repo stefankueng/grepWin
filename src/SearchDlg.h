@@ -91,6 +91,7 @@ protected:
     bool                    AddFoundEntry(CSearchInfo * pInfo, int index, bool bOnlyListControl = false);
     void                    ShowContextMenu(int x, int y);
     void                    DoListNotify(LPNMITEMACTIVATE lpNMItemActivate);
+    void                    OpenFileAtListIndex(int listIndex);
     void                    UpdateInfoLabel(bool withCurrentFile);
     bool                    SaveSettings();
     void                    SaveWndPosition();

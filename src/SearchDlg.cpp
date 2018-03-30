@@ -1642,6 +1642,18 @@ bool CSearchDlg::PreTranslateMessage(MSG* pMsg)
                 }
             }
             break;
+        case 'O':
+            {
+                int iItem = -1;
+                while ((iItem = ListView_GetNextItem(hListControl, iItem, LVNI_SELECTED)) != (-1))
+                {
+                    int selIndex = GetSelectedListIndex(iItem);
+                    if ((selIndex < 0) || (selIndex >= (int)m_items.size()))
+                        continue;
+                    OpenFileAtListIndex(selIndex);
+                }
+            }
+            break;
         }
     }
     return false;
@@ -1653,182 +1665,8 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
     {
         if (lpNMItemActivate->iItem >= 0)
         {
-            int iItem = GetSelectedListIndex(lpNMItemActivate->iItem);
-            CSearchInfo inf = m_items[iItem];
-            size_t dotPos = inf.filepath.rfind('.');
-            std::wstring ext;
-            if (dotPos != std::wstring::npos)
-                ext = inf.filepath.substr(dotPos);
-
-            CRegStdString regEditorCmd(L"Software\\grepWin\\editorcmd");
-            std::wstring cmd = regEditorCmd;
-            if (bPortable)
-                cmd = g_iniFile.GetValue(L"global", L"editorcmd", L"");
-            if (!cmd.empty())
-            {
-                bool filelist = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
-                if (!filelist)
-                {
-                    HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
-                    TCHAR textlinebuf[MAX_PATH] = {0};
-                    LVITEM lv = {0};
-                    lv.iItem = lpNMItemActivate->iItem;
-                    lv.iSubItem = 1;    // line number
-                    lv.mask = LVIF_TEXT;
-                    lv.pszText = textlinebuf;
-                    lv.cchTextMax = _countof(textlinebuf);
-                    if (ListView_GetItem(hListControl, &lv))
-                    {
-                        SearchReplace(cmd, L"%line%", textlinebuf);
-                    }
-                }
-                else
-                {
-                    // use the first matching line in this file
-                    if (!inf.matchlinesnumbers.empty())
-                        SearchReplace(cmd, L"%line%", CStringUtils::Format(L"%Id", inf.matchlinesnumbers[0]));
-                    else
-                        SearchReplace(cmd, L"%line%", L"0");
-                }
-
-                SearchReplace(cmd, L"%path%", inf.filepath.c_str());
-
-                STARTUPINFO startupInfo;
-                PROCESS_INFORMATION processInfo;
-                SecureZeroMemory(&startupInfo, sizeof(startupInfo));
-                startupInfo.cb = sizeof(STARTUPINFO);
-                SecureZeroMemory(&processInfo, sizeof(processInfo));
-                CreateProcess(NULL, const_cast<TCHAR*>(cmd.c_str()), NULL, NULL, FALSE, 0, 0, NULL, &startupInfo, &processInfo);
-                CloseHandle(processInfo.hThread);
-                CloseHandle(processInfo.hProcess);
-                return;
-            }
-
-            DWORD buflen = 0;
-            AssocQueryString(ASSOCF_INIT_DEFAULTTOSTAR, ASSOCSTR_DDECOMMAND, ext.c_str(), NULL, NULL, &buflen);
-            if (buflen)
-            {
-                // application requires DDE to open the file:
-                // since we can't do this the easy way with CreateProcess, we use ShellExecute instead
-                ShellExecute(*this, NULL, inf.filepath.c_str(), NULL, NULL, SW_SHOW);
-                return;
-            }
-
-            AssocQueryString(ASSOCF_INIT_DEFAULTTOSTAR, ASSOCSTR_COMMAND, ext.c_str(), NULL, NULL, &buflen);
-            std::unique_ptr<TCHAR[]> cmdbuf(new TCHAR[buflen + 1]);
-            AssocQueryString(ASSOCF_INIT_DEFAULTTOSTAR, ASSOCSTR_COMMAND, ext.c_str(), NULL, cmdbuf.get(), &buflen);
-            std::wstring application = cmdbuf.get();
-            // normalize application path
-            DWORD len = ExpandEnvironmentStrings (application.c_str(), NULL, 0);
-            cmdbuf = std::unique_ptr<TCHAR[]>(new TCHAR[len+1]);
-            ExpandEnvironmentStrings (application.c_str(), cmdbuf.get(), len);
-            application = cmdbuf.get();
-
-            // resolve parameters
-            if (application.find(_T("%1")) == std::wstring::npos)
-                application += _T(" %1");
-
-
-            bool filelist = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
-            std::wstring linenumberparam_before;
-            std::wstring linenumberparam;
-            TCHAR textlinebuf[MAX_PATH] = { 0 };
-            if (!filelist)
-            {
-                HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
-                LVITEM lv = { 0 };
-                lv.iItem = lpNMItemActivate->iItem;
-                lv.iSubItem = 1;    // line number
-                lv.mask = LVIF_TEXT;
-                lv.pszText = textlinebuf;
-                lv.cchTextMax = _countof(textlinebuf);
-                if (!ListView_GetItem(hListControl, &lv))
-                {
-                    textlinebuf[0] = '\0';
-                }
-            }
-            else if (!inf.matchlinesnumbers.empty())
-            {
-                // use the first matching line in this file
-                swprintf_s(textlinebuf, L"%ld", inf.matchlinesnumbers[0]);
-            }
-            std::wstring appname = application;
-            std::transform(appname.begin(), appname.end(), appname.begin(), ::towlower);
-
-            // now find out if the application which opens the file is known to us
-            // and if it has a 'linenumber' switch to jump directly to a specific
-            // line number.
-            if (appname.find(_T("notepad++.exe")) != std::wstring::npos)
-            {
-                // notepad++
-                linenumberparam = CStringUtils::Format(L"-n%s", textlinebuf);
-            }
-            else if (appname.find(_T("xemacs.exe")) != std::wstring::npos)
-            {
-                // XEmacs
-                linenumberparam = CStringUtils::Format(L"+%s", textlinebuf);
-            }
-            else if (appname.find(_T("uedit32.exe")) != std::wstring::npos)
-            {
-                // UltraEdit
-                linenumberparam = CStringUtils::Format(L"-l%s", textlinebuf);
-            }
-            else if (appname.find(_T("codewright.exe")) != std::wstring::npos)
-            {
-                // CodeWright
-                linenumberparam = CStringUtils::Format(L"-G%s", textlinebuf);
-            }
-            else if (appname.find(_T("notepad2.exe")) != std::wstring::npos)
-            {
-                // Notepad2
-                linenumberparam = CStringUtils::Format(L"/g %s", textlinebuf);
-            }
-            else if ((appname.find(_T("bowpad.exe")) != std::wstring::npos) || (appname.find(_T("bowpad64.exe")) != std::wstring::npos))
-            {
-                // BowPad
-                linenumberparam = CStringUtils::Format(L"/line:%s", textlinebuf);
-            }
-
-            // replace "%1" with %1
-            std::wstring tag = _T("\"%1\"");
-            std::wstring repl = _T("%1");
-            std::wstring::iterator it_begin = search(application.begin(), application.end(), tag.begin(), tag.end());
-            if (it_begin != application.end())
-            {
-                std::wstring::iterator it_end= it_begin + tag.size();
-                application.replace(it_begin, it_end, repl);
-            }
-            // replace %1 with "path/of/selected/file"
-            tag = _T("%1");
-            if (application.find(L"rundll32.exe") == std::wstring::npos)
-                repl = _T("\"") + inf.filepath + _T("\"");
-            else
-                repl = inf.filepath;
-            if (!linenumberparam_before.empty())
-            {
-                repl = linenumberparam_before + L" " + repl;
-            }
-            it_begin = search(application.begin(), application.end(), tag.begin(), tag.end());
-            if (it_begin != application.end())
-            {
-                std::wstring::iterator it_end= it_begin + tag.size();
-                application.replace(it_begin, it_end, repl);
-            }
-            if (!linenumberparam.empty())
-            {
-                application += _T(" ");
-                application += linenumberparam;
-            }
-
-            STARTUPINFO startupInfo;
-            PROCESS_INFORMATION processInfo;
-            SecureZeroMemory(&startupInfo, sizeof(startupInfo));
-            startupInfo.cb = sizeof(STARTUPINFO);
-
-            SecureZeroMemory(&processInfo, sizeof(processInfo));
-            CreateProcess(NULL, const_cast<TCHAR*>(application.c_str()), NULL, NULL, FALSE, 0, 0, NULL, &startupInfo, &processInfo);
-            CloseHandle(processInfo.hThread);
-            CloseHandle(processInfo.hProcess);
+            bool retflag;
+            OpenFileAtListIndex(lpNMItemActivate->iItem);
         }
     }
     if (lpNMItemActivate->hdr.code == LVN_BEGINDRAG)
@@ -1966,6 +1804,186 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
             lstrcpyn(pInfoTip->pszText, matchString.c_str(), pInfoTip->cchTextMax);
         }
     }
+}
+
+void CSearchDlg::OpenFileAtListIndex(int listIndex)
+{
+    int iItem = GetSelectedListIndex(listIndex);
+    CSearchInfo inf = m_items[iItem];
+    size_t dotPos = inf.filepath.rfind('.');
+    std::wstring ext;
+    if (dotPos != std::wstring::npos)
+        ext = inf.filepath.substr(dotPos);
+
+    CRegStdString regEditorCmd(L"Software\\grepWin\\editorcmd");
+    std::wstring cmd = regEditorCmd;
+    if (bPortable)
+        cmd = g_iniFile.GetValue(L"global", L"editorcmd", L"");
+    if (!cmd.empty())
+    {
+        bool filelist = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
+        if (!filelist)
+        {
+            HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
+            TCHAR textlinebuf[MAX_PATH] = { 0 };
+            LVITEM lv = { 0 };
+            lv.iItem = listIndex;
+            lv.iSubItem = 1;    // line number
+            lv.mask = LVIF_TEXT;
+            lv.pszText = textlinebuf;
+            lv.cchTextMax = _countof(textlinebuf);
+            if (ListView_GetItem(hListControl, &lv))
+            {
+                SearchReplace(cmd, L"%line%", textlinebuf);
+            }
+        }
+        else
+        {
+            // use the first matching line in this file
+            if (!inf.matchlinesnumbers.empty())
+                SearchReplace(cmd, L"%line%", CStringUtils::Format(L"%Id", inf.matchlinesnumbers[0]));
+            else
+                SearchReplace(cmd, L"%line%", L"0");
+        }
+
+        SearchReplace(cmd, L"%path%", inf.filepath.c_str());
+
+        STARTUPINFO startupInfo;
+        PROCESS_INFORMATION processInfo;
+        SecureZeroMemory(&startupInfo, sizeof(startupInfo));
+        startupInfo.cb = sizeof(STARTUPINFO);
+        SecureZeroMemory(&processInfo, sizeof(processInfo));
+        CreateProcess(NULL, const_cast<TCHAR*>(cmd.c_str()), NULL, NULL, FALSE, 0, 0, NULL, &startupInfo, &processInfo);
+        CloseHandle(processInfo.hThread);
+        CloseHandle(processInfo.hProcess);
+        return;
+    }
+
+    DWORD buflen = 0;
+    AssocQueryString(ASSOCF_INIT_DEFAULTTOSTAR, ASSOCSTR_DDECOMMAND, ext.c_str(), NULL, NULL, &buflen);
+    if (buflen)
+    {
+        // application requires DDE to open the file:
+        // since we can't do this the easy way with CreateProcess, we use ShellExecute instead
+        ShellExecute(*this, NULL, inf.filepath.c_str(), NULL, NULL, SW_SHOW);
+        return;
+    }
+
+    AssocQueryString(ASSOCF_INIT_DEFAULTTOSTAR, ASSOCSTR_COMMAND, ext.c_str(), NULL, NULL, &buflen);
+    std::unique_ptr<TCHAR[]> cmdbuf(new TCHAR[buflen + 1]);
+    AssocQueryString(ASSOCF_INIT_DEFAULTTOSTAR, ASSOCSTR_COMMAND, ext.c_str(), NULL, cmdbuf.get(), &buflen);
+    std::wstring application = cmdbuf.get();
+    // normalize application path
+    DWORD len = ExpandEnvironmentStrings(application.c_str(), NULL, 0);
+    cmdbuf = std::unique_ptr<TCHAR[]>(new TCHAR[len + 1]);
+    ExpandEnvironmentStrings(application.c_str(), cmdbuf.get(), len);
+    application = cmdbuf.get();
+
+    // resolve parameters
+    if (application.find(_T("%1")) == std::wstring::npos)
+        application += _T(" %1");
+
+
+    bool filelist = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
+    std::wstring linenumberparam_before;
+    std::wstring linenumberparam;
+    TCHAR textlinebuf[MAX_PATH] = { 0 };
+    if (!filelist)
+    {
+        HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
+        LVITEM lv = { 0 };
+        lv.iItem = listIndex;
+        lv.iSubItem = 1;    // line number
+        lv.mask = LVIF_TEXT;
+        lv.pszText = textlinebuf;
+        lv.cchTextMax = _countof(textlinebuf);
+        if (!ListView_GetItem(hListControl, &lv))
+        {
+            textlinebuf[0] = '\0';
+        }
+    }
+    else if (!inf.matchlinesnumbers.empty())
+    {
+        // use the first matching line in this file
+        swprintf_s(textlinebuf, L"%ld", inf.matchlinesnumbers[0]);
+    }
+    std::wstring appname = application;
+    std::transform(appname.begin(), appname.end(), appname.begin(), ::towlower);
+
+    // now find out if the application which opens the file is known to us
+    // and if it has a 'linenumber' switch to jump directly to a specific
+    // line number.
+    if (appname.find(_T("notepad++.exe")) != std::wstring::npos)
+    {
+        // notepad++
+        linenumberparam = CStringUtils::Format(L"-n%s", textlinebuf);
+    }
+    else if (appname.find(_T("xemacs.exe")) != std::wstring::npos)
+    {
+        // XEmacs
+        linenumberparam = CStringUtils::Format(L"+%s", textlinebuf);
+    }
+    else if (appname.find(_T("uedit32.exe")) != std::wstring::npos)
+    {
+        // UltraEdit
+        linenumberparam = CStringUtils::Format(L"-l%s", textlinebuf);
+    }
+    else if (appname.find(_T("codewright.exe")) != std::wstring::npos)
+    {
+        // CodeWright
+        linenumberparam = CStringUtils::Format(L"-G%s", textlinebuf);
+    }
+    else if (appname.find(_T("notepad2.exe")) != std::wstring::npos)
+    {
+        // Notepad2
+        linenumberparam = CStringUtils::Format(L"/g %s", textlinebuf);
+    }
+    else if ((appname.find(_T("bowpad.exe")) != std::wstring::npos) || (appname.find(_T("bowpad64.exe")) != std::wstring::npos))
+    {
+        // BowPad
+        linenumberparam = CStringUtils::Format(L"/line:%s", textlinebuf);
+    }
+
+    // replace "%1" with %1
+    std::wstring tag = _T("\"%1\"");
+    std::wstring repl = _T("%1");
+    std::wstring::iterator it_begin = search(application.begin(), application.end(), tag.begin(), tag.end());
+    if (it_begin != application.end())
+    {
+        std::wstring::iterator it_end = it_begin + tag.size();
+        application.replace(it_begin, it_end, repl);
+    }
+    // replace %1 with "path/of/selected/file"
+    tag = _T("%1");
+    if (application.find(L"rundll32.exe") == std::wstring::npos)
+        repl = _T("\"") + inf.filepath + _T("\"");
+    else
+        repl = inf.filepath;
+    if (!linenumberparam_before.empty())
+    {
+        repl = linenumberparam_before + L" " + repl;
+    }
+    it_begin = search(application.begin(), application.end(), tag.begin(), tag.end());
+    if (it_begin != application.end())
+    {
+        std::wstring::iterator it_end = it_begin + tag.size();
+        application.replace(it_begin, it_end, repl);
+    }
+    if (!linenumberparam.empty())
+    {
+        application += _T(" ");
+        application += linenumberparam;
+    }
+
+    STARTUPINFO startupInfo;
+    PROCESS_INFORMATION processInfo;
+    SecureZeroMemory(&startupInfo, sizeof(startupInfo));
+    startupInfo.cb = sizeof(STARTUPINFO);
+
+    SecureZeroMemory(&processInfo, sizeof(processInfo));
+    CreateProcess(NULL, const_cast<TCHAR*>(application.c_str()), NULL, NULL, FALSE, 0, 0, NULL, &startupInfo, &processInfo);
+    CloseHandle(processInfo.hThread);
+    CloseHandle(processInfo.hProcess);
 }
 
 bool grepWin_is_regex_valid(const std::wstring& m_searchString)
