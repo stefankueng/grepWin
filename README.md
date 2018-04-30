@@ -1,0 +1,13 @@
+# grepWin
+Regular expression search and replace for Windows
+
+grepWin is a simple search and replace tool which can use [regular expressions](https://en.wikipedia.org/wiki/Regular_expression) to do its job. This allows to do much more powerful searches and replaces.
+
+In case you're not familiar with regular expressions, we have a very short [regular expression tutorial](https://tools.stefankueng.com/regexhelp.html) for you.
+
+[![grepWin](https://tools.stefankueng.com/img/grepwin/grepWin_search-small.9652f6cc.png)](https://tools.stefankueng.com/img/grepwin/grepWin_search.da72005c.png)
+
+# Command line parameters
+The command line parameters are listed on a [separate page](https://tools.stefankueng.com/grepWin_cmd.html).
+
+Please visit the [homepage](https://tools.stefankueng.com/BowPad.html) of BowPad for more information.
