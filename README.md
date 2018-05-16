@@ -10,4 +10,4 @@ In case you're not familiar with regular expressions, we have a very short [regu
 # Command line parameters
 The command line parameters are listed on a [separate page](https://tools.stefankueng.com/grepWin_cmd.html).
 
-Please visit the [homepage](https://tools.stefankueng.com/BowPad.html) of BowPad for more information.
+Please visit the [homepage](https://tools.stefankueng.com/grepWin.html) of BowPad for more information.
