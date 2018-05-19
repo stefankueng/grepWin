@@ -5,5 +5,6 @@ init:
 - git version
 build_script:
 - git submodule update --init -- sktoolslib
+- nuget restore -DisableParallelProcessing
 - msbuild "grepWin.sln" /m /verbosity:minimal /p:Configuration=Release /p:PlatformToolset=v141 /p:Platform=x64 /maxcpucount /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
 - msbuild "grepWin.sln" /m /verbosity:minimal /p:Configuration=Release /p:PlatformToolset=v141 /p:Platform=Win32 /maxcpucount /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
