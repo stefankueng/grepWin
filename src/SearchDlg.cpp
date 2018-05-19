@@ -1390,13 +1390,16 @@ bool CSearchDlg::PreTranslateMessage(MSG* pMsg)
             break;
         case 'O':
             {
-                int iItem = -1;
-                while ((iItem = ListView_GetNextItem(hListControl, iItem, LVNI_SELECTED)) != (-1))
+                if (bCtrl && !bShift && !bAlt)
                 {
-                    int selIndex = GetSelectedListIndex(iItem);
-                    if ((selIndex < 0) || (selIndex >= (int)m_items.size()))
-                        continue;
-                    OpenFileAtListIndex(selIndex);
+                    int iItem = -1;
+                    while ((iItem = ListView_GetNextItem(hListControl, iItem, LVNI_SELECTED)) != (-1))
+                    {
+                        int selIndex = GetSelectedListIndex(iItem);
+                        if ((selIndex < 0) || (selIndex >= (int)m_items.size()))
+                            continue;
+                        OpenFileAtListIndex(selIndex);
+                    }
                 }
             }
             break;
