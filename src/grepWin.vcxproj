@@ -178,6 +178,7 @@
     <ClCompile Include="..\sktoolslib\BrowseFolder.cpp" />
     <ClCompile Include="..\sktoolslib\CmdLineParser.cpp" />
     <ClCompile Include="..\sktoolslib\codecvt.cpp" />
+    <ClCompile Include="..\sktoolslib\DebugOutput.cpp" />
     <ClCompile Include="..\sktoolslib\DirFileEnum.cpp" />
     <ClCompile Include="..\sktoolslib\DlgResizer.cpp" />
     <ClCompile Include="..\sktoolslib\DropFiles.cpp" />
@@ -219,6 +220,7 @@
     <ClInclude Include="..\sktoolslib\BrowseFolder.h" />
     <ClInclude Include="..\sktoolslib\CmdLineParser.h" />
     <ClInclude Include="..\sktoolslib\codecvt.h" />
+    <ClInclude Include="..\sktoolslib\DebugOutput.h" />
     <ClInclude Include="..\sktoolslib\DirFileEnum.h" />
     <ClInclude Include="..\sktoolslib\DlgResizer.h" />
     <ClInclude Include="..\sktoolslib\DropFiles.h" />

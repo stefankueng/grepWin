@@ -42,6 +42,7 @@
 #include "Language.h"
 #include "SmartHandle.h"
 #include "PathUtils.h"
+#include "DebugOutput.h"
 
 #include <string>
 #include <map>
@@ -1307,6 +1308,7 @@ bool CSearchDlg::AddFoundEntry(CSearchInfo * pInfo, int index, bool bOnlyListCon
 
 void CSearchDlg::FillResultList()
 {
+    ProfileTimer profile(L"FillResultList");
     SetCursor(LoadCursor(NULL, IDC_APPSTARTING));
     // refresh cursor
     POINT pt;
@@ -2240,6 +2242,8 @@ bool grepWin_match_i(const std::wstring& the_regex, const TCHAR *pText)
 
 DWORD CSearchDlg::SearchThread()
 {
+    ProfileTimer profile(L"SearchThread");
+
     std::unique_ptr<TCHAR[]> pathbuf(new TCHAR[MAX_PATH_NEW]);
 
     // split the path string into single paths and
@@ -2515,7 +2519,11 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, const std::wstring& searchRoot, b
     CTextFile textfile;
     m_searchedFile = sinfo.filepath;
     CTextFile::UnicodeType type = CTextFile::AUTOTYPE;
-    bool bLoadResult = textfile.Load(sinfo.filepath.c_str(), type, m_bUTF8);
+    bool bLoadResult = false;
+    {
+        ProfileTimer profile((L"file load and parse: " + sinfo.filepath).c_str());
+        bLoadResult = textfile.Load(sinfo.filepath.c_str(), type, m_bUTF8);
+    }
     sinfo.encoding = type;
     if ((bLoadResult) && ((type != CTextFile::BINARY)||(bIncludeBinary)||bSearchAlways))
     {
