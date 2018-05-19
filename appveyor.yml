@@ -1,0 +1,9 @@
+version: '{branch}.{build}'
+skip_tags: true
+image: Visual Studio 2017
+init:
+- git version
+build_script:
+- git submodule update --init -- sktoolslib
+- msbuild "grepWin.sln" /m /verbosity:minimal /p:Configuration=Release /p:PlatformToolset=v141 /p:Platform=x64 /maxcpucount /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+- msbuild "grepWin.sln" /m /verbosity:minimal /p:Configuration=Release /p:PlatformToolset=v141 /p:Platform=Win32 /maxcpucount /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
