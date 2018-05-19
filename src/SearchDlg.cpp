@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2017 - Stefan Kueng
+// Copyright (C) 2007-2018 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -1162,6 +1162,8 @@ bool CSearchDlg::InitResultList()
     ListView_SetColumnWidth(hListControl, 3, LVSCW_AUTOSIZE_USEHEADER);
     ListView_SetColumnWidth(hListControl, 4, LVSCW_AUTOSIZE_USEHEADER);
     ListView_SetColumnWidth(hListControl, 5, LVSCW_AUTOSIZE_USEHEADER);
+
+    SendMessage(ListView_GetToolTips(hListControl), TTM_SETDELAYTIME, TTDT_AUTOPOP, SHRT_MAX);
 
     return true;
 }
