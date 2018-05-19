@@ -516,7 +516,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
         m_totalmatches += (int)((CSearchInfo*)lParam)->matchcount;
         if ((wParam != 0)||(m_searchString.empty())||((CSearchInfo*)lParam)->readerror)
         {
-            AddFoundEntry((CSearchInfo*)lParam, -1);
+            AddFoundEntry((CSearchInfo*)lParam);
             UpdateInfoLabel(false);
         }
         break;
@@ -705,6 +705,8 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 m_totalitems = 0;
 
                 m_items.clear();
+                m_listItems.clear();
+                m_listItems.reserve(500000);
                 m_backupandtempfiles.clear();
                 InitResultList();
                 DialogEnableWindow(IDC_RESULTFILES, false);
@@ -1169,141 +1171,24 @@ bool CSearchDlg::InitResultList()
     return true;
 }
 
-bool CSearchDlg::AddFoundEntry(CSearchInfo * pInfo, int index, bool bOnlyListControl)
+bool CSearchDlg::AddFoundEntry(CSearchInfo * pInfo, bool bOnlyListControl)
 {
-    bool filelist = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
-    HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
-    LVITEM lv = {0};
-    lv.iItem = ListView_GetItemCount(hListControl);
-    LPARAM nEntryCount = index < 0 ? lv.iItem : index;
-    lv.lParam = nEntryCount;
-    int ret = 0;
-    if (filelist)
-    {
-        std::unique_ptr<TCHAR[]> pBuf(new TCHAR[pInfo->filepath.size()+1]);
-        std::wstring name = pInfo->filepath.substr(pInfo->filepath.find_last_of('\\')+1);
-        _tcscpy_s(pBuf.get(), pInfo->filepath.size()+1, name.c_str());
-        lv.pszText = pBuf.get();
-        lv.mask = LVIF_TEXT | LVIF_IMAGE | LVIF_PARAM;
-        lv.iImage = pInfo->folder ? CSysImageList::GetInstance().GetDirIconIndex() : CSysImageList::GetInstance().GetFileIconIndex(pInfo->filepath);
-        ret = ListView_InsertItem(hListControl, &lv);
-
-        lv.mask = LVIF_TEXT;
-        lv.iItem = ret;
-        lv.iSubItem = 1;
-        std::unique_ptr<TCHAR[]> sb(new TCHAR[MAX_PATH_NEW]);
-        sb[0] = 0;
-        if (!pInfo->folder)
-            StrFormatByteSizeW(pInfo->filesize, sb.get(), 20);
-        lv.pszText = sb.get();
-        ListView_SetItem(hListControl, &lv);
-        lv.iSubItem = 2;
-        if (pInfo->readerror)
-            _tcscpy_s(sb.get(), MAX_PATH_NEW, TranslatedString(hResource, IDS_READERROR).c_str());
-        else
-            _stprintf_s(sb.get(), MAX_PATH_NEW, _T("%lld"), pInfo->matchcount);
-        ListView_SetItem(hListControl, &lv);
-        lv.iSubItem = 3;
-        _tcscpy_s(sb.get(), MAX_PATH_NEW, pInfo->filepath.substr(0, pInfo->filepath.size()-name.size()-1).c_str());
-        ListView_SetItem(hListControl, &lv);
-        lv.iSubItem = 4;
-        switch (pInfo->encoding)
-        {
-        case CTextFile::ANSI:
-            _tcscpy_s(sb.get(), MAX_PATH*4, _T("ANSI"));
-            break;
-        case CTextFile::UNICODE_LE:
-            _tcscpy_s(sb.get(), MAX_PATH*4, _T("UNICODE"));
-            break;
-        case CTextFile::UTF8:
-            _tcscpy_s(sb.get(), MAX_PATH*4, _T("UTF8"));
-            break;
-        case CTextFile::BINARY:
-            _tcscpy_s(sb.get(), MAX_PATH*4, _T("BINARY"));
-            break;
-        default:
-            _tcscpy_s(sb.get(), MAX_PATH*4, _T(""));
-            break;
-        }
-        ListView_SetItem(hListControl, &lv);
-        lv.iSubItem = 5;
-        formatDate(sb.get(), pInfo->modifiedtime, true);
-        ListView_SetItem(hListControl, &lv);
-    }
-    else
-    {
-        nEntryCount = index < 0 ? (LPARAM)m_items.size() : index;
-        lv.lParam = nEntryCount;
-        // file contents
-        if (pInfo->encoding == CTextFile::BINARY)
-        {
-            lv.mask = LVIF_TEXT | LVIF_IMAGE | LVIF_PARAM;
-            std::unique_ptr<TCHAR[]> pBuf(new TCHAR[pInfo->filepath.size()+1]);
-            std::wstring name = pInfo->filepath.substr(pInfo->filepath.find_last_of('\\')+1);
-            _tcscpy_s(pBuf.get(), pInfo->filepath.size()+1, name.c_str());
-            lv.pszText = pBuf.get();
-            lv.iImage = pInfo->folder ? CSysImageList::GetInstance().GetDirIconIndex() : CSysImageList::GetInstance().GetFileIconIndex(pInfo->filepath);
-            ret = ListView_InsertItem(hListControl, &lv);
-            if (ret >= 0)
-            {
-                std::wstring sBinary = TranslatedString(hResource, IDS_BINARY);
-                lv.mask = LVIF_TEXT;
-                lv.iItem = ret;
-
-                lv.iSubItem = 1;
-                lv.pszText = const_cast<LPWSTR>((LPCWSTR)sBinary.c_str());
-                ListView_SetItem(hListControl, &lv);
-            }
-        }
-        else
-        {
-            for (size_t subIndex = 0; subIndex < pInfo->matchlinesnumbers.size(); ++subIndex)
-            {
-                lv.mask = LVIF_TEXT | LVIF_IMAGE | LVIF_PARAM;
-                std::unique_ptr<TCHAR[]> pBuf(new TCHAR[pInfo->filepath.size()+1]);
-                std::wstring name = pInfo->filepath.substr(pInfo->filepath.find_last_of('\\')+1);
-                _tcscpy_s(pBuf.get(), pInfo->filepath.size()+1, name.c_str());
-                lv.pszText = pBuf.get();
-                lv.iImage = pInfo->folder ? CSysImageList::GetInstance().GetDirIconIndex() : CSysImageList::GetInstance().GetFileIconIndex(pInfo->filepath);
-                lv.iItem = ListView_GetItemCount(hListControl);
-                lv.iSubItem = 0;
-                lv.lParam = nEntryCount;
-                ret = ListView_InsertItem(hListControl, &lv);
-                if (ret >= 0)
-                {
-                    lv.mask = LVIF_TEXT;
-                    lv.iItem = ret;
-
-                    lv.iSubItem = 1;
-                    std::unique_ptr<TCHAR[]> sb(new TCHAR[MAX_PATH_NEW]);
-                    _stprintf_s(sb.get(), MAX_PATH_NEW, _T("%lu"), pInfo->matchlinesnumbers[subIndex]);
-                    lv.pszText = sb.get();
-                    ListView_SetItem(hListControl, &lv);
-
-                    lv.iSubItem = 2;
-                    std::wstring line;
-                    if (pInfo->matchlines.size() > subIndex)
-                        line = pInfo->matchlines[subIndex];
-                    std::replace(line.begin(), line.end(), '\t', ' ');
-                    std::replace(line.begin(), line.end(), '\n', ' ');
-                    std::replace(line.begin(), line.end(), '\r', ' ');
-                    lv.pszText = (LPWSTR)line.c_str();
-                    ListView_SetItem(hListControl, &lv);
-
-                    lv.iSubItem = 3;
-                    _tcscpy_s(sb.get(), MAX_PATH_NEW, pInfo->filepath.substr(0, pInfo->filepath.size() - name.size() - 1).c_str());
-                    lv.pszText = sb.get();
-                    ListView_SetItem(hListControl, &lv);
-                }
-            }
-        }
-    }
-    if ((ret != -1)&&(!bOnlyListControl))
+    if (!bOnlyListControl)
     {
         m_items.push_back(*pInfo);
+        int index = int(m_items.size() - 1);
+        int subIndex = 0;
+        for (const auto& linenumber : pInfo->matchlinesnumbers)
+        {
+            UNREFERENCED_PARAMETER(linenumber);
+            m_listItems.push_back(std::make_tuple(index, subIndex));
+            ++subIndex;
+        }
     }
-
-    return (ret != -1);
+    HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
+    bool filelist = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
+    ListView_SetItemCount(hListControl, filelist ? m_items.size() : m_listItems.size());
+    return true;
 }
 
 void CSearchDlg::FillResultList()
@@ -1318,150 +1203,7 @@ void CSearchDlg::FillResultList()
     bool filelist = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
     HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
     SendMessage(hListControl, WM_SETREDRAW, FALSE, 0);
-
-    ListView_DeleteAllItems(hListControl);
-
-    int index = 0;
-    int fileIndex = 0;
-    std::unique_ptr<TCHAR[]> pBuf = std::unique_ptr<TCHAR[]>(new TCHAR[32767]);
-    std::unique_ptr<TCHAR[]> sb   = std::unique_ptr<TCHAR[]>(new TCHAR[MAX_PATH_NEW]);
-    for (auto pInfo = m_items.begin(); pInfo != m_items.end(); ++pInfo)
-    {
-        if (filelist)
-        {
-            LVITEM lv = {0};
-            lv.mask = LVIF_TEXT | LVIF_IMAGE | LVIF_PARAM;
-            std::wstring name = pInfo->filepath.substr(pInfo->filepath.find_last_of('\\')+1);
-            _tcscpy_s(pBuf.get(), pInfo->filepath.size()+1, name.c_str());
-            lv.pszText = pBuf.get();
-            lv.iImage = pInfo->folder ? CSysImageList::GetInstance().GetDirIconIndex() : CSysImageList::GetInstance().GetFileIconIndex(pInfo->filepath);
-            lv.iItem = index;
-            lv.lParam = fileIndex;
-            int ret = ListView_InsertItem(hListControl, &lv);
-            if (ret >= 0)
-            {
-                lv.mask = LVIF_TEXT;
-                lv.iItem = ret;
-
-                lv.iSubItem = 1;
-                sb[0] = 0;
-                if (!pInfo->folder)
-                    StrFormatByteSizeW(pInfo->filesize, sb.get(), 20);
-                lv.pszText = sb.get();
-                ListView_SetItem(hListControl, &lv);
-
-                lv.iSubItem = 2;
-                if (pInfo->readerror)
-                    _tcscpy_s(sb.get(), MAX_PATH_NEW, TranslatedString(hResource, IDS_READERROR).c_str());
-                else
-                    _stprintf_s(sb.get(), MAX_PATH_NEW, _T("%lld"), pInfo->matchcount);
-                ListView_SetItem(hListControl, &lv);
-
-                lv.iSubItem = 3;
-                _tcscpy_s(sb.get(), MAX_PATH_NEW, pInfo->filepath.substr(0, pInfo->filepath.size()-name.size()-1).c_str());
-                ListView_SetItem(hListControl, &lv);
-
-                lv.iSubItem = 4;
-                switch (pInfo->encoding)
-                {
-                case CTextFile::ANSI:
-                    _tcscpy_s(sb.get(), MAX_PATH_NEW, _T("ANSI"));
-                    break;
-                case CTextFile::UNICODE_LE:
-                    _tcscpy_s(sb.get(), MAX_PATH_NEW, _T("UNICODE"));
-                    break;
-                case CTextFile::UTF8:
-                    _tcscpy_s(sb.get(), MAX_PATH_NEW, _T("UTF8"));
-                    break;
-                case CTextFile::BINARY:
-                    _tcscpy_s(sb.get(), MAX_PATH_NEW, _T("BINARY"));
-                    break;
-                default:
-                    _tcscpy_s(sb.get(), MAX_PATH_NEW, _T(""));
-                    break;
-                }
-                ListView_SetItem(hListControl, &lv);
-
-                lv.iSubItem = 5;
-                formatDate(sb.get(), pInfo->modifiedtime, true);
-                ListView_SetItem(hListControl, &lv);
-                index++;
-            }
-        }
-        else
-        {
-            // file contents
-            if (pInfo->encoding == CTextFile::BINARY)
-            {
-                LVITEM lv = {0};
-                lv.mask = LVIF_TEXT | LVIF_IMAGE | LVIF_PARAM;
-                std::wstring name = pInfo->filepath.substr(pInfo->filepath.find_last_of('\\')+1);
-                _tcscpy_s(pBuf.get(), pInfo->filepath.size()+1, name.c_str());
-                lv.pszText = pBuf.get();
-                lv.iImage = pInfo->folder ? CSysImageList::GetInstance().GetDirIconIndex() : CSysImageList::GetInstance().GetFileIconIndex(pInfo->filepath);
-                lv.iItem = index++;
-                lv.lParam = fileIndex;
-                int ret = ListView_InsertItem(hListControl, &lv);
-                if (ret >= 0)
-                {
-                    std::wstring sBinary = TranslatedString(hResource, IDS_BINARY);
-                    lv.mask = LVIF_TEXT;
-                    lv.iItem = ret;
-
-                    lv.iSubItem = 1;
-                    lv.pszText = const_cast<LPWSTR>((LPCWSTR)sBinary.c_str());
-                    ListView_SetItem(hListControl, &lv);
-
-                    lv.iSubItem = 3;
-                    _tcscpy_s(sb.get(), MAX_PATH_NEW, pInfo->filepath.substr(0, pInfo->filepath.size() - name.size() - 1).c_str());
-                    lv.pszText = sb.get();
-                    ListView_SetItem(hListControl, &lv);
-                }
-            }
-            else
-            {
-                for (size_t subIndex = 0; subIndex < pInfo->matchlinesnumbers.size(); ++subIndex)
-                {
-                    LVITEM lv = {0};
-                    lv.mask = LVIF_TEXT | LVIF_IMAGE | LVIF_PARAM;
-                    std::wstring name = pInfo->filepath.substr(pInfo->filepath.find_last_of('\\')+1);
-                    _tcscpy_s(pBuf.get(), pInfo->filepath.size()+1, name.c_str());
-                    lv.pszText = pBuf.get();
-                    lv.iImage = pInfo->folder ? CSysImageList::GetInstance().GetDirIconIndex() : CSysImageList::GetInstance().GetFileIconIndex(pInfo->filepath);
-                    lv.iItem = index;
-                    lv.lParam = fileIndex;
-                    int ret = ListView_InsertItem(hListControl, &lv);
-                    if (ret >= 0)
-                    {
-                        lv.mask = LVIF_TEXT;
-                        lv.iItem = ret;
-
-                        lv.iSubItem = 1;
-                        _stprintf_s(sb.get(), MAX_PATH_NEW, _T("%ld"), pInfo->matchlinesnumbers[subIndex]);
-                        lv.pszText = sb.get();
-                        ListView_SetItem(hListControl, &lv);
-
-                        lv.iSubItem = 2;
-                        std::wstring line;
-                        if (pInfo->matchlines.size() > subIndex)
-                            line = pInfo->matchlines[subIndex];
-                        std::replace(line.begin(), line.end(), '\t', ' ');
-                        std::replace(line.begin(), line.end(), '\n', ' ');
-                        std::replace(line.begin(), line.end(), '\r', ' ');
-                        lv.pszText = (LPWSTR)line.c_str();
-                        ListView_SetItem(hListControl, &lv);
-
-                        lv.iSubItem = 3;
-                        _tcscpy_s(sb.get(), MAX_PATH_NEW, pInfo->filepath.substr(0, pInfo->filepath.size() - name.size() - 1).c_str());
-                        lv.pszText = sb.get();
-                        ListView_SetItem(hListControl, &lv);
-                        index++;
-                    }
-                }
-            }
-        }
-        fileIndex++;
-    }
+    ListView_SetItemCount(hListControl, filelist ? m_items.size() : m_listItems.size());
     AutoSizeAllColumns();
     SendMessage(hListControl, WM_SETREDRAW, TRUE, 0);
     SetCursor(LoadCursor(NULL, IDC_ARROW));
@@ -1748,15 +1490,29 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
             bDidSort = true;
             break;
         }
+        if (bDidSort)
+        {
+            auto size = m_listItems.size();
+            m_listItems.clear();
+            m_listItems.reserve(size);
+
+            int index = 0;
+            for (const auto& item : m_items)
+            {
+                int subIndex = 0;
+                for (const auto& linenumber : item.matchlinesnumbers)
+                {
+                    UNREFERENCED_PARAMETER(linenumber);
+                    m_listItems.push_back(std::make_tuple(index, subIndex));
+                    ++subIndex;
+                }
+                ++index;
+            }
+        }
 
         HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
         SendMessage(hListControl, WM_SETREDRAW, FALSE, 0);
-        ListView_DeleteAllItems(hListControl);
-        int index = 0;
-        for (auto it = m_items.begin(); it != m_items.end(); ++it)
-        {
-            AddFoundEntry(&(*it), index++, true);
-        }
+        ListView_SetItemCount(hListControl, filelist ? m_items.size() : m_listItems.size());
 
         AutoSizeAllColumns();
         HDITEM hd = {0};
@@ -1805,6 +1561,144 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
                 matchString += ssx;
             }
             lstrcpyn(pInfoTip->pszText, matchString.c_str(), pInfoTip->cchTextMax);
+        }
+    }
+    if (lpNMItemActivate->hdr.code == LVN_GETDISPINFO)
+    {
+        static const std::wstring sBinary = TranslatedString(hResource, IDS_BINARY);
+
+        NMLVDISPINFO *pDispInfo = reinterpret_cast<NMLVDISPINFO*>(lpNMItemActivate);
+        LV_ITEM* pItem = &(pDispInfo)->item;
+
+        int iItem = pItem->iItem;
+        bool filelist = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
+
+        if (filelist)
+        {
+            const auto& pInfo = &m_items[iItem];
+            if (pItem->mask & LVIF_TEXT)
+            {
+                switch (pItem->iSubItem)
+                {
+                case 0: // name of the file
+                    wcsncpy_s(pItem->pszText, pItem->cchTextMax, pInfo->filepath.substr(pInfo->filepath.find_last_of('\\') + 1).c_str(), pItem->cchTextMax - 1);
+                    break;
+                case 1: // file size
+                    if (!pInfo->folder)
+                        StrFormatByteSizeW(pInfo->filesize, pItem->pszText, pItem->cchTextMax);
+                    break;
+                case 2: // match count or read error
+                    if (pInfo->readerror)
+                        wcsncpy_s(pItem->pszText, pItem->cchTextMax, TranslatedString(hResource, IDS_READERROR).c_str(), pItem->cchTextMax - 1);
+                    else
+                        swprintf_s(pItem->pszText, pItem->cchTextMax, L"%lld", pInfo->matchcount);
+                    break;
+                case 3: // path
+                    wcsncpy_s(pItem->pszText, pItem->cchTextMax, pInfo->filepath.substr(0, pInfo->filepath.size() - pInfo->filepath.substr(pInfo->filepath.find_last_of('\\') + 1).size() - 1).c_str(), pItem->cchTextMax - 1);
+                    break;
+                case 4: // encoding
+                    switch (pInfo->encoding)
+                    {
+                    case CTextFile::ANSI:
+                        wcsncpy_s(pItem->pszText, pItem->cchTextMax, L"ANSI", pItem->cchTextMax - 1);
+                        break;
+                    case CTextFile::UNICODE_LE:
+                        wcsncpy_s(pItem->pszText, pItem->cchTextMax, L"UNICODE", pItem->cchTextMax - 1);
+                        break;
+                    case CTextFile::UTF8:
+                        wcsncpy_s(pItem->pszText, pItem->cchTextMax, L"UTF8", pItem->cchTextMax - 1);
+                        break;
+                    case CTextFile::BINARY:
+                        wcsncpy_s(pItem->pszText, pItem->cchTextMax, L"BINARY", pItem->cchTextMax - 1);
+                        break;
+                    default:
+                        wcsncpy_s(pItem->pszText, pItem->cchTextMax, L"", pItem->cchTextMax - 1);
+                        break;
+                    }
+                    break;
+                case 5: // modification date
+                    formatDate(pItem->pszText, pInfo->modifiedtime, true);
+                    break;
+                default:
+                    pItem->pszText[0] = 0;
+                    break;
+                }
+            }
+            if (pItem->mask & LVIF_IMAGE)
+            {
+                pItem->iImage = pInfo->folder ? CSysImageList::GetInstance().GetDirIconIndex() : CSysImageList::GetInstance().GetFileIconIndex(pInfo->filepath);
+            }
+        }
+        else
+        {
+            auto tup = m_listItems[iItem];
+            auto index = std::get<0>(tup);
+            auto subIndex = std::get<1>(tup);
+
+            const auto& item = m_items[index];
+            const auto& pInfo = &item;
+            if (item.encoding == CTextFile::BINARY)
+            {
+                if (pItem->mask & LVIF_TEXT)
+                {
+                    switch (pItem->iSubItem)
+                    {
+                    case 0: // name of the file
+                        wcsncpy_s(pItem->pszText, pItem->cchTextMax, pInfo->filepath.substr(pInfo->filepath.find_last_of('\\') + 1).c_str(), pItem->cchTextMax - 1);
+                        break;
+                    case 1: // binary
+                        wcsncpy_s(pItem->pszText, pItem->cchTextMax, sBinary.c_str(), pItem->cchTextMax);
+                        break;
+                    case 3: // path
+                        wcsncpy_s(pItem->pszText, pItem->cchTextMax, pInfo->filepath.substr(0, pInfo->filepath.size() - pInfo->filepath.substr(pInfo->filepath.find_last_of('\\') + 1).size() - 1).c_str(), pItem->cchTextMax - 1);
+                        break;
+                    default:
+                        pItem->pszText[0] = 0;
+                        break;
+                    }
+                }
+                if (pItem->mask & LVIF_IMAGE)
+                {
+                    pItem->iImage = pInfo->folder ? CSysImageList::GetInstance().GetDirIconIndex() : CSysImageList::GetInstance().GetFileIconIndex(pInfo->filepath);
+                }
+            }
+            else
+            {
+                if (pItem->mask & LVIF_TEXT)
+                {
+                    switch (pItem->iSubItem)
+                    {
+                    case 0: // name of the file
+                        wcsncpy_s(pItem->pszText, pItem->cchTextMax, pInfo->filepath.substr(pInfo->filepath.find_last_of('\\') + 1).c_str(), pItem->cchTextMax - 1);
+                        break;
+                    case 1: // line number
+                        swprintf_s(pItem->pszText, pItem->cchTextMax, _T("%ld"), pInfo->matchlinesnumbers[subIndex]);
+                        break;
+                    case 2: // line
+                    {
+                        std::wstring line;
+                        if (pInfo->matchlines.size() > subIndex)
+                            line = pInfo->matchlines[subIndex];
+                        std::replace(line.begin(), line.end(), '\t', ' ');
+                        std::replace(line.begin(), line.end(), '\n', ' ');
+                        std::replace(line.begin(), line.end(), '\r', ' ');
+                        wcsncpy_s(pItem->pszText, pItem->cchTextMax, line.c_str(), pItem->cchTextMax - 1);
+                    }
+                    break;
+                    case 3: // path
+                        wcsncpy_s(pItem->pszText, pItem->cchTextMax, pInfo->filepath.substr(0, pInfo->filepath.size() - pInfo->filepath.substr(pInfo->filepath.find_last_of('\\') + 1).size() - 1).c_str(), pItem->cchTextMax - 1);
+                        break;
+                    default:
+                        pItem->pszText[0] = 0;
+                        break;
+                    }
+                }
+
+                if (pItem->mask & LVIF_IMAGE)
+                {
+                    pItem->iImage = pInfo->folder ? CSysImageList::GetInstance().GetDirIconIndex() : CSysImageList::GetInstance().GetFileIconIndex(pInfo->filepath);
+                }
+            }
         }
     }
 }
@@ -3007,22 +2901,52 @@ int CSearchDlg::CheckRegex()
 void CSearchDlg::AutoSizeAllColumns()
 {
     HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
-    ListView_SetColumnWidth(hListControl, 0, LVSCW_AUTOSIZE_USEHEADER);
-    ListView_SetColumnWidth(hListControl, 1, LVSCW_AUTOSIZE_USEHEADER);
-    ListView_SetColumnWidth(hListControl, 2, LVSCW_AUTOSIZE_USEHEADER);
-    ListView_SetColumnWidth(hListControl, 3, LVSCW_AUTOSIZE_USEHEADER);
+    auto headerCtrl = ListView_GetHeader(hListControl);
+    int nItemCount = ListView_GetItemCount(hListControl);
+    TCHAR textbuf[MAX_PATH*4] = { 0 };
+    if (headerCtrl)
+    {
+        int maxcol = Header_GetItemCount(headerCtrl) - 1;
+        int imgWidth = 0;
+        auto hImgList = ListView_GetImageList(hListControl, LVSIL_SMALL);
+        if ((hImgList) && (ImageList_GetImageCount(hImgList)))
+        {
+            IMAGEINFO imginfo;
+            ImageList_GetImageInfo(hImgList, 0, &imginfo);
+            imgWidth = (imginfo.rcImage.right - imginfo.rcImage.left) + 3;  // 3 pixels between icon and text
+        }
+        for (int col = 0; col <= maxcol; col++)
+        {
+            HDITEM hdi = { 0 };
+            hdi.mask = HDI_TEXT;
+            hdi.pszText = textbuf;
+            hdi.cchTextMax = _countof(textbuf);
+            Header_GetItem(headerCtrl, col, &hdi);
+            int cx = ListView_GetStringWidth(hListControl, hdi.pszText) + 20; // 20 pixels for col separator and margin
+
+            int inc = max(1, nItemCount / 1000);
+            for (int index = 0; index<nItemCount; index = index + inc)
+            {
+                // get the width of the string and add 14 pixels for the column separator and margins
+                ListView_GetItemText(hListControl, index, col, textbuf, _countof(textbuf));
+                int linewidth = ListView_GetStringWidth(hListControl, textbuf) + 14;
+                // add the image size
+                if (col == 0)
+                    linewidth += imgWidth;
+                if (cx < linewidth)
+                    cx = linewidth;
+            }
+            ListView_SetColumnWidth(hListControl, col, cx);
+        }
+    }
 }
 
 int CSearchDlg::GetSelectedListIndex(int index)
 {
-    HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
-    int iItem = -1;
-    LVITEM lv = {0};
-    lv.iItem = index;
-    lv.mask = LVIF_PARAM;
-    if (ListView_GetItem(hListControl, &lv))
-        iItem = (int)lv.lParam;
-
-    return iItem;
+    bool filelist = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
+    if (filelist)
+        return index;
+    auto tup = m_listItems[index];
+    return std::get<0>(tup);
 }
 

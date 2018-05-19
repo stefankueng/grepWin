@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2017 - Stefan Kueng
+// Copyright (C) 2007-2018 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -88,7 +88,7 @@ protected:
 
     bool                    InitResultList();
     void                    FillResultList();
-    bool                    AddFoundEntry(CSearchInfo * pInfo, int index, bool bOnlyListControl = false);
+    bool                    AddFoundEntry(CSearchInfo * pInfo, bool bOnlyListControl = false);
     void                    ShowContextMenu(int x, int y);
     void                    DoListNotify(LPNMITEMACTIVATE lpNMItemActivate);
     void                    OpenFileAtListIndex(int listIndex);
@@ -163,6 +163,7 @@ private:
     HANDLE                  m_hSearchThread;
 
     std::vector<CSearchInfo> m_items;
+    std::vector<std::tuple<int, int>> m_listItems;
     std::set<std::wstring>  m_backupandtempfiles;
     int                     m_totalitems;
     int                     m_searchedItems;
