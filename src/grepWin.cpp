@@ -299,7 +299,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
                 sysTime.wYear = (WORD)year;
                 sysTime.wMonth = (WORD)month;
                 sysTime.wDay = (WORD)day;
-                auto test = SystemTimeToFileTime(&sysTime, &date1);
+                SystemTimeToFileTime(&sysTime, &date1);
                 if (parser.HasVal(L"date2"))
                 {
                     auto sDate2 = parser.GetVal(L"date2");
