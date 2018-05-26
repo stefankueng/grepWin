@@ -76,7 +76,7 @@ msgstr "Alle Dateien"
 
 #. Resource IDs: (1078)
 msgid "All dates"
-msgstr ""
+msgstr "Jederzeit"
 
 #. Resource IDs: (1005)
 msgid "All sizes"
@@ -89,7 +89,7 @@ msgstr "Möchten Sie wirklich\n%s\nmit\n%s\n ersetzen ohne Backupdateien zu erst
 
 #. Resource IDs: (1081)
 msgid "Between"
-msgstr ""
+msgstr "Zwischen"
 
 #. Resource IDs: (2)
 msgid "Cancel"
@@ -242,7 +242,7 @@ msgstr "Name"
 
 #. Resource IDs: (1079)
 msgid "Newer than"
-msgstr ""
+msgstr "Neuer als"
 
 #. Resource IDs: (115)
 msgid "Newline is matched by '.'"
@@ -254,7 +254,7 @@ msgstr "OK"
 
 #. Resource IDs: (1080)
 msgid "Older than"
-msgstr ""
+msgstr "Älter als"
 
 #. Resource IDs: (1062)
 msgid "Only one instance"
@@ -391,7 +391,7 @@ msgstr "Grösse ist"
 
 #. Resource IDs: (1028)
 msgid "Test regex"
-msgstr "Test Regex"
+msgstr "Teste Regex"
 
 #. Resource IDs: (136)
 msgid "Text"
