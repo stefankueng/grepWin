@@ -122,6 +122,11 @@ CSearchDlg::CSearchDlg(HWND hParent)
     , m_regOnlyOne(_T("Software\\grepWin\\onlyone"), 0)
     , m_regEditorCmd(_T("Software\\grepWin\\editorcmd"))
     , m_regBackupInFolder(L"Software\\grepWin\\backupinfolder", FALSE)
+    , m_regDateLimit(L"Software\\grepWin\\DateLimit", 0)
+    , m_regDate1Low(L"Software\\grepWin\\Date1Low", 0)
+    , m_regDate1High(L"Software\\grepWin\\Date1High", 0)
+    , m_regDate2Low(L"Software\\grepWin\\Date2Low", 0)
+    , m_regDate2High(L"Software\\grepWin\\Date2High", 0)
     , m_AutoCompleteFilePatterns(bPortable ? &g_iniFile : NULL)
     , m_AutoCompleteExcludeDirsPatterns(bPortable ? &g_iniFile : NULL)
     , m_AutoCompleteSearchPatterns(bPortable ? &g_iniFile : NULL)
@@ -302,6 +307,11 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                 m_bAllSize = bPortable ? !!_wtoi(g_iniFile.GetValue(L"global", L"AllSize", L"0")) : !!DWORD(m_regAllSize);
                 m_sizeCmp = bPortable ? _wtoi(g_iniFile.GetValue(L"global", L"SizeCombo", L"0")) : (int)DWORD(m_regSizeCombo);
             }
+            m_DateLimit = bPortable ? _wtoi(g_iniFile.GetValue(L"global", L"DateLimit", L"0")) : (int)DWORD(m_regDateLimit);
+            m_Date1.dwLowDateTime = bPortable ? wcstoul(g_iniFile.GetValue(L"global", L"Date1Low", L"0"), nullptr, 10) : DWORD(m_regDate1Low);
+            m_Date1.dwHighDateTime = bPortable ? wcstoul(g_iniFile.GetValue(L"global", L"Date1High", L"0"), nullptr, 10) : DWORD(m_regDate1High);
+            m_Date2.dwLowDateTime = bPortable ? wcstoul(g_iniFile.GetValue(L"global", L"Date2Low", L"0"), nullptr, 10) : DWORD(m_regDate2Low);
+            m_Date2.dwHighDateTime = bPortable ? wcstoul(g_iniFile.GetValue(L"global", L"Date2High", L"0"), nullptr, 10) : DWORD(m_regDate2High);
 
             SendDlgItemMessage(hwndDlg, IDC_SIZECOMBO, CB_SETCURSEL, m_sizeCmp, 0);
 
@@ -328,6 +338,16 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 
             ::SetDlgItemText(*this, IDOK, TranslatedString(hResource, IDS_SEARCH).c_str());
             CheckRadioButton(*this, IDC_RESULTFILES, IDC_RESULTCONTENT, m_showContent ? IDC_RESULTCONTENT : IDC_RESULTFILES);
+
+            CheckRadioButton(hwndDlg, IDC_RADIO_DATE_ALL, IDC_RADIO_DATE_BETWEEN, m_DateLimit + IDC_RADIO_DATE_ALL);
+            SYSTEMTIME sysTime;
+            auto hTime1 = GetDlgItem(hwndDlg, IDC_DATEPICK1);
+            FileTimeToSystemTime(&m_Date1, &sysTime);
+            DateTime_SetSystemtime(hTime1, GDT_VALID, &sysTime);
+            auto hTime2 = GetDlgItem(hwndDlg, IDC_DATEPICK2);
+            FileTimeToSystemTime(&m_Date2, &sysTime);
+            DateTime_SetSystemtime(hTime2, GDT_VALID, &sysTime);
+            ShowWindow(GetDlgItem(*this, IDC_DATEPICK2), (m_DateLimit == IDC_RADIO_DATE_BETWEEN - IDC_RADIO_DATE_ALL) ? SW_SHOW : SW_HIDE);
 
             SetFocus(GetDlgItem(hwndDlg, IDC_SEARCHTEXT));
 
@@ -363,6 +383,12 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             m_resizer.AddControl(hwndDlg, IDC_SIZECOMBO, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_SIZEEDIT, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_KBTEXT, RESIZER_TOPLEFT);
+            m_resizer.AddControl(hwndDlg, IDC_RADIO_DATE_ALL, RESIZER_TOPLEFT);
+            m_resizer.AddControl(hwndDlg, IDC_RADIO_DATE_NEWER, RESIZER_TOPLEFT);
+            m_resizer.AddControl(hwndDlg, IDC_RADIO_DATE_OLDER, RESIZER_TOPLEFT);
+            m_resizer.AddControl(hwndDlg, IDC_RADIO_DATE_BETWEEN, RESIZER_TOPLEFT);
+            m_resizer.AddControl(hwndDlg, IDC_DATEPICK1, RESIZER_TOPLEFT);
+            m_resizer.AddControl(hwndDlg, IDC_DATEPICK2, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_INCLUDESYSTEM, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_INCLUDEHIDDEN, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_INCLUDESUBFOLDERS, RESIZER_TOPLEFT);
@@ -771,6 +797,15 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                     EndDialog(*this, IDCANCEL);
                 }
             }
+        }
+        break;
+    case IDC_RADIO_DATE_ALL:
+    case IDC_RADIO_DATE_NEWER:
+    case IDC_RADIO_DATE_OLDER:
+    case IDC_RADIO_DATE_BETWEEN:
+        {
+            auto isBetween = IsDlgButtonChecked(*this, IDC_RADIO_DATE_BETWEEN) == BST_CHECKED;
+            ShowWindow(GetDlgItem(*this, IDC_DATEPICK2), isBetween ? SW_SHOW : SW_HIDE);
         }
         break;
     case IDC_TESTREGEX:
@@ -2007,6 +2042,21 @@ bool CSearchDlg::SaveSettings()
     m_bCaseSensitive = (IsDlgButtonChecked(*this, IDC_CASE_SENSITIVE) == BST_CHECKED);
     m_bDotMatchesNewline = (IsDlgButtonChecked(*this, IDC_DOTMATCHNEWLINE) == BST_CHECKED);
 
+    m_DateLimit = 0;
+    if (IsDlgButtonChecked(*this, IDC_RADIO_DATE_ALL) == BST_CHECKED)
+        m_DateLimit = 0;
+    if (IsDlgButtonChecked(*this, IDC_RADIO_DATE_NEWER) == BST_CHECKED)
+        m_DateLimit = IDC_RADIO_DATE_NEWER - IDC_RADIO_DATE_ALL;
+    if (IsDlgButtonChecked(*this, IDC_RADIO_DATE_OLDER) == BST_CHECKED)
+        m_DateLimit = IDC_RADIO_DATE_OLDER - IDC_RADIO_DATE_ALL;
+    if (IsDlgButtonChecked(*this, IDC_RADIO_DATE_BETWEEN) == BST_CHECKED)
+        m_DateLimit = IDC_RADIO_DATE_BETWEEN - IDC_RADIO_DATE_ALL;
+    SYSTEMTIME sysTime = { 0 };
+    DateTime_GetSystemtime(GetDlgItem(*this, IDC_DATEPICK1), &sysTime);
+    SystemTimeToFileTime(&sysTime, &m_Date1);
+    DateTime_GetSystemtime(GetDlgItem(*this, IDC_DATEPICK2), &sysTime);
+    SystemTimeToFileTime(&sysTime, &m_Date2);
+
     if (bPortable)
     {
         g_iniFile.SetValue(L"global", L"onlyone", IsDlgButtonChecked(*this, IDC_ONLYONE) == BST_CHECKED ? L"1" : L"0");
@@ -2020,6 +2070,11 @@ bool CSearchDlg::SaveSettings()
         g_iniFile.SetValue(L"global", L"DotMatchesNewline", m_bDotMatchesNewline ? L"1" : L"0");
         g_iniFile.SetValue(L"global", L"pattern", m_patternregex.c_str());
         g_iniFile.SetValue(L"global", L"ExcludeDirsPattern", m_excludedirspatternregex.c_str());
+        g_iniFile.SetValue(L"global", L"DateLimit", std::to_wstring(m_DateLimit).c_str());
+        g_iniFile.SetValue(L"global", L"Date1Low", std::to_wstring(m_Date1.dwLowDateTime).c_str());
+        g_iniFile.SetValue(L"global", L"Date1High", std::to_wstring(m_Date1.dwHighDateTime).c_str());
+        g_iniFile.SetValue(L"global", L"Date2Low", std::to_wstring(m_Date2.dwLowDateTime).c_str());
+        g_iniFile.SetValue(L"global", L"Date2High", std::to_wstring(m_Date2.dwHighDateTime).c_str());
     }
     else
     {
@@ -2034,6 +2089,11 @@ bool CSearchDlg::SaveSettings()
         m_regDotMatchesNewline = (DWORD)m_bDotMatchesNewline;
         m_regPattern = m_patternregex;
         m_regExcludeDirsPattern = m_excludedirspatternregex;
+        m_regDateLimit = m_DateLimit;
+        m_regDate1Low = m_Date1.dwLowDateTime;
+        m_regDate1High = m_Date1.dwHighDateTime;
+        m_regDate2Low = m_Date2.dwLowDateTime;
+        m_regDate2High = m_Date2.dwHighDateTime;
     }
 
     SaveWndPosition();
@@ -2260,7 +2320,7 @@ DWORD CSearchDlg::SearchThread()
                         nFileSizeLow = pFindData->nFileSizeLow;
                         fullfilesize = (((__int64) pFindData->nFileSizeHigh) << 32) | pFindData->nFileSizeLow;
                         ft = pFindData->ftLastWriteTime;
-                        if (!m_bAllSize)
+                        if (!m_bAllSize && bSearch)
                         {
                             switch (m_sizeCmp)
                             {
@@ -2272,6 +2332,25 @@ DWORD CSearchDlg::SearchThread()
                                 break;
                             case 2: // greater than
                                 bSearch = bSearch && (pFindData->nFileSizeLow > m_lSize);
+                                break;
+                            }
+                        }
+                        if (bSearch)
+                        {
+                            switch (m_DateLimit + IDC_RADIO_DATE_ALL)
+                            {
+                            default:
+                            case IDC_RADIO_DATE_ALL:
+                                break;
+                            case IDC_RADIO_DATE_NEWER:
+                                bSearch = CompareFileTime(&ft, &m_Date1) >= 0;
+                                break;
+                            case IDC_RADIO_DATE_OLDER:
+                                bSearch = CompareFileTime(&ft, &m_Date1) <= 0;
+                                break;
+                            case IDC_RADIO_DATE_BETWEEN:
+                                bSearch = CompareFileTime(&ft, &m_Date1) >= 0;
+                                bSearch = bSearch && (CompareFileTime(&ft, &m_Date2) <= 0);
                                 break;
                             }
                         }
@@ -2315,10 +2394,32 @@ DWORD CSearchDlg::SearchThread()
                         // match the specified file pattern
                         if (MatchPath(pathbuf.get()))
                         {
-                            CSearchInfo sinfo(pathbuf.get());
-                            sinfo.modifiedtime = pFindData->ftLastWriteTime;
-                            sinfo.folder = true;
-                            SendMessage(*this, SEARCH_FOUND, 1, (LPARAM)&sinfo);
+                            if (bSearch)
+                            {
+                                switch (m_DateLimit + IDC_RADIO_DATE_ALL)
+                                {
+                                default:
+                                case IDC_RADIO_DATE_ALL:
+                                    break;
+                                case IDC_RADIO_DATE_NEWER:
+                                    bSearch = CompareFileTime(&pFindData->ftLastWriteTime, &m_Date1) >= 0;
+                                    break;
+                                case IDC_RADIO_DATE_OLDER:
+                                    bSearch = CompareFileTime(&pFindData->ftLastWriteTime, &m_Date1) <= 0;
+                                    break;
+                                case IDC_RADIO_DATE_BETWEEN:
+                                    bSearch = CompareFileTime(&pFindData->ftLastWriteTime, &m_Date1) >= 0;
+                                    bSearch = bSearch && (CompareFileTime(&pFindData->ftLastWriteTime, &m_Date2) <= 0);
+                                    break;
+                                }
+                            }
+                            if (bSearch)
+                            {
+                                CSearchInfo sinfo(pathbuf.get());
+                                sinfo.modifiedtime = pFindData->ftLastWriteTime;
+                                sinfo.folder = true;
+                                SendMessage(*this, SEARCH_FOUND, 1, (LPARAM)&sinfo);
+                            }
                         }
                     }
                 }

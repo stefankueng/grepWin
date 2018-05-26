@@ -156,6 +156,9 @@ private:
     bool                    m_bSizeC;
     bool                    m_endDialog;
     ExecuteAction           m_ExecuteImmediately;
+    int                     m_DateLimit;
+    FILETIME                m_Date1;
+    FILETIME                m_Date2;
 
     bool                    m_bReplace;
     bool                    m_bConfirmationOnReplace;
@@ -211,4 +214,9 @@ private:
     CRegStdDWORD            m_regOnlyOne;
     CRegStdString           m_regEditorCmd;
     CRegStdDWORD            m_regBackupInFolder;
+    CRegStdDWORD            m_regDateLimit;
+    CRegStdDWORD            m_regDate1Low;
+    CRegStdDWORD            m_regDate1High;
+    CRegStdDWORD            m_regDate2Low;
+    CRegStdDWORD            m_regDate2High;
 };
