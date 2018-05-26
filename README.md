@@ -7,7 +7,7 @@ grepWin is a simple search and replace tool which can use [regular expressions](
 
 In case you're not familiar with regular expressions, we have a very short [regular expression tutorial](https://tools.stefankueng.com/regexhelp.html) for you.
 
-[![grepWin](https://tools.stefankueng.com/img/grepwin/grepWin_search-small.9652f6cc.png)](https://tools.stefankueng.com/img/grepwin/grepWin_search.da72005c.png)
+[![grepWin](https://tools.stefankueng.com/img/grepwin/grepWin_search-small.9f66a88a.png)](https://tools.stefankueng.com/img/grepwin/grepWin_search.4e72bf88.png)
 
 # Command line parameters
 The command line parameters are listed on a [separate page](https://tools.stefankueng.com/grepWin_cmd.html).
