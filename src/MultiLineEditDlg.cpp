@@ -21,7 +21,10 @@
 #include "MultiLineEditDlg.h"
 #include <string>
 #include <Richedit.h>
+#pragma warning(push)
+#pragma warning(disable: 4996) // warning STL4010: Various members of std::allocator are deprecated in C++17
 #include <boost/regex.hpp>
+#pragma warning(pop)
 
 
 CMultiLineEditDlg::CMultiLineEditDlg(HWND hParent)

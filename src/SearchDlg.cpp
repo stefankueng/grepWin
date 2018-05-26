@@ -52,9 +52,12 @@
 #include <algorithm>
 #include <Commdlg.h>
 
+#pragma warning(push)
+#pragma warning(disable: 4996) // warning STL4010: Various members of std::allocator are deprecated in C++17
 #include <boost/regex.hpp>
 #include <boost/spirit/include/classic_file_iterator.hpp>
 #include <boost/iostreams/device/mapped_file.hpp>
+#pragma warning(pop)
 
 #define GREPWIN_DATEBUFFER 100
 #define LABELUPDATETIMER   10
