@@ -126,7 +126,6 @@ CSearchDlg::CSearchDlg(HWND hParent)
     , m_regPattern(_T("Software\\grepWin\\pattern"))
     , m_regExcludeDirsPattern(_T("Software\\grepWin\\ExcludeDirsPattern"))
     , m_regSearchPath(_T("Software\\grepWin\\searchpath"))
-    , m_regOnlyOne(_T("Software\\grepWin\\onlyone"), 0)
     , m_regEditorCmd(_T("Software\\grepWin\\editorcmd"))
     , m_regBackupInFolder(L"Software\\grepWin\\backupinfolder", FALSE)
     , m_regDateLimit(L"Software\\grepWin\\DateLimit", 0)
@@ -175,7 +174,6 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             AddToolTip(IDC_SEARCHPATH, TranslatedString(hResource, IDS_SEARCHPATH_TT).c_str());
             AddToolTip(IDC_DOTMATCHNEWLINE, TranslatedString(hResource, IDS_DOTMATCHNEWLINE_TT).c_str());
             AddToolTip(IDC_SEARCHTEXT, TranslatedString(hResource, IDS_SEARCHTEXT_TT).c_str());
-            AddToolTip(IDC_ONLYONE, TranslatedString(hResource, IDS_ONLYONE_TT).c_str());
             AddToolTip(IDC_EDITMULTILINE1, TranslatedString(hResource, IDS_EDITMULTILINE_TT).c_str());
             AddToolTip(IDC_EDITMULTILINE2, TranslatedString(hResource, IDS_EDITMULTILINE_TT).c_str());
             AddToolTip(IDOK, TranslatedString(hResource, IDS_SHIFT_NOTSEARCH).c_str());
@@ -333,7 +331,6 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             SendDlgItemMessage(hwndDlg, IDC_INCLUDEBINARY, BM_SETCHECK, m_bIncludeBinary ? BST_CHECKED : BST_UNCHECKED, 0);
             SendDlgItemMessage(hwndDlg, IDC_CASE_SENSITIVE, BM_SETCHECK, m_bCaseSensitive ? BST_CHECKED : BST_UNCHECKED, 0);
             SendDlgItemMessage(hwndDlg, IDC_DOTMATCHNEWLINE, BM_SETCHECK, m_bDotMatchesNewline ? BST_CHECKED : BST_UNCHECKED, 0);
-            SendDlgItemMessage(hwndDlg, IDC_ONLYONE, BM_SETCHECK, (bPortable ? _wtoi(g_iniFile.GetValue(L"global", L"onlyone", L"0")) : DWORD(m_regOnlyOne)) ? BST_CHECKED : BST_UNCHECKED, 0);
 
             CheckRadioButton(hwndDlg, IDC_REGEXRADIO, IDC_TEXTRADIO, (bPortable ? _wtoi(g_iniFile.GetValue(L"global", L"UseRegex", L"0")) : DWORD(m_regUseRegex)) ? IDC_REGEXRADIO : IDC_TEXTRADIO);
             CheckRadioButton(hwndDlg, IDC_ALLSIZERADIO, IDC_SIZERADIO, m_bAllSize ? IDC_ALLSIZERADIO : IDC_SIZERADIO);
@@ -415,7 +412,6 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             m_resizer.AddControl(hwndDlg, IDC_FILEPATTERNREGEX, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_FILEPATTERNTEXT, RESIZER_TOPLEFT);
 
-            m_resizer.AddControl(hwndDlg, IDC_ONLYONE, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_SETTINGSBUTTON, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_PROGRESS, RESIZER_TOPLEFTRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_REPLACE, RESIZER_TOPRIGHT);
@@ -2069,7 +2065,6 @@ bool CSearchDlg::SaveSettings()
 
     if (bPortable)
     {
-        g_iniFile.SetValue(L"global", L"onlyone", IsDlgButtonChecked(*this, IDC_ONLYONE) == BST_CHECKED ? L"1" : L"0");
         g_iniFile.SetValue(L"global", L"IncludeSystem", m_bIncludeSystem ? L"1" : L"0");
         g_iniFile.SetValue(L"global", L"IncludeHidden", m_bIncludeHidden ? L"1" : L"0");
         g_iniFile.SetValue(L"global", L"IncludeSubfolders", m_bIncludeSubfolders ? L"1" : L"0");
@@ -2088,7 +2083,6 @@ bool CSearchDlg::SaveSettings()
     }
     else
     {
-        m_regOnlyOne = IsDlgButtonChecked(*this, IDC_ONLYONE) == BST_CHECKED;
         m_regIncludeSystem = (DWORD)m_bIncludeSystem;
         m_regIncludeHidden = (DWORD)m_bIncludeHidden;
         m_regIncludeSubfolders = (DWORD)m_bIncludeSubfolders;

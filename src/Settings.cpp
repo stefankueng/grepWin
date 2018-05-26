@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2012-2013, 2016-2017 - Stefan Kueng
+// Copyright (C) 2012-2013, 2016-2018 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -46,6 +46,7 @@ LRESULT CSettingsDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
             InitDialog(hwndDlg, IDI_GREPWIN);
 
             CLanguage::Instance().TranslateWindow(*this);
+            AddToolTip(IDC_ONLYONE, TranslatedString(hResource, IDS_ONLYONE_TT).c_str());
 
             SetDlgItemText(hwndDlg, IDC_EDITORCMD, bPortable ? g_iniFile.GetValue(L"global", L"editorcmd", L"") : std::wstring(m_regEditorCmd).c_str());
 
@@ -89,6 +90,7 @@ LRESULT CSettingsDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
             SendDlgItemMessage(hwndDlg, IDC_LANGUAGE, CB_SETCURSEL, langIndex, 0);
             SendDlgItemMessage(hwndDlg, IDC_ESCKEY, BM_SETCHECK, bPortable ? !!_wtoi(g_iniFile.GetValue(L"settings", L"escclose", L"0")) : DWORD(CRegStdDWORD(L"Software\\grepWin\\escclose", FALSE)) ? BST_CHECKED : BST_UNCHECKED, 0);
             SendDlgItemMessage(hwndDlg, IDC_BACKUPINFOLDER, BM_SETCHECK, bPortable ? !!_wtoi(g_iniFile.GetValue(L"settings", L"backupinfolder", L"0")) : DWORD(CRegStdDWORD(L"Software\\grepWin\\backupinfolder", FALSE)) ? BST_CHECKED : BST_UNCHECKED, 0);
+            SendDlgItemMessage(hwndDlg, IDC_ONLYONE, BM_SETCHECK, bPortable ? _wtoi(g_iniFile.GetValue(L"global", L"onlyone", L"0")) : DWORD(CRegStdDWORD(L"Software\\grepWin\\onlyone", FALSE)) ? BST_CHECKED : BST_UNCHECKED, 0);
 
             AddToolTip(IDC_BACKUPINFOLDER, TranslatedString(hResource, IDS_BACKUPINFOLDER_TT).c_str());
 
@@ -103,6 +105,7 @@ LRESULT CSettingsDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
             m_resizer.AddControl(hwndDlg, IDC_LANGUAGE, RESIZER_TOPRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_ESCKEY, RESIZER_TOPLEFTRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_BACKUPINFOLDER, RESIZER_TOPLEFTRIGHT);
+            m_resizer.AddControl(hwndDlg, IDC_ONLYONE, RESIZER_TOPLEFTRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_DWM, RESIZER_BOTTOMLEFT);
             m_resizer.AddControl(hwndDlg, IDOK, RESIZER_BOTTOMRIGHT);
             m_resizer.AddControl(hwndDlg, IDCANCEL, RESIZER_BOTTOMRIGHT);
@@ -168,6 +171,7 @@ LRESULT CSettingsDlg::DoCommand(int id, int /*msg*/)
             {
                 g_iniFile.SetValue(L"settings", L"escclose", (IsDlgButtonChecked(*this, IDC_ESCKEY) == BST_CHECKED) ? L"1" : L"0");
                 g_iniFile.SetValue(L"settings", L"backupinfolder", (IsDlgButtonChecked(*this, IDC_BACKUPINFOLDER) == BST_CHECKED) ? L"1" : L"0");
+                g_iniFile.SetValue(L"global", L"onlyone", IsDlgButtonChecked(*this, IDC_ONLYONE) == BST_CHECKED ? L"1" : L"0");
             }
             else
             {
@@ -175,6 +179,8 @@ LRESULT CSettingsDlg::DoCommand(int id, int /*msg*/)
                 esc = (IsDlgButtonChecked(*this, IDC_ESCKEY) == BST_CHECKED);
                 CRegStdDWORD backup(L"Software\\grepWin\\backupinfolder", FALSE);
                 backup = (IsDlgButtonChecked(*this, IDC_BACKUPINFOLDER) == BST_CHECKED);
+                CRegStdDWORD regOnlyOne(L"Software\\grepWin\\onlyone", FALSE);
+                regOnlyOne = (IsDlgButtonChecked(*this, IDC_ONLYONE) == BST_CHECKED);
             }
     }
         // fall through

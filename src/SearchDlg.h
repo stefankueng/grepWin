@@ -213,7 +213,6 @@ private:
     CRegStdString           m_regPattern;
     CRegStdString           m_regExcludeDirsPattern;
     CRegStdString           m_regSearchPath;
-    CRegStdDWORD            m_regOnlyOne;
     CRegStdString           m_regEditorCmd;
     CRegStdDWORD            m_regBackupInFolder;
     CRegStdDWORD            m_regDateLimit;
