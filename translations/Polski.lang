@@ -74,6 +74,10 @@ msgstr "Dodaj do presetów"
 msgid "All Files"
 msgstr "Wszystkie pliki"
 
+#. Resource IDs: (1078)
+msgid "All dates"
+msgstr ""
+
 #. Resource IDs: (1005)
 msgid "All sizes"
 msgstr "Wszystkie rozmiary"
@@ -82,6 +86,10 @@ msgstr "Wszystkie rozmiary"
 #, c-format
 msgid "Are you sure you want to replace\n%s\nwith\n%s\nwithout creating backups?"
 msgstr "Czy na pewno chcesz zastąpić\n%s\nstringiem:\n%s\nbez tworzenia kopii zapasowych?"
+
+#. Resource IDs: (1081)
+msgid "Between"
+msgstr ""
 
 #. Resource IDs: (2)
 msgid "Cancel"
@@ -232,6 +240,10 @@ msgstr "Dopasowania"
 msgid "Name"
 msgstr "Nazwa"
 
+#. Resource IDs: (1079)
+msgid "Newer than"
+msgstr ""
+
 #. Resource IDs: (115)
 msgid "Newline is matched by '.'"
 msgstr "Nowa linia jest dopasowana przez '.'"
@@ -239,6 +251,10 @@ msgstr "Nowa linia jest dopasowana przez '.'"
 #. Resource IDs: (1)
 msgid "OK"
 msgstr "OK"
+
+#. Resource IDs: (1080)
+msgid "Older than"
+msgstr ""
 
 #. Resource IDs: (1062)
 msgid "Only one instance"
@@ -467,7 +483,7 @@ msgstr "brak tekstu do przetestowania z dostępnymi"
 
 #. Resource IDs: (112)
 msgid "only files that match this pattern are searched.\r\nUse \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
-msgstr "Wyszukiwane są tylko pliki odpowiadające temu wzorcowi.\r\nJako separatora użyj \"|\" \r\nPrzykład: *.cpp|*.h
+msgstr "Wyszukiwane są tylko pliki odpowiadające temu wzorcowi.\r\nJako separatora użyj \"|\" \r\nPrzykład: *.cpp|*."
 
 #. Resource IDs: (129)
 msgid "read error"

@@ -74,6 +74,10 @@ msgstr ""
 msgid "All Files"
 msgstr ""
 
+#. Resource IDs: (1078)
+msgid "All dates"
+msgstr ""
+
 #. Resource IDs: (1005)
 msgid "All sizes"
 msgstr ""
@@ -81,6 +85,10 @@ msgstr ""
 #. Resource IDs: (124)
 #, c-format
 msgid "Are you sure you want to replace\n%s\nwith\n%s\nwithout creating backups?"
+msgstr ""
+
+#. Resource IDs: (1081)
+msgid "Between"
 msgstr ""
 
 #. Resource IDs: (2)
@@ -232,12 +240,20 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
+#. Resource IDs: (1079)
+msgid "Newer than"
+msgstr ""
+
 #. Resource IDs: (115)
 msgid "Newline is matched by '.'"
 msgstr ""
 
 #. Resource IDs: (1)
 msgid "OK"
+msgstr ""
+
+#. Resource IDs: (1080)
+msgid "Older than"
 msgstr ""
 
 #. Resource IDs: (1062)

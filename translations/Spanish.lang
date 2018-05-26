@@ -74,6 +74,10 @@ msgstr "Agregar a predefinidos"
 msgid "All Files"
 msgstr "Todos los archivos"
 
+#. Resource IDs: (1078)
+msgid "All dates"
+msgstr ""
+
 #. Resource IDs: (1005)
 msgid "All sizes"
 msgstr "Todos los tamaños"
@@ -82,6 +86,10 @@ msgstr "Todos los tamaños"
 #, c-format
 msgid "Are you sure you want to replace\n%s\nwith\n%s\nwithout creating backups?"
 msgstr "Estas seguro de querer reemplazar\s%s\ncon\n%s\nsin crear respaldos?"
+
+#. Resource IDs: (1081)
+msgid "Between"
+msgstr ""
 
 #. Resource IDs: (2)
 msgid "Cancel"
@@ -177,7 +185,7 @@ msgstr "Archivos"
 
 #. Resource IDs: (109)
 msgid "GREPWIN"
-msgstr GREPWIN
+msgstr "REPWI"
 
 #. Resource IDs: (156)
 msgid "If enabled, a backup folder is created inside the folder that's searched/replaced in, and the files are backed up into that folder"
@@ -232,6 +240,10 @@ msgstr "Coincidencias"
 msgid "Name"
 msgstr "Nombre"
 
+#. Resource IDs: (1079)
+msgid "Newer than"
+msgstr ""
+
 #. Resource IDs: (115)
 msgid "Newline is matched by '.'"
 msgstr "Nueva linea coincide con '.'"
@@ -239,6 +251,10 @@ msgstr "Nueva linea coincide con '.'"
 #. Resource IDs: (1)
 msgid "OK"
 msgstr "OK"
+
+#. Resource IDs: (1080)
+msgid "Older than"
+msgstr ""
 
 #. Resource IDs: (1062)
 msgid "Only one instance"
@@ -497,3 +513,4 @@ msgstr "la(s) ruta(s) que se busca(n) recursivamente.\r\nSepare rutas con el sim
 #. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "puede excluir directorios,ej. CVS e imagenes.\r\nEjemplo: ^(CVS|imagenes)$\r\nNota, carpetas '.svn' estan 'ocultas' en Windows, por lo que usualmente no son analizadas."
+

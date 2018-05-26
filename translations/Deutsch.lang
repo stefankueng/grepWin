@@ -74,6 +74,10 @@ msgstr "Zu Favoriten"
 msgid "All Files"
 msgstr "Alle Dateien"
 
+#. Resource IDs: (1078)
+msgid "All dates"
+msgstr ""
+
 #. Resource IDs: (1005)
 msgid "All sizes"
 msgstr "Alle Grössen"
@@ -82,6 +86,10 @@ msgstr "Alle Grössen"
 #, c-format
 msgid "Are you sure you want to replace\n%s\nwith\n%s\nwithout creating backups?"
 msgstr "Möchten Sie wirklich\n%s\nmit\n%s\n ersetzen ohne Backupdateien zu erstellen?"
+
+#. Resource IDs: (1081)
+msgid "Between"
+msgstr ""
 
 #. Resource IDs: (2)
 msgid "Cancel"
@@ -232,6 +240,10 @@ msgstr "Gefunden"
 msgid "Name"
 msgstr "Name"
 
+#. Resource IDs: (1079)
+msgid "Newer than"
+msgstr ""
+
 #. Resource IDs: (115)
 msgid "Newline is matched by '.'"
 msgstr "Zeilenumbruch wird von '.' mit eingeschlossen"
@@ -239,6 +251,10 @@ msgstr "Zeilenumbruch wird von '.' mit eingeschlossen"
 #. Resource IDs: (1)
 msgid "OK"
 msgstr "OK"
+
+#. Resource IDs: (1080)
+msgid "Older than"
+msgstr ""
 
 #. Resource IDs: (1062)
 msgid "Only one instance"
