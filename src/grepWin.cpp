@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008, 2010-2017 - Stefan Kueng
+// Copyright (C) 2007-2008, 2010-2018 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -286,6 +286,31 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
                 searchDlg.SetEndDialog();
             if (parser.HasKey(L"content"))
                 searchDlg.SetShowContent();
+            if (parser.HasVal(L"datelimit") && parser.HasVal(L"date1"))
+            {
+                FILETIME date1 = { 0 };
+                FILETIME date2 = { 0 };
+                int year = 0;
+                int month = 0;
+                int day = 0;
+                auto sDate1 = parser.GetVal(L"date1");
+                swscanf_s(sDate1, L"%4d:%2d:%2d", &year, &month, &day);
+                SYSTEMTIME sysTime = { 0 };
+                sysTime.wYear = (WORD)year;
+                sysTime.wMonth = (WORD)month;
+                sysTime.wDay = (WORD)day;
+                auto test = SystemTimeToFileTime(&sysTime, &date1);
+                if (parser.HasVal(L"date2"))
+                {
+                    auto sDate2 = parser.GetVal(L"date2");
+                    swscanf_s(sDate2, L"%4d:%2d:%2d", &year, &month, &day);
+                    sysTime.wYear = (WORD)year;
+                    sysTime.wMonth = (WORD)month;
+                    sysTime.wDay = (WORD)day;
+                    SystemTimeToFileTime(&sysTime, &date2);
+                }
+                searchDlg.SetDateLimit(parser.GetLongVal(L"datelimit"), date1, date2);
+            }
 
             ret = (int)searchDlg.DoModal(hInstance, IDD_SEARCHDLG, NULL, IDR_SEARCHDLG);
         }

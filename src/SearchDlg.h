@@ -75,6 +75,7 @@ public:
     void                    SetIncludeHidden(bool bSet) {m_bIncludeHiddenC = true; m_bIncludeHidden = bSet;}
     void                    SetIncludeSubfolders(bool bSet) {m_bIncludeSubfoldersC = true; m_bIncludeSubfolders = bSet;}
     void                    SetIncludeBinary(bool bSet) {m_bIncludeBinaryC = true; m_bIncludeBinary = bSet;}
+    void                    SetDateLimit(int datelimit, FILETIME t1, FILETIME t2) { m_bDateLimitC = true; m_DateLimit = datelimit; m_Date1 = t1; m_Date2 = t2; }
 
     void                    SetExecute(ExecuteAction execute) {m_ExecuteImmediately = execute;}
     void                    SetEndDialog() { m_endDialog = true; }
@@ -157,6 +158,7 @@ private:
     bool                    m_endDialog;
     ExecuteAction           m_ExecuteImmediately;
     int                     m_DateLimit;
+    bool                    m_bDateLimitC;
     FILETIME                m_Date1;
     FILETIME                m_Date2;
 
