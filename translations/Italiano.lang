@@ -1,20 +1,22 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# grepWin Italian Translation.
+# Copyright (C) 2018 Stefan Küng
+# This file is distributed under the same license as the grepWin package.
+# Stefan Küng <tortoisesvn@gmail.com>, 2018.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 1900-01-01 00:00+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"Project-Id-Version: grepWin 1.8.0\n"
+"Report-Msgid-Bugs-To: tortoisesvn@gmail.com\n"
+"POT-Creation-Date: 2018-03-15 12:37+0100\n"
+"PO-Revision-Date: 2018-06-05 12:26+0200\n"
+"Last-Translator: Stefano Gibellini <daneel@hotmail.it>\n"
+"Language-Team: Stefano Gibellini <daneel@hotmail.it>\n"
+"Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 
 # msgid/msgstr fields for Accelerator keys
@@ -76,7 +78,7 @@ msgstr "Tutti i File"
 
 #. Resource IDs: (1078)
 msgid "All dates"
-msgstr ""
+msgstr "Qualsiasi data"
 
 #. Resource IDs: (1005)
 msgid "All sizes"
@@ -89,7 +91,7 @@ msgstr "Sei sicuro di voler sostituire\n%s\ncon\n%s\nsenza creane copie?"
 
 #. Resource IDs: (1081)
 msgid "Between"
-msgstr ""
+msgstr "Fra"
 
 #. Resource IDs: (2)
 msgid "Cancel"
@@ -242,7 +244,7 @@ msgstr "Nome"
 
 #. Resource IDs: (1079)
 msgid "Newer than"
-msgstr ""
+msgstr "Prima del"
 
 #. Resource IDs: (115)
 msgid "Newline is matched by '.'"
@@ -254,7 +256,7 @@ msgstr "OK"
 
 #. Resource IDs: (1080)
 msgid "Older than"
-msgstr ""
+msgstr "Dopo il"
 
 #. Resource IDs: (1062)
 msgid "Only one instance"
