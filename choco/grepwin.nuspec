@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <metadata>
+    <id>grepwin</id>
+    <title>grepWin</title>
+    <version>$MajorVersion$.$MinorVersion$.$MicroVersion$</version>
+    <authors>Stefan Kueng</authors>
+    <owners>Stefan Kueng</owners>
+    <summary>grepWin is a powerful and fast search tool using regular expressions.</summary>
+    <description>grepWin is a simple search and replace tool which can use regular expressions to do its job. This allows to do much more powerful searches and replaces.</description>
+    <projectUrl>https://tools.stefankueng.com/grepWin.html</projectUrl>
+    <tags>grepwin grep search regex admin</tags>
+    <licenseUrl>http://www.gnu.org/licenses/old-licenses/gpl-2.0.html</licenseUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <iconUrl>https://github.com/stefankueng/grepWin/raw/master/src/Resources/logo.png</iconUrl>
+  </metadata>
+  <files>
+    <file src="tools\**" target="tools" />
+  </files>
+</package>
