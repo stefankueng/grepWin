@@ -79,7 +79,7 @@ public:
 
     void                    SetExecute(ExecuteAction execute) {m_ExecuteImmediately = execute;}
     void                    SetEndDialog() { m_endDialog = true; }
-    void                    SetShowContent() { m_showContent = true; }
+    void                    SetShowContent() { m_showContent = true; m_showContentSet = true; }
 protected:
     LRESULT CALLBACK        DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
     LRESULT                 DoCommand(int id, int msg);
@@ -165,6 +165,7 @@ private:
     bool                    m_bReplace;
     bool                    m_bConfirmationOnReplace;
     bool                    m_showContent;
+    bool                    m_showContentSet;
     HANDLE                  m_hSearchThread;
 
     std::vector<CSearchInfo> m_items;
@@ -220,4 +221,5 @@ private:
     CRegStdDWORD            m_regDate1High;
     CRegStdDWORD            m_regDate2Low;
     CRegStdDWORD            m_regDate2High;
+    CRegStdDWORD            m_regShowContent;
 };
