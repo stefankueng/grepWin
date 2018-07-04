@@ -29,12 +29,12 @@
     <property name="msifilename" value="grepWin-${verstring}" />
     <!-- sign all release binaries -->
     <if test="${file::exists('..\..\signinfo.txt')}">
-      <exec program="signtool">
+      <exec program="${signtool}">
         <arg value="sign" />
         <arg value="${signinfo}" />
         <arg value="..\..\bin\release\grepWin.exe" />
       </exec>
-      <exec program="signtool">
+      <exec program="${signtool}">
         <arg value="sign" />
         <arg value="${signinfo}" />
         <arg value="..\..\bin\release64\grepWin.exe" />
@@ -117,15 +117,25 @@
       </fileset>
     </delete>
     <if test="${file::exists('..\..\signinfo.txt')}">
-      <exec program="signtool">
+      <exec program="${signtool}">
         <arg value="sign" />
         <arg value="${signinfo}" />
         <arg value="..\..\bin\${msifilename}.msi" />
       </exec>
-      <exec program="signtool">
+      <exec program="${signtool}">
+        <arg value="sign" />
+        <arg value="${signinfo}" />
+        <arg value="..\..\bin\${msifilename}_user.msi" />
+      </exec>
+      <exec program="${signtool}">
         <arg value="sign" />
         <arg value="${signinfo}" />
         <arg value="..\..\bin\${msifilename}-x64.msi" />
+      </exec>
+      <exec program="${signtool}">
+        <arg value="sign" />
+        <arg value="${signinfo}" />
+        <arg value="..\..\bin\${msifilename}-x64_user.msi" />
       </exec>
     </if>
   </target>

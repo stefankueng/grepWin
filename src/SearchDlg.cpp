@@ -133,6 +133,7 @@ CSearchDlg::CSearchDlg(HWND hParent)
     , m_regDate1High(L"Software\\grepWin\\Date1High", 0)
     , m_regDate2Low(L"Software\\grepWin\\Date2Low", 0)
     , m_regDate2High(L"Software\\grepWin\\Date2High", 0)
+    , m_regShowContent(L"Software\\grepWin\\ShowContent", 0)
     , m_AutoCompleteFilePatterns(bPortable ? &g_iniFile : NULL)
     , m_AutoCompleteExcludeDirsPatterns(bPortable ? &g_iniFile : NULL)
     , m_AutoCompleteSearchPatterns(bPortable ? &g_iniFile : NULL)
@@ -140,6 +141,7 @@ CSearchDlg::CSearchDlg(HWND hParent)
     , m_AutoCompleteSearchPaths(bPortable ? &g_iniFile : NULL)
     , m_pBookmarksDlg(nullptr)
     , m_showContent(false)
+    , m_showContentSet(false)
 {
 }
 
@@ -344,6 +346,18 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             DialogEnableWindow(IDC_EXCLUDEDIRSPATTERN, !!m_bIncludeSubfolders);
 
             ::SetDlgItemText(*this, IDOK, TranslatedString(hResource, IDS_SEARCH).c_str());
+            if (!m_showContentSet)
+            {
+                if (bPortable)
+                {
+                    m_showContent = wcscmp(g_iniFile.GetValue(L"global", L"showcontent", L"0"), L"0") == 0;
+                }
+                else
+                {
+                    m_showContent = DWORD(m_regShowContent) != 0;
+                }
+
+            }
             CheckRadioButton(*this, IDC_RESULTFILES, IDC_RESULTCONTENT, m_showContent ? IDC_RESULTCONTENT : IDC_RESULTFILES);
 
             CheckRadioButton(hwndDlg, IDC_RADIO_DATE_ALL, IDC_RADIO_DATE_BETWEEN, m_DateLimit + IDC_RADIO_DATE_ALL);
@@ -2062,6 +2076,7 @@ bool CSearchDlg::SaveSettings()
     SystemTimeToFileTime(&sysTime, &m_Date1);
     DateTime_GetSystemtime(GetDlgItem(*this, IDC_DATEPICK2), &sysTime);
     SystemTimeToFileTime(&sysTime, &m_Date2);
+    m_showContent = IsDlgButtonChecked(*this, IDC_RESULTCONTENT) == BST_CHECKED;
 
     if (bPortable)
     {
@@ -2080,6 +2095,8 @@ bool CSearchDlg::SaveSettings()
         g_iniFile.SetValue(L"global", L"Date1High", std::to_wstring(m_Date1.dwHighDateTime).c_str());
         g_iniFile.SetValue(L"global", L"Date2Low", std::to_wstring(m_Date2.dwLowDateTime).c_str());
         g_iniFile.SetValue(L"global", L"Date2High", std::to_wstring(m_Date2.dwHighDateTime).c_str());
+        if (!m_showContentSet)
+            g_iniFile.SetValue(L"global", L"showcontent", m_showContent ? L"1" : L"0");
     }
     else
     {
@@ -2098,6 +2115,8 @@ bool CSearchDlg::SaveSettings()
         m_regDate1High = m_Date1.dwHighDateTime;
         m_regDate2Low = m_Date2.dwLowDateTime;
         m_regDate2High = m_Date2.dwHighDateTime;
+        if (!m_showContentSet)
+            m_regShowContent = m_showContent;
     }
 
     SaveWndPosition();

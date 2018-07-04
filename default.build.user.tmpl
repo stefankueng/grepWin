@@ -47,12 +47,18 @@
         <variable name="WIX" value="%WIX%\bin" />
       </setenv>
     </if>
+    <!--
+      specifies the tool to use for signing the binaries.
+      change to "scsigntool.exe" in case you're using a smart card and have scsigntool set up
+    -->
+    <property name="signtool" value="scsigntool.exe" />
 
     <!--
       Update environment & we are good to go.
     -->
 
     <setenv>
+      <variable name="PATH" value="D:\smartcardtools\x64;%PATH%" />
       <variable name="PATH" value="%WIX%;%PATH%" />
       <variable name="WIXUI" value="%WIX%" />
     </setenv>
