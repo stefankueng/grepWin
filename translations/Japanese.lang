@@ -3,19 +3,35 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: grpWin\n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 1900-01-01 00:00+0000\n"
-"PO-Revision-Date: 2018-06-21 22:56+0900\n"
-"Last-Translator: Tilt <tiltstr@gmail.com>\n"
-"Language-Team: Tilt\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
-"Language: ja\n"
+
+
+# msgid/msgstr fields for Accelerator keys
+# Format is: "ID:xxxxxx:VACS+X" where:
+#    ID:xxxxx = the menu ID corresponding to the accelerator
+#    V = Virtual key (or blank if not used) - nearly always set!
+#    A = Alt key     (or blank if not used)
+#    C = Ctrl key    (or blank if not used)
+#    S = Shift key   (or blank if not used)
+#    X = upper case character
+# e.g. "V CS+Q" == Ctrl + Shift + 'Q'
+
+# ONLY Accelerator Keys with corresponding alphanumeric characters can be
+# updated i.e. function keys (F2), special keys (Delete, HoMe) etc. will not.
+
+# ONLY change the msgstr field. Do NOT change any other.
+# If you do not want to change an Accelerator Key, copy msgid to msgstr
 
 # msgid/msgstr fields for Accelerator keys
 # Format is: "ID:xxxxxx:VACS+X" where:
@@ -253,7 +269,7 @@ msgstr "OK"
 msgid "Older than"
 msgstr "より古い"
 
-#. Resource IDs: (1062)
+#. Resource IDs: (1063)
 msgid "Only one instance"
 msgstr "複数インスタンスを禁止"
 
@@ -504,21 +520,10 @@ msgid "search string is empty"
 msgstr "検索文字列が空白です"
 
 #. Resource IDs: (114)
-msgid ""
-"the path(s) which is searched recursively.\r\n"
-"Separate paths with the | symbol.\r\n"
-"Example: c:\\temp|d:\\logs"
-msgstr ""
-"現在のパスは再帰的に検索されます.\r\n"
-"パスは \"|\" で区切ることができます.\r\n"
-"指定例:  c:\\temp|d:\\logs"
+msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"
+msgstr "現在のパスは再帰的に検索されます.\r\nパスは \"|\" で区切ることができます.\r\n指定例:  c:\\temp|d:\\logs"
 
 #. Resource IDs: (113)
-msgid ""
-"you can exclude directories, e.g. CVS and images.\r\n"
-"Example: ^(CVS|images)$\r\n"
-"Note, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
-msgstr ""
-"特定のディレクトリを除外できます。指定例: CVS および images.\r\n"
-"指定例: ^(CVS|images)$\r\n"
-"注意, \".svn\" フォルダは通常の Windows では非表示のため、通常はスキャンの対象外になります.."
+msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
+msgstr "特定のディレクトリを除外できます。指定例: CVS および images.\r\n指定例: ^(CVS|images)$\r\n注意, \".svn\" フォルダは通常の Windows では非表示のため、通常はスキャンの対象外になります.."
+
