@@ -1989,6 +1989,15 @@ bool CSearchDlg::SaveSettings()
         {
             std::transform(s.begin(), s.end(), s.begin(), ::towlower);
             m_patterns.push_back(s);
+            auto endpart = s.rbegin();
+            if (*endpart == '*' && s.size() > 2)
+            {
+                ++endpart;
+                if (*endpart == '.')
+                {
+                    m_patterns.push_back(s.substr(0, s.size() - 2));
+                }
+            }
         }
         pBuf += pos;
         pBuf++;
