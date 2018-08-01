@@ -76,7 +76,7 @@ msgstr "Wszystkie pliki"
 
 #. Resource IDs: (1078)
 msgid "All dates"
-msgstr ""
+msgstr "Wszystkie daty"
 
 #. Resource IDs: (1005)
 msgid "All sizes"
@@ -89,7 +89,7 @@ msgstr "Czy na pewno chcesz zastąpić\n%s\nstringiem:\n%s\nbez tworzenia kopii 
 
 #. Resource IDs: (1081)
 msgid "Between"
-msgstr ""
+msgstr "Pomiędzy"
 
 #. Resource IDs: (2)
 msgid "Cancel"
@@ -242,7 +242,7 @@ msgstr "Nazwa"
 
 #. Resource IDs: (1079)
 msgid "Newer than"
-msgstr ""
+msgstr "Nowsze niż"
 
 #. Resource IDs: (115)
 msgid "Newline is matched by '.'"
@@ -254,9 +254,9 @@ msgstr "OK"
 
 #. Resource IDs: (1080)
 msgid "Older than"
-msgstr ""
+msgstr "Starsze niż"
 
-#. Resource IDs: (1063)
+#. Resource IDs: (1062)
 msgid "Only one instance"
 msgstr "Tylko jedna instancja"
 
