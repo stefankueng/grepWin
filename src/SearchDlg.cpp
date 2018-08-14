@@ -576,6 +576,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
         break;
     case SEARCH_END:
         {
+            AddFoundEntry(NULL, true);
             AutoSizeAllColumns();
             UpdateInfoLabel(false);
             ::SetDlgItemText(*this, IDOK, TranslatedString(hResource, IDS_SEARCH).c_str());
@@ -589,7 +590,10 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
     case WM_TIMER:
         {
             if (wParam == LABELUPDATETIMER)
+            {
+                AddFoundEntry(NULL, true);
                 UpdateInfoLabel(true);
+            }
         }
         break;
     case WM_HELP:
@@ -1242,9 +1246,12 @@ bool CSearchDlg::AddFoundEntry(CSearchInfo * pInfo, bool bOnlyListControl)
             ++subIndex;
         }
     }
-    HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
-    bool filelist = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
-    ListView_SetItemCount(hListControl, filelist ? m_items.size() : m_listItems.size());
+    else
+    {
+        HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
+        bool filelist = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
+        ListView_SetItemCount(hListControl, filelist ? m_items.size() : m_listItems.size());
+    }
     return true;
 }
 
