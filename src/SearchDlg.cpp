@@ -1900,7 +1900,9 @@ void CSearchDlg::OpenFileAtListIndex(int listIndex)
     else if (appname.find(_T("notepad2.exe")) != std::wstring::npos)
     {
         // Notepad2
-        linenumberparam = CStringUtils::Format(L"/g %s", textlinebuf);
+        auto escapedsearch = m_searchString;
+        SearchReplace(escapedsearch, L"\"", L"\\\"");
+        linenumberparam_before = CStringUtils::Format(L"/g %s /mr \"%s\"", textlinebuf, escapedsearch.c_str());
     }
     else if ((appname.find(_T("bowpad.exe")) != std::wstring::npos) || (appname.find(_T("bowpad64.exe")) != std::wstring::npos))
     {
