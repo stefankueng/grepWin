@@ -369,6 +369,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             FileTimeToSystemTime(&m_Date2, &sysTime);
             DateTime_SetSystemtime(hTime2, GDT_VALID, &sysTime);
             ShowWindow(GetDlgItem(*this, IDC_DATEPICK2), (m_DateLimit == IDC_RADIO_DATE_BETWEEN - IDC_RADIO_DATE_ALL) ? SW_SHOW : SW_HIDE);
+            ShowWindow(GetDlgItem(*this, IDC_DATEPICK1), (m_DateLimit != 0) ? SW_SHOW : SW_HIDE);
 
             SetFocus(GetDlgItem(hwndDlg, IDC_SEARCHTEXT));
 
@@ -575,6 +576,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
         break;
     case SEARCH_END:
         {
+            AddFoundEntry(NULL, true);
             AutoSizeAllColumns();
             UpdateInfoLabel(false);
             ::SetDlgItemText(*this, IDOK, TranslatedString(hResource, IDS_SEARCH).c_str());
@@ -588,7 +590,10 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
     case WM_TIMER:
         {
             if (wParam == LABELUPDATETIMER)
+            {
+                AddFoundEntry(NULL, true);
                 UpdateInfoLabel(true);
+            }
         }
         break;
     case WM_HELP:
@@ -826,7 +831,8 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
         {
             auto isBetween = IsDlgButtonChecked(*this, IDC_RADIO_DATE_BETWEEN) == BST_CHECKED;
             ShowWindow(GetDlgItem(*this, IDC_DATEPICK2), isBetween ? SW_SHOW : SW_HIDE);
-        }
+            ShowWindow(GetDlgItem(*this, IDC_DATEPICK1), IsDlgButtonChecked(*this, IDC_RADIO_DATE_ALL) ? SW_HIDE : SW_SHOW);
+    }
         break;
     case IDC_TESTREGEX:
         {
@@ -1240,9 +1246,12 @@ bool CSearchDlg::AddFoundEntry(CSearchInfo * pInfo, bool bOnlyListControl)
             ++subIndex;
         }
     }
-    HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
-    bool filelist = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
-    ListView_SetItemCount(hListControl, filelist ? m_items.size() : m_listItems.size());
+    else
+    {
+        HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
+        bool filelist = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
+        ListView_SetItemCount(hListControl, filelist ? m_items.size() : m_listItems.size());
+    }
     return true;
 }
 
@@ -1891,7 +1900,9 @@ void CSearchDlg::OpenFileAtListIndex(int listIndex)
     else if (appname.find(_T("notepad2.exe")) != std::wstring::npos)
     {
         // Notepad2
-        linenumberparam = CStringUtils::Format(L"/g %s", textlinebuf);
+        auto escapedsearch = m_searchString;
+        SearchReplace(escapedsearch, L"\"", L"\\\"");
+        linenumberparam_before = CStringUtils::Format(L"/g %s /mr \"%s\"", textlinebuf, escapedsearch.c_str());
     }
     else if ((appname.find(_T("bowpad.exe")) != std::wstring::npos) || (appname.find(_T("bowpad64.exe")) != std::wstring::npos))
     {
@@ -1987,6 +1998,15 @@ bool CSearchDlg::SaveSettings()
         {
             std::transform(s.begin(), s.end(), s.begin(), ::towlower);
             m_patterns.push_back(s);
+            auto endpart = s.rbegin();
+            if (*endpart == '*' && s.size() > 2)
+            {
+                ++endpart;
+                if (*endpart == '.')
+                {
+                    m_patterns.push_back(s.substr(0, s.size() - 2));
+                }
+            }
         }
         pBuf += pos;
         pBuf++;
