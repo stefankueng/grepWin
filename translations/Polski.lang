@@ -121,7 +121,7 @@ msgstr "Kopiuj ścieżki do schowka"
 
 #. Resource IDs: (147)
 msgid "Copy text result to clipboard"
-msgstr "Kopiuj wynik tekstu do schowka"
+msgstr "Kopiuj wynik tekstowy do schowka"
 
 #. Resource IDs: (148)
 msgid "Copy text results to clipboard"
@@ -286,7 +286,7 @@ msgstr "Presety"
 
 #. Resource IDs: (1065)
 msgid "Press F1 for help"
-msgstr " Aby uzyskać pomoc naciśnij F1"
+msgstr "Aby uzyskać pomoc naciśnij F1"
 
 #. Resource IDs: (154)
 msgid "Programs"
