@@ -55,6 +55,10 @@
             <RegistryValue Root="HKLM" Key="Software\Classes\Directory\Background\shell\grepWin" Value="search with grepWin" Type="string" />
             <RegistryValue Root="HKLM" Key="Software\Classes\Directory\Background\shell\grepWin" Name="Icon" Value='[INSTALLDIR]grepWin.exe,-107' Type="string" />
             <RegistryValue Root="HKLM" Key="Software\Classes\Directory\Background\shell\grepWin\command" Value='[INSTALLDIR]grepWin.exe /searchpath:"%V"' Type="string" />
+            <RegistryKey Root="HKLM" Key="Software\Classes\LibraryFolder\background\shell\grepWin" />
+            <RegistryValue Root="HKLM" Key="Software\Classes\LibraryFolder\background\shell\grepWin" Value="search with grepWin" Type="string" />
+            <RegistryValue Root="HKLM" Key="Software\Classes\LibraryFolder\background\shell\grepWin" Name="Icon" Value='[INSTALLDIR]grepWin.exe,-107' Type="string" />
+            <RegistryValue Root="HKLM" Key="Software\Classes\LibraryFolder\background\shell\grepWin\command" Value='[INSTALLDIR]grepWin.exe /searchpath:"%V"' Type="string" />
             <RegistryKey Root="HKLM" Key="Software\Classes\Folder\shell\grepWin" />
             <RegistryValue Root="HKLM" Key="Software\Classes\Folder\shell\grepWin" Value="search with grepWin" Type="string" />
             <RegistryValue Root="HKLM" Key="Software\Classes\Folder\shell\grepWin" Name="Icon" Value='[INSTALLDIR]grepWin.exe,-107' Type="string" />
