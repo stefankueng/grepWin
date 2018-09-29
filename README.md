@@ -2,12 +2,13 @@
 Regular expression search and replace for Windows
 
 [![Build status](https://ci.appveyor.com/api/projects/status/r29a9n4e7cp89qqp?svg=true)](https://ci.appveyor.com/project/stefankueng/grepwin)
+[![Build Status](https://tortoisesvn.visualstudio.com/tortoisesvnGitHub/_apis/build/status/stefankueng.grepWin)](https://tortoisesvn.visualstudio.com/tortoisesvnGitHub/_build/latest?definitionId=8)
 
 grepWin is a simple search and replace tool which can use [regular expressions](https://en.wikipedia.org/wiki/Regular_expression) to do its job. This allows to do much more powerful searches and replaces.
 
 In case you're not familiar with regular expressions, we have a very short [regular expression tutorial](https://tools.stefankueng.com/regexhelp.html) for you.
 
-[![grepWin](https://tools.stefankueng.com/img/grepwin/grepWin_search-small.9f66a88a.png)](https://tools.stefankueng.com/img/grepwin/grepWin_search.4e72bf88.png)
+[![grepWin](https://raw.githubusercontent.com/stefankueng/grepWin/master/src/Resources/grepWin_search-small.png)](https://raw.githubusercontent.com/stefankueng/grepWin/master/src/Resources/grepWin_search.png)
 
 # Command line parameters
 The command line parameters are listed on a [separate page](https://tools.stefankueng.com/grepWin_cmd.html).
