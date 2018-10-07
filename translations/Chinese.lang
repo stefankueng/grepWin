@@ -1,17 +1,17 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# Chinese language file for grepWin
+# Copyright (C) 2018 -=XARA=-
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# -=XARA=- (x1983@msn.com), 2018.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 1900-01-01 00:00+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"POT-Creation-Date: 2013-04-02 21:00\n"
+"PO-Revision-Date: 2018-10-03 10:04\n"
+"Last-Translator: =XARA=- <x1983@msn.com>\n"
+"Language-Team: Chinese\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -72,11 +72,11 @@ msgstr "添至预置"
 
 #. Resource IDs: (155)
 msgid "All Files"
-msgstr ""
+msgstr "所有文件"
 
 #. Resource IDs: (1078)
 msgid "All dates"
-msgstr ""
+msgstr "所有日期"
 
 #. Resource IDs: (1005)
 msgid "All sizes"
@@ -85,11 +85,11 @@ msgstr "所有大小"
 #. Resource IDs: (124)
 #, c-format
 msgid "Are you sure you want to replace\n%s\nwith\n%s\nwithout creating backups?"
-msgstr "您确定想要将\n%s\n与\n%s\n替换而不创建备份吗?"
+msgstr "您确定想要将\n%s\n替换为\n%s\n而不创建备份吗?"
 
 #. Resource IDs: (1081)
 msgid "Between"
-msgstr ""
+msgstr "起止于"
 
 #. Resource IDs: (2)
 msgid "Cancel"
@@ -97,7 +97,7 @@ msgstr "取消"
 
 #. Resource IDs: (1068)
 msgid "Command line to start an editor at a specific line:"
-msgstr "用于在指定的行号来启动编辑器的命令行:"
+msgstr "用于在指定的行来启动编辑器的命令行:"
 
 #. Resource IDs: (1060)
 msgid "Content"
@@ -133,7 +133,7 @@ msgstr "创建备份文件"
 
 #. Resource IDs: (1077)
 msgid "Create backup files in a separate folder"
-msgstr ""
+msgstr "在单独的目录创建备份文件"
 
 #. Resource IDs: (139)
 msgid "Date modified"
@@ -177,7 +177,7 @@ msgstr "排除目录(正则):"
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
-msgstr "文件名称匹配:\n使用 \"|\" 号来分隔多个文本匹配规则,前置 \"-\" 用于排除(&D)"
+msgstr "文件名称匹配:\n使用 \"|\" 号来分隔多个文本匹配规则, 前置 \"-\" 用于排除(&D)"
 
 #. Resource IDs: (1059)
 msgid "Files"
@@ -189,7 +189,7 @@ msgstr "GREPWIN"
 
 #. Resource IDs: (156)
 msgid "If enabled, a backup folder is created inside the folder that's searched/replaced in, and the files are backed up into that folder"
-msgstr ""
+msgstr "如果启用, 则将在要搜索/替换的目录内创建一个备份目录,并将文件备份到该目录."
 
 #. Resource IDs: (1050)
 msgid "Include binary files"
@@ -209,7 +209,7 @@ msgstr "包含系统项目"
 
 #. Resource IDs: (153)
 msgid "Invalid path!"
-msgstr "无效路径！"
+msgstr "无效路径!"
 
 #. Resource IDs: (1019)
 msgid "KB"
@@ -242,7 +242,7 @@ msgstr "名称"
 
 #. Resource IDs: (1079)
 msgid "Newer than"
-msgstr ""
+msgstr "晚于"
 
 #. Resource IDs: (115)
 msgid "Newline is matched by '.'"
@@ -254,9 +254,9 @@ msgstr "确定"
 
 #. Resource IDs: (1080)
 msgid "Older than"
-msgstr ""
+msgstr "早于"
 
-#. Resource IDs: (1063)
+#. Resource IDs: (1062)
 msgid "Only one instance"
 msgstr "仅单实例"
 
@@ -290,7 +290,7 @@ msgstr "按 F1 键查看帮助"
 
 #. Resource IDs: (154)
 msgid "Programs"
-msgstr ""
+msgstr "应用程序"
 
 #. Resource IDs: (32775 - Menu)
 msgid "Re&name Preset"
@@ -318,7 +318,7 @@ msgstr "正则搜索字符串:"
 
 #. Resource IDs: (152)
 msgid "Relative paths are not allowed. Please enter an absolute path!"
-msgstr "不允许不使用相对路径.请输入一个绝对路径！"
+msgstr "不允许使用相对路径. 请输入一个绝对路径!"
 
 #. Resource IDs: (32771 - Menu)
 msgid "Remo&ve Preset"
@@ -367,7 +367,7 @@ msgstr "搜索字符串"
 #. Resource IDs: (128)
 #, c-format
 msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files."
-msgstr "已经搜索 %ld 个文件, 跳过 %ld 个文件.在 %ld 个文件中找到 %ld 个匹配."
+msgstr "已搜索 %ld 个文件, 已跳过 %ld 个文件. 已找到 %ld 个匹配于 %ld 个文件中."
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."
@@ -419,7 +419,7 @@ msgstr "这将在上下文菜单中添加一个名为\"使用编辑器打开\"�
 
 #. Resource IDs: (1053)
 msgid "Treat files as UTF8"
-msgstr "将文件视为UTF8"
+msgstr "将文件视为 UTF8"
 
 #. Resource IDs: (1045)
 msgid "Visit our website"
@@ -427,7 +427,7 @@ msgstr "访问我们的网站"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
-msgstr "用于搜索的正则表达式. 按F1键获取更多信息."
+msgstr "用于搜索的正则表达式. 按 F1 键获取更多信息."
 
 #. Resource IDs: (125)
 msgid "an empty string"
@@ -439,7 +439,7 @@ msgstr "二进制"
 
 #. Resource IDs: (118)
 msgid "click to edit the text as a multiline text"
-msgstr "点此以将该文本作为多行文本来编辑"
+msgstr "点击这里将该文本作为多行文本来编辑"
 
 #. Resource IDs: (121)
 msgid "equal to"
@@ -455,15 +455,15 @@ msgstr "grepWin"
 
 #. Resource IDs: (138)
 msgid "grepWin Settings"
-msgstr "grepWin设置"
+msgstr "grepWin 设置"
 
 #. Resource IDs: (157)
 msgid "hold down the shift key to find files that DO NOT contain the search string"
-msgstr ""
+msgstr "按住 SHIFT 键来查找不包含搜索字符串的文件"
 
 #. Resource IDs: (132)
 msgid "invalid regex!"
-msgstr "无效的正则表达式！"
+msgstr "无效的正则表达式!"
 
 #. Resource IDs: (120)
 msgid "less than"
@@ -491,11 +491,11 @@ msgstr "读取错误"
 
 #. Resource IDs: (131)
 msgid "regex ok"
-msgstr "正则OK"
+msgstr "正则 OK"
 
 #. Resource IDs: (117)
 msgid "reuse grepWin instances."
-msgstr "复用grepWin实例"
+msgstr "复用 grepWin 实例"
 
 #. Resource IDs: (151)
 #, c-format
@@ -512,5 +512,5 @@ msgstr "将被递归搜索的路径.\r\n使用 \"|\" 符号来分隔路径.\r\n�
 
 #. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
-msgstr "你可以排除目录, 比如: CVS 和 images.\r\n例如: ^(CVS|images)$\r\n注意, \".svn\" 目录在Windows中是隐藏的,所以通常不扫描它们."
+msgstr "你可以排除目录, 比如: CVS 和 images.\r\n例如: ^(CVS|images)$\r\n注意, \".svn\" 目录在Windows中是隐藏的, 所以通常不扫描它们."
 
