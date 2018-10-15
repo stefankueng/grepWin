@@ -242,7 +242,7 @@ msgstr "Имя"
 
 #. Resource IDs: (1079)
 msgid "Newer than"
-msgstr "Новее чем"
+msgstr "Новее"
 
 #. Resource IDs: (115)
 msgid "Newline is matched by '.'"
@@ -254,7 +254,7 @@ msgstr "OK"
 
 #. Resource IDs: (1080)
 msgid "Older than"
-msgstr "Старее чем"
+msgstr "Старее"
 
 #. Resource IDs: (1063)
 msgid "Only one instance"
@@ -415,7 +415,7 @@ msgstr "Полученный текст после замены:"
 
 #. Resource IDs: (1074)
 msgid "This adds a new entry to the context menu named \"Open with Editor\""
-msgstr "Функция добавляет в контекстное меню результатов \"Открыть в редакторе\""
+msgstr "Функция добавляет в контекстное меню результатов пункт \"Открыть в редакторе\""
 
 #. Resource IDs: (1053)
 msgid "Treat files as UTF8"
@@ -447,7 +447,7 @@ msgstr "равняется"
 
 #. Resource IDs: (122)
 msgid "greater than"
-msgstr "больше чем"
+msgstr "больше"
 
 #. Resource IDs: (103, 129)
 msgid "grepWin"
@@ -467,7 +467,7 @@ msgstr "Некорректный regex!"
 
 #. Resource IDs: (120)
 msgid "less than"
-msgstr "меньше чем"
+msgstr "меньше"
 
 #. Resource IDs: (111)
 msgid "no match"
