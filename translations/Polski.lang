@@ -68,7 +68,7 @@ msgstr "O grepWin"
 
 #. Resource IDs: (1021)
 msgid "Add to Presets"
-msgstr "Dodaj do presetów"
+msgstr "Dodaj do predefinicji"
 
 #. Resource IDs: (155)
 msgid "All Files"
@@ -125,7 +125,7 @@ msgstr "Kopiuj wynik tekstowy do schowka"
 
 #. Resource IDs: (148)
 msgid "Copy text results to clipboard"
-msgstr "Kopiuj wyniki tekstu do schowka"
+msgstr "Kopiuj wyniki tekstowe do schowka"
 
 #. Resource IDs: (1029)
 msgid "Create backup files"
@@ -282,7 +282,7 @@ msgstr "Predefiniowana nazwa"
 
 #. Resource IDs: (1022, 132)
 msgid "Presets"
-msgstr "Presety"
+msgstr "Predefinicje"
 
 #. Resource IDs: (1065)
 msgid "Press F1 for help"
