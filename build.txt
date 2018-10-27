@@ -20,6 +20,7 @@ you need to install some utilities/programs:
 
 Now you're almost ready. Only a few more steps to do:
 - Clone the grepWin repository from GitHub and checkout the source
+  Note: you have to clone recursively to also get the submodules
 - Make a copy of the file default.build.user.tmpl in the grepWin root folder and
   rename that copy to default.build.user. Then adjust the paths as mentioned
   in that file.
