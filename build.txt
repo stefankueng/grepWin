@@ -4,8 +4,13 @@ First, you need to install the compiler package.
   If you want to build the msi make sure the "Tools for Redistributing
   Applications" are installed.
 
-Next you need to install some utilities/programs:
-- Boost 1.47 or later   : http://www.boost.org/
+If you just want to build the exe without the installer and if you're comfortable
+with the exe having version 1.0.0.0 in the resources, you can just open the
+grepWin.sln file in Visual Studio and build the project.
+
+If you want to use the build script you have to do a little bit more work first:
+
+you need to install some utilities/programs:
 - TortoiseGit           : http://tortoisegit.org
 - WiX 3.10(*)           : http://wixtoolset.org/
 - NAnt 0.92(*)          : http://nant.sourceforge.net
@@ -22,8 +27,9 @@ Now you're almost ready. Only a few more steps to do:
 
 Building packages
 
-  Hint: before you can start building grepWin, you need to call the vsvars32.bat
-  file which is located in %VS140COMNTOOLS%.
+  Hint: before you can start building grepWin with the NAnt script, you need to
+  call the vcvars32.bat or vcvars64.bat which are located in
+  C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build
 
   > nant
   will compile grepWin
@@ -42,4 +48,4 @@ Building packages
   After the script finished, the packages can be found in .\bin.
 
 Once grepWin has been built with the NAnt script, you can build it again
-with VS2017 alone.
+with VS2017 alone and get the correct version info in the resources.
