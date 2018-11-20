@@ -759,6 +759,12 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 m_listItems.clear();
                 m_listItems.reserve(500000);
                 m_backupandtempfiles.clear();
+                if (m_searchString.empty())
+                {
+                    // switch to file view
+                    CheckRadioButton(*this, IDC_RESULTFILES, IDC_RESULTCONTENT, IDC_RESULTFILES);
+                }
+
                 InitResultList();
                 DialogEnableWindow(IDC_RESULTFILES, false);
                 DialogEnableWindow(IDC_RESULTCONTENT, false);
