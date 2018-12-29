@@ -109,7 +109,6 @@ CSearchDlg::CSearchDlg(HWND hParent)
     , m_Date1({0})
     , m_Date2({0})
     , m_bDateLimitC(false)
-    , m_hSearchThread(NULL)
     , m_regUseRegex(_T("Software\\grepWin\\UseRegex"), 1)
     , m_regAllSize(_T("Software\\grepWin\\AllSize"))
     , m_regSize(_T("Software\\grepWin\\Size"), 2000)
@@ -802,13 +801,23 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 SendDlgItemMessage(*this, IDC_PROGRESS, PBM_SETMARQUEE, 1, 0);
                 // now start the thread which does the searching
                 DWORD dwThreadId = 0;
-                m_hSearchThread = CreateThread(
+                HANDLE hThread= CreateThread(
                     NULL,              // no security attribute
                     0,                 // default stack size
                     SearchThreadEntry,
                     (LPVOID)this,      // thread parameter
                     0,                 // not suspended
                     &dwThreadId);      // returns thread ID
+                if (hThread != nullptr)
+                {
+                    // Closing the handle of a running thread just decreases
+                    // the ref count for the thread object.
+                    CloseHandle(hThread);
+                }
+                else
+                {
+                    SendMessage(*this, SEARCH_END, 0, 0);
+                }
             }
         }
         break;
