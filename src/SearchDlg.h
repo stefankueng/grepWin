@@ -166,7 +166,6 @@ private:
     bool                    m_bConfirmationOnReplace;
     bool                    m_showContent;
     bool                    m_showContentSet;
-    HANDLE                  m_hSearchThread;
 
     std::vector<CSearchInfo> m_items;
     std::vector<std::tuple<int, int>> m_listItems;
