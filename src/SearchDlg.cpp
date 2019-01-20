@@ -2441,8 +2441,17 @@ DWORD CSearchDlg::SearchThread()
                     const WIN32_FIND_DATA * pFindData = fileEnumerator.GetFileInfo();
                     bool bSearch = ((m_bIncludeHidden)||((pFindData->dwFileAttributes & FILE_ATTRIBUTE_HIDDEN) == 0));
                     bSearch = bSearch && ((m_bIncludeSystem)||((pFindData->dwFileAttributes & FILE_ATTRIBUTE_SYSTEM) == 0));
+                    std::wstring relpath = pathbuf.get();
+                    relpath = relpath.substr(searchpath.size());
+                    if (!relpath.empty())
+                    {
+                        if (relpath[0] == '\\')
+                            relpath = relpath.substr(1);
+                    }
                     bool bExcludeDir = bSearch && !m_excludedirspatternregex.empty() &&
-                        grepWin_match_i(m_excludedirspatternregex, pFindData->cFileName) || grepWin_match_i(m_excludedirspatternregex, pathbuf.get());
+                        (grepWin_match_i(m_excludedirspatternregex, pFindData->cFileName) || 
+                            grepWin_match_i(m_excludedirspatternregex, pathbuf.get()) ||
+                            grepWin_match_i(m_excludedirspatternregex, relpath.c_str()));
                     bSearch = bSearch && !bExcludeDir;
                     bRecurse = ((bIsDirectory)&&(m_bIncludeSubfolders)&&(bSearch));
                     if (m_searchString.empty() && m_replaceString.empty())
