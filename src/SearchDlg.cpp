@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2018 - Stefan Kueng
+// Copyright (C) 2007-2019 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -2441,9 +2441,8 @@ DWORD CSearchDlg::SearchThread()
                     const WIN32_FIND_DATA * pFindData = fileEnumerator.GetFileInfo();
                     bool bSearch = ((m_bIncludeHidden)||((pFindData->dwFileAttributes & FILE_ATTRIBUTE_HIDDEN) == 0));
                     bSearch = bSearch && ((m_bIncludeSystem)||((pFindData->dwFileAttributes & FILE_ATTRIBUTE_SYSTEM) == 0));
-                    std::wstring fullpath = searchpath + L"\\" + pFindData->cFileName;
                     bool bExcludeDir = bSearch && !m_excludedirspatternregex.empty() &&
-                        grepWin_match_i(m_excludedirspatternregex, pFindData->cFileName) || grepWin_match_i(m_excludedirspatternregex, fullpath.c_str());
+                        grepWin_match_i(m_excludedirspatternregex, pFindData->cFileName) || grepWin_match_i(m_excludedirspatternregex, pathbuf.get());
                     bSearch = bSearch && !bExcludeDir;
                     bRecurse = ((bIsDirectory)&&(m_bIncludeSubfolders)&&(bSearch));
                     if (m_searchString.empty() && m_replaceString.empty())
