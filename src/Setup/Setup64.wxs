@@ -26,7 +26,8 @@
     <Property Id="ARPPRODUCTICON">grepWinIcon</Property>
     <Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR" />
     <Condition Message="This application requires an 64-bit OS">VersionNT64</Condition>
-
+    <Property Id="ALLUSERS"><![CDATA[2]]></Property>
+    
     <Property Id="INSTALLDIR">
       <RegistrySearch Id="PreviousInstallLocationRegistrySearch" Root="HKCU" Key="Software\grepWin" Name="installDir" Type="raw" />
     </Property>

@@ -28,7 +28,8 @@
     <Condition Message="This application only runs on Vista and later.">
       <![CDATA[Installed OR (VersionNT >= 600)]]>
     </Condition>
-
+    <Property Id="ALLUSERS"><![CDATA[2]]></Property>
+    
     <Property Id="INSTALLDIR">
       <RegistrySearch Id="PreviousInstallLocationRegistrySearch" Root="HKCU" Key="Software\grepWin" Name="installDir" Type="raw" />
     </Property>
