@@ -1,7 +1,6 @@
 # grepWin
 Regular expression search and replace for Windows
 
-[![Build status](https://ci.appveyor.com/api/projects/status/r29a9n4e7cp89qqp?svg=true)](https://ci.appveyor.com/project/stefankueng/grepwin)
 [![Build Status](https://tortoisesvn.visualstudio.com/tortoisesvnGitHub/_apis/build/status/stefankueng.grepWin)](https://tortoisesvn.visualstudio.com/tortoisesvnGitHub/_build/latest?definitionId=8)
 
 grepWin is a simple search and replace tool which can use [regular expressions](https://en.wikipedia.org/wiki/Regular_expression) to do its job. This allows to do much more powerful searches and replaces.
