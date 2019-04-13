@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008, 2012-2013 - Stefan Kueng
+// Copyright (C) 2007-2008, 2012-2013, 2019 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -19,7 +19,6 @@
 #pragma once
 #include "BaseDialog.h"
 #include "DlgResizer.h"
-#include "AeroControls.h"
 #include <string>
 
 
@@ -43,5 +42,4 @@ private:
     std::wstring            m_name;
 
     CDlgResizer             m_resizer;
-    AeroControlBase         m_aerocontrols;
 };

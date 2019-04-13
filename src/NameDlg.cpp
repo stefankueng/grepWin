@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008, 2012-2013 - Stefan Kueng
+// Copyright (C) 2007-2008, 2012-2013, 2019 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -51,13 +51,6 @@ LRESULT CNameDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
             SetFocus(GetDlgItem(hwndDlg, IDC_NAME));
 
             m_resizer.Init(hwndDlg);
-
-            ExtendFrameIntoClientArea(IDC_NAME, IDC_NAME, IDC_NAME, IDC_NAME);
-            m_aerocontrols.SubclassControl(GetDlgItem(*this, IDOK));
-            m_aerocontrols.SubclassControl(GetDlgItem(*this, IDCANCEL));
-            m_aerocontrols.SubclassControl(GetDlgItem(*this, IDC_INFOLABEL));
-            if (m_Dwm.IsDwmCompositionEnabled())
-                m_resizer.ShowSizeGrip(false);
         }
         return FALSE;
     case WM_COMMAND:

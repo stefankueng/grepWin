@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2010, 2012-2017 - Stefan Kueng
+// Copyright (C) 2007-2010, 2012-2017, 2019 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -65,12 +65,6 @@ LRESULT CBookmarksDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lP
             m_resizer.AddControl(hwndDlg, IDC_BOOKMARKS, RESIZER_TOPLEFTBOTTOMRIGHT);
             m_resizer.AddControl(hwndDlg, IDOK, RESIZER_BOTTOMRIGHT);
             m_resizer.AddControl(hwndDlg, IDCANCEL, RESIZER_BOTTOMRIGHT);
-            ExtendFrameIntoClientArea(IDC_BOOKMARKS, IDC_BOOKMARKS, IDC_BOOKMARKS, IDC_BOOKMARKS);
-            m_aerocontrols.SubclassControl(GetDlgItem(*this, IDC_INFOLABEL));
-            m_aerocontrols.SubclassControl(GetDlgItem(*this, IDOK));
-            m_aerocontrols.SubclassControl(GetDlgItem(*this, IDCANCEL));
-            if (m_Dwm.IsDwmCompositionEnabled())
-                m_resizer.ShowSizeGrip(false);
 
             WINDOWPLACEMENT wpl = { 0 };
             DWORD size = sizeof(wpl);

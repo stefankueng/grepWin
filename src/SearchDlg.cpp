@@ -470,12 +470,6 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                     ShowWindow(*this, SW_SHOW);
             }
 
-            ExtendFrameIntoClientArea(0, IDC_GROUPSEARCHIN, 0, 0);
-            m_aerocontrols.SubclassControl(GetDlgItem(*this, IDC_ABOUTLINK));
-            m_aerocontrols.SubclassControl(GetDlgItem(*this, IDC_HELPLABEL));
-            if (m_Dwm.IsDwmCompositionEnabled())
-                m_resizer.ShowSizeGrip(false);
-
             switch (m_ExecuteImmediately)
             {
                 case Search:

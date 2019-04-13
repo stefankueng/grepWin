@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2018 - Stefan Kueng
+// Copyright (C) 2007-2019 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -25,7 +25,6 @@
 #include "AutoComplete.h"
 #include "Registry.h"
 #include "hyperlink.h"
-#include "AeroControls.h"
 #include "EditDoubleClick.h"
 #include "StringUtils.h"
 #include <string>
@@ -181,7 +180,6 @@ private:
     CHyperLink              m_link;
 
     CFileDropTarget *       m_pDropTarget;
-    AeroControlBase         m_aerocontrols;
 
     static UINT             GREPWIN_STARTUPMSG;
 
