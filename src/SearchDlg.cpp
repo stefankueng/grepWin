@@ -2615,7 +2615,8 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, const std::wstring& searchRoot, b
                     {
                         for (long l = linestart; l <= lineend; ++l)
                         {
-                            sinfo.matchlines.push_back(textfile.GetLineString(l));
+                            auto sLine = textfile.GetLineString(l);
+                            sinfo.matchlines.push_back(sLine.substr(0, 1024));
                             sinfo.matchlinesnumbers.push_back(l);
                         }
                     }
