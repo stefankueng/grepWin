@@ -111,7 +111,7 @@ CSearchDlg::CSearchDlg(HWND hParent)
     , m_bDateLimitC(false)
     , m_regUseRegex(_T("Software\\grepWin\\UseRegex"), 1)
     , m_regAllSize(_T("Software\\grepWin\\AllSize"))
-    , m_regSize(_T("Software\\grepWin\\Size"), 2000)
+    , m_regSize(_T("Software\\grepWin\\Size"), L"2000")
     , m_regSizeCombo(_T("Software\\grepWin\\SizeCombo"), 0)
     , m_regIncludeSystem(_T("Software\\grepWin\\IncludeSystem"))
     , m_regIncludeHidden(_T("Software\\grepWin\\IncludeHidden"))
@@ -273,17 +273,17 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             }
 
             TCHAR buf[MAX_PATH] = {0};
-            if (m_bSizeC && (m_lSize != (DWORD)-1))
+            if (m_bSizeC && (m_lSize != (uint64_t)-1))
             {
-                _stprintf_s(buf, _countof(buf), _T("%lu"), m_lSize);
+                _stprintf_s(buf, _countof(buf), L"%I64u", m_lSize);
                 SetDlgItemText(hwndDlg, IDC_SIZEEDIT, buf);
             }
             else
             {
-                int s = DWORD(m_regSize);
+                uint64_t s = _wtoll(std::wstring(m_regSize).c_str());
                 if (bPortable)
                     s = _wtoi(g_iniFile.GetValue(L"global", L"size", L"2000"));
-                _stprintf_s(buf, _countof(buf), _T("%d"), s);
+                _stprintf_s(buf, _countof(buf), L"%I64u", s);
                 SetDlgItemText(hwndDlg, IDC_SIZEEDIT, buf);
             }
 
@@ -2072,9 +2072,9 @@ bool CSearchDlg::SaveSettings()
         buf = GetDlgItemText(IDC_SIZEEDIT);
         m_lSize = _tstol(buf.get());
         if (bPortable)
-            g_iniFile.SetValue(L"global", L"Size", CStringUtils::Format(L"%d", m_lSize).c_str());
+            g_iniFile.SetValue(L"global", L"Size", CStringUtils::Format(L"%I64u", m_lSize).c_str());
         else
-            m_regSize = m_lSize;
+            m_regSize = CStringUtils::Format(L"%I64u", m_lSize).c_str();
         m_lSize *= 1024;
         m_sizeCmp = (int)SendDlgItemMessage(*this, IDC_SIZECOMBO, CB_GETCURSEL, 0, 0);
         if (bPortable)
@@ -2349,7 +2349,7 @@ DWORD CSearchDlg::SearchThread()
                 {
                     bool bSearch = false;
                     DWORD nFileSizeLow = 0;
-                    __int64 fullfilesize = 0;
+                    uint64_t fullfilesize = 0;
                     FILETIME ft = {0};
                     if (bAlwaysSearch)
                     {
@@ -2360,7 +2360,7 @@ DWORD CSearchDlg::SearchThread()
                             BY_HANDLE_FILE_INFORMATION bhfi = {0};
                             GetFileInformationByHandle(hFile, &bhfi);
                             nFileSizeLow = bhfi.nFileSizeLow;
-                            fullfilesize = (((__int64) bhfi.nFileSizeHigh) << 32) | bhfi.nFileSizeLow;
+                            fullfilesize = (((uint64_t) bhfi.nFileSizeHigh) << 32) | bhfi.nFileSizeLow;
                             ft = bhfi.ftLastWriteTime;
                         }
                     }
@@ -2370,20 +2370,20 @@ DWORD CSearchDlg::SearchThread()
                         bSearch = ((m_bIncludeHidden)||((pFindData->dwFileAttributes & FILE_ATTRIBUTE_HIDDEN) == 0));
                         bSearch = bSearch && ((m_bIncludeSystem)||((pFindData->dwFileAttributes & FILE_ATTRIBUTE_SYSTEM) == 0));
                         nFileSizeLow = pFindData->nFileSizeLow;
-                        fullfilesize = (((__int64) pFindData->nFileSizeHigh) << 32) | pFindData->nFileSizeLow;
+                        fullfilesize = (((uint64_t) pFindData->nFileSizeHigh) << 32) | pFindData->nFileSizeLow;
                         ft = pFindData->ftLastWriteTime;
                         if (!m_bAllSize && bSearch)
                         {
                             switch (m_sizeCmp)
                             {
                             case 0: // less than
-                                bSearch = bSearch && (pFindData->nFileSizeLow < m_lSize);
+                                bSearch = bSearch && (fullfilesize < m_lSize);
                                 break;
                             case 1: // equal
-                                bSearch = bSearch && (pFindData->nFileSizeLow == m_lSize);
+                                bSearch = bSearch && (fullfilesize == m_lSize);
                                 break;
                             case 2: // greater than
-                                bSearch = bSearch && (pFindData->nFileSizeLow > m_lSize);
+                                bSearch = bSearch && (fullfilesize > m_lSize);
                                 break;
                             }
                         }

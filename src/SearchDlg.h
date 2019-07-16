@@ -69,7 +69,7 @@ public:
     void                    SetCreateBackups(bool bSet) { m_bCreateBackupC = true; m_bCreateBackup = bSet; m_bConfirmationOnReplace = false; }
     void                    SetCreateBackupsInFolders(bool bSet) { m_bCreateBackupInFoldersC = true; m_bCreateBackupInFolders = bSet; SetCreateBackups(bSet); }
     void                    SetUTF8(bool bSet) {m_bUTF8C = true;m_bUTF8 = bSet;}
-    void                    SetSize(DWORD size, int cmp) {m_bSizeC = true; m_lSize = size; m_sizeCmp = cmp; m_bAllSize = (size == (DWORD)-1);}
+    void                    SetSize(uint64_t size, int cmp) {m_bSizeC = true; m_lSize = size; m_sizeCmp = cmp; m_bAllSize = (size == (uint64_t)-1);}
     void                    SetIncludeSystem(bool bSet) {m_bIncludeSystemC = true; m_bIncludeSystem = bSet;}
     void                    SetIncludeHidden(bool bSet) {m_bIncludeHiddenC = true; m_bIncludeHidden = bSet;}
     void                    SetIncludeSubfolders(bool bSet) {m_bIncludeSubfoldersC = true; m_bIncludeSubfolders = bSet;}
@@ -132,7 +132,7 @@ private:
     bool                    m_bUseRegex;
     bool                    m_bUseRegexForPaths;
     bool                    m_bAllSize;
-    DWORD                   m_lSize;
+    uint64_t                m_lSize;
     int                     m_sizeCmp;
     bool                    m_bIncludeSystem;
     bool                    m_bIncludeSystemC;
@@ -197,7 +197,7 @@ private:
 
     CRegStdDWORD            m_regUseRegex;
     CRegStdDWORD            m_regAllSize;
-    CRegStdDWORD            m_regSize;
+    CRegStdString           m_regSize;
     CRegStdDWORD            m_regSizeCombo;
     CRegStdDWORD            m_regIncludeSystem;
     CRegStdDWORD            m_regIncludeHidden;
