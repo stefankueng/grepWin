@@ -469,7 +469,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                 else
                     ShowWindow(*this, SW_SHOW);
             }
-
+            InitResultList();
             switch (m_ExecuteImmediately)
             {
                 case Search:
@@ -758,7 +758,8 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                     CheckRadioButton(*this, IDC_RESULTFILES, IDC_RESULTCONTENT, IDC_RESULTFILES);
                 }
 
-                InitResultList();
+                HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
+                ListView_SetItemCount(hListControl, 0);
                 DialogEnableWindow(IDC_RESULTFILES, false);
                 DialogEnableWindow(IDC_RESULTCONTENT, false);
 
@@ -1189,7 +1190,7 @@ bool CSearchDlg::InitResultList()
     bool filelist = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
     DWORD exStyle = LVS_EX_DOUBLEBUFFER|LVS_EX_INFOTIP|LVS_EX_FULLROWSELECT;
     SetWindowTheme(hListControl, L"Explorer", NULL);
-    ListView_DeleteAllItems(hListControl);
+    ListView_SetItemCount(hListControl, 0);
 
     int c = Header_GetItemCount(ListView_GetHeader(hListControl))-1;
     while (c>=0)
