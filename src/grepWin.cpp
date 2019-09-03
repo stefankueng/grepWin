@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008, 2010-2018 - Stefan Kueng
+// Copyright (C) 2007-2008, 2010-2019 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -186,7 +186,10 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
         iniPath = parser.GetVal(L"inipath");
 
     if (bPortable)
+    {
+        g_iniFile.SetUnicode();
         g_iniFile.LoadFile(iniPath.c_str());
+    }
 
 
     if (hWnd)
