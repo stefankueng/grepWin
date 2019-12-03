@@ -118,7 +118,7 @@
     <exec program="tools\restext.exe" >
       <arg value="extract" />
       <arg value="bin\release\grepWin.exe" />
-      <arg value="translations\Français.lang" />
+      <arg value="translations\FranÃ§ais.lang" />
     </exec>
     <exec program="tools\restext.exe" >
       <arg value="extract" />

@@ -344,10 +344,6 @@ msgstr "Zoeken"
 msgid "Search &for:"
 msgstr "Zoeken naar:"
 
-#. Resource IDs: (65535)
-msgid "Search &in"
-msgstr "Zoeken &in"
-
 #. Resource IDs: (1042)
 msgid "Search case-sensitive"
 msgstr "HOOFD/klein gevoelig"

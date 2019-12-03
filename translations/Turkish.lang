@@ -1,516 +1,512 @@
-# GrepWin için Türkçe dil dosyası
-# Telif Hakkı (C) 2019 Osman ERTEM
-# Bu dosya, PACKAGE paketi ile aynı lisans altında dağıtılmaktadır.
-# Osman ERTEM <osman.ertem@windowslive.com>, 2019.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: 1.0\n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-04-02 00:00+0000\n"
-"PO-Revision-Date: 2019-11-27 00:00+0000\n"
-"Last-Translator: Osman ERTEM <osman.ertem@windowslive.com>\n"
-"Language-Team: Turkish <osman.ertem@windowslive.com>\n"
+"POT-Creation-Date: 1900-01-01 00:00+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 
-# Hızlandırıcı tuşlar için msgid/msgstr alanları
+# msgid/msgstr fields for Accelerator keys
 # Format is: "ID:xxxxxx:VACS+X" where:
-#    ID:xxxxx = hızlandırıcıya karşılık gelen menü ID
-#    V = Sanal Anahtar (veya kullanılmazsa boş bırakın) - neredeyse her zaman hazır!
-#    A = Alt Anahtar     (veya kullanılmazsa boş bırakın)
-#    C = Ctrl Anahtar    (veya kullanılmazsa boş bırakın)
-#    S = Shift Anahtar   (veya kullanılmazsa boş bırakın)
-#    X = büyük harf karakter
-# örneğin. "V CS+Q" == Ctrl + Shift + 'Q'
+#    ID:xxxxx = the menu ID corresponding to the accelerator
+#    V = Virtual key (or blank if not used) - nearly always set!
+#    A = Alt key     (or blank if not used)
+#    C = Ctrl key    (or blank if not used)
+#    S = Shift key   (or blank if not used)
+#    X = upper case character
+# e.g. "V CS+Q" == Ctrl + Shift + 'Q'
 
-# Yalnızca karşılık gelen alfasayısal karakterlere sahip Hızlandırıcı Tuşlar
-# Örneğin fonksiyon tuşları (F2), özel tuşlar (Sil, Ev) vb.
+# ONLY Accelerator Keys with corresponding alphanumeric characters can be
+# updated i.e. function keys (F2), special keys (Delete, HoMe) etc. will not.
 
-# Sadece msgstr alanını değiştirin. Başka hiçbirini değiştirmeyin.
-# Bir Hızlandırıcı Anahtarını değiştirmek istemiyorsanız, msgstr'yi msgstr'ye kopyalayın.
+# ONLY change the msgstr field. Do NOT change any other.
+# If you do not want to change an Accelerator Key, copy msgid to msgstr
 
-#. Kaynak ID: (149)
+#. Resource IDs: (149)
 #, c-format
 msgid "%ld more matches"
 msgstr "%ld daha fazla eşleşme"
 
-#. Kaynak ID: (1069)
+#. Resource IDs: (1069)
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to"
 msgstr "%path% dosyanın yolu, %line% ile atlanacak satırla değiştirilir"
 
-#. Kaynak ID: (119)
+#. Resource IDs: (119)
 msgid "&About grepWin..."
 msgstr "%GrepWin hakkında ..."
 
-#. Kaynak ID: (1049)
+#. Resource IDs: (1049)
 msgid "&Replace"
 msgstr "&Değiştir"
 
-#. Kaynak ID: (123)
+#. Resource IDs: (123)
 msgid "&Search"
 msgstr "&Ara"
 
-#. Kaynak ID: (1013)
+#. Resource IDs: (1013)
 msgid "..."
 msgstr "..."
 
-#. Kaynak ID: (1061, 1063, 1064, 1066, 1067)
+#. Resource IDs: (1061, 1063, 1064, 1066, 1067)
 msgid "/"
 msgstr "/"
 
-#. Kaynak ID: (1052, 135)
+#. Resource IDs: (1052, 135)
 msgid "About grepWin"
 msgstr "GrepWin Hakkında"
 
-#. Kaynak ID: (1021)
+#. Resource IDs: (1021)
 msgid "Add to Presets"
 msgstr "Hazır Ayarlara Ekle"
 
-#. Kaynak ID: (155)
+#. Resource IDs: (155)
 msgid "All Files"
 msgstr "Tüm Dosyalar"
 
-#. Kaynak ID: (1078)
+#. Resource IDs: (1078)
 msgid "All dates"
 msgstr "Bütün Tarihler"
 
-#. Kaynak ID: (1005)
+#. Resource IDs: (1005)
 msgid "All sizes"
 msgstr "Bütün Boyutlar"
 
-#. Kaynak ID: (124)
+#. Resource IDs: (124)
 #, c-format
 msgid "Are you sure you want to replace\n%s\nwith\n%s\nwithout creating backups?"
 msgstr "%s yedek oluşturmadan değiştirmek istediğinize emin misiniz?"
 
-#. Kaynak ID: (1081)
+#. Resource IDs: (1081)
 msgid "Between"
 msgstr "Arasında"
 
-#. Kaynak ID: (2)
+#. Resource IDs: (2)
 msgid "Cancel"
 msgstr "İptal"
 
-#. Kaynak ID: (1068)
+#. Resource IDs: (1068)
 msgid "Command line to start an editor at a specific line:"
 msgstr "Belirli bir satırda bir editör başlatmak için komut satırı:"
 
-#. Kaynak ID: (1060)
+#. Resource IDs: (1060)
 msgid "Content"
 msgstr "İçerik"
 
-#. Kaynak ID: (145)
+#. Resource IDs: (145)
 msgid "Copy filename to clipboard"
 msgstr "Dosya Adını Panoya Kopyala"
 
-#. Kaynak ID: (146)
+#. Resource IDs: (146)
 msgid "Copy filenames to clipboard"
 msgstr "Dosya Adlarını Panoya Kopyala"
 
-#. Kaynak ID: (143)
+#. Resource IDs: (143)
 msgid "Copy path to clipboard"
 msgstr "Yolu Panoya Kopyala"
 
-#. Kaynak ID: (144)
+#. Resource IDs: (144)
 msgid "Copy paths to clipboard"
 msgstr "Yolları Panoya Kopyala"
 
-#. Kaynak ID: (147)
+#. Resource IDs: (147)
 msgid "Copy text result to clipboard"
 msgstr "Metin Sonucunu Panoya Kopyala"
 
-#. Kaynak ID: (148)
+#. Resource IDs: (148)
 msgid "Copy text results to clipboard"
 msgstr "Metin Sonuçlarını Panoya Kopyala"
 
-#. Kaynak ID: (1029)
+#. Resource IDs: (1029)
 msgid "Create backup files"
 msgstr "Yedek Dosyaları Oluştur"
 
-#. Kaynak ID: (1077)
+#. Resource IDs: (1077)
 msgid "Create backup files in a separate folder"
 msgstr "Ayrı Bir Klasörde Yedekleme Dosyaları Oluşturun"
 
-#. Kaynak ID: (139)
+#. Resource IDs: (139)
 msgid "Date modified"
 msgstr "Değiştirilme Tarihi"
 
-#. Kaynak ID: (137)
+#. Resource IDs: (137)
 msgid "Dialog"
 msgstr "Diyalog"
 
-#. Kaynak ID: (1051)
+#. Resource IDs: (1051)
 msgid "Dot matches newline"
 msgstr "Nokta Yeni Çizgiyle Eşleşiyor"
 
-#. Kaynak ID: (1056)
+#. Resource IDs: (1056)
 msgid "Double-Click to select a preset"
 msgstr "Bir Hazır Ayar Seçmek için Çift Tıklayın."
 
-#. Kaynak ID: (65535 - PopupMenu)
+#. Resource IDs: (65535 - PopupMenu)
 msgid "Dummy"
 msgstr "Kukla"
 
-#. Kaynak ID: (1067)
+#. Resource IDs: (1067)
 msgid "Editor"
 msgstr "Editör"
 
-#. Kaynak ID: (138)
+#. Resource IDs: (138)
 msgid "Encoding"
 msgstr "Kodlama"
 
-#. Kaynak ID: (1056)
+#. Resource IDs: (1056)
 msgid "Enter a name for the regex:"
 msgstr "Regex için Bir Ad Girin:"
 
-#. Kaynak ID: (1062)
+#. Resource IDs: (1062)
 msgid "Escape key closes grepWin"
 msgstr "Escape Tuşu grepWin'i Kapatır"
 
-#. Kaynak ID: (1041)
+#. Resource IDs: (1041)
 msgid "Exclude dirs (Regex):"
 msgstr "Dir'leri Hariç Tut (Regex):"
 
-#. Kaynak ID: (1039)
+#. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
 msgstr "Dosya adları eşleşiyorsa:\n Çoklu desenleri ayırmak için '|', hariç tutmak için '-' önerilir."
 
-#. Kaynak ID: (1059)
+#. Resource IDs: (1059)
 msgid "Files"
 msgstr "Dosyalar"
 
-#. Kaynak ID: (109)
+#. Resource IDs: (109)
 msgid "GREPWIN"
 msgstr "grepWin"
 
-#. Kaynak ID: (156)
+#. Resource IDs: (156)
 msgid "If enabled, a backup folder is created inside the folder that's searched/replaced in, and the files are backed up into that folder"
 msgstr "Etkinleştirildiğinde, aranan/değiştirilen klasörün içinde bir yedekleme klasörü oluşturulur ve dosyalar bu klasöre yedeklenir."
 
-#. Kaynak ID: (1050)
+#. Resource IDs: (1050)
 msgid "Include binary files"
 msgstr "Çift Dosyaları Dahil Rt"
 
-#. Kaynak ID: (1010)
+#. Resource IDs: (1010)
 msgid "Include hidden items"
 msgstr "Gizli Öğeleri Dahil Et"
 
-#. Kaynak ID: (1011)
+#. Resource IDs: (1011)
 msgid "Include subfolders"
 msgstr "Alt Klasörleri Dahil Et"
 
-#. Kaynak ID: (1009)
+#. Resource IDs: (1009)
 msgid "Include system items"
 msgstr "Sistem Öğelerini Dahil Et"
 
-#. Kaynak ID: (153)
+#. Resource IDs: (153)
 msgid "Invalid path!"
 msgstr "Geçersiz yol!"
 
-#. Kaynak ID: (1019)
+#. Resource IDs: (1019)
 msgid "KB"
 msgstr "KB"
 
-#. Kaynak ID: (1075)
+#. Resource IDs: (1075)
 msgid "Language:"
 msgstr "Dil:"
 
-#. Kaynak ID: (1017)
+#. Resource IDs: (1017)
 msgid "Limit search"
 msgstr "Aramayı Sınırlandır"
 
-#. Kaynak ID: (134)
+#. Resource IDs: (134)
 msgid "Line"
 msgstr "Çizgi"
 
-#. Kaynak ID: (150)
+#. Resource IDs: (150)
 #, c-format
 msgid "Line %5ld : %30s\n"
 msgstr "Çizgi %5ld : %30s\n"
 
-#. Kaynak ID: (135)
+#. Resource IDs: (135)
 msgid "Matches"
 msgstr "Eşleşmeler"
 
-#. Kaynak ID: (104)
+#. Resource IDs: (104)
 msgid "Name"
 msgstr "Ad"
 
-#. Kaynak ID: (1079)
+#. Resource IDs: (1079)
 msgid "Newer than"
 msgstr "Daha Yeni"
 
-#. Kaynak ID: (115)
+#. Resource IDs: (115)
 msgid "Newline is matched by '.'"
 msgstr "Yeni hat '.' ile eşleştirilir"
 
-#. Kaynak ID: (1)
+#. Resource IDs: (1)
 msgid "OK"
 msgstr "TAMAM"
 
-#. Kaynak ID: (1080)
+#. Resource IDs: (1080)
 msgid "Older than"
 msgstr "Daha Eski"
 
-#. Kaynak ID: (1063)
+#. Resource IDs: (1063)
 msgid "Only one instance"
 msgstr "Sadece Bir Örnek"
 
-#. Kaynak ID: (142)
+#. Resource IDs: (142)
 msgid "Open containing folder"
 msgstr "Dosyayı İçeren Klasörü Açınız"
 
-#. Kaynak ID: (141)
+#. Resource IDs: (141)
 msgid "Open with Editor"
 msgstr "Editör ile Aç"
 
-#. Kaynak ID: (1056)
+#. Resource IDs: (1056)
 msgid "Paste text to test the regex with:"
 msgstr "Regex'i test etmek için metin yapıştırın:"
 
-#. Kaynak ID: (137)
+#. Resource IDs: (137)
 msgid "Path"
 msgstr "Yol"
 
-#. Kaynak ID: (131)
+#. Resource IDs: (131)
 msgid "Preset name"
 msgstr "Ön Ayar Adı"
 
-#. Kaynak ID: (1022, 132)
+#. Resource IDs: (1022, 132)
 msgid "Presets"
 msgstr "Hazır Ayarlar"
 
-#. Kaynak ID: (1065)
+#. Resource IDs: (1065)
 msgid "Press F1 for help"
 msgstr "Yardım için F1 Tuşuna Basınız"
 
-#. Kaynak ID: (154)
+#. Resource IDs: (154)
 msgid "Programs"
 msgstr "Programlar"
 
-#. Kaynak ID: (32775 - Menu)
+#. Resource IDs: (32775 - Menu)
 msgid "Re&name Preset"
 msgstr "Hazır Ayarı Yeniden Adlandır"
 
-#. Kaynak ID: (130)
+#. Resource IDs: (130)
 msgid "Regex Test"
 msgstr "Regex Testi"
 
-#. Kaynak ID: (1046)
+#. Resource IDs: (1046)
 msgid "Regex match"
 msgstr "Regex Eşleşmesi"
 
-#. Kaynak ID: (65535)
+#. Resource IDs: (65535)
 msgid "Regex replace string:"
 msgstr "Regex Dizeyi Değiştir:"
 
-#. Kaynak ID: (1001)
+#. Resource IDs: (1001)
 msgid "Regex search"
 msgstr "Regex Ara"
 
-#. Kaynak ID: (65535)
+#. Resource IDs: (65535)
 msgid "Regex search string:"
 msgstr "Regex Dizesinde Ara:"
 
-#. Kaynak ID: (152)
+#. Resource IDs: (152)
 msgid "Relative paths are not allowed. Please enter an absolute path!"
 msgstr "Göreceli yollara izin verilmez. Lütfen mutlak bir yol girin!"
 
-#. Kaynak ID: (32771 - Menu)
+#. Resource IDs: (32771 - Menu)
 msgid "Remo&ve Preset"
 msgstr "Hazır Ayarı Kaldır"
 
-#. Kaynak ID: (106)
+#. Resource IDs: (106)
 msgid "Replace string"
 msgstr "Dizeyi Değiştir"
 
-#. Kaynak ID: (1027)
+#. Resource IDs: (1027)
 msgid "Replace with:"
 msgstr "Değiştirin:"
 
-#. Kaynak ID: (126)
+#. Resource IDs: (126)
 msgid "S&top"
 msgstr "Durdur"
 
-#. Kaynak ID: (1, 1016)
+#. Resource IDs: (1, 1016)
 msgid "Search"
 msgstr "Ara"
 
-#. Kaynak ID: (1026)
+#. Resource IDs: (1026)
 msgid "Search &for:"
 msgstr "Aranan:"
 
-#. Kaynak ID: (65535)
-msgid "Search &in"
-msgstr "İçinde Ara"
-
-#. Kaynak ID: (1042)
+#. Resource IDs: (1042)
 msgid "Search case-sensitive"
 msgstr "Büyük/Küçük Harfe Duyarlı Arama"
 
-#. Kaynak ID: (1015)
+#. Resource IDs: (1015)
 msgid "Search in"
 msgstr "İçinde Ara"
 
-#. Kaynak ID: (1018)
+#. Resource IDs: (1018)
 msgid "Search results"
 msgstr "Arama Sonuçları"
 
-#. Kaynak ID: (105)
+#. Resource IDs: (105)
 msgid "Search string"
 msgstr "Arama Dizesi"
 
-#. Kaynak ID: (128)
+#. Resource IDs: (128)
 #, c-format
 msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files."
 msgstr "%ld dosya arandı, %ld dosya atlandı. %ld dosyalarında %ld eşleşmesi bulundu."
 
-#. Kaynak ID: (140)
+#. Resource IDs: (140)
 msgid "Select Editor Application..."
 msgstr "Editör Uygulamasını Seçin ..."
 
-#. Kaynak ID: (127)
+#. Resource IDs: (127)
 msgid "Select path to search"
 msgstr "Aranacak Yolu Seçin"
 
-#. Kaynak ID: (1071)
+#. Resource IDs: (1071)
 msgid "Settings"
 msgstr "Ayarlar"
 
-#. Kaynak ID: (133)
+#. Resource IDs: (133)
 msgid "Size"
 msgstr "Boyut"
 
-#. Kaynak ID: (1006)
+#. Resource IDs: (1006)
 msgid "Size is"
 msgstr "Boyut"
 
-#. Kaynak ID: (1028)
+#. Resource IDs: (1028)
 msgid "Test regex"
 msgstr "Regex'i Test Et"
 
-#. Kaynak ID: (136)
+#. Resource IDs: (136)
 msgid "Text"
 msgstr "Metin"
 
-#. Kaynak ID: (1048)
+#. Resource IDs: (1048)
 msgid "Text match"
 msgstr "Metin Eşleşmesi"
 
-#. Kaynak ID: (1002)
+#. Resource IDs: (1002)
 msgid "Text search"
 msgstr "Arama Metni"
 
-#. Kaynak ID: (65535)
+#. Resource IDs: (65535)
 msgid "The regex search string matches:"
 msgstr "Regex arama dizesi şu şekilde eşleştir:"
 
-#. Kaynak ID: (65535)
+#. Resource IDs: (65535)
 msgid "The resulting text after replacing:"
 msgstr "Değiştirdikten sonra ortaya çıkan metin:"
 
-#. Kaynak ID: (1074)
+#. Resource IDs: (1074)
 msgid "This adds a new entry to the context menu named \"Open with Editor\""
 msgstr ""Editörle Aç" içerik menüsüne yeni bir giriş ekler."
 
-#. Kaynak ID: (1053)
+#. Resource IDs: (1053)
 msgid "Treat files as UTF8"
 msgstr "Dosyaları UTF8 Olarak Kabul Et"
 
-#. Kaynak ID: (1045)
+#. Resource IDs: (1045)
 msgid "Visit our website"
 msgstr "Web Sitemizi Ziyaret Edin"
 
-#. Kaynak ID: (116)
+#. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
 msgstr "arama yapmak için kullanılan normal bir ifadedir. Daha fazla bilgi için F1 tuşuna basın."
 
-#. Kaynak ID: (125)
+#. Resource IDs: (125)
 msgid "an empty string"
 msgstr "boş bir dize"
 
-#. Kaynak ID: (130)
+#. Resource IDs: (130)
 msgid "binary"
 msgstr "çift"
 
-#. Kaynak ID: (118)
+#. Resource IDs: (118)
 msgid "click to edit the text as a multiline text"
 msgstr "metni çok satırlı bir metin olarak düzenlemek için tıklayın"
 
-#. Kaynak ID: (121)
+#. Resource IDs: (121)
 msgid "equal to"
 msgstr "Eşit"
 
-#. Kaynak ID: (122)
+#. Resource IDs: (122)
 msgid "greater than"
 msgstr "Büyük"
 
-#. Kaynak ID: (103, 129)
+#. Resource IDs: (103, 129)
 msgid "grepWin"
 msgstr "grepWin"
 
-#. Kaynak ID: (138)
+#. Resource IDs: (138)
 msgid "grepWin Settings"
 msgstr "grepWin Ayarları"
 
-#. Kaynak ID: (157)
+#. Resource IDs: (157)
 msgid "hold down the shift key to find files that DO NOT contain the search string"
 msgstr "arama dizesini içermeyen dosyaları bulmak için SHIFT tuşunu basılı tutun."
 
-#. Kaynak ID: (132)
+#. Resource IDs: (132)
 msgid "invalid regex!"
 msgstr "geçersiz regex!"
 
-#. Kaynak ID: (120)
+#. Resource IDs: (120)
 msgid "less than"
 msgstr "Küçük"
 
-#. Kaynak ID: (111)
+#. Resource IDs: (111)
 msgid "no match"
 msgstr "eşleşme yok"
 
-#. Kaynak ID: (110)
+#. Resource IDs: (110)
 msgid "no text to replace with"
 msgstr "ile değiştirilecek metin yok"
 
-#. Kaynak ID: (107)
+#. Resource IDs: (107)
 msgid "no text to test with available"
 msgstr "test edilecek metin yok"
 
-#. Kaynak ID: (112)
+#. Resource IDs: (112)
 msgid "only files that match this pattern are searched.\r\nUse \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
 msgstr "yalnızca bu şablonla eşleşen dosyalar aranır.\r\nSınırlayıcı olarak \"|\" kullanın.\r\nÖrnek: *.cpp|*.h"
 
-#. Kaynak ID: (129)
+#. Resource IDs: (129)
 msgid "read error"
 msgstr "okuma hatası"
 
-#. Kaynak ID: (131)
+#. Resource IDs: (131)
 msgid "regex ok"
 msgstr "regex Seçildi."
 
-#. Kaynak ID: (117)
+#. Resource IDs: (117)
 msgid "reuse grepWin instances."
 msgstr "grepWin örneklerini yeniden kullanın."
 
-#. Kaynak ID: (151)
+#. Resource IDs: (151)
 #, c-format
-msgid "'%s' dosyaları taranıyor..."
+msgid "scanning file '%s'"
 msgstr ""
 
-#. Kaynak ID: (108)
+#. Resource IDs: (108)
 msgid "search string is empty"
 msgstr "arama dizesi boş!"
 
-#. Kaynak ID: (114)
+#. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"
 msgstr "özyinelemede aranan yollar.\r\n| sembolü ile ayrı yollar.\r\nÖrnek: c:\\temp|d:\\logs"
 
-#. Kaynak ID: (113)
+#. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "dizinleri hariç tutabilirsiniz, ör. CVS ve Resimler.\r\nÖrnek: ^(CVS|images)$\r\nNot: klasörlerinin Windows\'ta 'gizli' olduğuna dikkat edin, bu nedenle genellikle taranmazlar."
 

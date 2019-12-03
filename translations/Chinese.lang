@@ -1,17 +1,17 @@
-# Chinese language file for grepWin
-# Copyright (C) 2018 -=XARA=-
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# -=XARA=- (x1983@msn.com), 2018.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-04-02 21:00\n"
-"PO-Revision-Date: 2018-10-03 10:04\n"
-"Last-Translator: =XARA=- <x1983@msn.com>\n"
-"Language-Team: Chinese\n"
+"POT-Creation-Date: 1900-01-01 00:00+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -256,7 +256,7 @@ msgstr "确定"
 msgid "Older than"
 msgstr "早于"
 
-#. Resource IDs: (1062)
+#. Resource IDs: (1063)
 msgid "Only one instance"
 msgstr "仅单实例"
 
@@ -343,10 +343,6 @@ msgstr "搜索"
 #. Resource IDs: (1026)
 msgid "Search &for:"
 msgstr "搜索(&F):"
-
-#. Resource IDs: (65535)
-msgid "Search &in"
-msgstr "搜索于（&I）"
 
 #. Resource IDs: (1042)
 msgid "Search case-sensitive"

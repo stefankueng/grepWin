@@ -256,7 +256,7 @@ msgstr "OK"
 msgid "Older than"
 msgstr "Starsze niż"
 
-#. Resource IDs: (1062)
+#. Resource IDs: (1063)
 msgid "Only one instance"
 msgstr "Tylko jedna instancja"
 
@@ -343,10 +343,6 @@ msgstr "Szukaj"
 #. Resource IDs: (1026)
 msgid "Search &for:"
 msgstr "Wyszu&kaj:"
-
-#. Resource IDs: (65535)
-msgid "Search &in"
-msgstr "Szuka&j w"
 
 #. Resource IDs: (1042)
 msgid "Search case-sensitive"

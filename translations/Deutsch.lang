@@ -344,10 +344,6 @@ msgstr "Suche"
 msgid "Search &for:"
 msgstr "Suche nach:"
 
-#. Resource IDs: (65535)
-msgid "Search &in"
-msgstr "Suche &in"
-
 #. Resource IDs: (1042)
 msgid "Search case-sensitive"
 msgstr "GROSS/klein beachten"
