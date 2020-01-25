@@ -19,7 +19,7 @@ if (num !== 4 && num !== 3)
     WScript.Quit(1);
 }
 
-var re = /^\/\/ Copyright.+(2018)(.*)/;
+var re = /^\/\/ Copyright.+(2020)(.*)/;
 var basere = /^\/\/ Copyright(.*)/;
 var filere = /(\.cpp$)|(\.h$)|(\.idl$)/;
 

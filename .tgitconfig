@@ -1,3 +1,7 @@
 [bugtraq]
 	url = https://github.com/stefankueng/grepWin/issues/%BUGID%
 	logregex = "[Cc]loses?:?(\\s*(,|and)?\\s*#\\d+)+\n(\\d+)"
+[hook "precommit"]
+	cmdline = WScript %root%\\\\tools\\\\checkyear.js
+	wait = true
+	show = false
