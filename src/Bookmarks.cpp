@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2009, 2012-2013, 2017 - Stefan Kueng
+// Copyright (C) 2007-2009, 2012-2013, 2017, 2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -49,6 +49,7 @@ void CBookmarks::Load()
     }
     CreateDirectory(m_iniPath.c_str(), NULL);
     m_iniPath += _T("\\bookmarks");
+    SetUnicode();
     LoadFile(m_iniPath.c_str());
 }
 
