@@ -1680,7 +1680,10 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
                         wcsncpy_s(pItem->pszText, pItem->cchTextMax, L"ANSI", pItem->cchTextMax - 1);
                         break;
                     case CTextFile::UNICODE_LE:
-                        wcsncpy_s(pItem->pszText, pItem->cchTextMax, L"UNICODE", pItem->cchTextMax - 1);
+                        wcsncpy_s(pItem->pszText, pItem->cchTextMax, L"UTF-16-LE", pItem->cchTextMax - 1);
+                        break;
+                    case CTextFile::UNICODE_BE:
+                        wcsncpy_s(pItem->pszText, pItem->cchTextMax, L"UTF-16-BE", pItem->cchTextMax - 1);
                         break;
                     case CTextFile::UTF8:
                         wcsncpy_s(pItem->pszText, pItem->cchTextMax, L"UTF8", pItem->cchTextMax - 1);
