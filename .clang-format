@@ -4,6 +4,7 @@ AccessModifierOffset: -4
 AlignAfterOpenBracket: Align
 AlignConsecutiveAssignments: true
 AlignConsecutiveDeclarations: true
+AlignConsecutiveMacros: true
 AlignEscapedNewlines: Right
 AlignOperands:   true
 AlignTrailingComments: true
@@ -19,7 +20,8 @@ AlwaysBreakBeforeMultilineStrings: false
 AlwaysBreakTemplateDeclarations: false
 BinPackArguments: true
 BinPackParameters: true
-BraceWrapping:   
+BraceWrapping:
+  AfterCaseLabel:  true
   AfterClass:      true
   AfterControlStatement: true
   AfterEnum:       true
@@ -66,7 +68,7 @@ IncludeCategories:
     Priority:        1
 IncludeIsMainRegex: '(Test)?$'
 IndentCaseLabels: true
-#IndentPPDirectives: AfterHash
+IndentPPDirectives: AfterHash
 IndentWidth:     4
 IndentWrappedFunctionNames: true
 JavaScriptQuotes: Leave
