@@ -195,6 +195,7 @@
     <ClCompile Include="..\sktoolslib\BrowseFolder.cpp" />
     <ClCompile Include="..\sktoolslib\CmdLineParser.cpp" />
     <ClCompile Include="..\sktoolslib\codecvt.cpp" />
+    <ClCompile Include="..\sktoolslib\DarkModeHelper.cpp" />
     <ClCompile Include="..\sktoolslib\DebugOutput.cpp" />
     <ClCompile Include="..\sktoolslib\DirFileEnum.cpp" />
     <ClCompile Include="..\sktoolslib\DlgResizer.cpp" />
@@ -227,6 +228,7 @@
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Theme.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\sktoolslib\AeroControls.h" />
@@ -237,6 +239,7 @@
     <ClInclude Include="..\sktoolslib\BrowseFolder.h" />
     <ClInclude Include="..\sktoolslib\CmdLineParser.h" />
     <ClInclude Include="..\sktoolslib\codecvt.h" />
+    <ClInclude Include="..\sktoolslib\DarkModeHelper.h" />
     <ClInclude Include="..\sktoolslib\DebugOutput.h" />
     <ClInclude Include="..\sktoolslib\DirFileEnum.h" />
     <ClInclude Include="..\sktoolslib\DlgResizer.h" />
@@ -270,6 +273,7 @@
     <ClInclude Include="Settings.h" />
     <ClInclude Include="ShellContextMenu.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Theme.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\default.build">

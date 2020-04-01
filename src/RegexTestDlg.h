@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008, 2012-2013, 2019 - Stefan Kueng
+// Copyright (C) 2007-2008, 2012-2013, 2019-2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -22,8 +22,7 @@
 #include <string>
 #include <vector>
 
-
-#define ID_REGEXTIMER       100
+#define ID_REGEXTIMER 100
 
 /**
  * regex test dialog.
@@ -34,22 +33,23 @@ public:
     CRegexTestDlg(HWND hParent);
     ~CRegexTestDlg(void);
 
-    void                    SetStrings(const std::wstring& search, const std::wstring& replace);
-    std::wstring            GetSearchString() {return m_searchText;}
-    std::wstring            GetReplaceString() {return m_replaceText;}
+    void         SetStrings(const std::wstring& search, const std::wstring& replace);
+    std::wstring GetSearchString() { return m_searchText; }
+    std::wstring GetReplaceString() { return m_replaceText; }
 
-    bool                    bDotMatchesNewline;
-    bool                    bCaseSensitive;
+    bool bDotMatchesNewline;
+    bool bCaseSensitive;
+
 protected:
-    LRESULT CALLBACK        DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
-    LRESULT                 DoCommand(int id, int msg);
-    void                    DoRegex();
+    LRESULT CALLBACK DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
+    LRESULT          DoCommand(int id, int msg);
+    void             DoRegex();
 
 private:
-    HWND                    m_hParent;
-    std::wstring            m_searchText;
-    std::wstring            m_replaceText;
-    std::wstring            m_textContent;
-
-    CDlgResizer             m_resizer;
+    HWND         m_hParent;
+    std::wstring m_searchText;
+    std::wstring m_replaceText;
+    std::wstring m_textContent;
+    int          m_themeCallbackId;
+    CDlgResizer  m_resizer;
 };

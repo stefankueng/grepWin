@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008, 2011-2013, 2019 - Stefan Kueng
+// Copyright (C) 2007-2008, 2011-2013, 2019-2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -20,18 +20,20 @@
 #include "resource.h"
 #include "RegexTestDlg.h"
 #include "RegexReplaceFormatter.h"
+#include "Theme.h"
+#include "DarkModeHelper.h"
 #include <string>
 #include <Richedit.h>
 #pragma warning(push)
-#pragma warning(disable: 4996) // warning STL4010: Various members of std::allocator are deprecated in C++17
+#pragma warning(disable : 4996) // warning STL4010: Various members of std::allocator are deprecated in C++17
 #include <boost/regex.hpp>
 #pragma warning(pop)
-
 
 CRegexTestDlg::CRegexTestDlg(HWND hParent)
     : m_hParent(hParent)
     , bDotMatchesNewline(false)
     , bCaseSensitive(false)
+    , m_themeCallbackId(0)
 {
 }
 
@@ -44,8 +46,16 @@ LRESULT CRegexTestDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lP
     UNREFERENCED_PARAMETER(lParam);
     switch (uMsg)
     {
-    case WM_INITDIALOG:
+        case WM_INITDIALOG:
         {
+            m_themeCallbackId = CTheme::Instance().RegisterThemeChangeCallback(
+                [this]() {
+                    CTheme::Instance().SetThemeForDialog(*this, CTheme::Instance().IsDarkTheme());
+                    DarkModeHelper::Instance().AllowDarkModeForWindow(GetToolTipHWND(), CTheme::Instance().IsDarkTheme());
+                });
+            CTheme::Instance().SetThemeForDialog(*this, CTheme::Instance().IsDarkTheme());
+            DarkModeHelper::Instance().AllowDarkModeForWindow(GetToolTipHWND(), CTheme::Instance().IsDarkTheme());
+
             InitDialog(hwndDlg, IDI_GREPWIN);
             CLanguage::Instance().TranslateWindow(*this);
             // initialize the controls
@@ -55,6 +65,7 @@ LRESULT CRegexTestDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lP
             SetFocus(GetDlgItem(hwndDlg, IDC_SEARCHTEXT));
 
             m_resizer.Init(hwndDlg);
+            m_resizer.UseSizeGrip(!CTheme::Instance().IsDarkTheme());
             m_resizer.AddControl(hwndDlg, IDC_TEXTCONTENT, RESIZER_TOPLEFTRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_SEARCHTEXT, RESIZER_TOPLEFTRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_REPLACETEXT, RESIZER_TOPLEFTRIGHT);
@@ -64,26 +75,26 @@ LRESULT CRegexTestDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lP
             m_resizer.AddControl(hwndDlg, IDCANCEL, RESIZER_BOTTOMRIGHT);
 
             SendMessage(GetDlgItem(*this, IDC_TEXTCONTENT), EM_SETEVENTMASK, 0, ENM_CHANGE);
-            SendMessage(GetDlgItem(*this, IDC_TEXTCONTENT), EM_EXLIMITTEXT, 0, 200*1024);
-            SendMessage(GetDlgItem(*this, IDC_REGEXREPLACED), EM_EXLIMITTEXT, 0, 200*1024);
+            SendMessage(GetDlgItem(*this, IDC_TEXTCONTENT), EM_EXLIMITTEXT, 0, 200 * 1024);
+            SendMessage(GetDlgItem(*this, IDC_REGEXREPLACED), EM_EXLIMITTEXT, 0, 200 * 1024);
         }
-        return FALSE;
-    case WM_COMMAND:
-        return DoCommand(LOWORD(wParam), HIWORD(wParam));
-    case WM_SIZE:
+            return FALSE;
+        case WM_COMMAND:
+            return DoCommand(LOWORD(wParam), HIWORD(wParam));
+        case WM_SIZE:
         {
             m_resizer.DoResize(LOWORD(lParam), HIWORD(lParam));
         }
         break;
-    case WM_GETMINMAXINFO:
+        case WM_GETMINMAXINFO:
         {
-            MINMAXINFO * mmi = (MINMAXINFO*)lParam;
+            MINMAXINFO* mmi       = (MINMAXINFO*)lParam;
             mmi->ptMinTrackSize.x = m_resizer.GetDlgRect()->right;
             mmi->ptMinTrackSize.y = m_resizer.GetDlgRect()->bottom;
             return 0;
         }
         break;
-    case WM_TIMER:
+        case WM_TIMER:
         {
             if (wParam == ID_REGEXTIMER)
             {
@@ -92,8 +103,11 @@ LRESULT CRegexTestDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lP
             }
         }
         break;
-    default:
-        return FALSE;
+        case WM_CLOSE:
+            CTheme::Instance().RemoveRegisteredCallback(m_themeCallbackId);
+            break;
+        default:
+            return FALSE;
     }
     return FALSE;
 }
@@ -102,44 +116,44 @@ LRESULT CRegexTestDlg::DoCommand(int id, int msg)
 {
     switch (id)
     {
-    case IDOK:
+        case IDOK:
         {
-            auto buf = GetDlgItemText(IDC_SEARCHTEXT);
-            m_searchText = buf.get();
-            buf = GetDlgItemText(IDC_REPLACETEXT);
+            auto buf      = GetDlgItemText(IDC_SEARCHTEXT);
+            m_searchText  = buf.get();
+            buf           = GetDlgItemText(IDC_REPLACETEXT);
             m_replaceText = buf.get();
         }
-        // fall through
-    case IDCANCEL:
-        EndDialog(*this, id);
-        break;
-    case IDC_TEXTCONTENT:
+            // fall through
+        case IDCANCEL:
+            EndDialog(*this, id);
+            break;
+        case IDC_TEXTCONTENT:
         {
             if (msg == EN_CHANGE)
             {
-                auto buf = GetDlgItemText(IDC_TEXTCONTENT);
+                auto buf      = GetDlgItemText(IDC_TEXTCONTENT);
                 m_textContent = std::wstring(buf.get());
 
                 SetTimer(*this, ID_REGEXTIMER, 300, NULL);
             }
         }
         break;
-    case IDC_SEARCHTEXT:
+        case IDC_SEARCHTEXT:
         {
             if (msg == EN_CHANGE)
             {
-                auto buf = GetDlgItemText(IDC_SEARCHTEXT);
+                auto buf     = GetDlgItemText(IDC_SEARCHTEXT);
                 m_searchText = buf.get();
 
                 SetTimer(*this, ID_REGEXTIMER, 300, NULL);
             }
         }
         break;
-    case IDC_REPLACETEXT:
+        case IDC_REPLACETEXT:
         {
             if (msg == EN_CHANGE)
             {
-                auto buf = GetDlgItemText(IDC_REPLACETEXT);
+                auto buf      = GetDlgItemText(IDC_REPLACETEXT);
                 m_replaceText = buf.get();
 
                 SetTimer(*this, ID_REGEXTIMER, 300, NULL);
@@ -153,7 +167,7 @@ LRESULT CRegexTestDlg::DoCommand(int id, int msg)
 void CRegexTestDlg::SetStrings(const std::wstring& search, const std::wstring& replace)
 {
     m_replaceText = replace;
-    m_searchText = search;
+    m_searchText  = search;
 }
 
 void CRegexTestDlg::DoRegex()
@@ -181,20 +195,20 @@ void CRegexTestDlg::DoRegex()
         {
             std::wstring::const_iterator start, end;
             start = m_textContent.begin();
-            end = m_textContent.end();
+            end   = m_textContent.end();
             boost::match_results<std::wstring::const_iterator> what;
             try
             {
                 int ft = boost::regex::normal;
                 if (!bCaseSensitive)
                     ft |= boost::regbase::icase;
-                boost::wregex expression = boost::wregex(m_searchText, ft);
+                boost::wregex                                      expression = boost::wregex(m_searchText, ft);
                 boost::match_results<std::wstring::const_iterator> whatc;
-                boost::match_flag_type flags = boost::match_default;
+                boost::match_flag_type                             flags = boost::match_default;
                 if (!bDotMatchesNewline)
                     flags |= boost::match_not_dot_newline;
 
-                boost::match_flag_type rflags = boost::match_default|boost::format_all;
+                boost::match_flag_type rflags = boost::match_default | boost::format_all;
                 if (!bDotMatchesNewline)
                     rflags |= boost::match_not_dot_newline;
 
@@ -227,7 +241,6 @@ void CRegexTestDlg::DoRegex()
             }
             catch (const std::exception&)
             {
-
             }
             if (searchresult.empty())
                 SetDlgItemText(*this, IDC_REGEXMATCH, TranslatedString(hResource, IDS_NOMATCH).c_str());

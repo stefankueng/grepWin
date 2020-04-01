@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2011-2013, 2019 - Stefan Kueng
+// Copyright (C) 2011-2013, 2019-2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -19,16 +19,17 @@
 #include "stdafx.h"
 #include "resource.h"
 #include "MultiLineEditDlg.h"
+#include "Theme.h"
 #include <string>
 #include <Richedit.h>
 #pragma warning(push)
-#pragma warning(disable: 4996) // warning STL4010: Various members of std::allocator are deprecated in C++17
+#pragma warning(disable : 4996) // warning STL4010: Various members of std::allocator are deprecated in C++17
 #include <boost/regex.hpp>
 #pragma warning(pop)
 
-
 CMultiLineEditDlg::CMultiLineEditDlg(HWND hParent)
     : m_hParent(hParent)
+    , m_themeCallbackId(0)
 {
 }
 
@@ -41,8 +42,14 @@ LRESULT CMultiLineEditDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARA
     UNREFERENCED_PARAMETER(lParam);
     switch (uMsg)
     {
-    case WM_INITDIALOG:
+        case WM_INITDIALOG:
         {
+            m_themeCallbackId = CTheme::Instance().RegisterThemeChangeCallback(
+                [this]() {
+                    CTheme::Instance().SetThemeForDialog(*this, CTheme::Instance().IsDarkTheme());
+                });
+            CTheme::Instance().SetThemeForDialog(*this, CTheme::Instance().IsDarkTheme());
+
             InitDialog(hwndDlg, IDI_GREPWIN);
             CLanguage::Instance().TranslateWindow(*this);
             // initialize the controls
@@ -51,31 +58,35 @@ LRESULT CMultiLineEditDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARA
             SetFocus(GetDlgItem(hwndDlg, IDC_TEXTCONTENT));
 
             m_resizer.Init(hwndDlg);
+            m_resizer.UseSizeGrip(!CTheme::Instance().IsDarkTheme());
             m_resizer.AddControl(hwndDlg, IDC_TEXTCONTENT, RESIZER_TOPLEFTBOTTOMRIGHT);
             m_resizer.AddControl(hwndDlg, IDOK, RESIZER_BOTTOMRIGHT);
             m_resizer.AddControl(hwndDlg, IDCANCEL, RESIZER_BOTTOMRIGHT);
 
             SendMessage(GetDlgItem(*this, IDC_TEXTCONTENT), EM_SETEVENTMASK, 0, ENM_CHANGE);
-            SendMessage(GetDlgItem(*this, IDC_TEXTCONTENT), EM_EXLIMITTEXT, 0, 200*1024);
+            SendMessage(GetDlgItem(*this, IDC_TEXTCONTENT), EM_EXLIMITTEXT, 0, 200 * 1024);
         }
-        return FALSE;
-    case WM_COMMAND:
-        return DoCommand(LOWORD(wParam), HIWORD(wParam));
-    case WM_SIZE:
+            return FALSE;
+        case WM_COMMAND:
+            return DoCommand(LOWORD(wParam), HIWORD(wParam));
+        case WM_SIZE:
         {
             m_resizer.DoResize(LOWORD(lParam), HIWORD(lParam));
         }
         break;
-    case WM_GETMINMAXINFO:
+        case WM_GETMINMAXINFO:
         {
-            MINMAXINFO * mmi = (MINMAXINFO*)lParam;
+            MINMAXINFO* mmi       = (MINMAXINFO*)lParam;
             mmi->ptMinTrackSize.x = m_resizer.GetDlgRect()->right;
             mmi->ptMinTrackSize.y = m_resizer.GetDlgRect()->bottom;
             return 0;
         }
         break;
-    default:
-        return FALSE;
+        case WM_CLOSE:
+            CTheme::Instance().RemoveRegisteredCallback(m_themeCallbackId);
+            break;
+        default:
+            return FALSE;
     }
     return FALSE;
 }
@@ -84,20 +95,20 @@ LRESULT CMultiLineEditDlg::DoCommand(int id, int msg)
 {
     switch (id)
     {
-    case IDOK:
+        case IDOK:
         {
-            auto buf = GetDlgItemText(IDC_TEXTCONTENT);
+            auto buf    = GetDlgItemText(IDC_TEXTCONTENT);
             m_RegexText = std::wstring(buf.get());
         }
-        // fall through
-    case IDCANCEL:
-        EndDialog(*this, id);
-        break;
-    case IDC_TEXTCONTENT:
+            // fall through
+        case IDCANCEL:
+            EndDialog(*this, id);
+            break;
+        case IDC_TEXTCONTENT:
         {
             if (msg == EN_CHANGE)
             {
-                auto buf = GetDlgItemText(IDC_TEXTCONTENT);
+                auto buf    = GetDlgItemText(IDC_TEXTCONTENT);
                 m_RegexText = std::wstring(buf.get());
             }
         }
@@ -105,5 +116,3 @@ LRESULT CMultiLineEditDlg::DoCommand(int id, int msg)
     }
     return 1;
 }
-
-

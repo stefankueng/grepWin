@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008, 2012-2013, 2019 - Stefan Kueng
+// Copyright (C) 2007-2008, 2012-2013, 2019-2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -21,7 +21,6 @@
 #include "DlgResizer.h"
 #include <string>
 
-
 /**
  * name dialog.
  */
@@ -31,15 +30,16 @@ public:
     CNameDlg(HWND hParent);
     ~CNameDlg(void);
 
-    std::wstring            GetName() const {return m_name;}
-    void                    SetName(const std::wstring& n) { m_name = n; }
+    std::wstring GetName() const { return m_name; }
+    void         SetName(const std::wstring& n) { m_name = n; }
+
 protected:
-    LRESULT CALLBACK        DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
-    LRESULT                 DoCommand(int id, int msg);
+    LRESULT CALLBACK DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
+    LRESULT          DoCommand(int id, int msg);
 
 private:
-    HWND                    m_hParent;
-    std::wstring            m_name;
-
-    CDlgResizer             m_resizer;
+    HWND         m_hParent;
+    std::wstring m_name;
+    int          m_themeCallbackId;
+    CDlgResizer  m_resizer;
 };

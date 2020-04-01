@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008, 2010-2019 - Stefan Kueng
+// Copyright (C) 2007-2008, 2010-2020 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -25,10 +25,14 @@
 #include "Language.h"
 #include "StringUtils.h"
 #include "PathUtils.h"
+#pragma warning(push)
+#pragma warning(disable : 4458) // declaration of 'xxx' hides class member
+#include <gdiplus.h>
+#pragma warning(pop)
 
 // Global Variables:
-HINSTANCE g_hInst;            // current instance
-bool bPortable = false;
+HINSTANCE  g_hInst; // current instance
+bool       bPortable = false;
 CSimpleIni g_iniFile;
 
 ULONGLONG g_startTime = GetTickCount64();
@@ -62,7 +66,7 @@ static void RegisterContextMenu(bool bAdd)
     if (bAdd)
     {
         std::wstring sIconPath = CStringUtils::Format(L"%s,-%d", CPathUtils::GetLongPathname(CPathUtils::GetModulePath()).c_str(), IDI_GREPWIN);
-        std::wstring sExePath = CStringUtils::Format(L"%s /searchpath:\"%%1\"", CPathUtils::GetLongPathname(CPathUtils::GetModulePath()).c_str());
+        std::wstring sExePath  = CStringUtils::Format(L"%s /searchpath:\"%%1\"", CPathUtils::GetLongPathname(CPathUtils::GetModulePath()).c_str());
         SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\Directory\\shell\\grepWin", NULL, REG_SZ, L"search with grepWin", sizeof(L"search with grepWin") + 2);
         SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\Directory\\shell\\grepWin", L"Icon", REG_SZ, sIconPath.c_str(), DWORD((sIconPath.size() + 1) * sizeof(WCHAR)));
         SHSetValue(HKEY_CURRENT_USER, L"Software\\Classes\\Directory\\shell\\grepWin\\Command", NULL, REG_SZ, sExePath.c_str(), DWORD((sExePath.size() + 1) * sizeof(WCHAR)));
@@ -93,9 +97,9 @@ static void RegisterContextMenu(bool bAdd)
     }
 }
 
-BOOL CALLBACK windowenumerator(__in  HWND hwnd,__in  LPARAM lParam)
+BOOL CALLBACK windowenumerator(__in HWND hwnd, __in LPARAM lParam)
 {
-    HWND * pWnd = (HWND*)lParam;
+    HWND* pWnd          = (HWND*)lParam;
     WCHAR buf[MAX_PATH] = {0};
     GetWindowText(hwnd, buf, _countof(buf));
     if (_wcsnicmp(buf, L"grepwin :", 9) == 0)
@@ -133,7 +137,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
     // explorer starts multiple grepWin instances at once. In case there's already a grepWin instance
     // running, sleep for a while to give that instance time to fully initialize
     HANDLE hReloadProtection = ::CreateMutex(NULL, FALSE, L"{6473AA76-0EAE-4C96-8C99-AFDFEFFE42B5}");
-    bool alreadyRunning = false;
+    bool   alreadyRunning    = false;
     if ((!hReloadProtection) || (GetLastError() == ERROR_ALREADY_EXISTS))
     {
         // An instance of grepWin is already running
@@ -146,9 +150,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
     // we need some of the common controls
     INITCOMMONCONTROLSEX icex;
     icex.dwSize = sizeof(INITCOMMONCONTROLSEX);
-    icex.dwICC = ICC_LINK_CLASS|ICC_LISTVIEW_CLASSES|ICC_PAGESCROLLER_CLASS
-        |ICC_PROGRESS_CLASS|ICC_STANDARD_CLASSES|ICC_TAB_CLASSES|ICC_TREEVIEW_CLASSES
-        |ICC_UPDOWN_CLASS|ICC_USEREX_CLASSES|ICC_WIN95_CLASSES;
+    icex.dwICC  = ICC_LINK_CLASS | ICC_LISTVIEW_CLASSES | ICC_PAGESCROLLER_CLASS | ICC_PROGRESS_CLASS | ICC_STANDARD_CLASSES | ICC_TAB_CLASSES | ICC_TREEVIEW_CLASSES | ICC_UPDOWN_CLASS | ICC_USEREX_CLASSES | ICC_WIN95_CLASSES;
     InitCommonControlsEx(&icex);
 
     HMODULE hRichEdt = LoadLibrary(_T("Riched20.dll"));
@@ -166,9 +168,9 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
         return FALSE;
     }
 
-    bool bQuit = false;
-    HWND hWnd = NULL;
-    int timeout = 20;
+    bool bQuit   = false;
+    HWND hWnd    = NULL;
+    int  timeout = 20;
     do
     {
         EnumWindows(windowenumerator, (LPARAM)&hWnd);
@@ -178,7 +180,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
     } while ((hWnd == NULL) && alreadyRunning && timeout);
 
     auto modulename = CPathUtils::GetFileName(CPathUtils::GetModulePath(0));
-    bPortable = ((_tcsstr(modulename.c_str(), _T("portable"))) || (parser.HasKey(_T("portable"))));
+    bPortable       = ((_tcsstr(modulename.c_str(), _T("portable"))) || (parser.HasKey(_T("portable"))));
 
     std::wstring iniPath = CPathUtils::GetModuleDir(0);
     iniPath += L"\\grepwin.ini";
@@ -191,35 +193,34 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
         g_iniFile.LoadFile(iniPath.c_str());
     }
 
-
     if (hWnd)
     {
         bool bOnlyOne = !!DWORD(CRegStdDWORD(_T("Software\\grepWin\\onlyone"), 0));
         if (bPortable)
             bOnlyOne = !!_wtoi(g_iniFile.GetValue(L"global", L"onlyone", L"0"));
         UINT GREPWIN_STARTUPMSG = RegisterWindowMessage(_T("grepWin_StartupMessage"));
-        if (SendMessage(hWnd, GREPWIN_STARTUPMSG, 0, 0))                // send the new path
+        if (SendMessage(hWnd, GREPWIN_STARTUPMSG, 0, 0)) // send the new path
         {
             std::wstring spath = parser.GetVal(_T("searchpath"));
             SearchReplace(spath, L"/", L"\\");
-            spath = SanitizeSearchPaths(spath);
+            spath                   = SanitizeSearchPaths(spath);
             COPYDATASTRUCT CopyData = {0};
-            CopyData.lpData = (LPVOID)spath.c_str();
-            CopyData.cbData = (DWORD)spath.size()*sizeof(wchar_t);
+            CopyData.lpData         = (LPVOID)spath.c_str();
+            CopyData.cbData         = (DWORD)spath.size() * sizeof(wchar_t);
             SendMessage(hWnd, WM_COPYDATA, 0, (LPARAM)&CopyData);
-            SetForegroundWindow(hWnd);                                  //set the window to front
+            SetForegroundWindow(hWnd); //set the window to front
             bQuit = true;
         }
         else if (bOnlyOne)
         {
             std::wstring spath = parser.HasVal(L"searchpath") ? parser.GetVal(_T("searchpath")) : L"";
             SearchReplace(spath, L"/", L"\\");
-            spath = SanitizeSearchPaths(spath);
-            COPYDATASTRUCT CopyData = { 0 };
-            CopyData.lpData = (LPVOID)spath.c_str();
-            CopyData.cbData = (DWORD)spath.size()*sizeof(wchar_t);
+            spath                   = SanitizeSearchPaths(spath);
+            COPYDATASTRUCT CopyData = {0};
+            CopyData.lpData         = (LPVOID)spath.c_str();
+            CopyData.cbData         = (DWORD)spath.size() * sizeof(wchar_t);
             SendMessage(hWnd, WM_COPYDATA, 1, (LPARAM)&CopyData);
-            SetForegroundWindow(hWnd);                                  //set the window to front
+            SetForegroundWindow(hWnd); //set the window to front
             bQuit = true;
         }
     }
@@ -227,11 +228,16 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
     int ret = 0;
     if (!bQuit)
     {
+        Gdiplus::GdiplusStartupInput gdiplusStartupInput;
+        ULONG_PTR                    gdiplusToken;
+        // Initialize GDI+.
+        Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
+
         CLanguage::Instance().LoadFile(bPortable ? g_iniFile.GetValue(L"global", L"languagefile", L"") : std::wstring(CRegStdString(L"Software\\grepWin\\languagefile")));
-        if (parser.HasKey(_T("about"))||parser.HasKey(_T("?"))||parser.HasKey(_T("help")))
+        if (parser.HasKey(_T("about")) || parser.HasKey(_T("?")) || parser.HasKey(_T("help")))
         {
             CAboutDlg aboutDlg(NULL);
-            ret= (int)aboutDlg.DoModal(hInstance, IDD_ABOUT, NULL, NULL);
+            ret = (int)aboutDlg.DoModal(hInstance, IDD_ABOUT, NULL, NULL);
         }
         else
         {
@@ -239,7 +245,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
             if (parser.HasVal(_T("searchpath")))
             {
                 std::wstring spath = parser.GetVal(L"searchpath");
-                spath = SanitizeSearchPaths(spath);
+                spath              = SanitizeSearchPaths(spath);
                 searchDlg.SetSearchPath(spath);
             }
             if (parser.HasVal(_T("searchfor")))
@@ -254,13 +260,13 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
                 searchDlg.SetReplaceWith(parser.GetVal(_T("replacewith")));
 
             if (parser.HasVal(_T("i")))
-                searchDlg.SetCaseSensitive(_tcsicmp(parser.GetVal(_T("i")), _T("yes"))!=0);
+                searchDlg.SetCaseSensitive(_tcsicmp(parser.GetVal(_T("i")), _T("yes")) != 0);
             if (parser.HasVal(_T("n")))
-                searchDlg.SetMatchesNewline(_tcsicmp(parser.GetVal(_T("n")), _T("yes"))==0);
+                searchDlg.SetMatchesNewline(_tcsicmp(parser.GetVal(_T("n")), _T("yes")) == 0);
             if (parser.HasVal(_T("k")))
-                searchDlg.SetCreateBackups(_tcsicmp(parser.GetVal(_T("k")), _T("yes"))==0);
+                searchDlg.SetCreateBackups(_tcsicmp(parser.GetVal(_T("k")), _T("yes")) == 0);
             if (parser.HasVal(_T("utf8")))
-                searchDlg.SetUTF8(_tcsicmp(parser.GetVal(_T("utf8")), _T("yes"))==0);
+                searchDlg.SetUTF8(_tcsicmp(parser.GetVal(_T("utf8")), _T("yes")) == 0);
             if (parser.HasVal(_T("size")))
             {
                 int cmp = 0;
@@ -269,16 +275,16 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
                 searchDlg.SetSize(parser.GetLongVal(_T("size")), cmp);
             }
             if (parser.HasVal(_T("s")))
-                searchDlg.SetIncludeSystem(_tcsicmp(parser.GetVal(_T("s")), _T("yes"))==0);
+                searchDlg.SetIncludeSystem(_tcsicmp(parser.GetVal(_T("s")), _T("yes")) == 0);
             if (parser.HasVal(_T("h")))
-                searchDlg.SetIncludeHidden(_tcsicmp(parser.GetVal(_T("h")), _T("yes"))==0);
+                searchDlg.SetIncludeHidden(_tcsicmp(parser.GetVal(_T("h")), _T("yes")) == 0);
             if (parser.HasVal(_T("u")))
-                searchDlg.SetIncludeSubfolders(_tcsicmp(parser.GetVal(_T("u")), _T("yes"))==0);
+                searchDlg.SetIncludeSubfolders(_tcsicmp(parser.GetVal(_T("u")), _T("yes")) == 0);
             if (parser.HasVal(_T("b")))
-                searchDlg.SetIncludeBinary(_tcsicmp(parser.GetVal(_T("b")), _T("yes"))==0);
+                searchDlg.SetIncludeBinary(_tcsicmp(parser.GetVal(_T("b")), _T("yes")) == 0);
             if (parser.HasVal(_T("regex")))
                 searchDlg.SetUseRegex(_tcsicmp(parser.GetVal(_T("regex")), _T("yes")) == 0);
-            else if(parser.HasVal(_T("searchfor")))
+            else if (parser.HasVal(_T("searchfor")))
                 searchDlg.SetUseRegex(true);
 
             if (parser.HasKey(L"execute") || parser.HasKey(L"executesearch"))
@@ -291,25 +297,25 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
                 searchDlg.SetShowContent();
             if (parser.HasVal(L"datelimit") && parser.HasVal(L"date1"))
             {
-                FILETIME date1 = { 0 };
-                FILETIME date2 = { 0 };
-                int year = 0;
-                int month = 0;
-                int day = 0;
-                auto sDate1 = parser.GetVal(L"date1");
+                FILETIME date1  = {0};
+                FILETIME date2  = {0};
+                int      year   = 0;
+                int      month  = 0;
+                int      day    = 0;
+                auto     sDate1 = parser.GetVal(L"date1");
                 swscanf_s(sDate1, L"%4d:%2d:%2d", &year, &month, &day);
-                SYSTEMTIME sysTime = { 0 };
-                sysTime.wYear = (WORD)year;
-                sysTime.wMonth = (WORD)month;
-                sysTime.wDay = (WORD)day;
+                SYSTEMTIME sysTime = {0};
+                sysTime.wYear      = (WORD)year;
+                sysTime.wMonth     = (WORD)month;
+                sysTime.wDay       = (WORD)day;
                 SystemTimeToFileTime(&sysTime, &date1);
                 if (parser.HasVal(L"date2"))
                 {
                     auto sDate2 = parser.GetVal(L"date2");
                     swscanf_s(sDate2, L"%4d:%2d:%2d", &year, &month, &day);
-                    sysTime.wYear = (WORD)year;
+                    sysTime.wYear  = (WORD)year;
                     sysTime.wMonth = (WORD)month;
-                    sysTime.wDay = (WORD)day;
+                    sysTime.wDay   = (WORD)day;
                     SystemTimeToFileTime(&sysTime, &date2);
                 }
                 searchDlg.SetDateLimit(parser.GetLongVal(L"datelimit"), date1, date2);
@@ -319,11 +325,12 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
         }
         if (bPortable)
         {
-            FILE * pFile = NULL;
+            FILE* pFile = NULL;
             _tfopen_s(&pFile, iniPath.c_str(), _T("wb"));
             g_iniFile.SaveFile(pFile);
             fclose(pFile);
         }
+        Gdiplus::GdiplusShutdown(gdiplusToken);
     }
 
     ::CoUninitialize();

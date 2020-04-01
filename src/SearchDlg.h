@@ -180,6 +180,7 @@ private:
 
     CDlgResizer             m_resizer;
     CHyperLink              m_link;
+    int                     m_themeCallbackId;
 
     CFileDropTarget *       m_pDropTarget;
 
