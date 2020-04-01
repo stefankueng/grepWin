@@ -1207,6 +1207,7 @@ bool CSearchDlg::InitResultList()
     std::wstring sPath              = TranslatedString(hResource, IDS_PATH);
     std::wstring sEncoding          = TranslatedString(hResource, IDS_ENCODING);
     std::wstring sDateModified      = TranslatedString(hResource, IDS_DATEMODIFIED);
+    std::wstring sExtension         = TranslatedString(hResource, IDS_FILEEXT);
 
     LVCOLUMN lvc = {0};
     lvc.mask = LVCF_TEXT|LVCF_FMT;
@@ -1224,10 +1225,12 @@ bool CSearchDlg::InitResultList()
     ListView_InsertColumn(hListControl, 3, &lvc);
     if (filelist)
     {
-        lvc.pszText = const_cast<LPWSTR>((LPCWSTR)sEncoding.c_str());
+        lvc.pszText = const_cast<LPWSTR>((LPCWSTR)sExtension.c_str());
         ListView_InsertColumn(hListControl, 4, &lvc);
-        lvc.pszText = const_cast<LPWSTR>((LPCWSTR)sDateModified.c_str());
+        lvc.pszText = const_cast<LPWSTR>((LPCWSTR)sEncoding.c_str());
         ListView_InsertColumn(hListControl, 5, &lvc);
+        lvc.pszText = const_cast<LPWSTR>((LPCWSTR)sDateModified.c_str());
+        ListView_InsertColumn(hListControl, 6, &lvc);
     }
 
     ListView_SetColumnWidth(hListControl, 0, 300);
@@ -1236,6 +1239,7 @@ bool CSearchDlg::InitResultList()
     ListView_SetColumnWidth(hListControl, 3, LVSCW_AUTOSIZE_USEHEADER);
     ListView_SetColumnWidth(hListControl, 4, LVSCW_AUTOSIZE_USEHEADER);
     ListView_SetColumnWidth(hListControl, 5, LVSCW_AUTOSIZE_USEHEADER);
+    ListView_SetColumnWidth(hListControl, 6, LVSCW_AUTOSIZE_USEHEADER);
 
     SendMessage(ListView_GetToolTips(hListControl), TTM_SETDELAYTIME, TTDT_AUTOPOP, SHRT_MAX);
 
@@ -1554,12 +1558,19 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
             break;
         case 4:
             if (m_bAscending)
+                sort(m_items.begin(), m_items.end(), ExtCompareAsc);
+            else
+                sort(m_items.begin(), m_items.end(), ExtCompareDesc);
+            bDidSort = true;
+            break;
+        case 5:
+            if (m_bAscending)
                 sort(m_items.begin(), m_items.end(), EncodingCompareAsc);
             else
                 sort(m_items.begin(), m_items.end(), EncodingCompareDesc);
             bDidSort = true;
             break;
-        case 5:
+        case 6:
             if (m_bAscending)
                 sort(m_items.begin(), m_items.end(), ModifiedTimeCompareAsc);
             else
@@ -1673,7 +1684,16 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
                 case 3: // path
                     wcsncpy_s(pItem->pszText, pItem->cchTextMax, pInfo->filepath.substr(0, pInfo->filepath.size() - pInfo->filepath.substr(pInfo->filepath.find_last_of('\\') + 1).size() - 1).c_str(), pItem->cchTextMax - 1);
                     break;
-                case 4: // encoding
+                case 4: // extension of the file
+                {
+                    auto dotpos = pInfo->filepath.find_last_of('.');
+                    if (dotpos != std::wstring::npos)
+                        wcsncpy_s(pItem->pszText, pItem->cchTextMax, pInfo->filepath.substr(dotpos + 1).c_str(), pItem->cchTextMax - 1);
+                    else
+                        pItem->pszText[0] = 0;
+                }
+                    break;
+                case 5: // encoding
                     switch (pInfo->encoding)
                     {
                     case CTextFile::ANSI:
@@ -1696,7 +1716,7 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
                         break;
                     }
                     break;
-                case 5: // modification date
+                case 6: // modification date
                     formatDate(pItem->pszText, pInfo->modifiedtime, true);
                     break;
                 default:
@@ -2196,6 +2216,15 @@ bool CSearchDlg::ModifiedTimeCompareAsc(const CSearchInfo &Entry1, const CSearch
     return CompareFileTime(&Entry1.modifiedtime, &Entry2.modifiedtime) < 0;
 }
 
+bool CSearchDlg::ExtCompareAsc(const CSearchInfo& Entry1, const CSearchInfo& Entry2)
+{
+    auto dotpos1 = Entry1.filepath.find_last_of('.');
+    auto dotpos2 = Entry2.filepath.find_last_of('.');
+    std::wstring ext1 = dotpos1 != std::wstring::npos ? Entry1.filepath.substr(dotpos1 + 1) : L"";
+    std::wstring ext2 = dotpos2 != std::wstring::npos ? Entry2.filepath.substr(dotpos2 + 1) : L"";
+    return StrCmpLogicalW(ext1.c_str(), ext2.c_str()) < 0;
+}
+
 bool CSearchDlg::NameCompareDesc(const CSearchInfo &Entry1, const CSearchInfo& Entry2)
 {
     std::wstring name1 = Entry1.filepath.substr(Entry1.filepath.find_last_of('\\')+1);
@@ -2233,6 +2262,15 @@ bool CSearchDlg::EncodingCompareDesc(const CSearchInfo &Entry1, const CSearchInf
 bool CSearchDlg::ModifiedTimeCompareDesc(const CSearchInfo &Entry1, const CSearchInfo& Entry2)
 {
     return CompareFileTime(&Entry1.modifiedtime, &Entry2.modifiedtime) > 0;
+}
+
+bool CSearchDlg::ExtCompareDesc(const CSearchInfo& Entry1, const CSearchInfo& Entry2)
+{
+    auto dotpos1 = Entry1.filepath.find_last_of('.');
+    auto dotpos2 = Entry2.filepath.find_last_of('.');
+    std::wstring ext1 = dotpos1 != std::wstring::npos ? Entry1.filepath.substr(dotpos1 + 1) : L"";
+    std::wstring ext2 = dotpos2 != std::wstring::npos ? Entry2.filepath.substr(dotpos2 + 1) : L"";
+    return StrCmpLogicalW(ext1.c_str(), ext2.c_str()) > 0;
 }
 
 bool grepWin_match_i(const std::wstring& the_regex, const TCHAR *pText)
