@@ -34,8 +34,8 @@
 #include <gdiplus.h>
 #pragma warning(pop)
 
-constexpr COLORREF darkBkColor           = 0x101010;
-constexpr COLORREF darkTextColor         = 0xEEEEEE;
+constexpr COLORREF darkBkColor           = 0x202020;
+constexpr COLORREF darkTextColor         = 0xDDDDDD;
 constexpr COLORREF darkDisabledTextColor = 0x808080;
 
 constexpr auto SubclassID = 1234;
@@ -386,7 +386,8 @@ LRESULT CTheme::ListViewSubclassProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM
 {
     switch (uMsg)
     {
-        case WM_NOTIFY: {
+        case WM_NOTIFY:
+        {
             if (reinterpret_cast<LPNMHDR>(lParam)->code == NM_CUSTOMDRAW)
             {
                 LPNMCUSTOMDRAW nmcd = reinterpret_cast<LPNMCUSTOMDRAW>(lParam);
@@ -394,7 +395,8 @@ LRESULT CTheme::ListViewSubclassProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM
                 {
                     case CDDS_PREPAINT:
                         return CDRF_NOTIFYITEMDRAW;
-                    case CDDS_ITEMPREPAINT: {
+                    case CDDS_ITEMPREPAINT:
+                    {
                         SetTextColor(nmcd->hdc, darkTextColor);
                         return CDRF_DODEFAULT;
                     }
@@ -419,7 +421,8 @@ LRESULT CTheme::ComboBoxSubclassProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM
         case WM_CTLCOLOREDIT:
         case WM_CTLCOLORLISTBOX:
         case WM_CTLCOLORBTN:
-        case WM_CTLCOLORSCROLLBAR: {
+        case WM_CTLCOLORSCROLLBAR:
+        {
             auto hbrBkgnd = (HBRUSH*)dwRefData;
             HDC  hdc      = reinterpret_cast<HDC>(wParam);
             SetBkMode(hdc, TRANSPARENT);
@@ -447,7 +450,8 @@ LRESULT CTheme::MainSubclassProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPa
         case WM_CTLCOLOREDIT:
         case WM_CTLCOLORLISTBOX:
         case WM_CTLCOLORBTN:
-        case WM_CTLCOLORSCROLLBAR: {
+        case WM_CTLCOLORSCROLLBAR:
+        {
             auto hbrBkgnd = (HBRUSH*)dwRefData;
             HDC  hdc      = reinterpret_cast<HDC>(wParam);
             SetBkMode(hdc, TRANSPARENT);
@@ -467,11 +471,11 @@ LRESULT CTheme::MainSubclassProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPa
 }
 
 #ifndef RECTWIDTH
-#define RECTWIDTH(rc) ((rc).right - (rc).left)
+#    define RECTWIDTH(rc) ((rc).right - (rc).left)
 #endif
 
 #ifndef RECTHEIGHT
-#define RECTHEIGHT(rc) ((rc).bottom - (rc).top)
+#    define RECTHEIGHT(rc) ((rc).bottom - (rc).top)
 #endif
 
 LRESULT CTheme::ButtonSubclassProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR /*uIdSubclass*/, DWORD_PTR /*dwRefData*/)
@@ -480,13 +484,15 @@ LRESULT CTheme::ButtonSubclassProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
     {
         case WM_SETTEXT:
         case WM_ENABLE:
-        case WM_STYLECHANGED: {
+        case WM_STYLECHANGED:
+        {
             LRESULT res = DefSubclassProc(hWnd, uMsg, wParam, lParam);
             InvalidateRgn(hWnd, NULL, FALSE);
             return res;
         }
         break;
-        case WM_PAINT: {
+        case WM_PAINT:
+        {
             PAINTSTRUCT ps;
             HDC         hdc = BeginPaint(hWnd, &ps);
             if (hdc)
@@ -544,7 +550,8 @@ LRESULT CTheme::ButtonSubclassProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
                             if (hFontOld)
                                 hFontOld = (HFONT)SelectObject(hdcPaint, hFontOld);
 
-                            PatBlt(hdcPaint, 0, 0, RECTWIDTH(rcClient), RECTHEIGHT(rcClient), BLACKNESS);
+                            ::SetBkColor(hdcPaint, darkBkColor);
+                            ::ExtTextOut(hdcPaint, 0, 0, ETO_OPAQUE, &rcClient, nullptr, 0, nullptr);
 
                             BufferedPaintSetAlpha(hBufferedPaint, &ps.rcPaint, 0x00);
 
@@ -555,7 +562,7 @@ LRESULT CTheme::ButtonSubclassProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
 
                             DetermineGlowSize(&DttOpts.iGlowSize);
 
-                            COLORREF cr = RGB(0x00, 0x00, 0x00);
+                            COLORREF cr = darkBkColor;
                             GetEditBorderColor(hWnd, &cr);
                             cr |= 0xff000000;
 
@@ -585,7 +592,8 @@ LRESULT CTheme::ButtonSubclassProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
                                         rcDraw = rcClient;
                                         rcDraw.left += iX;
                                         DrawTextW(hdcPaint, szText, -1, &rcDraw, dwFlags | DT_CALCRECT);
-                                        PatBlt(hdcPaint, rcDraw.left, rcDraw.top, RECTWIDTH(rcDraw) + 3, RECTHEIGHT(rcDraw), BLACKNESS);
+                                        ::SetBkColor(hdcPaint, darkBkColor);
+                                        ::ExtTextOut(hdcPaint, 0, 0, ETO_OPAQUE, &rcDraw, nullptr, 0, nullptr);
                                         rcDraw.left++;
                                         rcDraw.right++;
 
@@ -621,7 +629,8 @@ LRESULT CTheme::ButtonSubclassProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
                         HPAINTBUFFER hBufferedPaint = BeginBufferedPaint(hdc, &rcClient, BPBF_TOPDOWNDIB, &params, &hdcPaint);
                         if (hdcPaint)
                         {
-                            PatBlt(hdcPaint, 0, 0, RECTWIDTH(rcClient), RECTHEIGHT(rcClient), BLACKNESS);
+                            ::SetBkColor(hdcPaint, darkBkColor);
+                            ::ExtTextOut(hdcPaint, 0, 0, ETO_OPAQUE, &rcClient, nullptr, 0, nullptr);
 
                             BufferedPaintSetAlpha(hBufferedPaint, &ps.rcPaint, 0x00);
 
@@ -832,7 +841,7 @@ void CTheme::OnSysColorChanged()
         m_isHighContrastModeDark = l2 < l1;
     }
     auto setDarkMode = bPortable ? _wtoi(g_iniFile.GetValue(L"global", L"darkmode", L"0")) != 0 : !!m_regDarkTheme;
-    m_dark = setDarkMode && IsDarkModeAllowed() && !IsHighContrastMode() && DarkModeHelper::Instance().ShouldAppsUseDarkMode();
+    m_dark           = setDarkMode && IsDarkModeAllowed() && !IsHighContrastMode() && DarkModeHelper::Instance().ShouldAppsUseDarkMode();
 }
 
 bool CTheme::IsDarkModeAllowed()
