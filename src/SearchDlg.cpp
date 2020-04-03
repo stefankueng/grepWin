@@ -1996,10 +1996,10 @@ void CSearchDlg::OpenFileAtListIndex(int listIndex)
     }
     if (!linenumberparam.empty())
     {
-		if (!linenumberparam.starts_with(L":"))
-		{
+        if (!linenumberparam.starts_with(L":"))
+        {
             application += _T(" ");
-		}
+        }
         application += linenumberparam;
     }
 
