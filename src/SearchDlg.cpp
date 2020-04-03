@@ -1962,6 +1962,12 @@ void CSearchDlg::OpenFileAtListIndex(int listIndex)
         // BowPad
         linenumberparam = CStringUtils::Format(L"/line:%s", textlinebuf);
     }
+	else if (appname.find(_T("code.exe")) != std::wstring::npos)
+    {
+        // Visual Studio Code
+        linenumberparam_before = L"--goto";
+        linenumberparam = CStringUtils::Format(L":%s", textlinebuf);
+    }
 
     // replace "%1" with %1
     std::wstring           tag      = _T("\"%1\"");
@@ -1990,7 +1996,10 @@ void CSearchDlg::OpenFileAtListIndex(int listIndex)
     }
     if (!linenumberparam.empty())
     {
-        application += _T(" ");
+		if (!linenumberparam.starts_with(L":"))
+		{
+            application += _T(" ");
+		}
         application += linenumberparam;
     }
 
