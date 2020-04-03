@@ -113,7 +113,7 @@ public:
         _list.push_back(fileName);
     }
 
-    std::wstring const get()
+    const std::wstring get()
     {
         std::lock_guard<std::mutex> lck(_mtx);
         return (_list.empty() ? L"" : _list.back());

@@ -1219,20 +1219,19 @@ void CSearchDlg::SaveWndPosition()
 
 void CSearchDlg::UpdateInfoLabel(bool withCurrentFile)
 {
-    std::wstring sText;
-    TCHAR        buf[1024] = {0};
+    TCHAR buf[1024] = {0};
     _stprintf_s(buf, _countof(buf), TranslatedString(hResource, IDS_INFOLABEL).c_str(),
                 m_searchedItems, m_totalitems - m_searchedItems, m_totalmatches, m_items.size());
-    sText = buf;
+    std::wstring sText = buf;
     if (withCurrentFile)
     {
-        std::wstring const file = s_searchedFile.get();
+        const std::wstring file = s_searchedFile.get();
         if (!file.empty())
-    {
-        sText += L", ";
+        {
+            sText += L", ";
             swprintf_s(buf, _countof(buf), TranslatedString(hResource, IDS_INFOLABELFILE).c_str(), file.c_str());
-        sText += buf;
-    }
+            sText += buf;
+        }
     }
     SetDlgItemText(*this, IDC_SEARCHINFOLABEL, sText.c_str());
 }
@@ -2415,6 +2414,8 @@ DWORD CSearchDlg::SearchThread()
         SearchStringutf16 += L"\\x00";
     }
 
+    s_searchedFile.clear();
+
     for (std::wstring searchpath : pathvector)
     {
         size_t endpos = searchpath.find_last_not_of(L" \\");
@@ -2440,8 +2441,6 @@ DWORD CSearchDlg::SearchThread()
 
             std::unordered_map<std::shared_ptr<CSearchInfo>, std::shared_future<int>> futureMap;
             std::unordered_map<std::shared_ptr<CSearchInfo>, int>                     readyMap;
-
-            s_searchedFile.clear();
 
             while ((fileEnumerator.NextFile(sPath, &bIsDirectory, bRecurse) || bAlwaysSearch) && !IsCancelled())
             {
@@ -2897,7 +2896,10 @@ int CSearchDlg::SearchFile(std::shared_ptr<CSearchInfo> sinfoPtr, const std::wst
                             // restore the attributes
                             SetFileAttributes(sinfoPtr->filepath.c_str(), origAttributes);
                             if (!bRet)
+                            {
+                                s_searchedFile.erase(filenamefull);
                                 return -1;
+                            }
                         }
                     }
                 }
@@ -2915,7 +2917,6 @@ int CSearchDlg::SearchFile(std::shared_ptr<CSearchInfo> sinfoPtr, const std::wst
         if (type == CTextFile::AUTOTYPE)
         {
             sinfoPtr->readerror = true;
-            s_searchedFile.erase(filenamefull);
             return -1;
         }
 
@@ -3118,7 +3119,6 @@ int CSearchDlg::SearchFile(std::shared_ptr<CSearchInfo> sinfoPtr, const std::wst
                 s_searchedFile.erase(filenamefull);
                 return -1;
             }
-
             s_searchedFile.erase(filenamefull);
         }
         else
