@@ -30,15 +30,16 @@
 #include <string>
 #include <vector>
 #include <set>
+#include <mutex>
 
 
-#define SEARCH_FOUND        (WM_APP+1)
-#define SEARCH_START        (WM_APP+2)
-#define SEARCH_PROGRESS     (WM_APP+3)
-#define SEARCH_END          (WM_APP+4)
+#define SEARCH_START         (WM_APP+1)
+#define SEARCH_ITEM_COUNT    (WM_APP+2)
+#define SEARCH_PROGRESS      (WM_APP+3)
+#define SEARCH_END           (WM_APP+4)
 #define WM_GREPWIN_THREADEND (WM_APP+5)
 
-#define ID_ABOUTBOX         0x0010
+#define ID_ABOUTBOX          0x0010
 
 enum ExecuteAction
 {
@@ -47,6 +48,102 @@ enum ExecuteAction
     Replace
 };
 
+typedef struct _SearchFlags_t
+{
+    bool bSearchAlways;
+    bool bUTF8;
+    bool bIncludeBinary;
+    bool bUseRegex;
+    bool bCaseSensitive;
+    bool bDotMatchesNewline;
+    bool bCreateBackup;
+    bool bBackupInFolder;
+    bool bReplace;
+
+} SearchFlags_t;
+
+
+// ---------------------------------------
+// a thread-safe log of backup-file paths
+// ---------------------------------------
+class BackupAndTempFilesLog
+{
+    mutable std::mutex     _mtx;
+    std::set<std::wstring> _set;
+
+public:
+
+    void insert(const std::wstring& backupFilePath)
+    {
+        std::lock_guard<std::mutex> lck(_mtx);
+        _set.insert(backupFilePath);
+    }
+    // auto unlock (lock_guard, RAII)
+
+    void clear()
+    {
+        std::lock_guard<std::mutex> lck(_mtx);
+        _set.clear();
+    }
+    // auto unlock (lock_guard, RAII)
+
+    bool contains(const std::wstring& filePath)
+    {
+        std::lock_guard<std::mutex> lck(_mtx);
+        return (_set.find(filePath) != _set.end());
+    }
+    // auto unlock (lock_guard, RAII)
+};
+
+
+// ---------------------------------------
+// a thread-safe list of currently searched files
+// ---------------------------------------
+class CurrentFileSearched
+{
+    mutable std::mutex      _mtx;
+    std::list<std::wstring> _list;
+
+public:
+    void insert(const std::wstring& filePath)
+    {
+        std::lock_guard<std::mutex> lck(_mtx);
+        size_t const pos = filePath.find_last_of('\\');
+        std::wstring const fileName = (pos != std::wstring::npos) ? filePath.substr(pos + 1) : filePath;
+        _list.push_back(fileName);
+    }
+
+    std::wstring const get()
+    {
+        std::lock_guard<std::mutex> lck(_mtx);
+        return (_list.empty() ? L"" : _list.back());
+    }
+
+    void erase(const std::wstring& filePath)
+    {
+        std::lock_guard<std::mutex> lck(_mtx);
+        size_t const pos = filePath.find_last_of('\\');
+        std::wstring const fileName = (pos != std::wstring::npos) ? filePath.substr(pos + 1) : filePath;
+        for (auto it = _list.cbegin();  it != _list.cend(); /*no increment*/)
+        {
+            if (fileName.compare(*it) == 0)
+            {
+                it = _list.erase(it);
+                break; // done
+            }
+            else
+                ++it;
+        }
+    }
+
+    void clear()
+    {
+        std::lock_guard<std::mutex> lck(_mtx);
+        _list.clear();
+    }
+};
+
+
 /**
  * search dialog.
  */
@@ -54,7 +151,7 @@ class CSearchDlg : public CDialog
 {
 public:
     CSearchDlg(HWND hParent);
-    ~CSearchDlg(void);
+    ~CSearchDlg();
 
     DWORD                   SearchThread();
     void                    SetSearchPath(const std::wstring& path) {m_searchpath = path; SearchReplace(m_searchpath, L"/", L"\\"); }
@@ -80,15 +177,16 @@ public:
     void                    SetEndDialog() { m_endDialog = true; }
     void                    SetShowContent() { m_showContent = true; m_showContentSet = true; }
 protected:
-    LRESULT CALLBACK        DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
+    LRESULT CALLBACK        DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) override;
     LRESULT                 DoCommand(int id, int msg);
-    bool                    PreTranslateMessage(MSG* pMsg);
+    bool                    PreTranslateMessage(MSG* pMsg) override;
 
-    int                     SearchFile(CSearchInfo& sinfo, const std::wstring& searchRoot, bool bSearchAlways, bool bIncludeBinary, bool bUseRegex, bool bCaseSensitive, bool bDotMatchesNewline, const std::wstring& searchString, const std::wstring& searchStringUtf16le);
+    static int              SearchFile(std::shared_ptr<CSearchInfo> sinfoPtr, const std::wstring& searchRoot, const SearchFlags_t searchFlags,
+                                       const std::wstring& searchString, const std::wstring& searchStringUtf16le, const std::wstring& replaceString);
 
     bool                    InitResultList();
     void                    FillResultList();
-    bool                    AddFoundEntry(CSearchInfo * pInfo, bool bOnlyListControl = false);
+    bool                    AddFoundEntry(const CSearchInfo * pInfo, bool bOnlyListControl = false);
     void                    ShowContextMenu(int x, int y);
     void                    DoListNotify(LPNMITEMACTIVATE lpNMItemActivate);
     void                    OpenFileAtListIndex(int listIndex);
@@ -120,9 +218,6 @@ private:
 
 private:
     HWND                    m_hParent;
-    volatile LONG           m_dwThreadRunning;
-    volatile LONG           m_Cancelled;
-
     CBookmarksDlg *         m_pBookmarksDlg;
 
     std::wstring            m_searchpath;
@@ -154,7 +249,6 @@ private:
     bool                    m_bCaseSensitiveC;
     bool                    m_bDotMatchesNewline;
     bool                    m_bDotMatchesNewlineC;
-    bool                    m_bNOTSearch;
     bool                    m_bSizeC;
     bool                    m_endDialog;
     ExecuteAction           m_ExecuteImmediately;
@@ -170,13 +264,12 @@ private:
 
     std::vector<CSearchInfo> m_items;
     std::vector<std::tuple<int, int>> m_listItems;
-    std::set<std::wstring>  m_backupandtempfiles;
+
     int                     m_totalitems;
     int                     m_searchedItems;
     int                     m_totalmatches;
     bool                    m_bAscending;
     std::wstring            m_resultString;
-    std::wstring            m_searchedFile;
 
     CDlgResizer             m_resizer;
     CHyperLink              m_link;
