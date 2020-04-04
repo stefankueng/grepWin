@@ -263,6 +263,12 @@ BOOL CTheme::AdjustThemeForChildrenProc(HWND hwnd, LPARAM lParam)
             SendMessage(hwnd, EM_SETCHARFORMAT, SCF_ALL, (LPARAM)&format);
             SendMessage(hwnd, EM_SETBKGNDCOLOR, 0, (LPARAM)format.crBackColor);
         }
+        else if (wcscmp(szWndClassName, PROGRESS_CLASS) == 0)
+        {
+            SetWindowTheme(hwnd, L"", nullptr);
+            SendMessage(hwnd, PBM_SETBKCOLOR, 0, (LPARAM)darkBkColor);
+            SendMessage(hwnd, PBM_SETBARCOLOR, 0, (LPARAM)RGB(100,100,0));
+        }
         else if (FAILED(SetWindowTheme(hwnd, L"DarkMode_Explorer", nullptr)))
             SetWindowTheme(hwnd, L"Explorer", nullptr);
     }
@@ -375,6 +381,10 @@ BOOL CTheme::AdjustThemeForChildrenProc(HWND hwnd, LPARAM lParam)
             format.crBackColor = CTheme::Instance().GetThemeColor(GetSysColor(COLOR_WINDOW));
             SendMessage(hwnd, EM_SETCHARFORMAT, SCF_ALL, (LPARAM)&format);
             SendMessage(hwnd, EM_SETBKGNDCOLOR, 0, (LPARAM)format.crBackColor);
+        }
+        else if (wcscmp(szWndClassName, PROGRESS_CLASS) == 0)
+        {
+            SetWindowTheme(hwnd, nullptr, nullptr);
         }
         else
             SetWindowTheme(hwnd, L"Explorer", nullptr);
