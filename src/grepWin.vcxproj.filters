@@ -272,6 +272,9 @@
     <ClInclude Include="Theme.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\sktoolslib\ThreadPool.h">
+      <Filter>sktoolslib</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\grepWin.ico">

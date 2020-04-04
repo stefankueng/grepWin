@@ -45,6 +45,7 @@
 #include "DebugOutput.h"
 #include "Theme.h"
 #include "DarkModeHelper.h"
+#include "ThreadPool.h"
 
 #include <string>
 #include <map>
@@ -572,7 +573,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             m_totalitems    = 0;
             m_searchedItems = 0;
             m_totalmatches  = 0;
-            UpdateInfoLabel(false);
+            UpdateInfoLabel();
             SetTimer(*this, LABELUPDATETIMER, 200, NULL);
         }
         break;
@@ -581,7 +582,6 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             if ((wParam != 0) || (m_searchString.empty()) || ((CSearchInfo*)lParam)->readerror)
             {
                 AddFoundEntry((CSearchInfo*)lParam);
-                UpdateInfoLabel(false);
             }
             break;
         case SEARCH_PROGRESS:
@@ -595,7 +595,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
         {
             AddFoundEntry(NULL, true);
             AutoSizeAllColumns();
-            UpdateInfoLabel(false);
+            UpdateInfoLabel();
             ::SetDlgItemText(*this, IDOK, TranslatedString(hResource, IDS_SEARCH).c_str());
             DialogEnableWindow(IDC_RESULTFILES, true);
             DialogEnableWindow(IDC_RESULTCONTENT, true);
@@ -609,7 +609,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             if (wParam == LABELUPDATETIMER)
             {
                 AddFoundEntry(NULL, true);
-                UpdateInfoLabel(true);
+                UpdateInfoLabel();
             }
         }
         break;
@@ -1190,19 +1190,13 @@ void CSearchDlg::SaveWndPosition()
     }
 }
 
-void CSearchDlg::UpdateInfoLabel(bool withCurrentFile)
+void CSearchDlg::UpdateInfoLabel()
 {
     std::wstring sText;
     TCHAR        buf[1024] = {0};
     _stprintf_s(buf, _countof(buf), TranslatedString(hResource, IDS_INFOLABEL).c_str(),
                 m_searchedItems, m_totalitems - m_searchedItems, m_totalmatches, m_items.size());
     sText = buf;
-    if (withCurrentFile && !m_searchedFile.empty())
-    {
-        sText += L", ";
-        swprintf_s(buf, _countof(buf), TranslatedString(hResource, IDS_INFOLABELFILE).c_str(), m_searchedFile.c_str());
-        sText += buf;
-    }
 
     SetDlgItemText(*this, IDC_SEARCHINFOLABEL, sText.c_str());
 }
@@ -1798,7 +1792,7 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
                         case 2: // line
                         {
                             std::wstring line;
-                            if (pInfo->matchlines.size() > subIndex)
+                            if (pInfo->matchlines.size() > (size_t)subIndex)
                                 line = pInfo->matchlines[subIndex];
                             std::replace(line.begin(), line.end(), '\t', ' ');
                             std::replace(line.begin(), line.end(), '\n', ' ');
@@ -1962,7 +1956,7 @@ void CSearchDlg::OpenFileAtListIndex(int listIndex)
         // BowPad
         linenumberparam = CStringUtils::Format(L"/line:%s", textlinebuf);
     }
-	else if (appname.find(_T("code.exe")) != std::wstring::npos)
+    else if (appname.find(_T("code.exe")) != std::wstring::npos)
     {
         // Visual Studio Code
         linenumberparam_before = L"--goto";
@@ -2385,6 +2379,12 @@ DWORD CSearchDlg::SearchThread()
         SearchStringutf16 += L"\\x00";
     }
 
+    // use a thread pool:
+    // use 2 threads less than processors are available,
+    // because we already have two threads in use:
+    // the UI thread and this one.
+    ThreadPool tp(max(std::thread::hardware_concurrency() - 2, 1));
+
     for (auto it = pathvector.begin(); it != pathvector.end(); ++it)
     {
         std::wstring searchpath = *it;
@@ -2490,15 +2490,19 @@ DWORD CSearchDlg::SearchThread()
                         {
                             SendMessage(*this, SEARCH_FOUND, 1, (LPARAM)&sinfo);
                             nFound = 1;
+                            SendMessage(*this, SEARCH_PROGRESS, 1, 0);
                         }
                         else
                         {
-                            nFound = SearchFile(sinfo, searchRoot, bAlwaysSearch, m_bIncludeBinary, m_bUseRegex, m_bCaseSensitive, m_bDotMatchesNewline, m_searchString, SearchStringutf16);
-                            if (nFound >= 0)
-                                SendMessage(*this, SEARCH_FOUND, nFound, (LPARAM)&sinfo);
+                            auto searchFN = [=]() {
+                                SearchFile(sinfo, searchRoot, bAlwaysSearch, m_bIncludeBinary, m_bUseRegex, m_bCaseSensitive, m_bDotMatchesNewline, m_searchString, SearchStringutf16, &m_Cancelled);
+                            };
+                            tp.enqueueWait(searchFN);
+                            //SearchFile(std::move(sinfo), searchRoot, bAlwaysSearch, m_bIncludeBinary, m_bUseRegex, m_bCaseSensitive, m_bDotMatchesNewline, m_searchString, SearchStringutf16, &m_Cancelled);
                         }
                     }
-                    SendMessage(*this, SEARCH_PROGRESS, ((bSearch && bPattern) || bAlwaysSearch) && (nFound >= 0), 0);
+                    else
+                        SendMessage(*this, SEARCH_PROGRESS, 0, 0);
                 }
                 else
                 {
@@ -2557,6 +2561,7 @@ DWORD CSearchDlg::SearchThread()
             }
         }
     }
+    tp.waitFinished();
     SendMessage(*this, SEARCH_END, 0, 0);
     InterlockedExchange(&m_dwThreadRunning, FALSE);
 
@@ -2616,7 +2621,7 @@ bool CSearchDlg::MatchPath(LPCTSTR pathbuf)
     return bPattern;
 }
 
-int CSearchDlg::SearchFile(CSearchInfo& sinfo, const std::wstring& searchRoot, bool bSearchAlways, bool bIncludeBinary, bool bUseRegex, bool bCaseSensitive, bool bDotMatchesNewline, const std::wstring& searchString, const std::wstring& searchStringUtf16le)
+void CSearchDlg::SearchFile(CSearchInfo sinfo, const std::wstring& searchRoot, bool bSearchAlways, bool bIncludeBinary, bool bUseRegex, bool bCaseSensitive, bool bDotMatchesNewline, const std::wstring& searchString, const std::wstring& searchStringUtf16le, volatile LONG* bCancelled)
 {
     int nFound = 0;
     // we keep it simple:
@@ -2645,12 +2650,11 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, const std::wstring& searchRoot, b
     }
 
     CTextFile textfile;
-    m_searchedFile                     = sinfo.filepath;
     CTextFile::UnicodeType type        = CTextFile::AUTOTYPE;
     bool                   bLoadResult = false;
     {
         ProfileTimer profile((L"file load and parse: " + sinfo.filepath).c_str());
-        bLoadResult = textfile.Load(sinfo.filepath.c_str(), type, m_bUTF8);
+        bLoadResult = textfile.Load(sinfo.filepath.c_str(), type, m_bUTF8, bCancelled);
     }
     sinfo.encoding = type;
     if ((bLoadResult) && ((type != CTextFile::BINARY) || (bIncludeBinary) || bSearchAlways))
@@ -2672,7 +2676,7 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, const std::wstring& searchRoot, b
                 flags |= boost::match_not_dot_newline;
             long prevlinestart = 0;
             long prevlineend   = 0;
-            while (regex_search(start, end, whatc, expression, flags) && !m_Cancelled)
+            while (!(InterlockedExchangeAdd(bCancelled, 0)) && regex_search(start, end, whatc, expression, flags))
             {
                 if (whatc[0].matched)
                 {
@@ -2711,7 +2715,7 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, const std::wstring& searchRoot, b
             {
                 boost::wregex expressionutf16 = boost::wregex(searchStringUtf16le, ft);
 
-                while (regex_search(start, end, whatc, expressionutf16, flags) && !m_Cancelled)
+                while (!(InterlockedExchangeAdd(bCancelled, 0)) && regex_search(start, end, whatc, expressionutf16, flags))
                 {
                     if (whatc[0].matched)
                     {
@@ -2800,7 +2804,10 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, const std::wstring& searchRoot, b
                             // restore the attributes
                             SetFileAttributes(sinfo.filepath.c_str(), origAttributes);
                             if (!bRet)
-                                return -1;
+                            {
+                                SendMessage(*this, SEARCH_PROGRESS, 0, 0);
+                                return;
+                            }
                         }
                     }
                 }
@@ -2808,8 +2815,8 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, const std::wstring& searchRoot, b
         }
         catch (const std::exception&)
         {
-            m_searchedFile.clear();
-            return -1;
+            SendMessage(*this, SEARCH_PROGRESS, 0, 0);
+            return;
         }
     }
     else
@@ -2817,8 +2824,9 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, const std::wstring& searchRoot, b
         if (type == CTextFile::AUTOTYPE)
         {
             sinfo.readerror = true;
-            m_searchedFile.clear();
-            return 0;
+            SendMessage(*this, SEARCH_FOUND, 0, (LPARAM)&sinfo);
+            SendMessage(*this, SEARCH_PROGRESS, 1, 0);
+            return;
         }
 
         // file is either too big or binary.
@@ -2856,7 +2864,7 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, const std::wstring& searchRoot, b
                     boost::spirit::classic::file_iterator<>                       fbeg = start;
                     boost::spirit::classic::file_iterator<>                       end  = start.make_end();
                     boost::match_results<boost::spirit::classic::file_iterator<>> whatc;
-                    while (boost::regex_search(start, end, whatc, expression, flags) && !m_Cancelled)
+                    while (boost::regex_search(start, end, whatc, expression, flags) && !(InterlockedExchangeAdd(bCancelled, 0)))
                     {
                         nFound++;
                         if (m_bNOTSearch)
@@ -2869,7 +2877,7 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, const std::wstring& searchRoot, b
                         flags |= boost::match_prev_avail;
                         flags |= boost::match_not_bob;
                         bFound = true;
-                        if (m_Cancelled)
+                        if ((InterlockedExchangeAdd(bCancelled, 0)))
                             break;
                     }
                 }
@@ -2893,12 +2901,12 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, const std::wstring& searchRoot, b
                         flags |= boost::match_prev_avail;
                         flags |= boost::match_not_bob;
                         bFound = true;
-                        if (m_Cancelled)
+                        if ((InterlockedExchangeAdd(bCancelled, 0)))
                             break;
                     }
                 }
 
-                if (bFound && !m_Cancelled)
+                if (bFound && !(InterlockedExchangeAdd(bCancelled, 0)))
                 {
                     if (!bLoadResult && (type != CTextFile::BINARY) && !m_bNOTSearch)
                     {
@@ -3015,20 +3023,27 @@ int CSearchDlg::SearchFile(CSearchInfo& sinfo, const std::wstring& searchRoot, b
             }
             catch (const std::exception&)
             {
-                m_searchedFile.clear();
-                return -1;
+                SendMessage(*this, SEARCH_PROGRESS, 0, 0);
+                return;
             }
             catch (...)
             {
-                m_searchedFile.clear();
-                return -1;
+                SendMessage(*this, SEARCH_PROGRESS, 0, 0);
+                return;
             }
         }
     }
-    m_searchedFile.clear();
     if (m_bNOTSearch)
-        return (nFound ? 0 : 1);
-    return nFound;
+    {
+        if (nFound == 0)
+            SendMessage(*this, SEARCH_FOUND, nFound, (LPARAM)&sinfo);
+        SendMessage(*this, SEARCH_PROGRESS, (nFound >= 0), 0);
+        return;
+    }
+
+    if (nFound >= 0)
+        SendMessage(*this, SEARCH_FOUND, nFound, (LPARAM)&sinfo);
+    SendMessage(*this, SEARCH_PROGRESS, (nFound >= 0), 0);
 }
 
 DWORD WINAPI SearchThreadEntry(LPVOID lpParam)

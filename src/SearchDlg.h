@@ -84,7 +84,7 @@ protected:
     LRESULT                 DoCommand(int id, int msg);
     bool                    PreTranslateMessage(MSG* pMsg);
 
-    int                     SearchFile(CSearchInfo& sinfo, const std::wstring& searchRoot, bool bSearchAlways, bool bIncludeBinary, bool bUseRegex, bool bCaseSensitive, bool bDotMatchesNewline, const std::wstring& searchString, const std::wstring& searchStringUtf16le);
+    void                    SearchFile(CSearchInfo sinfo, const std::wstring& searchRoot, bool bSearchAlways, bool bIncludeBinary, bool bUseRegex, bool bCaseSensitive, bool bDotMatchesNewline, const std::wstring& searchString, const std::wstring& searchStringUtf16le, volatile LONG * bCancelled);
 
     bool                    InitResultList();
     void                    FillResultList();
@@ -92,7 +92,7 @@ protected:
     void                    ShowContextMenu(int x, int y);
     void                    DoListNotify(LPNMITEMACTIVATE lpNMItemActivate);
     void                    OpenFileAtListIndex(int listIndex);
-    void                    UpdateInfoLabel(bool withCurrentFile);
+    void                    UpdateInfoLabel();
     bool                    SaveSettings();
     void                    SaveWndPosition();
     void                    formatDate(TCHAR date_native[], const FILETIME& filetime, bool force_short_fmt);
@@ -176,7 +176,6 @@ private:
     int                     m_totalmatches;
     bool                    m_bAscending;
     std::wstring            m_resultString;
-    std::wstring            m_searchedFile;
 
     CDlgResizer             m_resizer;
     CHyperLink              m_link;

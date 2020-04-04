@@ -256,6 +256,7 @@
     <ClInclude Include="..\sktoolslib\SysImageList.h" />
     <ClInclude Include="..\sktoolslib\SysInfo.h" />
     <ClInclude Include="..\sktoolslib\TextFile.h" />
+    <ClInclude Include="..\sktoolslib\ThreadPool.h" />
     <ClInclude Include="..\sktoolslib\UnicodeUtils.h" />
     <ClInclude Include="AboutDlg.h" />
     <ClInclude Include="Bookmarks.h" />
