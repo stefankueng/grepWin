@@ -135,6 +135,10 @@ msgstr "Créer des fichiers backups"
 msgid "Create backup files in a separate folder"
 msgstr "Créer des fichiers backups dans un autre dossier"
 
+#. Resource IDs: (1064)
+msgid "Dark mode"
+msgstr ""
+
 #. Resource IDs: (139)
 msgid "Date modified"
 msgstr "Date de modification"
@@ -174,6 +178,10 @@ msgstr "La touche Esc ferme grepWin"
 #. Resource IDs: (1041)
 msgid "Exclude dirs (Regex):"
 msgstr "Exclure des dossiers (Regex) :"
+
+#. Resource IDs: (158)
+msgid "Ext"
+msgstr ""
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
@@ -344,10 +352,6 @@ msgstr "Chercher"
 msgid "Search &for:"
 msgstr "Rec&hercher :"
 
-#. Resource IDs: (65535)
-msgid "Search &in"
-msgstr "Rechercher &dans"
-
 #. Resource IDs: (1042)
 msgid "Search case-sensitive"
 msgstr "Respecter la casse"
@@ -367,7 +371,7 @@ msgstr "Motif de recherche"
 #. Resource IDs: (128)
 #, c-format
 msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files."
-msgstr "Cherché dans %ld fichier(s). Ignoré %ld fichier(s). Trouvé %ld correspondance(s) dans %ld fichier(s)."    
+msgstr "Cherché dans %ld fichier(s). Ignoré %ld fichier(s). Trouvé %ld correspondance(s) dans %ld fichier(s)."   "
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."
@@ -500,7 +504,7 @@ msgstr "Réutiliser l'instance de grepWin."
 #. Resource IDs: (151)
 #, c-format
 msgid "scanning file '%s'"
-msgstr Parcours du fichier '%s'"
+msgstr "arcours du fichier '%s'"
 
 #. Resource IDs: (108)
 msgid "search string is empty"
@@ -513,3 +517,4 @@ msgstr "Chemin(s) de recherche récursive.\n'|' pour ajouter un chemin.\nExemple
 #. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "Il est possible d'exclure des dossiers. Exemple : ^(CVS|images)$ pour exclure CVS\\ et images\\.\nLes dossiers .svn sont 'cachés' sous Windows et ne sont normalment pas parcourus."
+

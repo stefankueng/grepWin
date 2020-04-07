@@ -135,6 +135,10 @@ msgstr "创建备份文件"
 msgid "Create backup files in a separate folder"
 msgstr "在单独的目录创建备份文件"
 
+#. Resource IDs: (1064)
+msgid "Dark mode"
+msgstr ""
+
 #. Resource IDs: (139)
 msgid "Date modified"
 msgstr "修改日期"
@@ -174,6 +178,10 @@ msgstr "ESC 键关闭 grepWin"
 #. Resource IDs: (1041)
 msgid "Exclude dirs (Regex):"
 msgstr "排除目录(正则):"
+
+#. Resource IDs: (158)
+msgid "Ext"
+msgstr ""
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"

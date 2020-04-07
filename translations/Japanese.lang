@@ -148,6 +148,10 @@ msgstr "バックアップ ファイルを作成"
 msgid "Create backup files in a separate folder"
 msgstr "別のフォルダ内にバックアップを作成"
 
+#. Resource IDs: (1064)
+msgid "Dark mode"
+msgstr ""
+
 #. Resource IDs: (139)
 msgid "Date modified"
 msgstr "更新日時"
@@ -187,6 +191,10 @@ msgstr "ESC キーで grepWin を閉じる"
 #. Resource IDs: (1041)
 msgid "Exclude dirs (Regex):"
 msgstr "除外ディレクトリ(正規表現):"
+
+#. Resource IDs: (158)
+msgid "Ext"
+msgstr ""
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"

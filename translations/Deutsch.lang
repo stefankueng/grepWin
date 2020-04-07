@@ -135,6 +135,10 @@ msgstr "Erstelle Backupdateien"
 msgid "Create backup files in a separate folder"
 msgstr "Erstelle Backups in separaten Ordnern"
 
+#. Resource IDs: (1064)
+msgid "Dark mode"
+msgstr "Dunkler Modus"
+
 #. Resource IDs: (139)
 msgid "Date modified"
 msgstr "Verändert am"
@@ -174,6 +178,10 @@ msgstr "Escape Taste schliesst grepWin"
 #. Resource IDs: (1041)
 msgid "Exclude dirs (Regex):"
 msgstr "Ordner ausschliessen (Regex):"
+
+#. Resource IDs: (158)
+msgid "Ext"
+msgstr "Ext"
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
@@ -508,5 +516,5 @@ msgstr "Die Pfade werden rekursiv durchsucht.\r\nTrennen Sie Pfade mit dem | Sym
 
 #. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
-msgstr "Sie können Ordner ausschlissen, z.B. CVS und Bilder.\r\nBeispiel: ^(CVS|images)$\r\nHinweis: '.svn' Ordner sind normalerweise versteckt und deshalb per Default ausgeschlossen."
+msgstr "Sie können Ordner ausschliessen, z.B. CVS und Bilder.\r\nBeispiel: ^(CVS|images)$\r\nHinweis: '.svn' Ordner sind normalerweise versteckt und deshalb per Default ausgeschlossen."
 

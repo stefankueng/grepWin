@@ -135,6 +135,10 @@ msgstr "Crear respaldo de archivos"
 msgid "Create backup files in a separate folder"
 msgstr "Crear respaldo de archivos en una carpeta distinta"
 
+#. Resource IDs: (1064)
+msgid "Dark mode"
+msgstr ""
+
 #. Resource IDs: (139)
 msgid "Date modified"
 msgstr "Fecha modificado"
@@ -174,6 +178,10 @@ msgstr "Tecla Escape cierra grepWin"
 #. Resource IDs: (1041)
 msgid "Exclude dirs (Regex):"
 msgstr "Excluir directorios (Regex):"
+
+#. Resource IDs: (158)
+msgid "Ext"
+msgstr ""
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
