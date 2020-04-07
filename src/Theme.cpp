@@ -265,7 +265,7 @@ BOOL CTheme::AdjustThemeForChildrenProc(HWND hwnd, LPARAM lParam)
         }
         else if (wcscmp(szWndClassName, PROGRESS_CLASS) == 0)
         {
-            SetWindowTheme(hwnd, L"", nullptr);
+            SetWindowTheme(hwnd, L"", L"");
             SendMessage(hwnd, PBM_SETBKCOLOR, 0, (LPARAM)darkBkColor);
             SendMessage(hwnd, PBM_SETBARCOLOR, 0, (LPARAM)RGB(100,100,0));
         }
