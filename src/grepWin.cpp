@@ -136,7 +136,9 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
     // if multiple items are selected in explorer and grepWin is started for all of them,
     // explorer starts multiple grepWin instances at once. In case there's already a grepWin instance
     // running, sleep for a while to give that instance time to fully initialize
-    HANDLE hReloadProtection = ::CreateMutex(NULL, FALSE, L"{6473AA76-0EAE-4C96-8C99-AFDFEFFE42B5}");
+    std::unique_ptr<std::remove_pointer_t<HANDLE>, decltype(&::CloseHandle)> hReloadProtection(
+        ::CreateMutex(NULL, FALSE, L"{6473AA76-0EAE-4C96-8C99-AFDFEFFE42B5}"), CloseHandle);
+
     bool   alreadyRunning    = false;
     if ((!hReloadProtection) || (GetLastError() == ERROR_ALREADY_EXISTS))
     {
@@ -153,7 +155,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
     icex.dwICC  = ICC_LINK_CLASS | ICC_LISTVIEW_CLASSES | ICC_PAGESCROLLER_CLASS | ICC_PROGRESS_CLASS | ICC_STANDARD_CLASSES | ICC_TAB_CLASSES | ICC_TREEVIEW_CLASSES | ICC_UPDOWN_CLASS | ICC_USEREX_CLASSES | ICC_WIN95_CLASSES;
     InitCommonControlsEx(&icex);
 
-    HMODULE hRichEdt = LoadLibrary(_T("Riched20.dll"));
+    std::unique_ptr<std::remove_pointer_t<HMODULE>, decltype(&::FreeLibrary)> hRichEdt(LoadLibrary(_T("Riched20.dll")), FreeLibrary);
 
     CCmdLineParser parser(lpCmdLine);
 
@@ -349,7 +351,5 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 
     ::CoUninitialize();
     ::OleUninitialize();
-    FreeLibrary(hRichEdt);
-    CloseHandle(hReloadProtection);
     return ret;
 }
