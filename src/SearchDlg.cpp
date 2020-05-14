@@ -373,7 +373,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             {
                 if (bPortable)
                 {
-                    m_showContent = wcscmp(g_iniFile.GetValue(L"global", L"showcontent", L"0"), L"0") == 0;
+                    m_showContent = _wtoi(g_iniFile.GetValue(L"global", L"showcontent", L"0")) != 0;
                 }
                 else
                 {
@@ -762,6 +762,8 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 ::SetFocus(GetDlgItem(*this, IDOK));
                 if (!SaveSettings())
                     break;
+
+                CStringUtils::rtrim(m_searchpath, L"\\/");
 
                 if (PathIsRelative(m_searchpath.c_str()))
                 {
@@ -1703,7 +1705,16 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
                             swprintf_s(pItem->pszText, pItem->cchTextMax, L"%lld", pInfo->matchcount);
                         break;
                     case 3: // path
-                        wcsncpy_s(pItem->pszText, pItem->cchTextMax, pInfo->filepath.substr(0, pInfo->filepath.size() - pInfo->filepath.substr(pInfo->filepath.find_last_of('\\') + 1).size() - 1).c_str(), pItem->cchTextMax - 1);
+                        if (m_searchpath.find('|') != std::wstring::npos)
+                            wcsncpy_s(pItem->pszText, pItem->cchTextMax, pInfo->filepath.substr(0, pInfo->filepath.size() - pInfo->filepath.substr(pInfo->filepath.find_last_of('\\')).size()).c_str(), pItem->cchTextMax - 1);
+                        else
+                        {
+                            auto filepart = pInfo->filepath.substr(pInfo->filepath.find_last_of('\\'));
+                            auto len = pInfo->filepath.size() - m_searchpath.size() - filepart.size();
+                            if (len > 0)
+                                --len;
+                            wcsncpy_s(pItem->pszText, pItem->cchTextMax, pInfo->filepath.substr(m_searchpath.size() + 1, len).c_str(), pItem->cchTextMax - 1);
+                        }
                         break;
                     case 4: // extension of the file
                     {
@@ -2351,6 +2362,7 @@ DWORD CSearchDlg::SearchThread()
                 }
                 found = s.find_first_of('\\', found + 1);
             }
+            CStringUtils::rtrim(s, L"\\/");
             pathvector.push_back(s);
         }
         pBufSearchPath += pos;
