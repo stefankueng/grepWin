@@ -2598,6 +2598,57 @@ DWORD CSearchDlg::SearchThread()
     return 0L;
 }
 
+void CSearchDlg::SetPreset(const std::wstring& preset)
+{
+    CBookmarks bookmarks;
+    bookmarks.Load();
+    auto bk = bookmarks.GetBookmark(preset);
+    if (bk.Name == preset)
+    {
+        auto RemoveQuotes = [](std::wstring& str) {
+            if (!str.empty())
+            {
+                if (str[0] == '"')
+                    str = str.substr(1);
+                if (!str.empty())
+                {
+                    if (str[str.size() - 1] == '"')
+                        str = str.substr(0, str.size() - 1);
+                }
+            }
+        };
+        m_searchString            = bk.Search;
+        m_replaceString           = bk.Replace;
+        m_bUseRegex               = bk.UseRegex;
+        m_bCaseSensitive          = bk.CaseSensitive;
+        m_bDotMatchesNewline      = bk.DotMatchesNewline;
+        m_bCreateBackup           = bk.Backup;
+        m_bUTF8                   = bk.Utf8;
+        m_bIncludeSystem          = bk.IncludeSystem;
+        m_bIncludeSubfolders      = bk.IncludeFolder;
+        m_bIncludeHidden          = bk.IncludeHidden;
+        m_bIncludeBinary          = bk.IncludeBinary;
+        m_excludedirspatternregex = bk.ExcludeDirs;
+        m_patternregex            = bk.FileMatch;
+        m_bUseRegexForPaths       = bk.FileMatchRegex;
+
+        m_bIncludeSystemC         = true;
+        m_bIncludeHiddenC         = true;
+        m_bIncludeSubfoldersC     = true;
+        m_bIncludeBinaryC         = true;
+        m_bCreateBackupC          = true;
+        m_bCreateBackupInFoldersC = true;
+        m_bUTF8C                  = true;
+        m_bCaseSensitiveC         = true;
+        m_bDotMatchesNewlineC     = true;
+
+        RemoveQuotes(m_searchString);
+        RemoveQuotes(m_replaceString);
+        RemoveQuotes(m_excludedirspatternregex);
+        RemoveQuotes(m_patternregex);
+    }
+}
+
 bool CSearchDlg::MatchPath(LPCTSTR pathbuf)
 {
     bool bPattern = false;

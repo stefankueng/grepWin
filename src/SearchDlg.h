@@ -63,6 +63,7 @@ public:
     void                    SetDirExcludeRegexMask(const std::wstring& mask) {m_excludedirspatternregex = mask;}
     void                    SetReplaceWith(const std::wstring& replace) { m_replaceString = replace; }
     void                    SetUseRegex(bool reg) { m_bUseRegex = reg; }
+    void                    SetPreset(const std::wstring& preset);
 
     void                    SetCaseSensitive(bool bSet) {m_bCaseSensitiveC = true; m_bCaseSensitive = bSet;}
     void                    SetMatchesNewline(bool bSet) {m_bDotMatchesNewlineC = true; m_bDotMatchesNewline = bSet;}
