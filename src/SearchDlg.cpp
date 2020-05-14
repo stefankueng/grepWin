@@ -1707,11 +1707,16 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
                         break;
                     case 4: // extension of the file
                     {
-                        auto dotpos = pInfo->filepath.find_last_of('.');
-                        if (dotpos != std::wstring::npos)
-                            wcsncpy_s(pItem->pszText, pItem->cchTextMax, pInfo->filepath.substr(dotpos + 1).c_str(), pItem->cchTextMax - 1);
-                        else
-                            pItem->pszText[0] = 0;
+                        pItem->pszText[0] = 0;
+                        if (!pInfo->folder)
+                        {
+                            auto dotpos = pInfo->filepath.find_last_of('.');
+                            if (dotpos != std::wstring::npos)
+                            {
+                                if (pInfo->filepath.find('\\', dotpos) == std::wstring::npos)
+                                    wcsncpy_s(pItem->pszText, pItem->cchTextMax, pInfo->filepath.substr(dotpos + 1).c_str(), pItem->cchTextMax - 1);
+                            }
+                        }
                     }
                     break;
                     case 5: // encoding
