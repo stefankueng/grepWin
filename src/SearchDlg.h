@@ -60,7 +60,7 @@ public:
     void                    SetSearchPath(const std::wstring& path) {m_searchpath = path; SearchReplace(m_searchpath, L"/", L"\\"); }
     void                    SetSearchString(const std::wstring& search) {m_searchString = search;}
     void                    SetFileMask(const std::wstring& mask, bool reg) {m_patternregex = mask; m_bUseRegexForPaths = reg;}
-    void                    SetExcludeFileMask(const std::wstring& mask) {m_excludedirspatternregex = mask;}
+    void                    SetDirExcludeRegexMask(const std::wstring& mask) {m_excludedirspatternregex = mask;}
     void                    SetReplaceWith(const std::wstring& replace) { m_replaceString = replace; }
     void                    SetUseRegex(bool reg) { m_bUseRegex = reg; }
 
