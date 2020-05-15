@@ -809,12 +809,16 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 
                 if (m_bReplace && (!m_bCreateBackup || m_replaceString.empty()) && m_bConfirmationOnReplace)
                 {
-                    auto msgtext = CStringUtils::Format((LPCWSTR)TranslatedString(hResource, IDS_REPLACECONFIRM).c_str(),
-                                                        m_searchString.c_str(),
-                                                        m_replaceString.empty() ? (LPCWSTR)TranslatedString(hResource, IDS_ANEMPTYSTRING).c_str() : m_replaceString.c_str());
-                    if (::MessageBox(*this, msgtext.c_str(), _T("grepWin"), MB_ICONQUESTION | MB_YESNO) != IDYES)
+                    auto nowarnifnobackup = bPortable ? !!_wtoi(g_iniFile.GetValue(L"settings", L"nowarnifnobackup", L"0")) : DWORD(CRegStdDWORD(L"Software\\grepWin\\nowarnifnobackup", FALSE));
+                    if (!nowarnifnobackup)
                     {
-                        break;
+                        auto msgtext = CStringUtils::Format((LPCWSTR)TranslatedString(hResource, IDS_REPLACECONFIRM).c_str(),
+                            m_searchString.c_str(),
+                            m_replaceString.empty() ? (LPCWSTR)TranslatedString(hResource, IDS_ANEMPTYSTRING).c_str() : m_replaceString.c_str());
+                        if (::MessageBox(*this, msgtext.c_str(), _T("grepWin"), MB_ICONQUESTION | MB_YESNO) != IDYES)
+                        {
+                            break;
+                        }
                     }
                 }
                 m_bConfirmationOnReplace = true;
