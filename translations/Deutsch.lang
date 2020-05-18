@@ -149,7 +149,7 @@ msgstr "Dialog"
 
 #. Resource IDs: (1078)
 msgid "Don't warn when replacing without creating backups"
-msgstr ""
+msgstr "Keine Warnung beim Ersetzen ohne Backups"
 
 #. Resource IDs: (1051)
 msgid "Dot matches newline"
@@ -289,8 +289,8 @@ msgid "Path"
 msgstr "Pfad"
 
 #. Resource IDs: (160)
-msgid "Path does not exist oris not accessible!"
-msgstr ""
+msgid "Path does not exist or is not accessible!"
+msgstr "Pfad existiert nicht oder ist nicht erreichbar!"
 
 #. Resource IDs: (131)
 msgid "Preset name"
@@ -455,7 +455,7 @@ msgstr "Klicken Sie, um den Text als mehrzeiligen Text zu bearbeiten."
 
 #. Resource IDs: (159)
 msgid "dark mode requires at least Win10 1803, and it must be enabled in the Windows system settings."
-msgstr ""
+msgstr "dunkler Modus benötigt mind. Win10 1803, und muss auch in den Windows Systemeinstellungen aktiviert sein."
 
 #. Resource IDs: (121)
 msgid "equal to"
