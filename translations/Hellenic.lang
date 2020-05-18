@@ -135,6 +135,10 @@ msgstr "Δημιουργία backup"
 msgid "Create backup files in a separate folder"
 msgstr "Δημιουργία αντιγράφων αρχείων σε ξεχωριστό φάκελο"
 
+#. Resource IDs: (1064)
+msgid "Dark mode"
+msgstr ""
+
 #. Resource IDs: (139)
 msgid "Date modified"
 msgstr "Ημερ/νία τροποποίησης"
@@ -142,6 +146,10 @@ msgstr "Ημερ/νία τροποποίησης"
 #. Resource IDs: (137)
 msgid "Dialog"
 msgstr "Παράθυρο διαλόγου"
+
+#. Resource IDs: (1078)
+msgid "Don't warn when replacing without creating backups"
+msgstr ""
 
 #. Resource IDs: (1051)
 msgid "Dot matches newline"
@@ -174,6 +182,10 @@ msgstr "Το πλήκτρο Escape τερματίζει το grepWin"
 #. Resource IDs: (1041)
 msgid "Exclude dirs (Regex):"
 msgstr "Εξαιρούμενοι κατάλογοι (Regex):"
+
+#. Resource IDs: (158)
+msgid "Ext"
+msgstr ""
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
@@ -276,6 +288,10 @@ msgstr "Επικολήστε κείμενο δοκιμής του regex:"
 msgid "Path"
 msgstr "Διαδρομή"
 
+#. Resource IDs: (160)
+msgid "Path does not exist oris not accessible!"
+msgstr ""
+
 #. Resource IDs: (131)
 msgid "Preset name"
 msgstr "Προκαθορισμένο όνομα"
@@ -283,7 +299,6 @@ msgstr "Προκαθορισμένο όνομα"
 #. Resource IDs: (1022, 132)
 msgid "Presets"
 msgstr "Αποθηκευμένα"
-        
 
 #. Resource IDs: (1065)
 msgid "Press F1 for help"
@@ -345,10 +360,6 @@ msgstr "Αναζήτηση"
 msgid "Search &for:"
 msgstr "Αναζήτηση για:"
 
-#. Resource IDs: (65535)
-msgid "Search &in"
-msgstr "Αναζήτηση σε"
-
 #. Resource IDs: (1042)
 msgid "Search case-sensitive"
 msgstr "Διάκριση πεζών-κεφαλαίων"
@@ -408,7 +419,7 @@ msgstr "Εύρεση κειμένου"
 
 #. Resource IDs: (65535)
 msgid "The regex search string matches:"
-msgstr "Η regex συμβολοσειρά αναζήτησης ταιριάζει:»
+msgstr "Η regex συμβολοσειρά αναζήτησης ταιριάζει:"
 
 #. Resource IDs: (65535)
 msgid "The resulting text after replacing:"
@@ -442,6 +453,10 @@ msgstr "δυαδικό"
 msgid "click to edit the text as a multiline text"
 msgstr "κάντε κλικ για να επεξεργαστείτε το κείμενο ως κείμενο πολλαπλών γραμμών"
 
+#. Resource IDs: (159)
+msgid "dark mode requires at least Win10 1803, and it must be enabled in the Windows system settings."
+msgstr ""
+
 #. Resource IDs: (121)
 msgid "equal to"
 msgstr "ίσον με"
@@ -459,8 +474,8 @@ msgid "grepWin Settings"
 msgstr "ρυθμίσεις grepWin"
 
 #. Resource IDs: (157)
-msgid "κρατήστε πατημένο το πλήκτρο shift για να βρείτε αρχεία που ΔΕΝ περιέχουν τη συμβολοσειρά αναζήτησης"
-msgstr "tieni premuto il tasto \"Maiusc\" per trovare i file che NON contengono la stringa di ricerca"
+msgid "hold down the shift key to find files that DO NOT contain the search string"
+msgstr ""
 
 #. Resource IDs: (132)
 msgid "invalid regex!"

@@ -62,7 +62,7 @@ msgstr "..."
 msgid "/"
 msgstr "/"
 
-#. Resource IDs: (135, 1052)
+#. Resource IDs: (1052, 135)
 msgid "About grepWin"
 msgstr "Sobre grepWin"
 
@@ -135,6 +135,10 @@ msgstr "Criar backup do arquivo"
 msgid "Create backup files in a separate folder"
 msgstr "Criar arquivos de backup em uma pasta separada"
 
+#. Resource IDs: (1064)
+msgid "Dark mode"
+msgstr ""
+
 #. Resource IDs: (139)
 msgid "Date modified"
 msgstr "Modificado"
@@ -142,6 +146,10 @@ msgstr "Modificado"
 #. Resource IDs: (137)
 msgid "Dialog"
 msgstr "Diálogo"
+
+#. Resource IDs: (1078)
+msgid "Don't warn when replacing without creating backups"
+msgstr ""
 
 #. Resource IDs: (1051)
 msgid "Dot matches newline"
@@ -174,6 +182,10 @@ msgstr "Tecla escape fecha grepWin"
 #. Resource IDs: (1041)
 msgid "Exclude dirs (Regex):"
 msgstr "Excluir diretórios (Regex):"
+
+#. Resource IDs: (158)
+msgid "Ext"
+msgstr ""
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
@@ -256,7 +268,7 @@ msgstr "OK"
 msgid "Older than"
 msgstr "Mais velho que"
 
-#. Resource IDs: (1062)
+#. Resource IDs: (1063)
 msgid "Only one instance"
 msgstr "Somente uma instância"
 
@@ -276,11 +288,15 @@ msgstr "Colar texto para testar o regex com:"
 msgid "Path"
 msgstr "Caminho"
 
+#. Resource IDs: (160)
+msgid "Path does not exist oris not accessible!"
+msgstr ""
+
 #. Resource IDs: (131)
 msgid "Preset name"
 msgstr "Nome predefinido"
 
-#. Resource IDs: (132, 1022)
+#. Resource IDs: (1022, 132)
 msgid "Presets"
 msgstr "Predefinidos"
 
@@ -320,7 +336,7 @@ msgstr "Sequência regex pesquisada"
 msgid "Relative paths are not allowed. Please enter an absolute path!"
 msgstr "Caminhos relativos não são permitidos. Por favor, digite um caminho absoluto!"
 
-#. Resource IDs: (32771)
+#. Resource IDs: (32771 - Menu)
 msgid "Remo&ve Preset"
 msgstr "Remover predefinido"
 
@@ -343,10 +359,6 @@ msgstr "Procurar"
 #. Resource IDs: (1026)
 msgid "Search &for:"
 msgstr "Procurar por:"
-
-#. Resource IDs: (65535)
-msgid "Search &in"
-msgstr "Procurar &em"
 
 #. Resource IDs: (1042)
 msgid "Search case-sensitive"
@@ -440,6 +452,10 @@ msgstr "binário"
 #. Resource IDs: (118)
 msgid "click to edit the text as a multiline text"
 msgstr "Clique para editar texto como um texto de múltiplas linhas"
+
+#. Resource IDs: (159)
+msgid "dark mode requires at least Win10 1803, and it must be enabled in the Windows system settings."
+msgstr ""
 
 #. Resource IDs: (121)
 msgid "equal to"

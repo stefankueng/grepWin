@@ -46,9 +46,15 @@
             <File Id="Spanish.lang" Name="Spanish.lang" DiskId="1" Source="../../translations/Spanish.lang" />
             <File Id="Italiano.lang" Name="Italiano.lang" DiskId="1" Source="../../translations/Italiano.lang" />
             <File Id="Brazilian_Portuguese.lang" Name="Brazilian_Portuguese.lang" DiskId="1" Source="../../translations/Brazilian_Portuguese.lang" />
-            <File Id="Français.lang" Name="Français.lang" DiskId="1" Source="../../translations/Français.lang" />
+            <File Id="Francais.lang" Name="Français.lang" DiskId="1" Source="../../translations/Français.lang" />
             <File Id="Turkish.lang" Name="Turkish.lang" DiskId="1" Source="../../translations/Turkish.lang" />
+            <File Id="Russian.lang" Name="Russian.lang" DiskId="1" Source="../../translations/Russian.lang" />
             <File Id="Hellenic.lang" Name="Hellenic.lang" DiskId="1" Source="../../translations/Hellenic.lang" />
+            <File Id="Belarusian.lang" Name="Belarusian.lang" DiskId="1" Source="../../translations/Belarusian.lang" />
+            <File Id="Hungarian.lang" Name="Hungarian.lang" DiskId="1" Source="../../translations/Hungarian.lang" />
+            <File Id="Portuguese_Portugal.lang" Name="Portuguese (Portugal).lang" DiskId="1" Source="../../translations/Portuguese (Portugal).lang" />
+            <File Id="Slovak.lang" Name="Slovak.lang" DiskId="1" Source="../../translations/Slovak.lang" />
+            <File Id="Swedish.lang" Name="Swedish.lang" DiskId="1" Source="../../translations/Swedish.lang" />
             <RegistryKey Root="HKCU" Key="Software\Classes\Directory\shell\grepWin" />
             <RegistryValue Root="HKCU" Key="Software\Classes\Directory\shell\grepWin" Value="search with grepWin" Type="string" KeyPath="yes" />
             <RegistryValue Root="HKCU" Key="Software\Classes\Directory\shell\grepWin\command" Value='[INSTALLDIR]grepWin.exe /searchpath:"%1"' Type="string" />

@@ -36,23 +36,23 @@ msgstr ""
 #. Resource IDs: (149)
 #, c-format
 msgid "%ld more matches"
-msgstr "%ld 以上の一致"
+msgstr "%ld mais correspondências"
 
 #. Resource IDs: (1069)
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to"
-msgstr "%path% でファイルのパスと置き換え - %line% で指定した行に移動"
+msgstr ""
 
 #. Resource IDs: (119)
 msgid "&About grepWin..."
-msgstr "grepWin について(&A)..."
+msgstr ""
 
 #. Resource IDs: (1049)
 msgid "&Replace"
-msgstr "置換(&R)"
+msgstr "&Substituir"
 
 #. Resource IDs: (123)
 msgid "&Search"
-msgstr "検索(&S)"
+msgstr "&Procurar"
 
 #. Resource IDs: (1013)
 msgid "..."
@@ -64,88 +64,88 @@ msgstr "/"
 
 #. Resource IDs: (1052, 135)
 msgid "About grepWin"
-msgstr "grepWin について"
+msgstr ""
 
 #. Resource IDs: (1021)
 msgid "Add to Presets"
-msgstr "プリセットに追加"
+msgstr "Adic. às predefinições"
 
 #. Resource IDs: (155)
 msgid "All Files"
-msgstr "すべてのファイル"
+msgstr "Todos os ficheiros"
 
 #. Resource IDs: (1078)
 msgid "All dates"
-msgstr "すべての日付"
+msgstr "Todas as datas"
 
 #. Resource IDs: (1005)
 msgid "All sizes"
-msgstr "すべてのサイズ"
+msgstr "Todos os tamanhos"
 
 #. Resource IDs: (124)
 #, c-format
 msgid "Are you sure you want to replace\n%s\nwith\n%s\nwithout creating backups?"
-msgstr "本当にバックアップなしで \n%s を　%s\n に置き換えますか?"
+msgstr "Tem a certeza que deseja substituir\n%s\ncom\n%s\n sem criar seguranças?"
 
 #. Resource IDs: (1081)
 msgid "Between"
-msgstr "指定期間"
+msgstr "Entre"
 
 #. Resource IDs: (2)
 msgid "Cancel"
-msgstr "キャンセル"
+msgstr "Cancelar"
 
 #. Resource IDs: (1068)
 msgid "Command line to start an editor at a specific line:"
-msgstr "エディタの指定行でコマンドラインを起動:"
+msgstr "Linha de comando para iniciar um editor numa linha específica:"
 
 #. Resource IDs: (1060)
 msgid "Content"
-msgstr "内容検索"
+msgstr "Conteúdo"
 
 #. Resource IDs: (145)
 msgid "Copy filename to clipboard"
-msgstr "ファイル名をクリップボードにコピー"
+msgstr "Copiar nome do ficheiro para a área de transferência"
 
 #. Resource IDs: (146)
 msgid "Copy filenames to clipboard"
-msgstr "ファイル名をクリップボードにコピー"
+msgstr "Copiar nome dos ficheiros para a área de transferência"
 
 #. Resource IDs: (143)
 msgid "Copy path to clipboard"
-msgstr "パスをクリップボードにコピー"
+msgstr "Copiar caminho para a área de transferência"
 
 #. Resource IDs: (144)
 msgid "Copy paths to clipboard"
-msgstr "パスをクリップボードにコピー"
+msgstr "Copiar caminhos para a área de transferência"
 
 #. Resource IDs: (147)
 msgid "Copy text result to clipboard"
-msgstr "結果テキストをクリップボードにコピー"
+msgstr "Copiar resultado do texto para a área de transferência"
 
 #. Resource IDs: (148)
 msgid "Copy text results to clipboard"
-msgstr "結果テキストをクリップボードにコピー"
+msgstr "Copiar resultados dos textos para a área de transferência"
 
 #. Resource IDs: (1029)
 msgid "Create backup files"
-msgstr "バックアップ ファイルを作成"
+msgstr "Criar seguranças dos ficheiros"
 
 #. Resource IDs: (1077)
 msgid "Create backup files in a separate folder"
-msgstr "別のフォルダ内にバックアップを作成"
+msgstr "Criar seguranças numa pasta separada"
 
 #. Resource IDs: (1064)
 msgid "Dark mode"
-msgstr ""
+msgstr "Modo escuro"
 
 #. Resource IDs: (139)
 msgid "Date modified"
-msgstr "更新日時"
+msgstr "Data de modificação"
 
 #. Resource IDs: (137)
 msgid "Dialog"
-msgstr "ダイアログ"
+msgstr "Diálogo"
 
 #. Resource IDs: (1078)
 msgid "Don't warn when replacing without creating backups"
@@ -153,75 +153,75 @@ msgstr ""
 
 #. Resource IDs: (1051)
 msgid "Dot matches newline"
-msgstr "ドットと改行記号を一致"
+msgstr "Ponto corresponde a nova linha"
 
 #. Resource IDs: (1056)
 msgid "Double-Click to select a preset"
-msgstr "ダブル クリックでプリセットを選択"
+msgstr "Duplo-clique para seleccionar uma predefinição"
 
 #. Resource IDs: (65535 - PopupMenu)
 msgid "Dummy"
-msgstr "Dummy"
+msgstr "Fictício"
 
 #. Resource IDs: (1067)
 msgid "Editor"
-msgstr "エディタ"
+msgstr "Editor"
 
 #. Resource IDs: (138)
 msgid "Encoding"
-msgstr "エンコーディング形式"
+msgstr "Codificação"
 
 #. Resource IDs: (1056)
 msgid "Enter a name for the regex:"
-msgstr "正規表現の名前を入力:"
+msgstr "Insira um nome para o regex:"
 
 #. Resource IDs: (1062)
 msgid "Escape key closes grepWin"
-msgstr "ESC キーで grepWin を閉じる"
+msgstr ""
 
 #. Resource IDs: (1041)
 msgid "Exclude dirs (Regex):"
-msgstr "除外ディレクトリ(正規表現):"
+msgstr "Excluir pastas (Regex):"
 
 #. Resource IDs: (158)
 msgid "Ext"
-msgstr ""
+msgstr "Ext"
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
-msgstr "ファイル名の一致:\n\"|\" で複数のテキスト一致パターンを区切る場合は \"-\" を除外してください"
+msgstr "Ficheiros correspondentes:\nusar '|' p/ separar padrões de texto correspondentes\nprece&der c/ '-' para excluir"
 
 #. Resource IDs: (1059)
 msgid "Files"
-msgstr "ファイル検索"
+msgstr "Ficheiros"
 
 #. Resource IDs: (109)
 msgid "GREPWIN"
-msgstr "GREPWIN"
+msgstr ""
 
 #. Resource IDs: (156)
 msgid "If enabled, a backup folder is created inside the folder that's searched/replaced in, and the files are backed up into that folder"
-msgstr "有効にすると、検索/置換を行ったフォルダ内にバックアップ用フォルダが作成され、そのフォルダ内にファイルがバックアップされます"
+msgstr "Se activado, é criada uma pasta de seguranças dentro da pasta em que é pesquisada/substituída e as seguranças dos ficheiros são feitas nessa pasta"
 
 #. Resource IDs: (1050)
 msgid "Include binary files"
-msgstr "バイナリ ファイルを含める"
+msgstr "Incluir ficheiros binários"
 
 #. Resource IDs: (1010)
 msgid "Include hidden items"
-msgstr "隠し属性ファイルを含める"
+msgstr "Incluir itens ocultos"
 
 #. Resource IDs: (1011)
 msgid "Include subfolders"
-msgstr "サブフォルダを含める"
+msgstr "Incluir sub-pastas"
 
 #. Resource IDs: (1009)
 msgid "Include system items"
-msgstr "システム項目を含める"
+msgstr "Incluir itens do sistema"
 
 #. Resource IDs: (153)
 msgid "Invalid path!"
-msgstr "無効なパスです!"
+msgstr "Caminho inválido!"
 
 #. Resource IDs: (1019)
 msgid "KB"
@@ -229,36 +229,36 @@ msgstr "KB"
 
 #. Resource IDs: (1075)
 msgid "Language:"
-msgstr "UI 言語:"
+msgstr "Idioma:"
 
 #. Resource IDs: (1017)
 msgid "Limit search"
-msgstr "限定的な検索"
+msgstr "Limitar procura"
 
 #. Resource IDs: (134)
 msgid "Line"
-msgstr "行番号"
+msgstr "Linha"
 
 #. Resource IDs: (150)
 #, c-format
 msgid "Line %5ld : %30s\n"
-msgstr "行 %5ld : %30s\n"
+msgstr "Linha %5ld : %30s\n"
 
 #. Resource IDs: (135)
 msgid "Matches"
-msgstr "一致"
+msgstr "Correspondente"
 
 #. Resource IDs: (104)
 msgid "Name"
-msgstr "名前"
+msgstr "Nome"
 
 #. Resource IDs: (1079)
 msgid "Newer than"
-msgstr "より新しい"
+msgstr "Mais novo que"
 
 #. Resource IDs: (115)
 msgid "Newline is matched by '.'"
-msgstr "'.' を改行と一致"
+msgstr "Nova linha corresponde a '.'"
 
 #. Resource IDs: (1)
 msgid "OK"
@@ -266,27 +266,27 @@ msgstr "OK"
 
 #. Resource IDs: (1080)
 msgid "Older than"
-msgstr "より古い"
+msgstr "Mais velho que"
 
 #. Resource IDs: (1063)
 msgid "Only one instance"
-msgstr "複数インスタンスを禁止"
+msgstr "Só uma instância"
 
 #. Resource IDs: (142)
 msgid "Open containing folder"
-msgstr "含まれるフォルダを開く"
+msgstr "Abrir pasta respectiva"
 
 #. Resource IDs: (141)
 msgid "Open with Editor"
-msgstr "エディタで開く"
+msgstr "Abrir com o Editor"
 
 #. Resource IDs: (1056)
 msgid "Paste text to test the regex with:"
-msgstr "貼り付けたテキストで正規表現をテスト:"
+msgstr "Colar texto para testar o regex com:"
 
 #. Resource IDs: (137)
 msgid "Path"
-msgstr "パス"
+msgstr "Caminho"
 
 #. Resource IDs: (160)
 msgid "Path does not exist oris not accessible!"
@@ -294,164 +294,164 @@ msgstr ""
 
 #. Resource IDs: (131)
 msgid "Preset name"
-msgstr "プリセット名"
+msgstr "Nome predefinido"
 
 #. Resource IDs: (1022, 132)
 msgid "Presets"
-msgstr "プリセット"
+msgstr "Predefinidos"
 
 #. Resource IDs: (1065)
 msgid "Press F1 for help"
-msgstr ".: F1 キーでヘルプを表示 :."
+msgstr "Pressione F1 para ajuda"
 
 #. Resource IDs: (154)
 msgid "Programs"
-msgstr "プログラム"
+msgstr "Programas"
 
 #. Resource IDs: (32775 - Menu)
 msgid "Re&name Preset"
-msgstr "プリセット名を変更(&N)"
+msgstr "Re&nomear predefinição"
 
 #. Resource IDs: (130)
 msgid "Regex Test"
-msgstr "正規表現のテスト"
+msgstr "Testar Regex"
 
 #. Resource IDs: (1046)
 msgid "Regex match"
-msgstr "正規表現の一致"
+msgstr "Regex corresp."
 
 #. Resource IDs: (65535)
 msgid "Regex replace string:"
-msgstr "正規表現文字列置換:"
+msgstr "Cadeia regex substituída:"
 
 #. Resource IDs: (1001)
 msgid "Regex search"
-msgstr "正規表現検索"
+msgstr "Pesquisa regex"
 
 #. Resource IDs: (65535)
 msgid "Regex search string:"
-msgstr "正規表現-検索文字列:"
+msgstr "Cadeia regex a procurar:"
 
 #. Resource IDs: (152)
 msgid "Relative paths are not allowed. Please enter an absolute path!"
-msgstr "相対パスは使用できません、絶対パスを入力してください"
+msgstr "Não são permitidos caminhos relativos. Por favor, insira um caminho absoluto!"
 
 #. Resource IDs: (32771 - Menu)
 msgid "Remo&ve Preset"
-msgstr "プリセットを削除(&V)"
+msgstr "Remo&ver predefinição"
 
 #. Resource IDs: (106)
 msgid "Replace string"
-msgstr "文字列の置換"
+msgstr "Substituir cadeia"
 
 #. Resource IDs: (1027)
 msgid "Replace with:"
-msgstr "置換語句(&R):"
+msgstr "Substituir com:"
 
 #. Resource IDs: (126)
 msgid "S&top"
-msgstr "停止(&T)"
+msgstr "P&arar"
 
 #. Resource IDs: (1, 1016)
 msgid "Search"
-msgstr "検索"
+msgstr "Procurar"
 
 #. Resource IDs: (1026)
 msgid "Search &for:"
-msgstr "検索語句(&F):"
+msgstr "Procurar por:"
 
 #. Resource IDs: (1042)
 msgid "Search case-sensitive"
-msgstr "大文字小文字を区別"
+msgstr "Sensível a Maiúsc/minúsc"
 
 #. Resource IDs: (1015)
 msgid "Search in"
-msgstr "内部検索"
+msgstr "Procurar em"
 
 #. Resource IDs: (1018)
 msgid "Search results"
-msgstr "検索結果"
+msgstr "Resultado da procura"
 
 #. Resource IDs: (105)
 msgid "Search string"
-msgstr "検索文字列"
+msgstr "Procurar cadeia"
 
 #. Resource IDs: (128)
 #, c-format
 msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files."
-msgstr "計 %ld 個のファイルを検索, %ld 個のファイルをスキップ - %ld 箇所の一致 %ld 個のファイル内."
+msgstr "%ld ficheiros procurados, %ld ficheiros ignorados. Encontradas %ld correspondências em %ld ficheiros."
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."
-msgstr "カスタム エディタを指定..."
+msgstr "Seleccionar programa Editor..."
 
 #. Resource IDs: (127)
 msgid "Select path to search"
-msgstr "選択するパスを選択"
+msgstr "Seleccionar o caminho para procurar"
 
 #. Resource IDs: (1071)
 msgid "Settings"
-msgstr "設定"
+msgstr "Definições"
 
 #. Resource IDs: (133)
 msgid "Size"
-msgstr "サイズ"
+msgstr "Tamanho"
 
 #. Resource IDs: (1006)
 msgid "Size is"
-msgstr "サイズ"
+msgstr "Tamanho é"
 
 #. Resource IDs: (1028)
 msgid "Test regex"
-msgstr "正規表現テスト"
+msgstr "Testar Regex"
 
 #. Resource IDs: (136)
 msgid "Text"
-msgstr "テキスト"
+msgstr "Texto"
 
 #. Resource IDs: (1048)
 msgid "Text match"
-msgstr "テキスト一致"
+msgstr "Texto corresp."
 
 #. Resource IDs: (1002)
 msgid "Text search"
-msgstr "テキスト検索"
+msgstr "Procurar texto"
 
 #. Resource IDs: (65535)
 msgid "The regex search string matches:"
-msgstr "正規表現による検索文字列の一致:"
+msgstr "A cadeia de procura regex corresponde:"
 
 #. Resource IDs: (65535)
 msgid "The resulting text after replacing:"
-msgstr "置換後のテキスト:"
+msgstr "O texto resultante após substituição:"
 
 #. Resource IDs: (1074)
 msgid "This adds a new entry to the context menu named \"Open with Editor\""
-msgstr "コンテキストメニュー項目に新規エントリを追加 - \"エディタで開く\""
+msgstr ""
 
 #. Resource IDs: (1053)
 msgid "Treat files as UTF8"
-msgstr "ファイルを UTF-8 として扱う"
+msgstr ""
 
 #. Resource IDs: (1045)
 msgid "Visit our website"
-msgstr "公式サイトへ行く"
+msgstr "Visite o nosso site"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
-msgstr "検索に使用する正規表現 - F1キーでさらに詳細な情報."
+msgstr "uma expressão regular usada para procurar. Pressione F1 para mais informações"
 
 #. Resource IDs: (125)
 msgid "an empty string"
-msgstr "空の文字列"
+msgstr "uma cadeia vazia"
 
 #. Resource IDs: (130)
 msgid "binary"
-msgstr "バイナリ"
+msgstr "binário"
 
 #. Resource IDs: (118)
 msgid "click to edit the text as a multiline text"
-msgstr "クリックでテキストをマルチテキストとして編集"
+msgstr "clique para editar texto como um texto multi-linha"
 
 #. Resource IDs: (159)
 msgid "dark mode requires at least Win10 1803, and it must be enabled in the Windows system settings."
@@ -459,74 +459,74 @@ msgstr ""
 
 #. Resource IDs: (121)
 msgid "equal to"
-msgstr "等しい"
+msgstr "igual a"
 
 #. Resource IDs: (122)
 msgid "greater than"
-msgstr "より大きい"
+msgstr "maior que"
 
 #. Resource IDs: (103, 129)
 msgid "grepWin"
-msgstr "grepWin"
+msgstr ""
 
 #. Resource IDs: (138)
 msgid "grepWin Settings"
-msgstr "grepWin - オプション設定"
+msgstr ""
 
 #. Resource IDs: (157)
 msgid "hold down the shift key to find files that DO NOT contain the search string"
-msgstr "検索文字列が含まれていない場合は Shift キーでファイルを検索"
+msgstr "Mantenha pressionada a tecla shift para localizar ficheiros que NÃO contenham a cadeia a procurar"
 
 #. Resource IDs: (132)
 msgid "invalid regex!"
-msgstr "無効な正規表現です!"
+msgstr "Regex inválido!"
 
 #. Resource IDs: (120)
 msgid "less than"
-msgstr "より小さい"
+msgstr "menor que"
 
 #. Resource IDs: (111)
 msgid "no match"
-msgstr "一致なし"
+msgstr "sem correspondências"
 
 #. Resource IDs: (110)
 msgid "no text to replace with"
-msgstr "置換テキストがありません"
+msgstr "nenhum texto para substituir com"
 
 #. Resource IDs: (107)
 msgid "no text to test with available"
-msgstr "テストするテキストが存在しません"
+msgstr "nenhum texto para testar disponível"
 
 #. Resource IDs: (112)
 msgid "only files that match this pattern are searched.\r\nUse \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
-msgstr "このパターンに一致するファイルのみ検索.\r\n区切り記号として \"|\" を使用します.\r\n指定例: *.cpp|*.h"
+msgstr ""
 
 #. Resource IDs: (129)
 msgid "read error"
-msgstr "読み取りエラー"
+msgstr "erro de leitura"
 
 #. Resource IDs: (131)
 msgid "regex ok"
-msgstr "正規表現 - OK"
+msgstr "Regex ok"
 
 #. Resource IDs: (117)
 msgid "reuse grepWin instances."
-msgstr "grepWin のインスタンスを再利用."
+msgstr ""
 
 #. Resource IDs: (151)
 #, c-format
 msgid "scanning file '%s'"
-msgstr "ファイルをスキャン中 '%s'"
+msgstr "A examinar o ficheiro '%s'"
 
 #. Resource IDs: (108)
 msgid "search string is empty"
-msgstr "検索文字列が空白です"
+msgstr "a cadeia de procura está vazia"
 
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"
-msgstr "現在のパスは再帰的に検索されます.\r\nパスは \"|\" で区切ることができます.\r\n指定例:  c:\\temp|d:\\logs"
+msgstr ""
 
 #. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
-msgstr "特定のディレクトリを除外できます。指定例: CVS および images.\r\n指定例: ^(CVS|images)$\r\n注意, \".svn\" フォルダは通常の Windows では非表示のため、通常はスキャンの対象外になります.."
+msgstr ""
 

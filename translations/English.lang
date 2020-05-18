@@ -147,6 +147,10 @@ msgstr ""
 msgid "Dialog"
 msgstr ""
 
+#. Resource IDs: (1078)
+msgid "Don't warn when replacing without creating backups"
+msgstr ""
+
 #. Resource IDs: (1051)
 msgid "Dot matches newline"
 msgstr ""
@@ -282,6 +286,10 @@ msgstr ""
 
 #. Resource IDs: (137)
 msgid "Path"
+msgstr ""
+
+#. Resource IDs: (160)
+msgid "Path does not exist oris not accessible!"
 msgstr ""
 
 #. Resource IDs: (131)
@@ -443,6 +451,10 @@ msgstr ""
 
 #. Resource IDs: (118)
 msgid "click to edit the text as a multiline text"
+msgstr ""
+
+#. Resource IDs: (159)
+msgid "dark mode requires at least Win10 1803, and it must be enabled in the Windows system settings."
 msgstr ""
 
 #. Resource IDs: (121)

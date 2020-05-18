@@ -36,23 +36,23 @@ msgstr ""
 #. Resource IDs: (149)
 #, c-format
 msgid "%ld more matches"
-msgstr "%ld 以上の一致"
+msgstr "%ld viac výskytov"
 
 #. Resource IDs: (1069)
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to"
-msgstr "%path% でファイルのパスと置き換え - %line% で指定した行に移動"
+msgstr ""
 
 #. Resource IDs: (119)
 msgid "&About grepWin..."
-msgstr "grepWin について(&A)..."
+msgstr ""
 
 #. Resource IDs: (1049)
 msgid "&Replace"
-msgstr "置換(&R)"
+msgstr "&Zameniť"
 
 #. Resource IDs: (123)
 msgid "&Search"
-msgstr "検索(&S)"
+msgstr "&Hľadať"
 
 #. Resource IDs: (1013)
 msgid "..."
@@ -64,88 +64,88 @@ msgstr "/"
 
 #. Resource IDs: (1052, 135)
 msgid "About grepWin"
-msgstr "grepWin について"
+msgstr ""
 
 #. Resource IDs: (1021)
 msgid "Add to Presets"
-msgstr "プリセットに追加"
+msgstr "Pridať do predvolieb"
 
 #. Resource IDs: (155)
 msgid "All Files"
-msgstr "すべてのファイル"
+msgstr "Všetky súbory"
 
 #. Resource IDs: (1078)
 msgid "All dates"
-msgstr "すべての日付"
+msgstr "Všetky dátumy"
 
 #. Resource IDs: (1005)
 msgid "All sizes"
-msgstr "すべてのサイズ"
+msgstr "Všetky veľkosti"
 
 #. Resource IDs: (124)
 #, c-format
 msgid "Are you sure you want to replace\n%s\nwith\n%s\nwithout creating backups?"
-msgstr "本当にバックアップなしで \n%s を　%s\n に置き換えますか?"
+msgstr "Naozaj chcete nahradiť\n%s\ns\n%s\nbez vytvárania záloh?"
 
 #. Resource IDs: (1081)
 msgid "Between"
-msgstr "指定期間"
+msgstr "Medzi"
 
 #. Resource IDs: (2)
 msgid "Cancel"
-msgstr "キャンセル"
+msgstr "Zrušiť"
 
 #. Resource IDs: (1068)
 msgid "Command line to start an editor at a specific line:"
-msgstr "エディタの指定行でコマンドラインを起動:"
+msgstr "Príkazový riadok na spustenie editora na konkrétnom riadku:"
 
 #. Resource IDs: (1060)
 msgid "Content"
-msgstr "内容検索"
+msgstr "Obsah"
 
 #. Resource IDs: (145)
 msgid "Copy filename to clipboard"
-msgstr "ファイル名をクリップボードにコピー"
+msgstr "Kopírovať názov súboru do schránky"
 
 #. Resource IDs: (146)
 msgid "Copy filenames to clipboard"
-msgstr "ファイル名をクリップボードにコピー"
+msgstr "Kopírovať názvy súborov do schránky"
 
 #. Resource IDs: (143)
 msgid "Copy path to clipboard"
-msgstr "パスをクリップボードにコピー"
+msgstr "Kopírovať cestu do schránky"
 
 #. Resource IDs: (144)
 msgid "Copy paths to clipboard"
-msgstr "パスをクリップボードにコピー"
+msgstr "Kopírovať cesty do schránky"
 
 #. Resource IDs: (147)
 msgid "Copy text result to clipboard"
-msgstr "結果テキストをクリップボードにコピー"
+msgstr "Kopírovať výsledok do schránky"
 
 #. Resource IDs: (148)
 msgid "Copy text results to clipboard"
-msgstr "結果テキストをクリップボードにコピー"
+msgstr "Kopírovať výsledky do schránky"
 
 #. Resource IDs: (1029)
 msgid "Create backup files"
-msgstr "バックアップ ファイルを作成"
+msgstr "Vytvoriť záložné súbory"
 
 #. Resource IDs: (1077)
 msgid "Create backup files in a separate folder"
-msgstr "別のフォルダ内にバックアップを作成"
+msgstr "Vytvoriť záložné súbory v samostatnom priečinku"
 
 #. Resource IDs: (1064)
 msgid "Dark mode"
-msgstr ""
+msgstr "Tmavý režim"
 
 #. Resource IDs: (139)
 msgid "Date modified"
-msgstr "更新日時"
+msgstr "Zmena dátumu"
 
 #. Resource IDs: (137)
 msgid "Dialog"
-msgstr "ダイアログ"
+msgstr "Dialóg"
 
 #. Resource IDs: (1078)
 msgid "Don't warn when replacing without creating backups"
@@ -153,11 +153,11 @@ msgstr ""
 
 #. Resource IDs: (1051)
 msgid "Dot matches newline"
-msgstr "ドットと改行記号を一致"
+msgstr "Bodka zodpovedá novému riadku"
 
 #. Resource IDs: (1056)
 msgid "Double-Click to select a preset"
-msgstr "ダブル クリックでプリセットを選択"
+msgstr "Dvojklikom vyberte predvoľbu"
 
 #. Resource IDs: (65535 - PopupMenu)
 msgid "Dummy"
@@ -165,100 +165,100 @@ msgstr "Dummy"
 
 #. Resource IDs: (1067)
 msgid "Editor"
-msgstr "エディタ"
+msgstr "Editor"
 
 #. Resource IDs: (138)
 msgid "Encoding"
-msgstr "エンコーディング形式"
+msgstr "Kódovanie"
 
 #. Resource IDs: (1056)
 msgid "Enter a name for the regex:"
-msgstr "正規表現の名前を入力:"
+msgstr "Zadajte názov pre regex:"
 
 #. Resource IDs: (1062)
 msgid "Escape key closes grepWin"
-msgstr "ESC キーで grepWin を閉じる"
+msgstr ""
 
 #. Resource IDs: (1041)
 msgid "Exclude dirs (Regex):"
-msgstr "除外ディレクトリ(正規表現):"
+msgstr "Vylúčené riadky (Regex):"
 
 #. Resource IDs: (158)
 msgid "Ext"
-msgstr ""
+msgstr "Ext"
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
-msgstr "ファイル名の一致:\n\"|\" で複数のテキスト一致パターンを区切る場合は \"-\" を除外してください"
+msgstr "Zhoda názvov súborov:\nznak '|' oddelí viac vzorov text. zhody, na &začiatok '-' na vylúčenie"
 
 #. Resource IDs: (1059)
 msgid "Files"
-msgstr "ファイル検索"
+msgstr "Súbory"
 
 #. Resource IDs: (109)
 msgid "GREPWIN"
-msgstr "GREPWIN"
+msgstr ""
 
 #. Resource IDs: (156)
 msgid "If enabled, a backup folder is created inside the folder that's searched/replaced in, and the files are backed up into that folder"
-msgstr "有効にすると、検索/置換を行ったフォルダ内にバックアップ用フォルダが作成され、そのフォルダ内にファイルがバックアップされます"
+msgstr "Ak je povolené, vytvorí sa v priečinku, v ktorom sa vyhľadáva/nahrádza, záložný priečinok a súbory sa zálohujú do tohto priečinka"
 
 #. Resource IDs: (1050)
 msgid "Include binary files"
-msgstr "バイナリ ファイルを含める"
+msgstr "Zahrnúť binárne súbory"
 
 #. Resource IDs: (1010)
 msgid "Include hidden items"
-msgstr "隠し属性ファイルを含める"
+msgstr "Zahrnúť skryté položky"
 
 #. Resource IDs: (1011)
 msgid "Include subfolders"
-msgstr "サブフォルダを含める"
+msgstr "Zahrnúť podpriečinky"
 
 #. Resource IDs: (1009)
 msgid "Include system items"
-msgstr "システム項目を含める"
+msgstr "Zahrnúť systémové položky"
 
 #. Resource IDs: (153)
 msgid "Invalid path!"
-msgstr "無効なパスです!"
+msgstr "Neplatná cesta!"
 
 #. Resource IDs: (1019)
 msgid "KB"
-msgstr "KB"
+msgstr "kB"
 
 #. Resource IDs: (1075)
 msgid "Language:"
-msgstr "UI 言語:"
+msgstr "Jazyk:"
 
 #. Resource IDs: (1017)
 msgid "Limit search"
-msgstr "限定的な検索"
+msgstr "Obmedzenie vyhľadávania"
 
 #. Resource IDs: (134)
 msgid "Line"
-msgstr "行番号"
+msgstr "Riadok"
 
 #. Resource IDs: (150)
 #, c-format
 msgid "Line %5ld : %30s\n"
-msgstr "行 %5ld : %30s\n"
+msgstr "Riadok %5ld : %30s\n"
 
 #. Resource IDs: (135)
 msgid "Matches"
-msgstr "一致"
+msgstr "Výskyty"
 
 #. Resource IDs: (104)
 msgid "Name"
-msgstr "名前"
+msgstr "Názov"
 
 #. Resource IDs: (1079)
 msgid "Newer than"
-msgstr "より新しい"
+msgstr "Novšie ako"
 
 #. Resource IDs: (115)
 msgid "Newline is matched by '.'"
-msgstr "'.' を改行と一致"
+msgstr "Nový riadok je uzavretý '.'"
 
 #. Resource IDs: (1)
 msgid "OK"
@@ -266,27 +266,27 @@ msgstr "OK"
 
 #. Resource IDs: (1080)
 msgid "Older than"
-msgstr "より古い"
+msgstr "Staršie ako"
 
 #. Resource IDs: (1063)
 msgid "Only one instance"
-msgstr "複数インスタンスを禁止"
+msgstr "Len jedna inštancia"
 
 #. Resource IDs: (142)
 msgid "Open containing folder"
-msgstr "含まれるフォルダを開く"
+msgstr "Otvoriť priečinok s obsahom"
 
 #. Resource IDs: (141)
 msgid "Open with Editor"
-msgstr "エディタで開く"
+msgstr "Otvoriť pomocou editora"
 
 #. Resource IDs: (1056)
 msgid "Paste text to test the regex with:"
-msgstr "貼り付けたテキストで正規表現をテスト:"
+msgstr "Vložiť text na otestovanie regex:"
 
 #. Resource IDs: (137)
 msgid "Path"
-msgstr "パス"
+msgstr "Cesta"
 
 #. Resource IDs: (160)
 msgid "Path does not exist oris not accessible!"
@@ -294,164 +294,164 @@ msgstr ""
 
 #. Resource IDs: (131)
 msgid "Preset name"
-msgstr "プリセット名"
+msgstr "Názov predvoľby"
 
 #. Resource IDs: (1022, 132)
 msgid "Presets"
-msgstr "プリセット"
+msgstr "Predvoľby"
 
 #. Resource IDs: (1065)
 msgid "Press F1 for help"
-msgstr ".: F1 キーでヘルプを表示 :."
+msgstr "Stlač F1 pre nápovedu"
 
 #. Resource IDs: (154)
 msgid "Programs"
-msgstr "プログラム"
+msgstr "Programy"
 
 #. Resource IDs: (32775 - Menu)
 msgid "Re&name Preset"
-msgstr "プリセット名を変更(&N)"
+msgstr "Preme&novať predvoľbu"
 
 #. Resource IDs: (130)
 msgid "Regex Test"
-msgstr "正規表現のテスト"
+msgstr "Test Regex"
 
 #. Resource IDs: (1046)
 msgid "Regex match"
-msgstr "正規表現の一致"
+msgstr "Výskyty Regex"
 
 #. Resource IDs: (65535)
 msgid "Regex replace string:"
-msgstr "正規表現文字列置換:"
+msgstr "Nahradiť reťazec Regex:"
 
 #. Resource IDs: (1001)
 msgid "Regex search"
-msgstr "正規表現検索"
+msgstr "Regex vyhľadávanie"
 
 #. Resource IDs: (65535)
 msgid "Regex search string:"
-msgstr "正規表現-検索文字列:"
+msgstr "Regex vyhľadať reťazec:"
 
 #. Resource IDs: (152)
 msgid "Relative paths are not allowed. Please enter an absolute path!"
-msgstr "相対パスは使用できません、絶対パスを入力してください"
+msgstr "Relatívne cesty nie sú povolené. Zadajte absolútnu cestu!"
 
 #. Resource IDs: (32771 - Menu)
 msgid "Remo&ve Preset"
-msgstr "プリセットを削除(&V)"
+msgstr "Odstrániť predvoľbu"
 
 #. Resource IDs: (106)
 msgid "Replace string"
-msgstr "文字列の置換"
+msgstr "Nahradiť reťazec"
 
 #. Resource IDs: (1027)
 msgid "Replace with:"
-msgstr "置換語句(&R):"
+msgstr "Nahradiť s:"
 
 #. Resource IDs: (126)
 msgid "S&top"
-msgstr "停止(&T)"
+msgstr "Zas&taviť"
 
 #. Resource IDs: (1, 1016)
 msgid "Search"
-msgstr "検索"
+msgstr "Hľadať"
 
 #. Resource IDs: (1026)
 msgid "Search &for:"
-msgstr "検索語句(&F):"
+msgstr "&Hľadať:"
 
 #. Resource IDs: (1042)
 msgid "Search case-sensitive"
-msgstr "大文字小文字を区別"
+msgstr "Rozlíšiť malé a veľké písmená"
 
 #. Resource IDs: (1015)
 msgid "Search in"
-msgstr "内部検索"
+msgstr "Hľadať v"
 
 #. Resource IDs: (1018)
 msgid "Search results"
-msgstr "検索結果"
+msgstr "Výsledky hľadania"
 
 #. Resource IDs: (105)
 msgid "Search string"
-msgstr "検索文字列"
+msgstr "Hľadaný reťazec"
 
 #. Resource IDs: (128)
 #, c-format
 msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files."
-msgstr "計 %ld 個のファイルを検索, %ld 個のファイルをスキップ - %ld 箇所の一致 %ld 個のファイル内."
+msgstr "Prehľadané %ld súborov, vynechané %ld súborov. Našlo sa %ld výskytov v %ld súboroch."
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."
-msgstr "カスタム エディタを指定..."
+msgstr "Výber aplikácie editora..."
 
 #. Resource IDs: (127)
 msgid "Select path to search"
-msgstr "選択するパスを選択"
+msgstr "Výber cesty na vyhľadávanie"
 
 #. Resource IDs: (1071)
 msgid "Settings"
-msgstr "設定"
+msgstr "Nastavenia"
 
 #. Resource IDs: (133)
 msgid "Size"
-msgstr "サイズ"
+msgstr "Veľkosť"
 
 #. Resource IDs: (1006)
 msgid "Size is"
-msgstr "サイズ"
+msgstr "Veľkosť je"
 
 #. Resource IDs: (1028)
 msgid "Test regex"
-msgstr "正規表現テスト"
+msgstr "Test regex"
 
 #. Resource IDs: (136)
 msgid "Text"
-msgstr "テキスト"
+msgstr "Text"
 
 #. Resource IDs: (1048)
 msgid "Text match"
-msgstr "テキスト一致"
+msgstr "Textová zhoda"
 
 #. Resource IDs: (1002)
 msgid "Text search"
-msgstr "テキスト検索"
+msgstr "Textové hľadanie"
 
 #. Resource IDs: (65535)
 msgid "The regex search string matches:"
-msgstr "正規表現による検索文字列の一致:"
+msgstr "Vyhľadávací reťazec regex zodpovedá:"
 
 #. Resource IDs: (65535)
 msgid "The resulting text after replacing:"
-msgstr "置換後のテキスト:"
+msgstr "Výsledný text po nahradení:"
 
 #. Resource IDs: (1074)
 msgid "This adds a new entry to the context menu named \"Open with Editor\""
-msgstr "コンテキストメニュー項目に新規エントリを追加 - \"エディタで開く\""
+msgstr ""
 
 #. Resource IDs: (1053)
 msgid "Treat files as UTF8"
-msgstr "ファイルを UTF-8 として扱う"
+msgstr ""
 
 #. Resource IDs: (1045)
 msgid "Visit our website"
-msgstr "公式サイトへ行く"
+msgstr "Navštívte našu webovú stránku"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
-msgstr "検索に使用する正規表現 - F1キーでさらに詳細な情報."
+msgstr "regulárny výraz používaný na vyhľadávanie. Stlač F1 pre viac informácií."
 
 #. Resource IDs: (125)
 msgid "an empty string"
-msgstr "空の文字列"
+msgstr "prázdny reťazec"
 
 #. Resource IDs: (130)
 msgid "binary"
-msgstr "バイナリ"
+msgstr "binárny"
 
 #. Resource IDs: (118)
 msgid "click to edit the text as a multiline text"
-msgstr "クリックでテキストをマルチテキストとして編集"
+msgstr "kliknutím upravte text na viacriadkový text"
 
 #. Resource IDs: (159)
 msgid "dark mode requires at least Win10 1803, and it must be enabled in the Windows system settings."
@@ -459,74 +459,74 @@ msgstr ""
 
 #. Resource IDs: (121)
 msgid "equal to"
-msgstr "等しい"
+msgstr "rovná sa"
 
 #. Resource IDs: (122)
 msgid "greater than"
-msgstr "より大きい"
+msgstr "väčšie ako"
 
 #. Resource IDs: (103, 129)
 msgid "grepWin"
-msgstr "grepWin"
+msgstr ""
 
 #. Resource IDs: (138)
 msgid "grepWin Settings"
-msgstr "grepWin - オプション設定"
+msgstr ""
 
 #. Resource IDs: (157)
 msgid "hold down the shift key to find files that DO NOT contain the search string"
-msgstr "検索文字列が含まれていない場合は Shift キーでファイルを検索"
+msgstr "podržte stlačenú klávesu Shift a vyhľadajte súbory, ktoré neobsahujú hľadaný reťazec"
 
 #. Resource IDs: (132)
 msgid "invalid regex!"
-msgstr "無効な正規表現です!"
+msgstr "neplatný regex!"
 
 #. Resource IDs: (120)
 msgid "less than"
-msgstr "より小さい"
+msgstr "menšie ako"
 
 #. Resource IDs: (111)
 msgid "no match"
-msgstr "一致なし"
+msgstr "žiadna zhoda"
 
 #. Resource IDs: (110)
 msgid "no text to replace with"
-msgstr "置換テキストがありません"
+msgstr "žiadny text na nahradenie"
 
 #. Resource IDs: (107)
 msgid "no text to test with available"
-msgstr "テストするテキストが存在しません"
+msgstr "žiadny text nie je dostupný na testovanie"
 
 #. Resource IDs: (112)
 msgid "only files that match this pattern are searched.\r\nUse \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
-msgstr "このパターンに一致するファイルのみ検索.\r\n区切り記号として \"|\" を使用します.\r\n指定例: *.cpp|*.h"
+msgstr ""
 
 #. Resource IDs: (129)
 msgid "read error"
-msgstr "読み取りエラー"
+msgstr "chyba pri čítaní"
 
 #. Resource IDs: (131)
 msgid "regex ok"
-msgstr "正規表現 - OK"
+msgstr "regex ok"
 
 #. Resource IDs: (117)
 msgid "reuse grepWin instances."
-msgstr "grepWin のインスタンスを再利用."
+msgstr ""
 
 #. Resource IDs: (151)
 #, c-format
 msgid "scanning file '%s'"
-msgstr "ファイルをスキャン中 '%s'"
+msgstr "skenovanie súboru '%s'"
 
 #. Resource IDs: (108)
 msgid "search string is empty"
-msgstr "検索文字列が空白です"
+msgstr "hľadaný reťazec je prázdny"
 
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"
-msgstr "現在のパスは再帰的に検索されます.\r\nパスは \"|\" で区切ることができます.\r\n指定例:  c:\\temp|d:\\logs"
+msgstr ""
 
 #. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
-msgstr "特定のディレクトリを除外できます。指定例: CVS および images.\r\n指定例: ^(CVS|images)$\r\n注意, \".svn\" フォルダは通常の Windows では非表示のため、通常はスキャンの対象外になります.."
+msgstr ""
 
