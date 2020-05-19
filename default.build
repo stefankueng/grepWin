@@ -83,7 +83,7 @@
     <exec program="tools\restext.exe" >
       <arg value="extract" />
       <arg value="bin\release\grepWin.exe" />
-      <arg value="translations\Deutsch.lang" />
+      <arg value="translations\German.lang" />
     </exec>
     <exec program="tools\restext.exe" >
       <arg value="extract" />
@@ -93,12 +93,12 @@
     <exec program="tools\restext.exe" >
       <arg value="extract" />
       <arg value="bin\release\grepWin.exe" />
-      <arg value="translations\Nederlands.lang" />
+      <arg value="translations\Dutch.lang" />
     </exec>
     <exec program="tools\restext.exe" >
       <arg value="extract" />
       <arg value="bin\release\grepWin.exe" />
-      <arg value="translations\Polski.lang" />
+      <arg value="translations\Polish.lang" />
     </exec>
     <exec program="tools\restext.exe" >
       <arg value="extract" />
@@ -108,12 +108,12 @@
     <exec program="tools\restext.exe" >
       <arg value="extract" />
       <arg value="bin\release\grepWin.exe" />
-      <arg value="translations\Italiano.lang" />
+      <arg value="translations\Italian.lang" />
     </exec>
     <exec program="tools\restext.exe" >
       <arg value="extract" />
       <arg value="bin\release\grepWin.exe" />
-      <arg value="translations\Brazilian_Portuguese.lang" />
+      <arg value="translations\Portuguese Brazilian.lang" />
     </exec>
     <exec program="tools\restext.exe" >
       <arg value="extract" />
@@ -123,7 +123,7 @@
     <exec program="tools\restext.exe" >
       <arg value="extract" />
       <arg value="bin\release\grepWin.exe" />
-      <arg value="translations\Français.lang" />
+      <arg value="translations\French.lang" />
     </exec>
     <exec program="tools\restext.exe" >
       <arg value="extract" />
@@ -138,7 +138,7 @@
     <exec program="tools\restext.exe" >
       <arg value="extract" />
       <arg value="bin\release\grepWin.exe" />
-      <arg value="translations\Hellenic.lang" />
+      <arg value="translations\Greek.lang" />
     </exec>
     <exec program="tools\restext.exe" >
       <arg value="extract" />
@@ -153,7 +153,7 @@
     <exec program="tools\restext.exe" >
       <arg value="extract" />
       <arg value="bin\release\grepWin.exe" />
-      <arg value="translations\Portuguese (Portugal).lang" />
+      <arg value="translations\Portuguese.lang" />
     </exec>
     <exec program="tools\restext.exe" >
       <arg value="extract" />
