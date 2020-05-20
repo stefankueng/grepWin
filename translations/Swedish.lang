@@ -40,11 +40,11 @@ msgstr "%ld fler träffar"
 
 #. Resource IDs: (1069)
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to"
-msgstr ""
+msgstr "%path% ersätts med sökväg till filen, %line% med raden att hoppa till, %pattern% med söksträngen."
 
 #. Resource IDs: (119)
 msgid "&About grepWin..."
-msgstr ""
+msgstr "Om grepWin..."
 
 #. Resource IDs: (1049)
 msgid "&Replace"
@@ -64,7 +64,7 @@ msgstr "/"
 
 #. Resource IDs: (1052, 135)
 msgid "About grepWin"
-msgstr ""
+msgstr "Om grepWin"
 
 #. Resource IDs: (1021)
 msgid "Add to Presets"
@@ -177,7 +177,7 @@ msgstr "Ange ett namn för regex:"
 
 #. Resource IDs: (1062)
 msgid "Escape key closes grepWin"
-msgstr ""
+msgstr "Esc-tangenten stänger grepWin"
 
 #. Resource IDs: (1041)
 msgid "Exclude dirs (Regex):"
@@ -282,7 +282,7 @@ msgstr "Öppna med editor"
 
 #. Resource IDs: (1056)
 msgid "Paste text to test the regex with:"
-msgstr ""
+msgstr "Klistra in text att testa regex med:"
 
 #. Resource IDs: (137)
 msgid "Path"
@@ -290,7 +290,7 @@ msgstr "Sökväg"
 
 #. Resource IDs: (160)
 msgid "Path does not exist or is not accessible!"
-msgstr ""
+msgstr "Sökvägen existerar inte, eller kan inte nås!"
 
 #. Resource IDs: (131)
 msgid "Preset name"
@@ -427,11 +427,11 @@ msgstr "Text efter ersättning:"
 
 #. Resource IDs: (1074)
 msgid "This adds a new entry to the context menu named \"Open with Editor\""
-msgstr ""
+msgstr "Lägger till ny post i snabbmenyn med rubriken \"Öppna med editor\""
 
 #. Resource IDs: (1053)
 msgid "Treat files as UTF8"
-msgstr ""
+msgstr "Behandlar filer som UTF8"
 
 #. Resource IDs: (1045)
 msgid "Visit our website"
@@ -455,7 +455,7 @@ msgstr "klicka för att redigera text som multiradstext"
 
 #. Resource IDs: (159)
 msgid "dark mode requires at least Win10 1803, and it must be enabled in the Windows system settings."
-msgstr ""
+msgstr "Mörkt läge kräver åtminstone Win10 v1803, och måste ha aktiverats i Windows systeminställningar."
 
 #. Resource IDs: (121)
 msgid "equal to"
@@ -467,11 +467,11 @@ msgstr "större än"
 
 #. Resource IDs: (103, 129)
 msgid "grepWin"
-msgstr ""
+msgstr "grepWin"
 
 #. Resource IDs: (138)
 msgid "grepWin Settings"
-msgstr ""
+msgstr "grepWin inställningar"
 
 #. Resource IDs: (157)
 msgid "hold down the shift key to find files that DO NOT contain the search string"
@@ -499,7 +499,7 @@ msgstr "ingen text att testa med"
 
 #. Resource IDs: (112)
 msgid "only files that match this pattern are searched.\r\nUse \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
-msgstr ""
+msgstr "söker bara efter filer som matchar detta mönster.\r\nAnvänd \"|\" som avgränsare.\r\nExempelvis: *.cpp|*.h"
 
 #. Resource IDs: (129)
 msgid "read error"
@@ -511,7 +511,7 @@ msgstr "regex ok"
 
 #. Resource IDs: (117)
 msgid "reuse grepWin instances."
-msgstr ""
+msgstr "återanvänd grepWin-instanser."
 
 #. Resource IDs: (151)
 #, c-format
@@ -524,9 +524,9 @@ msgstr "söksträngen är tom"
 
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"
-msgstr ""
+msgstr "sökväg(arna) söks rekursivt.\r\nSeparera sökvägar med | symbolen.\r\nExempelvis: c:\\temp|d:\\logs"
 
 #. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
-msgstr ""
+msgstr "du kan exkludera mappar, exempelvis CVS och bilder.\r\nExempelvis: ^(CVS|bilder)$\r\nMärk, '.svn'-mappar are är dolda i Windows, så de är vanligtvis inte sökta i."
 
