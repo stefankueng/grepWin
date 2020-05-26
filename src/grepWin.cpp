@@ -34,8 +34,10 @@
 HINSTANCE  g_hInst; // current instance
 bool       bPortable = false;
 CSimpleIni g_iniFile;
+HANDLE     hInitProtection = nullptr;
 
-ULONGLONG g_startTime = GetTickCount64();
+ULONGLONG g_startTime        = GetTickCount64();
+UINT      GREPWIN_STARTUPMSG = RegisterWindowMessage(_T("grepWin_StartupMessage"));
 
 static std::wstring SanitizeSearchPaths(const std::wstring& searchpath)
 {
@@ -105,6 +107,11 @@ BOOL CALLBACK windowenumerator(__in HWND hwnd, __in LPARAM lParam)
     if (_wcsnicmp(buf, L"grepwin :", 9) == 0)
     {
         *pWnd = hwnd;
+        if (SendMessage(hwnd, GREPWIN_STARTUPMSG, 1, 0))
+        {
+            // grepWin instance started moments ago, so use this one
+            return FALSE;
+        }
     }
     return TRUE;
 }
@@ -143,6 +150,13 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
         // An instance of grepWin is already running
         alreadyRunning = true;
     }
+    hInitProtection     = ::CreateMutex(NULL, FALSE, L"{6473AA76-0EAE-4C96-8C99-AFDFEFFE42B6}");
+    bool initInProgress = false;
+    if ((!hInitProtection) || (GetLastError() == ERROR_ALREADY_EXISTS))
+    {
+        // An instance of grepWin is initializing
+        initInProgress = true;
+    }
 
     g_hInst = hInstance;
     ::OleInitialize(NULL);
@@ -156,6 +170,8 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
     HMODULE hRichEdt = LoadLibrary(_T("Riched20.dll"));
 
     CCmdLineParser parser(lpCmdLine);
+
+    //MessageBox(NULL, L"", L"", MB_OK);
 
     if (parser.HasKey(L"register"))
     {
@@ -171,13 +187,36 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
     bool bQuit   = false;
     HWND hWnd    = NULL;
     int  timeout = 20;
-    do
+    // find already running grepWin windows
+    if (alreadyRunning)
     {
-        EnumWindows(windowenumerator, (LPARAM)&hWnd);
-        if (alreadyRunning && (hWnd == NULL))
-            Sleep(100);
-        timeout--;
-    } while ((hWnd == NULL) && alreadyRunning && timeout);
+        do
+        {
+            if (EnumWindows(windowenumerator, (LPARAM)&hWnd) != FALSE)
+            {
+                // long running grepWin Window found:
+                // if a grepWin process is currently initializing,
+                // wait a while and enumerate again
+                while (initInProgress)
+                {
+                    CloseHandle(hInitProtection);
+                    Sleep(100);
+                    initInProgress = false;
+                    hInitProtection = ::CreateMutex(NULL, FALSE, L"{6473AA76-0EAE-4C96-8C99-AFDFEFFE42B6}");
+                    if ((!hInitProtection) || (GetLastError() == ERROR_ALREADY_EXISTS))
+                    {
+                        // An instance of grepWin is still initializing
+                        initInProgress = true;
+                    }
+                }
+                hWnd = nullptr;
+                EnumWindows(windowenumerator, (LPARAM)&hWnd);
+            }
+            if (alreadyRunning && (hWnd == NULL))
+                Sleep(100);
+            timeout--;
+        } while ((hWnd == NULL) && alreadyRunning && timeout);
+    }
 
     auto modulename = CPathUtils::GetFileName(CPathUtils::GetModulePath(0));
     bPortable       = ((_tcsstr(modulename.c_str(), _T("portable"))) || (parser.HasKey(_T("portable"))));
@@ -198,9 +237,12 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
         bool bOnlyOne = !!DWORD(CRegStdDWORD(_T("Software\\grepWin\\onlyone"), 0));
         if (bPortable)
             bOnlyOne = !!_wtoi(g_iniFile.GetValue(L"global", L"onlyone", L"0"));
-        UINT GREPWIN_STARTUPMSG = RegisterWindowMessage(_T("grepWin_StartupMessage"));
-        if (SendMessage(hWnd, GREPWIN_STARTUPMSG, 0, 0)) // send the new path
+        if (SendMessage(hWnd, GREPWIN_STARTUPMSG, 1, 0)) // check if grepWin was started moments ago
         {
+            SendMessage(hWnd, GREPWIN_STARTUPMSG, 0, 0); // reset the timer
+
+            // grepWin was started just moments ago:
+            // add the new path to the existing search path in that grepWin instance
             std::wstring spath = parser.GetVal(_T("searchpath"));
             SearchReplace(spath, L"/", L"\\");
             spath                   = SanitizeSearchPaths(spath);
@@ -236,6 +278,8 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
         CLanguage::Instance().LoadFile(bPortable ? g_iniFile.GetValue(L"global", L"languagefile", L"") : std::wstring(CRegStdString(L"Software\\grepWin\\languagefile")));
         if (parser.HasKey(_T("about")) || parser.HasKey(_T("?")) || parser.HasKey(_T("help")))
         {
+            if (hInitProtection)
+                CloseHandle(hInitProtection);
             CAboutDlg aboutDlg(NULL);
             ret = (int)aboutDlg.DoModal(hInstance, IDD_ABOUT, NULL, NULL);
         }
@@ -334,7 +378,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
                 if (PathFileExists(cmdLinePath.get()))
                 {
                     std::wstring spath = cmdLinePath.get();
-                    spath = SanitizeSearchPaths(spath);
+                    spath              = SanitizeSearchPaths(spath);
                     searchDlg.SetSearchPath(spath);
                 }
             }
