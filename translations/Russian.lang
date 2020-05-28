@@ -40,7 +40,7 @@ msgstr "больше %ld совпадений"
 
 #. Resource IDs: (1069)
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to"
-msgstr "%path% заменяется на путь к файлу, %line% на соответствующую строку."
+msgstr "%path% заменяется на путь к файлу, %line% переходит к соответствующей строке"
 
 #. Resource IDs: (119)
 msgid "&About grepWin..."
@@ -105,23 +105,23 @@ msgstr "Контент"
 
 #. Resource IDs: (145)
 msgid "Copy filename to clipboard"
-msgstr "Копировать имя"
+msgstr "Копировать имя файла в буфер обмена"
 
 #. Resource IDs: (146)
 msgid "Copy filenames to clipboard"
-msgstr "Копировать имена"
+msgstr "Копировать имена в буфер обмена"
 
 #. Resource IDs: (143)
 msgid "Copy path to clipboard"
-msgstr "Копировать путь"
+msgstr "Копировать путь в буфер обмена"
 
 #. Resource IDs: (144)
 msgid "Copy paths to clipboard"
-msgstr "Копировать пути"
+msgstr "Копировать пути в буфер обмена"
 
 #. Resource IDs: (147)
 msgid "Copy text result to clipboard"
-msgstr "Копировать текст результата"
+msgstr "Копировать результат в буфер обмена"
 
 #. Resource IDs: (148)
 msgid "Copy text results to clipboard"
@@ -157,7 +157,7 @@ msgstr "Точка = новая строка"
 
 #. Resource IDs: (1056)
 msgid "Double-Click to select a preset"
-msgstr "Двойной щелчок для выбора пресета"
+msgstr "Двойной щелчок выбирает пресет"
 
 #. Resource IDs: (65535 - PopupMenu)
 msgid "Dummy"
@@ -181,7 +181,7 @@ msgstr "Esc для выхода из grepWin"
 
 #. Resource IDs: (1041)
 msgid "Exclude dirs (Regex):"
-msgstr "Исключить папки (Regex):"
+msgstr "Исключить папки (Шаблон):"
 
 #. Resource IDs: (158)
 msgid "Ext"
@@ -189,7 +189,7 @@ msgstr ".рсш"
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
-msgstr "Совпадения имен:\n'|' для разделения,\n'-' спереди, для исключения"
+msgstr "Сравнение имен файлов:\n'|' для разделения нескольких шаблонов, '-'шаблон для их исключения"
 
 #. Resource IDs: (1059)
 msgid "Files"
@@ -201,7 +201,7 @@ msgstr "GREPWIN"
 
 #. Resource IDs: (156)
 msgid "If enabled, a backup folder is created inside the folder that's searched/replaced in, and the files are backed up into that folder"
-msgstr "Если включено, папка с бэкапом создается внутри папки поиска/замены"
+msgstr "Если включено, папка с бэкапом создается внутри папки поиска/замены и резрвные копии файлов создаются в ней"
 
 #. Resource IDs: (1050)
 msgid "Include binary files"
@@ -258,7 +258,7 @@ msgstr "Новее чем"
 
 #. Resource IDs: (115)
 msgid "Newline is matched by '.'"
-msgstr "Новая строка соответствует '.'"
+msgstr "Новая строка совпадает с '.'"
 
 #. Resource IDs: (1)
 msgid "OK"
@@ -282,7 +282,7 @@ msgstr "Открыть в редакторе"
 
 #. Resource IDs: (1056)
 msgid "Paste text to test the regex with:"
-msgstr "Текст для проверки regex:"
+msgstr "Введите текст для проверки шаблона:"
 
 #. Resource IDs: (137)
 msgid "Path"
@@ -302,7 +302,7 @@ msgstr "Пресеты"
 
 #. Resource IDs: (1065)
 msgid "Press F1 for help"
-msgstr "F1 для справки"
+msgstr "Нажмите F1 для справки"
 
 #. Resource IDs: (154)
 msgid "Programs"
@@ -314,23 +314,23 @@ msgstr "Переименовать пресет"
 
 #. Resource IDs: (130)
 msgid "Regex Test"
-msgstr "Тест regex"
+msgstr "Тест шаблона"
 
 #. Resource IDs: (1046)
 msgid "Regex match"
-msgstr "Regex"
+msgstr "Шаблон сравнения"
 
 #. Resource IDs: (65535)
 msgid "Regex replace string:"
-msgstr "Regex замена строки"
+msgstr "Шаблон замены строки"
 
 #. Resource IDs: (1001)
 msgid "Regex search"
-msgstr "Regex поиск"
+msgstr "Шаблон поиска"
 
 #. Resource IDs: (65535)
 msgid "Regex search string:"
-msgstr "Regex поиск строки"
+msgstr "Шаблон поиска строки"
 
 #. Resource IDs: (152)
 msgid "Relative paths are not allowed. Please enter an absolute path!"
@@ -346,7 +346,7 @@ msgstr "Заменить строку"
 
 #. Resource IDs: (1027)
 msgid "Replace with:"
-msgstr "Заменить этим:"
+msgstr "Заменить на:"
 
 #. Resource IDs: (126)
 msgid "S&top"
@@ -366,11 +366,11 @@ msgstr "С учетом регистра"
 
 #. Resource IDs: (1015)
 msgid "Search in"
-msgstr "Поиск в"
+msgstr "Искать в"
 
 #. Resource IDs: (1018)
 msgid "Search results"
-msgstr "Результаты поиска"
+msgstr "Результ поиска"
 
 #. Resource IDs: (105)
 msgid "Search string"
@@ -403,7 +403,7 @@ msgstr "Размер"
 
 #. Resource IDs: (1028)
 msgid "Test regex"
-msgstr "Тест regex"
+msgstr "Тест шаблона"
 
 #. Resource IDs: (136)
 msgid "Text"
@@ -411,7 +411,7 @@ msgstr "Текст"
 
 #. Resource IDs: (1048)
 msgid "Text match"
-msgstr "Текст"
+msgstr "Сравнение текста"
 
 #. Resource IDs: (1002)
 msgid "Text search"
@@ -419,11 +419,11 @@ msgstr "Поиск текста"
 
 #. Resource IDs: (65535)
 msgid "The regex search string matches:"
-msgstr "Regex поиск строки совпадает:"
+msgstr "Шаблон поиска строки совпадает:"
 
 #. Resource IDs: (65535)
 msgid "The resulting text after replacing:"
-msgstr "Полученный текст после замены:"
+msgstr "Полученный после замены текст:"
 
 #. Resource IDs: (1074)
 msgid "This adds a new entry to the context menu named \"Open with Editor\""
@@ -431,7 +431,7 @@ msgstr "Добавить пункт в контекстное меню 'Откр
 
 #. Resource IDs: (1053)
 msgid "Treat files as UTF8"
-msgstr "Файлы как UTF8"
+msgstr "Файлы как UTF-8"
 
 #. Resource IDs: (1045)
 msgid "Visit our website"
@@ -439,7 +439,7 @@ msgstr "Посетить сайт"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
-msgstr "Регулярные выражения для поиска. F1 для справки."
+msgstr "Регулярные выражения для поиска. Нажмите F1 для справки."
 
 #. Resource IDs: (125)
 msgid "an empty string"
@@ -455,7 +455,7 @@ msgstr "Нажмите для многострочного редактиров�
 
 #. Resource IDs: (159)
 msgid "dark mode requires at least Win10 1803, and it must be enabled in the Windows system settings."
-msgstr "требует как имнимум Win10 1803 и должен быть включен в системе"
+msgstr "Тёмная тема требует как минимум Win10 1803 и должна быть включена в настройках системы"
 
 #. Resource IDs: (121)
 msgid "equal to"
@@ -479,7 +479,7 @@ msgstr "Удерживайте Shift, чтобы найти файлы, кото
 
 #. Resource IDs: (132)
 msgid "invalid regex!"
-msgstr "Некорректный regex!"
+msgstr "Некорректный шаблон!"
 
 #. Resource IDs: (120)
 msgid "less than"
@@ -499,7 +499,7 @@ msgstr "Тестировать нечего"
 
 #. Resource IDs: (112)
 msgid "only files that match this pattern are searched.\r\nUse \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
-msgstr "Поиск файлов, только соответствующих шаблону.\r\nЧерта '|' как разделитель.\r\nПример: *.cpp|*.h"
+msgstr "Поиск файлов, точно соответствующих шаблону.\r\nЧерта '|' как разделитель.\r\nПример: *.cpp|*.h"
 
 #. Resource IDs: (129)
 msgid "read error"
@@ -507,11 +507,11 @@ msgstr "Ошибка чтения"
 
 #. Resource IDs: (131)
 msgid "regex ok"
-msgstr "Regex ok"
+msgstr "Шаблон Ok"
 
 #. Resource IDs: (117)
 msgid "reuse grepWin instances."
-msgstr "Использовать текущее окно grepWin"
+msgstr "Использовать эту копию grepWin"
 
 #. Resource IDs: (151)
 #, c-format
@@ -528,5 +528,5 @@ msgstr "Рекурсивный поиск путей.\r\nРазделение п
 
 #. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
-msgstr "Вы можете исключить, например, CVS и изображения.\r\nПример: ^(CVS|images)$\r\nВнимание: папки '.svn', как правило, скрыты в Windows, поэтому они обычно не сканируются."
+msgstr "Вы можете исключить каталоги, например, CVS и изображения.\r\nПример: ^(CVS|images)$\r\nВнимание: папки '.svn', обычно скрыты в Windows и поэтому обычно пропускаются."
 
