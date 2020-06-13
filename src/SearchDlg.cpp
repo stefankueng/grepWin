@@ -46,6 +46,7 @@
 #include "Theme.h"
 #include "DarkModeHelper.h"
 #include "ThreadPool.h"
+#include "OnOutOfScope.h"
 
 #include <string>
 #include <map>
@@ -547,9 +548,42 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
         break;
         case WM_NOTIFY:
         {
-            if (wParam == IDC_RESULTLIST)
+            switch (wParam)
             {
-                DoListNotify((LPNMITEMACTIVATE)lParam);
+                case IDC_RESULTLIST:
+                    DoListNotify((LPNMITEMACTIVATE)lParam);
+                    break;
+                case IDOK:
+                    switch (((LPNMHDR)lParam)->code)
+                    {
+                        case BCN_DROPDOWN:
+                        {
+                            const NMBCDROPDOWN* pDropDown = (NMBCDROPDOWN*)lParam;
+                            // Get screen coordinates of the button.
+                            POINT pt;
+                            pt.x = pDropDown->rcButton.left;
+                            pt.y = pDropDown->rcButton.bottom;
+                            ClientToScreen(pDropDown->hdr.hwndFrom, &pt);
+                            // Create a menu and add items.
+                            HMENU hSplitMenu = CreatePopupMenu();
+                            if (!hSplitMenu)
+                                break;
+                            OnOutOfScope(DestroyMenu(hSplitMenu));
+                            if (pDropDown->hdr.hwndFrom == GetDlgItem(*this, IDOK))
+                            {
+                                auto sInverseSearch      = TranslatedString(hResource, IDS_INVERSESEARCH);
+                                auto sSearchInFoundFiles = TranslatedString(hResource, IDS_SEARCHINFOUNDFILES);
+                                AppendMenu(hSplitMenu, MF_STRING, IDC_INVERSESEARCH, sInverseSearch.c_str());
+                                AppendMenu(hSplitMenu, MF_STRING, IDC_SEARCHINFOUNDFILES, sSearchInFoundFiles.c_str());
+                            }
+                            // Display the menu.
+                            TrackPopupMenu(hSplitMenu, TPM_LEFTALIGN | TPM_TOPALIGN, pt.x, pt.y, 0, *this, nullptr);
+
+                            return TRUE;
+                        }
+                        break;
+                    }
+                    break;
             }
         }
         break;
@@ -594,7 +628,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
         break;
         case SEARCH_FOUND:
             m_totalmatches += (int)((CSearchInfo*)lParam)->matchcount;
-            if ((wParam != 0) || (m_searchString.empty()) || ((CSearchInfo*)lParam)->readerror)
+            if ((wParam != 0) || (m_searchString.empty()) || ((CSearchInfo*)lParam)->readerror || m_bNOTSearch)
             {
                 AddFoundEntry((CSearchInfo*)lParam);
             }
@@ -766,6 +800,8 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
     {
         case IDC_REPLACE:
         case IDOK:
+        case IDC_INVERSESEARCH:
+        case IDC_SEARCHINFOUNDFILES:
         {
             if (m_dwThreadRunning)
             {
@@ -792,6 +828,17 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                     {
                         ShowEditBalloon(IDC_SEARCHPATH, TranslatedString(hResource, IDS_ERR_INVALID_PATH).c_str(), TranslatedString(hResource, IDS_ERR_PATHNOTEXIST).c_str());
                         break;
+                    }
+                }
+
+                if ((id == IDC_SEARCHINFOUNDFILES) && (!m_items.empty()))
+                {
+                    m_searchpath.clear();
+                    for (const auto& item : m_items)
+                    {
+                        if (!m_searchpath.empty())
+                            m_searchpath += L"|";
+                        m_searchpath += item.filepath;
                     }
                 }
 
@@ -842,6 +889,8 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 }
                 m_bConfirmationOnReplace = true;
                 m_bNOTSearch             = (GetKeyState(VK_SHIFT) & 0x8000) != 0;
+                if (id == IDC_INVERSESEARCH)
+                    m_bNOTSearch = true;
 
                 InterlockedExchange(&m_dwThreadRunning, TRUE);
                 InterlockedExchange(&m_Cancelled, FALSE);
