@@ -204,6 +204,7 @@
     <ClCompile Include="..\sktoolslib\hyperlink.cpp" />
     <ClCompile Include="..\sktoolslib\Language.cpp" />
     <ClCompile Include="..\sktoolslib\PathUtils.cpp" />
+    <ClCompile Include="..\sktoolslib\PreserveChdir.cpp" />
     <ClCompile Include="..\sktoolslib\RegHistory.cpp" />
     <ClCompile Include="..\sktoolslib\Registry.cpp" />
     <ClCompile Include="..\sktoolslib\StringUtils.cpp" />
@@ -249,6 +250,7 @@
     <ClInclude Include="..\sktoolslib\Language.h" />
     <ClInclude Include="..\sktoolslib\maxpath.h" />
     <ClInclude Include="..\sktoolslib\PathUtils.h" />
+    <ClInclude Include="..\sktoolslib\PreserveChdir.h" />
     <ClInclude Include="..\sktoolslib\RegHistory.h" />
     <ClInclude Include="..\sktoolslib\Registry.h" />
     <ClInclude Include="..\sktoolslib\ResString.h" />
@@ -261,6 +263,7 @@
     <ClInclude Include="AboutDlg.h" />
     <ClInclude Include="Bookmarks.h" />
     <ClInclude Include="BookmarksDlg.h" />
+    <ClInclude Include="COMPtrs.h" />
     <ClInclude Include="InfoDlg.h" />
     <ClInclude Include="LineData.h" />
     <ClInclude Include="MultiLineEditDlg.h" />

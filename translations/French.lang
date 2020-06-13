@@ -101,7 +101,7 @@ msgstr "Commande de lancement d'un éditeur à une ligne spécifique :"
 
 #. Resource IDs: (1060)
 msgid "Content"
-msgstr "Voir les lignes"
+msgstr "lignes"
 
 #. Resource IDs: (145)
 msgid "Copy filename to clipboard"
@@ -193,7 +193,7 @@ msgstr "Motif des noms de fichiers :\n'|' pour ajouter des motifs.\n'-' pour exc
 
 #. Resource IDs: (1059)
 msgid "Files"
-msgstr "Voir les fichiers"
+msgstr "fichiers"
 
 #. Resource IDs: (109)
 msgid "GREPWIN"

@@ -47,6 +47,8 @@
 #include "DarkModeHelper.h"
 #include "ThreadPool.h"
 #include "OnOutOfScope.h"
+#include "COMPtrs.h"
+#include "PreserveChdir.h"
 
 #include <string>
 #include <map>
@@ -216,6 +218,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             AddToolTip(IDC_SEARCHTEXT, TranslatedString(hResource, IDS_SEARCHTEXT_TT).c_str());
             AddToolTip(IDC_EDITMULTILINE1, TranslatedString(hResource, IDS_EDITMULTILINE_TT).c_str());
             AddToolTip(IDC_EDITMULTILINE2, TranslatedString(hResource, IDS_EDITMULTILINE_TT).c_str());
+            AddToolTip(IDC_EXPORT, TranslatedString(hResource, IDS_EXPORT_TT).c_str());
             AddToolTip(IDOK, TranslatedString(hResource, IDS_SHIFT_NOTSEARCH).c_str());
 
             if (m_searchpath.empty())
@@ -459,9 +462,10 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             m_resizer.AddControl(hwndDlg, IDOK, RESIZER_TOPRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_GROUPSEARCHRESULTS, RESIZER_TOPLEFTBOTTOMRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_RESULTLIST, RESIZER_TOPLEFTBOTTOMRIGHT);
+            m_resizer.AddControl(hwndDlg, IDC_SEARCHINFOLABEL, RESIZER_BOTTOMLEFTRIGHT);
+            m_resizer.AddControl(hwndDlg, IDC_EXPORT, RESIZER_BOTTOMRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_RESULTFILES, RESIZER_BOTTOMRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_RESULTCONTENT, RESIZER_BOTTOMRIGHT);
-            m_resizer.AddControl(hwndDlg, IDC_SEARCHINFOLABEL, RESIZER_BOTTOMLEFTRIGHT);
 
             InitDialog(hwndDlg, IDI_GREPWIN);
 
@@ -650,6 +654,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             DialogEnableWindow(IDC_RESULTCONTENT, true);
             ShowWindow(GetDlgItem(*this, IDC_PROGRESS), SW_HIDE);
             SendDlgItemMessage(*this, IDC_PROGRESS, PBM_SETMARQUEE, 0, 0);
+            ShowWindow(GetDlgItem(*this, IDC_EXPORT), m_items.empty() ? SW_HIDE : SW_SHOW);
             KillTimer(*this, LABELUPDATETIMER);
         }
         break;
@@ -845,6 +850,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 m_searchedItems = 0;
                 m_totalitems    = 0;
 
+                ShowWindow(GetDlgItem(*this, IDC_EXPORT), SW_HIDE);
                 m_items.clear();
                 m_listItems.clear();
                 m_listItems.reserve(500000);
@@ -1243,6 +1249,153 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
             {
                 if (m_AutoCompleteReplacePatterns.GetOptions() & ACO_NOPREFIXFILTERING)
                     m_AutoCompleteReplacePatterns.SetOptions(ACO_UPDOWNKEYDROPSLIST | ACO_AUTOSUGGEST);
+            }
+        }
+        break;
+        case IDC_EXPORT:
+        {
+            PreserveChdir      keepCWD;
+            IFileSaveDialogPtr pfd;
+
+            HRESULT hr = pfd.CreateInstance(CLSID_FileSaveDialog, nullptr, CLSCTX_INPROC_SERVER);
+            if (FailedShowMessage(hr))
+                break;
+
+            // Set the dialog options
+            DWORD dwOptions;
+            hr = pfd->GetOptions(&dwOptions);
+            if (FailedShowMessage(hr))
+                break;
+            hr = pfd->SetOptions(dwOptions | FOS_FORCEFILESYSTEM | FOS_OVERWRITEPROMPT);
+            if (FailedShowMessage(hr))
+                break;
+
+            hr = pfd->SetTitle(TranslatedString(hResource, IDS_EXPORTTITLE).c_str());
+            if (FailedShowMessage(hr))
+                break;
+
+            IFileDialogCustomizePtr pfdCustomize;
+            hr = pfd.QueryInterface(IID_PPV_ARGS(&pfdCustomize));
+            if (SUCCEEDED(hr))
+            {
+                auto exportpaths       = DWORD(CRegStdDWORD(L"Software\\grepWin\\export_paths")) != 0;
+                auto exportlinenumbers = DWORD(CRegStdDWORD(L"Software\\grepWin\\export_linenumbers")) != 0;
+                auto exportlinecontent = DWORD(CRegStdDWORD(L"Software\\grepWin\\export_linecontent")) != 0;
+                if (bPortable)
+                {
+                    exportpaths       = _wtoi(g_iniFile.GetValue(L"export", L"paths", L"")) != 0;
+                    exportlinenumbers = _wtoi(g_iniFile.GetValue(L"export", L"linenumbers", L"")) != 0;
+                    exportlinecontent = _wtoi(g_iniFile.GetValue(L"export", L"linecontent", L"")) != 0;
+                }
+
+                if (!exportpaths && !exportlinenumbers && !exportlinecontent)
+                    exportpaths = true;
+
+                pfdCustomize->AddCheckButton(101, TranslatedString(hResource, IDS_EXPORTPATHS).c_str(), exportpaths);
+                pfdCustomize->AddCheckButton(102, TranslatedString(hResource, IDS_EXPORTMATCHLINENUMBER).c_str(), exportlinenumbers);
+                pfdCustomize->AddCheckButton(103, TranslatedString(hResource, IDS_EXPORTMATCHLINECONTENT).c_str(), exportlinecontent);
+            }
+
+            // Show the save file dialog
+            hr = pfd->Show(*this);
+            if (FailedShowMessage(hr))
+                break;
+            IShellItemPtr psiResult = nullptr;
+            hr                      = pfd->GetResult(&psiResult);
+            if (FailedShowMessage(hr))
+                break;
+            PWSTR pszPath = nullptr;
+            hr            = psiResult->GetDisplayName(SIGDN_FILESYSPATH, &pszPath);
+            if (FailedShowMessage(hr))
+                break;
+            std::wstring path = pszPath;
+            CoTaskMemFree(pszPath);
+
+            bool                    includePaths            = true;
+            bool                    includeMatchLineNumbers = false;
+            bool                    includeMatchLineTexts   = false;
+            IFileDialogCustomizePtr pfdCustomizeRet;
+            hr = pfd.QueryInterface(IID_PPV_ARGS(&pfdCustomizeRet));
+            if (SUCCEEDED(hr))
+            {
+                BOOL bChecked = FALSE;
+                pfdCustomizeRet->GetCheckButtonState(101, &bChecked);
+                includePaths = (bChecked != 0);
+                pfdCustomizeRet->GetCheckButtonState(102, &bChecked);
+                includeMatchLineNumbers = (bChecked != 0);
+                pfdCustomizeRet->GetCheckButtonState(103, &bChecked);
+                includeMatchLineTexts = (bChecked != 0);
+            }
+            if (!includePaths && !includeMatchLineNumbers && !includeMatchLineTexts)
+                includePaths = true;
+
+            bool onlypaths = !includeMatchLineNumbers && !includeMatchLineTexts;
+            if (!path.empty())
+            {
+                std::ofstream file;
+                file.open(path);
+
+                if (file.is_open())
+                {
+                    if (onlypaths)
+                    {
+                        for (const auto& item : m_items)
+                        {
+                            file << CUnicodeUtils::StdGetUTF8(item.filepath) << std::endl;
+                        }
+                    }
+                    else
+                    {
+                        constexpr char separator = '*';
+                        for (const auto& item : m_items)
+                        {
+                            for (size_t i = 0; i < item.matchlinesnumbers.size(); ++i)
+                            {
+                                bool needSeparator = false;
+                                if (includePaths)
+                                {
+                                    file << CUnicodeUtils::StdGetUTF8(item.filepath);
+                                    needSeparator = true;
+                                }
+                                if (includeMatchLineNumbers)
+                                {
+                                    if (needSeparator)
+                                        file << separator;
+                                    file << CStringUtils::Format("%lld", item.matchlinesnumbers[i]);
+                                    needSeparator = true;
+                                }
+                                if (includeMatchLineTexts)
+                                {
+                                    if (needSeparator)
+                                        file << separator;
+                                    auto line = item.matchlines[i];
+                                    CStringUtils::rtrim(line, L"\r\n");
+                                    file << CUnicodeUtils::StdGetUTF8(line);
+                                }
+                                file << std::endl;
+                            }
+                        }
+                    }
+
+                    file.close();
+
+                    if (bPortable)
+                    {
+                        g_iniFile.SetValue(L"export", L"paths", includePaths ? L"1" : L"0");
+                        g_iniFile.SetValue(L"export", L"linenumbers", includeMatchLineNumbers ? L"1" : L"0");
+                        g_iniFile.SetValue(L"export", L"linecontent", includeMatchLineTexts ? L"1" : L"0");
+                    }
+                    else
+                    {
+                        auto exportpaths       = CRegStdDWORD(L"Software\\grepWin\\export_paths");
+                        auto exportlinenumbers = CRegStdDWORD(L"Software\\grepWin\\export_linenumbers");
+                        auto exportlinecontent = CRegStdDWORD(L"Software\\grepWin\\export_linecontent");
+
+                        exportpaths       = includePaths ? 1 : 0;
+                        exportlinenumbers = includeMatchLineNumbers ? 1 : 0;
+                        exportlinecontent = includeMatchLineTexts ? 1 : 0;
+                    }
+                }
             }
         }
         break;
@@ -3344,4 +3497,15 @@ int CSearchDlg::GetSelectedListIndex(int index)
         return index;
     auto tup = m_listItems[index];
     return std::get<0>(tup);
+}
+
+bool CSearchDlg::FailedShowMessage(HRESULT hr)
+{
+    if (FAILED(hr))
+    {
+        _com_error err(hr);
+        MessageBox(nullptr, L"BowPad", err.ErrorMessage(), MB_ICONERROR);
+        return true;
+    }
+    return false;
 }
