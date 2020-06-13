@@ -64,7 +64,7 @@ msgstr "/"
 
 #. Resource IDs: (1086)
 msgid ">"
-msgstr ""
+msgstr ">"
 
 #. Resource IDs: (1052, 135)
 msgid "About grepWin"
@@ -189,11 +189,11 @@ msgstr "Verzeichnisse ausschließen (Regex):"
 
 #. Resource IDs: (164)
 msgid "Export resultlist"
-msgstr ""
+msgstr "Resultate exportieren"
 
 #. Resource IDs: (163)
 msgid "Export results..."
-msgstr ""
+msgstr "Resultate exportieren..."
 
 #. Resource IDs: (158)
 msgid "Ext"
@@ -237,7 +237,7 @@ msgstr "Pfad ungültig!"
 
 #. Resource IDs: (161)
 msgid "Inverse search (NOT searchstring)"
-msgstr ""
+msgstr "Umgekehrt suchen (NOT suchtext)"
 
 #. Resource IDs: (1019)
 msgid "KB"
@@ -386,7 +386,7 @@ msgstr "Suche in"
 
 #. Resource IDs: (162)
 msgid "Search in found files"
-msgstr ""
+msgstr "Suche in gefundenen Dateien"
 
 #. Resource IDs: (1018)
 msgid "Search results"
@@ -499,15 +499,15 @@ msgstr "Halten Sie die Shifttaste gedrückt, um Dateien zu finden, die den Suchs
 
 #. Resource IDs: (165)
 msgid "include file paths"
-msgstr ""
+msgstr "mit Pfaden"
 
 #. Resource IDs: (166)
 msgid "include match line numbers"
-msgstr ""
+msgstr "mit Zeilennummern"
 
 #. Resource IDs: (167)
 msgid "include match line text"
-msgstr ""
+msgstr "mit Zeilentext"
 
 #. Resource IDs: (132)
 msgid "invalid regex!"
