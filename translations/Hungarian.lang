@@ -62,6 +62,10 @@ msgstr "..."
 msgid "/"
 msgstr "/"
 
+#. Resource IDs: (1086)
+msgid ">"
+msgstr ""
+
 #. Resource IDs: (1052, 135)
 msgid "About grepWin"
 msgstr ""
@@ -183,6 +187,14 @@ msgstr ""
 msgid "Exclude dirs (Regex):"
 msgstr "Kihagyandó könyvtárak (Regex):"
 
+#. Resource IDs: (164)
+msgid "Export resultlist"
+msgstr ""
+
+#. Resource IDs: (163)
+msgid "Export results..."
+msgstr ""
+
 #. Resource IDs: (158)
 msgid "Ext"
 msgstr "Kit"
@@ -222,6 +234,10 @@ msgstr "Rendszerelemek is"
 #. Resource IDs: (153)
 msgid "Invalid path!"
 msgstr "Érvénytelen útvonal!"
+
+#. Resource IDs: (161)
+msgid "Inverse search (NOT searchstring)"
+msgstr ""
 
 #. Resource IDs: (1019)
 msgid "KB"
@@ -368,6 +384,10 @@ msgstr "Kisbetű/nagybetű számít"
 msgid "Search in"
 msgstr "Keresés ebben"
 
+#. Resource IDs: (162)
+msgid "Search in found files"
+msgstr ""
+
 #. Resource IDs: (1018)
 msgid "Search results"
 msgstr "KEresési eredmények"
@@ -476,6 +496,18 @@ msgstr ""
 #. Resource IDs: (157)
 msgid "hold down the shift key to find files that DO NOT contain the search string"
 msgstr "tartsa lenyomva a Shift-et azon fájlok kereséséhez, ami NEM tartalmazzák a keresési szöveget"
+
+#. Resource IDs: (165)
+msgid "include file paths"
+msgstr ""
+
+#. Resource IDs: (166)
+msgid "include match line numbers"
+msgstr ""
+
+#. Resource IDs: (167)
+msgid "include match line text"
+msgstr ""
 
 #. Resource IDs: (132)
 msgid "invalid regex!"

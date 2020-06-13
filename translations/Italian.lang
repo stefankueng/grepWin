@@ -62,6 +62,10 @@ msgstr "..."
 msgid "/"
 msgstr "/"
 
+#. Resource IDs: (1086)
+msgid ">"
+msgstr ""
+
 #. Resource IDs: (1052, 135)
 msgid "About grepWin"
 msgstr "Informazioni su grepWin"
@@ -183,6 +187,14 @@ msgstr "Il tasto Escape chiude grepWin"
 msgid "Exclude dirs (Regex):"
 msgstr "Escludi cartelle (espr. reg.):"
 
+#. Resource IDs: (164)
+msgid "Export resultlist"
+msgstr ""
+
+#. Resource IDs: (163)
+msgid "Export results..."
+msgstr ""
+
 #. Resource IDs: (158)
 msgid "Ext"
 msgstr ""
@@ -222,6 +234,10 @@ msgstr "Includi oggetti di sistema"
 #. Resource IDs: (153)
 msgid "Invalid path!"
 msgstr "Percorso non valido!"
+
+#. Resource IDs: (161)
+msgid "Inverse search (NOT searchstring)"
+msgstr ""
 
 #. Resource IDs: (1019)
 msgid "KB"
@@ -368,6 +384,10 @@ msgstr "Maiuscole/minuscole"
 msgid "Search in"
 msgstr "Ricerca in"
 
+#. Resource IDs: (162)
+msgid "Search in found files"
+msgstr ""
+
 #. Resource IDs: (1018)
 msgid "Search results"
 msgstr "Risultati della ricerca"
@@ -476,6 +496,18 @@ msgstr "Impostazioni grepWin"
 #. Resource IDs: (157)
 msgid "hold down the shift key to find files that DO NOT contain the search string"
 msgstr "tieni premuto il tasto \"Maiusc\" per trovare i file che NON contengono la stringa di ricerca"
+
+#. Resource IDs: (165)
+msgid "include file paths"
+msgstr ""
+
+#. Resource IDs: (166)
+msgid "include match line numbers"
+msgstr ""
+
+#. Resource IDs: (167)
+msgid "include match line text"
+msgstr ""
 
 #. Resource IDs: (132)
 msgid "invalid regex!"
