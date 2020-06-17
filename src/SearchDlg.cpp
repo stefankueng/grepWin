@@ -1395,6 +1395,12 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                         exportlinenumbers = includeMatchLineNumbers ? 1 : 0;
                         exportlinecontent = includeMatchLineTexts ? 1 : 0;
                     }
+                    SHELLEXECUTEINFO sei = { 0 };
+                    sei.cbSize = sizeof(SHELLEXECUTEINFO);
+                    sei.lpVerb = TEXT("open");
+                    sei.lpFile = path.c_str();
+                    sei.nShow = SW_SHOWNORMAL;
+                    ShellExecuteEx(&sei);
                 }
             }
         }
