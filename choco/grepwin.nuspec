@@ -11,8 +11,10 @@
     <projectUrl>https://tools.stefankueng.com/grepWin.html</projectUrl>
     <tags>grepwin grep search regex admin</tags>
     <licenseUrl>http://www.gnu.org/licenses/old-licenses/gpl-2.0.html</licenseUrl>
-    <requireLicenseAcceptance>true</requireLicenseAcceptance>
-    <iconUrl>https://github.com/stefankueng/grepWin/raw/master/src/Resources/logo.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <iconUrl>https://github.com/stefankueng/grepWin/raw/main/src/Resources/grepwin_256.png</iconUrl>
+    <projectSourceUrl>https://github.com/stefankueng/grepWin</projectSourceUrl>
+    <bugTrackerUrl>https://github.com/stefankueng/grepWin/issues</bugTrackerUrl>
   </metadata>
   <files>
     <file src="tools\**" target="tools" />
