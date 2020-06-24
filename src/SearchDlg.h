@@ -30,6 +30,7 @@
 #include <string>
 #include <vector>
 #include <set>
+#include <thread>
 
 
 #define SEARCH_FOUND        (WM_APP+1)
@@ -102,6 +103,10 @@ protected:
     void                    AutoSizeAllColumns();
     int                     GetSelectedListIndex(int index);
     bool                    FailedShowMessage(HRESULT hr);
+    void                    CheckForUpdates(bool force = false);
+    void                    ShowUpdateAvailable();
+    bool                    IsVersionNewer(const std::wstring& sVer);
+
 private:
     static bool             NameCompareAsc(const CSearchInfo& Entry1, const CSearchInfo& Entry2);
     static bool             SizeCompareAsc(const CSearchInfo& Entry1, const CSearchInfo& Entry2);
@@ -185,6 +190,8 @@ private:
     CFileDropTarget *       m_pDropTarget;
 
     static UINT             GREPWIN_STARTUPMSG;
+
+    std::thread             m_updateCheckThread;
 
     CAutoComplete           m_AutoCompleteFilePatterns;
     CAutoComplete           m_AutoCompleteExcludeDirsPatterns;

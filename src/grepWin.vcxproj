@@ -210,6 +210,7 @@
     <ClCompile Include="..\sktoolslib\StringUtils.cpp" />
     <ClCompile Include="..\sktoolslib\SysImageList.cpp" />
     <ClCompile Include="..\sktoolslib\SysInfo.cpp" />
+    <ClCompile Include="..\sktoolslib\TempFile.cpp" />
     <ClCompile Include="..\sktoolslib\TextFile.cpp" />
     <ClCompile Include="..\sktoolslib\UnicodeUtils.cpp" />
     <ClCompile Include="AboutDlg.cpp" />
@@ -257,6 +258,7 @@
     <ClInclude Include="..\sktoolslib\StringUtils.h" />
     <ClInclude Include="..\sktoolslib\SysImageList.h" />
     <ClInclude Include="..\sktoolslib\SysInfo.h" />
+    <ClInclude Include="..\sktoolslib\TempFile.h" />
     <ClInclude Include="..\sktoolslib\TextFile.h" />
     <ClInclude Include="..\sktoolslib\ThreadPool.h" />
     <ClInclude Include="..\sktoolslib\UnicodeUtils.h" />

@@ -101,6 +101,7 @@ LRESULT CSettingsDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
             SendDlgItemMessage(hwndDlg, IDC_BACKUPINFOLDER, BM_SETCHECK, bPortable ? !!_wtoi(g_iniFile.GetValue(L"settings", L"backupinfolder", L"0")) : DWORD(CRegStdDWORD(L"Software\\grepWin\\backupinfolder", FALSE)) ? BST_CHECKED : BST_UNCHECKED, 0);
             SendDlgItemMessage(hwndDlg, IDC_NOWARNINGIFNOBACKUP, BM_SETCHECK, bPortable ? !!_wtoi(g_iniFile.GetValue(L"settings", L"nowarnifnobackup", L"0")) : DWORD(CRegStdDWORD(L"Software\\grepWin\\nowarnifnobackup", FALSE)) ? BST_CHECKED : BST_UNCHECKED, 0);
             SendDlgItemMessage(hwndDlg, IDC_ONLYONE, BM_SETCHECK, bPortable ? _wtoi(g_iniFile.GetValue(L"global", L"onlyone", L"0")) : DWORD(CRegStdDWORD(L"Software\\grepWin\\onlyone", FALSE)) ? BST_CHECKED : BST_UNCHECKED, 0);
+            SendDlgItemMessage(hwndDlg, IDC_DOUPDATECHECKS, BM_SETCHECK, bPortable ? _wtoi(g_iniFile.GetValue(L"global", L"CheckForUpdates", L"1")) : DWORD(CRegStdDWORD(L"Software\\grepWin\\CheckForUpdates", FALSE)) ? BST_CHECKED : BST_UNCHECKED, 0);
             SendDlgItemMessage(hwndDlg, IDC_DARKMODE, BM_SETCHECK, CTheme::Instance().IsDarkTheme() ? BST_CHECKED : BST_UNCHECKED, 0);
             EnableWindow(GetDlgItem(*this, IDC_DARKMODE), CTheme::Instance().IsDarkModeAllowed());
 
@@ -122,6 +123,7 @@ LRESULT CSettingsDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
             m_resizer.AddControl(hwndDlg, IDC_BACKUPINFOLDER, RESIZER_TOPLEFTRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_NOWARNINGIFNOBACKUP, RESIZER_TOPLEFTRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_ONLYONE, RESIZER_TOPLEFTRIGHT);
+            m_resizer.AddControl(hwndDlg, IDC_DOUPDATECHECKS, RESIZER_TOPLEFTRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_DARKMODE, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_DARKMODEINFO, RESIZER_TOPLEFTRIGHT);
             m_resizer.AddControl(hwndDlg, IDOK, RESIZER_BOTTOMRIGHT);
@@ -188,6 +190,7 @@ LRESULT CSettingsDlg::DoCommand(int id, int /*msg*/)
                 g_iniFile.SetValue(L"settings", L"backupinfolder", (IsDlgButtonChecked(*this, IDC_BACKUPINFOLDER) == BST_CHECKED) ? L"1" : L"0");
                 g_iniFile.SetValue(L"settings", L"nowarnifnobackup", (IsDlgButtonChecked(*this, IDC_NOWARNINGIFNOBACKUP) == BST_CHECKED) ? L"1" : L"0");
                 g_iniFile.SetValue(L"global", L"onlyone", IsDlgButtonChecked(*this, IDC_ONLYONE) == BST_CHECKED ? L"1" : L"0");
+                g_iniFile.SetValue(L"global", L"CheckForUpdates", IsDlgButtonChecked(*this, IDC_DOUPDATECHECKS) == BST_CHECKED ? L"1" : L"0");
             }
             else
             {
@@ -199,6 +202,8 @@ LRESULT CSettingsDlg::DoCommand(int id, int /*msg*/)
                 nowarn = (IsDlgButtonChecked(*this, IDC_NOWARNINGIFNOBACKUP) == BST_CHECKED);
                 CRegStdDWORD regOnlyOne(L"Software\\grepWin\\onlyone", FALSE);
                 regOnlyOne = (IsDlgButtonChecked(*this, IDC_ONLYONE) == BST_CHECKED);
+                CRegStdDWORD regCheckForUpdates(L"Software\\grepWin\\CheckForUpdates", FALSE);
+                regCheckForUpdates = (IsDlgButtonChecked(*this, IDC_DOUPDATECHECKS) == BST_CHECKED);
             }
             CTheme::Instance().SetDarkTheme(IsDlgButtonChecked(*this, IDC_DARKMODE) == BST_CHECKED);
         }
