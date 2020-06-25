@@ -1930,7 +1930,7 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
                 CStringUtils::trim(matchtext);
                 matchString += CStringUtils::Format(sFormat.c_str(), inf.matchlinesnumbers[i], matchtext.c_str());
             }
-            if (inf.matchlines.size() >= 5)
+            if (inf.matchlines.size() > 5)
             {
                 std::wstring sx  = TranslatedString(hResource, IDS_XMOREMATCHES);
                 std::wstring ssx = CStringUtils::Format(sx.c_str(), int(inf.matchlines.size() - 5));
