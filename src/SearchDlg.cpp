@@ -280,6 +280,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             m_pDropTarget->AddSuportedFormat(ftetc);
             ftetc.cfFormat = CF_HDROP;
             m_pDropTarget->AddSuportedFormat(ftetc);
+            m_pDropTarget->SetMultipathConcatenate('|');
 
             m_editFilePatterns.Subclass(hwndDlg, IDC_PATTERN);
             m_editExcludeDirsPatterns.Subclass(hwndDlg, IDC_EXCLUDEDIRSPATTERN);
