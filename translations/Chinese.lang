@@ -99,6 +99,10 @@ msgstr "起止于"
 msgid "Cancel"
 msgstr "取消"
 
+#. Resource IDs: (1088)
+msgid "Check for updates"
+msgstr ""
+
 #. Resource IDs: (1068)
 msgid "Command line to start an editor at a specific line:"
 msgstr "用于在指定的行来启动编辑器的命令行:"
@@ -488,6 +492,11 @@ msgstr "大于"
 #. Resource IDs: (103, 129)
 msgid "grepWin"
 msgstr "grepWin"
+
+#. Resource IDs: (168)
+#, c-format
+msgid "grepWin %s is available"
+msgstr ""
 
 #. Resource IDs: (138)
 msgid "grepWin Settings"

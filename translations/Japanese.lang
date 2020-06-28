@@ -1,8 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST Translator: Tilt, <tiltstr.seesaa.net>, 2018.
-# SECOND Translator: maboroshin, <pc.genkaku.in>, 2020.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
@@ -10,9 +9,9 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 1900-01-01 00:00+0000\n"
-"PO-Revision-Date: 2020-06-24 21:00+0900\n"
-"Last-Translator: maboroshin\n"
-"Language-Team: Japanese\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -99,6 +98,10 @@ msgstr "期間内"
 #. Resource IDs: (2)
 msgid "Cancel"
 msgstr "キャンセル"
+
+#. Resource IDs: (1088)
+msgid "Check for updates"
+msgstr ""
 
 #. Resource IDs: (1068)
 msgid "Command line to start an editor at a specific line:"
@@ -489,6 +492,11 @@ msgstr "以下より大きい"
 #. Resource IDs: (103, 129)
 msgid "grepWin"
 msgstr "grepWin"
+
+#. Resource IDs: (168)
+#, c-format
+msgid "grepWin %s is available"
+msgstr ""
 
 #. Resource IDs: (138)
 msgid "grepWin Settings"

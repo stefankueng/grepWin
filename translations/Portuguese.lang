@@ -99,6 +99,10 @@ msgstr "Entre"
 msgid "Cancel"
 msgstr "Cancelar"
 
+#. Resource IDs: (1088)
+msgid "Check for updates"
+msgstr ""
+
 #. Resource IDs: (1068)
 msgid "Command line to start an editor at a specific line:"
 msgstr "Linha de comando para iniciar um editor numa linha específica:"
@@ -487,6 +491,11 @@ msgstr "maior que"
 
 #. Resource IDs: (103, 129)
 msgid "grepWin"
+msgstr ""
+
+#. Resource IDs: (168)
+#, c-format
+msgid "grepWin %s is available"
 msgstr ""
 
 #. Resource IDs: (138)
