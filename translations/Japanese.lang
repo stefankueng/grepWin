@@ -101,7 +101,7 @@ msgstr "キャンセル"
 
 #. Resource IDs: (1088)
 msgid "Check for updates"
-msgstr ""
+msgstr "最新版を確認"
 
 #. Resource IDs: (1068)
 msgid "Command line to start an editor at a specific line:"
@@ -496,7 +496,7 @@ msgstr "grepWin"
 #. Resource IDs: (168)
 #, c-format
 msgid "grepWin %s is available"
-msgstr ""
+msgstr "最新の grepWin %s があります。"
 
 #. Resource IDs: (138)
 msgid "grepWin Settings"
