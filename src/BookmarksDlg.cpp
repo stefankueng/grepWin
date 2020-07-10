@@ -316,6 +316,7 @@ void CBookmarksDlg::PrepareSelected()
         lv.cchTextMax               = MAX_PATH_NEW;
         ListView_GetItem(GetDlgItem(*this, IDC_BOOKMARKS), &lv);
         m_searchString  = m_bookmarks.GetValue(buf.get(), _T("searchString"), _T(""));
+        m_path          = m_bookmarks.GetValue(buf.get(), _T("searchpath"), _T(""));
         m_replaceString = m_bookmarks.GetValue(buf.get(), _T("replaceString"), _T(""));
         m_sExcludeDirs  = m_bookmarks.GetValue(buf.get(), _T("excludedirs"), _T(""));
         m_sFileMatch    = m_bookmarks.GetValue(buf.get(), _T("filematch"), _T(""));

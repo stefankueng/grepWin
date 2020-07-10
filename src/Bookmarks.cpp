@@ -105,7 +105,7 @@ void CBookmarks::AddBookmark(const Bookmark& bm)
     val += _T("\"");
     SetValue(bm.Name.c_str(), _T("filematch"),          val.c_str());
     SetValue(bm.Name.c_str(), _T("filematchregex"),     bm.FileMatchRegex ? _T("true") : _T("false"));
-
+    SetValue(bm.Name.c_str(), _T("searchpath"),         bm.Path.c_str());
 }
 
 void CBookmarks::RemoveBookmark(const std::wstring& name)
@@ -124,6 +124,7 @@ void CBookmarks::RemoveBookmark(const std::wstring& name)
     Delete(name.c_str(), _T("excludedirs"),         true);
     Delete(name.c_str(), _T("filematch"),           true);
     Delete(name.c_str(), _T("filematchregex"),      true);
+    Delete(name.c_str(), _T("searchpath"),          true);
 }
 
 Bookmark CBookmarks::GetBookmark( const std::wstring& name )
@@ -146,6 +147,7 @@ Bookmark CBookmarks::GetBookmark( const std::wstring& name )
         bk.ExcludeDirs          = GetValue(name.c_str(), L"excludedirs",        L"");
         bk.FileMatch            = GetValue(name.c_str(), L"filematch",          L"");
         bk.FileMatchRegex       = wcscmp(GetValue(name.c_str(), L"filematchregex",     L"false"), L"true") == 0;
+        bk.Path                 = GetValue(name.c_str(), L"searchpath", L"");
     }
 
     return bk;

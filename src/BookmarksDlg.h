@@ -37,6 +37,7 @@ public:
     std::wstring GetName() { return m_name; }
     std::wstring GetSelectedSearchString() const { return m_searchString; }
     std::wstring GetSelectedReplaceString() const { return m_replaceString; }
+    std::wstring GetPath() const { return m_path; }
     bool         GetSelectedUseRegex() const { return m_bUseRegex; }
     bool         GetSelectedSearchCase() const { return m_bCaseSensitive; }
     bool         GetSelectedDotMatchNewline() const { return m_bDotMatchesNewline; }
@@ -63,6 +64,7 @@ private:
 
     std::wstring m_searchString;
     std::wstring m_replaceString;
+    std::wstring m_path;
     bool         m_bUseRegex;
     bool         m_bCaseSensitive;
     bool         m_bDotMatchesNewline;

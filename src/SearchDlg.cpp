@@ -805,6 +805,11 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                 m_excludedirspatternregex = m_pBookmarksDlg->GetSelectedExcludeDirs();
                 m_patternregex            = m_pBookmarksDlg->GetSelectedFileMatch();
                 m_bUseRegexForPaths       = m_pBookmarksDlg->GetSelectedFileMatchRegex();
+                if (!m_pBookmarksDlg->GetPath().empty())
+                {
+                    m_searchpath = m_pBookmarksDlg->GetPath();
+                    SetDlgItemText(*this, IDC_SEARCHPATH, m_searchpath.c_str());
+                }
 
                 SetDlgItemText(*this, IDC_SEARCHTEXT, m_searchString.c_str());
                 SetDlgItemText(*this, IDC_REPLACETEXT, m_replaceString.c_str());
@@ -1147,6 +1152,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 CBookmarks bks;
                 Bookmark   bk;
                 bk.Name              = nameDlg.GetName();
+                bk.Path              = nameDlg.IncludePath() ? m_searchpath : L"";
                 bk.Search            = m_searchString;
                 bk.Replace           = m_replaceString;
                 bk.UseRegex          = bUseRegex;
@@ -2897,6 +2903,8 @@ void CSearchDlg::SetPreset(const std::wstring& preset)
         m_excludedirspatternregex = bk.ExcludeDirs;
         m_patternregex            = bk.FileMatch;
         m_bUseRegexForPaths       = bk.FileMatchRegex;
+        if (!bk.Path.empty())
+            m_searchpath = bk.Path;
 
         m_bIncludeSystemC         = true;
         m_bIncludeHiddenC         = true;
