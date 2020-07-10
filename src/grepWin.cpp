@@ -315,6 +315,8 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
                 searchDlg.SetCreateBackups(_tcsicmp(parser.GetVal(L"k"), L"yes") == 0);
             if (parser.HasVal(L"utf8"))
                 searchDlg.SetUTF8(_tcsicmp(parser.GetVal(L"utf8"), L"yes") == 0);
+            if (parser.HasVal(L"binary"))
+                searchDlg.SetBinary(_tcsicmp(parser.GetVal(L"binary"), L"yes") == 0);
             if (parser.HasVal(L"size"))
             {
                 int cmp = 0;

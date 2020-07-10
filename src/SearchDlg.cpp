@@ -103,6 +103,7 @@ CSearchDlg::CSearchDlg(HWND hParent)
     , m_bConfirmationOnReplace(true)
     , m_bUTF8(false)
     , m_bUTF8C(false)
+    , m_bForceBinary(false)
     , m_bCaseSensitive(false)
     , m_bCaseSensitiveC(false)
     , m_bDotMatchesNewline(false)
@@ -128,6 +129,7 @@ CSearchDlg::CSearchDlg(HWND hParent)
     , m_regIncludeBinary(L"Software\\grepWin\\IncludeBinary", 1)
     , m_regCreateBackup(L"Software\\grepWin\\CreateBackup")
     , m_regUTF8(L"Software\\grepWin\\UTF8")
+    , m_regBinary(L"Software\\grepWin\\Binary")
     , m_regCaseSensitive(L"Software\\grepWin\\CaseSensitive")
     , m_regDotMatchesNewline(L"Software\\grepWin\\DotMatchesNewline")
     , m_regUseRegexForPaths(L"Software\\grepWin\\UseFileMatchRegex")
@@ -340,7 +342,10 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             if (!m_bCreateBackupC)
                 m_bCreateBackup = bPortable ? !!_wtoi(g_iniFile.GetValue(L"global", L"CreateBackup", L"0")) : !!DWORD(m_regCreateBackup);
             if (!m_bUTF8C)
+            {
                 m_bUTF8 = bPortable ? !!_wtoi(g_iniFile.GetValue(L"global", L"UTF8", L"0")) : !!DWORD(m_regUTF8);
+                m_bForceBinary = bPortable ? !!_wtoi(g_iniFile.GetValue(L"global", L"Binary", L"0")) : !!DWORD(m_regBinary);
+            }
             if (!m_bDotMatchesNewlineC)
                 m_bDotMatchesNewline = bPortable ? !!_wtoi(g_iniFile.GetValue(L"global", L"DotMatchesNewline", L"0")) : !!DWORD(m_regDotMatchesNewline);
             if (!m_bSizeC)
@@ -362,6 +367,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             SendDlgItemMessage(hwndDlg, IDC_INCLUDESUBFOLDERS, BM_SETCHECK, m_bIncludeSubfolders ? BST_CHECKED : BST_UNCHECKED, 0);
             SendDlgItemMessage(hwndDlg, IDC_CREATEBACKUP, BM_SETCHECK, m_bCreateBackup ? BST_CHECKED : BST_UNCHECKED, 0);
             SendDlgItemMessage(hwndDlg, IDC_UTF8, BM_SETCHECK, m_bUTF8 ? BST_CHECKED : BST_UNCHECKED, 0);
+            SendDlgItemMessage(hwndDlg, IDC_BINARY, BM_SETCHECK, m_bForceBinary ? BST_CHECKED : BST_UNCHECKED, 0);
             SendDlgItemMessage(hwndDlg, IDC_INCLUDESYSTEM, BM_SETCHECK, m_bIncludeSystem ? BST_CHECKED : BST_UNCHECKED, 0);
             SendDlgItemMessage(hwndDlg, IDC_INCLUDEHIDDEN, BM_SETCHECK, m_bIncludeHidden ? BST_CHECKED : BST_UNCHECKED, 0);
             SendDlgItemMessage(hwndDlg, IDC_INCLUDEBINARY, BM_SETCHECK, m_bIncludeBinary ? BST_CHECKED : BST_UNCHECKED, 0);
@@ -427,7 +433,8 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             m_resizer.AddControl(hwndDlg, IDC_DOTMATCHNEWLINE, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_REGEXOKLABEL, RESIZER_TOPRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_CREATEBACKUP, RESIZER_TOPLEFT);
-            m_resizer.AddControl(hwndDlg, IDC_UTF8, RESIZER_TOPLEFTRIGHT);
+            m_resizer.AddControl(hwndDlg, IDC_UTF8, RESIZER_TOPLEFT);
+            m_resizer.AddControl(hwndDlg, IDC_BINARY, RESIZER_TOPLEFTRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_TESTREGEX, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_ADDTOBOOKMARKS, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_BOOKMARKS, RESIZER_TOPLEFT);
@@ -798,6 +805,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                 m_bDotMatchesNewline      = m_pBookmarksDlg->GetSelectedDotMatchNewline();
                 m_bCreateBackup           = m_pBookmarksDlg->GetSelectedBackup();
                 m_bUTF8                   = m_pBookmarksDlg->GetSelectedTreatAsUtf8();
+                m_bForceBinary            = m_pBookmarksDlg->GetSelectedTreatAsBinary();
                 m_bIncludeSystem          = m_pBookmarksDlg->GetSelectedIncludeSystem();
                 m_bIncludeSubfolders      = m_pBookmarksDlg->GetSelectedIncludeFolder();
                 m_bIncludeHidden          = m_pBookmarksDlg->GetSelectedIncludeHidden();
@@ -819,6 +827,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                 SendDlgItemMessage(*this, IDC_INCLUDESUBFOLDERS, BM_SETCHECK, m_bIncludeSubfolders ? BST_CHECKED : BST_UNCHECKED, 0);
                 SendDlgItemMessage(*this, IDC_CREATEBACKUP, BM_SETCHECK, m_bCreateBackup ? BST_CHECKED : BST_UNCHECKED, 0);
                 SendDlgItemMessage(*this, IDC_UTF8, BM_SETCHECK, m_bUTF8 ? BST_CHECKED : BST_UNCHECKED, 0);
+                SendDlgItemMessage(*this, IDC_BINARY, BM_SETCHECK, m_bForceBinary ? BST_CHECKED : BST_UNCHECKED, 0);
                 SendDlgItemMessage(*this, IDC_INCLUDESYSTEM, BM_SETCHECK, m_bIncludeSystem ? BST_CHECKED : BST_UNCHECKED, 0);
                 SendDlgItemMessage(*this, IDC_INCLUDEHIDDEN, BM_SETCHECK, m_bIncludeHidden ? BST_CHECKED : BST_UNCHECKED, 0);
                 SendDlgItemMessage(*this, IDC_INCLUDEBINARY, BM_SETCHECK, m_bIncludeBinary ? BST_CHECKED : BST_UNCHECKED, 0);
@@ -1446,6 +1455,18 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
             }
         }
         break;
+        case IDC_UTF8:
+        {
+            if (IsDlgButtonChecked(*this, IDC_UTF8))
+                CheckDlgButton(*this, IDC_BINARY, BST_UNCHECKED);
+        }
+        break;
+        case IDC_BINARY:
+        {
+            if (IsDlgButtonChecked(*this, IDC_BINARY))
+                CheckDlgButton(*this, IDC_UTF8, BST_UNCHECKED);
+        }
+        break;
     }
     return 1;
 }
@@ -1985,7 +2006,10 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
                             auto len = pInfo->filepath.size() - m_searchpath.size() - filepart.size();
                             if (len > 0)
                                 --len;
-                            wcsncpy_s(pItem->pszText, pItem->cchTextMax, pInfo->filepath.substr(m_searchpath.size() + 1, len).c_str(), pItem->cchTextMax - 1);
+                            if (m_searchpath.size() < pInfo->filepath.size())
+                                wcsncpy_s(pItem->pszText, pItem->cchTextMax, pInfo->filepath.substr(m_searchpath.size() + 1, len).c_str(), pItem->cchTextMax - 1);
+                            else
+                                wcsncpy_s(pItem->pszText, pItem->cchTextMax, pInfo->filepath.c_str(), pItem->cchTextMax - 1);
                         }
                         break;
                     case 4: // extension of the file
@@ -2429,6 +2453,7 @@ bool CSearchDlg::SaveSettings()
     m_bIncludeBinary     = (IsDlgButtonChecked(*this, IDC_INCLUDEBINARY) == BST_CHECKED);
     m_bCreateBackup      = (IsDlgButtonChecked(*this, IDC_CREATEBACKUP) == BST_CHECKED);
     m_bUTF8              = (IsDlgButtonChecked(*this, IDC_UTF8) == BST_CHECKED);
+    m_bForceBinary       = (IsDlgButtonChecked(*this, IDC_BINARY) == BST_CHECKED);
     m_bCaseSensitive     = (IsDlgButtonChecked(*this, IDC_CASE_SENSITIVE) == BST_CHECKED);
     m_bDotMatchesNewline = (IsDlgButtonChecked(*this, IDC_DOTMATCHNEWLINE) == BST_CHECKED);
 
@@ -2456,6 +2481,7 @@ bool CSearchDlg::SaveSettings()
         g_iniFile.SetValue(L"global", L"IncludeBinary", m_bIncludeBinary ? L"1" : L"0");
         g_iniFile.SetValue(L"global", L"CreateBackup", m_bCreateBackup ? L"1" : L"0");
         g_iniFile.SetValue(L"global", L"UTF8", m_bUTF8 ? L"1" : L"0");
+        g_iniFile.SetValue(L"global", L"Binary", m_bForceBinary ? L"1" : L"0");
         g_iniFile.SetValue(L"global", L"CaseSensitive", m_bCaseSensitive ? L"1" : L"0");
         g_iniFile.SetValue(L"global", L"DotMatchesNewline", m_bDotMatchesNewline ? L"1" : L"0");
         g_iniFile.SetValue(L"global", L"pattern", m_patternregex.c_str());
@@ -2476,6 +2502,7 @@ bool CSearchDlg::SaveSettings()
         m_regIncludeBinary      = (DWORD)m_bIncludeBinary;
         m_regCreateBackup       = (DWORD)m_bCreateBackup;
         m_regUTF8               = (DWORD)m_bUTF8;
+        m_regBinary             = (DWORD)m_bForceBinary;
         m_regCaseSensitive      = (DWORD)m_bCaseSensitive;
         m_regDotMatchesNewline  = (DWORD)m_bDotMatchesNewline;
         m_regPattern            = m_patternregex;
@@ -2896,6 +2923,7 @@ void CSearchDlg::SetPreset(const std::wstring& preset)
         m_bDotMatchesNewline      = bk.DotMatchesNewline;
         m_bCreateBackup           = bk.Backup;
         m_bUTF8                   = bk.Utf8;
+        m_bForceBinary            = bk.Binary;
         m_bIncludeSystem          = bk.IncludeSystem;
         m_bIncludeSubfolders      = bk.IncludeFolder;
         m_bIncludeHidden          = bk.IncludeHidden;
@@ -3000,6 +3028,11 @@ void CSearchDlg::SearchFile(CSearchInfo sinfo, const std::wstring& searchRoot, b
     CTextFile textfile;
     CTextFile::UnicodeType type        = CTextFile::AUTOTYPE;
     bool                   bLoadResult = false;
+    if (m_bForceBinary)
+    {
+        type = CTextFile::BINARY;
+    }
+    else
     {
         ProfileTimer profile((L"file load and parse: " + sinfo.filepath).c_str());
         bLoadResult = textfile.Load(sinfo.filepath.c_str(), type, m_bUTF8, bCancelled);
@@ -3184,7 +3217,7 @@ void CSearchDlg::SearchFile(CSearchInfo sinfo, const std::wstring& searchRoot, b
         // in any case, use the search function that uses a file iterator
         // instead of a string iterator to reduce the memory consumption
 
-        if ((type != CTextFile::BINARY) || (bIncludeBinary) || bSearchAlways)
+        if ((type != CTextFile::BINARY) || bIncludeBinary || bSearchAlways || m_bForceBinary)
         {
             sinfo.encoding        = type;
             std::string filepath  = CUnicodeUtils::StdGetANSI(sinfo.filepath);

@@ -48,6 +48,7 @@ public:
     bool                    DotMatchesNewline;
     bool                    Backup;
     bool                    Utf8;
+    bool                    Binary;
     bool                    IncludeSystem;
     bool                    IncludeFolder;
     bool                    IncludeHidden;

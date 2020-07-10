@@ -43,6 +43,7 @@ public:
     bool         GetSelectedDotMatchNewline() const { return m_bDotMatchesNewline; }
     bool         GetSelectedBackup() const { return m_bBackup; }
     bool         GetSelectedTreatAsUtf8() const { return m_bUtf8; }
+    bool         GetSelectedTreatAsBinary() const { return m_bForceBinary; }
     bool         GetSelectedIncludeSystem() const { return m_bIncludeSystem; }
     bool         GetSelectedIncludeFolder() const { return m_bIncludeFolder; }
     bool         GetSelectedIncludeHidden() const { return m_bIncludeHidden; }
@@ -70,6 +71,7 @@ private:
     bool         m_bDotMatchesNewline;
     bool         m_bBackup;
     bool         m_bUtf8;
+    bool         m_bForceBinary;
     bool         m_bIncludeSystem;
     bool         m_bIncludeFolder;
     bool         m_bIncludeHidden;

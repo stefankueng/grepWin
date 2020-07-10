@@ -36,6 +36,7 @@ CBookmarksDlg::CBookmarksDlg(HWND hParent)
     , m_bDotMatchesNewline(false)
     , m_bBackup(false)
     , m_bUtf8(false)
+    , m_bForceBinary(false)
     , m_bIncludeSystem(false)
     , m_bIncludeFolder(false)
     , m_bIncludeHidden(false)
@@ -329,6 +330,7 @@ void CBookmarksDlg::PrepareSelected()
         m_bDotMatchesNewline = _tcscmp(m_bookmarks.GetValue(buf.get(), L"dotmatchesnewline", L"false"), L"true") == 0;
         m_bBackup            = _tcscmp(m_bookmarks.GetValue(buf.get(), L"backup", L"false"), L"true") == 0;
         m_bUtf8              = _tcscmp(m_bookmarks.GetValue(buf.get(), L"utf8", L"false"), L"true") == 0;
+        m_bForceBinary       = _tcscmp(m_bookmarks.GetValue(buf.get(), L"binary", L"false"), L"true") == 0;
         m_bIncludeSystem     = _tcscmp(m_bookmarks.GetValue(buf.get(), L"includesystem", L"false"), L"true") == 0;
         m_bIncludeFolder     = _tcscmp(m_bookmarks.GetValue(buf.get(), L"includefolder", L"false"), L"true") == 0;
         m_bIncludeHidden     = _tcscmp(m_bookmarks.GetValue(buf.get(), L"includehidden", L"false"), L"true") == 0;
