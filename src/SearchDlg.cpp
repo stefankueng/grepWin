@@ -72,7 +72,7 @@
 
 DWORD WINAPI SearchThreadEntry(LPVOID lpParam);
 
-UINT                    CSearchDlg::GREPWIN_STARTUPMSG = RegisterWindowMessage(_T("grepWin_StartupMessage"));
+UINT                    CSearchDlg::GREPWIN_STARTUPMSG = RegisterWindowMessage(L"grepWin_StartupMessage");
 std::map<size_t, DWORD> linepositions;
 
 extern ULONGLONG g_startTime;
@@ -118,23 +118,23 @@ CSearchDlg::CSearchDlg(HWND hParent)
     , m_Date1({0})
     , m_Date2({0})
     , m_bDateLimitC(false)
-    , m_regUseRegex(_T("Software\\grepWin\\UseRegex"), 1)
-    , m_regAllSize(_T("Software\\grepWin\\AllSize"))
-    , m_regSize(_T("Software\\grepWin\\Size"), L"2000")
-    , m_regSizeCombo(_T("Software\\grepWin\\SizeCombo"), 0)
-    , m_regIncludeSystem(_T("Software\\grepWin\\IncludeSystem"))
-    , m_regIncludeHidden(_T("Software\\grepWin\\IncludeHidden"))
-    , m_regIncludeSubfolders(_T("Software\\grepWin\\IncludeSubfolders"), 1)
-    , m_regIncludeBinary(_T("Software\\grepWin\\IncludeBinary"), 1)
-    , m_regCreateBackup(_T("Software\\grepWin\\CreateBackup"))
-    , m_regUTF8(_T("Software\\grepWin\\UTF8"))
-    , m_regCaseSensitive(_T("Software\\grepWin\\CaseSensitive"))
-    , m_regDotMatchesNewline(_T("Software\\grepWin\\DotMatchesNewline"))
-    , m_regUseRegexForPaths(_T("Software\\grepWin\\UseFileMatchRegex"))
-    , m_regPattern(_T("Software\\grepWin\\pattern"))
-    , m_regExcludeDirsPattern(_T("Software\\grepWin\\ExcludeDirsPattern"))
-    , m_regSearchPath(_T("Software\\grepWin\\searchpath"))
-    , m_regEditorCmd(_T("Software\\grepWin\\editorcmd"))
+    , m_regUseRegex(L"Software\\grepWin\\UseRegex", 1)
+    , m_regAllSize(L"Software\\grepWin\\AllSize")
+    , m_regSize(L"Software\\grepWin\\Size", L"2000")
+    , m_regSizeCombo(L"Software\\grepWin\\SizeCombo", 0)
+    , m_regIncludeSystem(L"Software\\grepWin\\IncludeSystem")
+    , m_regIncludeHidden(L"Software\\grepWin\\IncludeHidden")
+    , m_regIncludeSubfolders(L"Software\\grepWin\\IncludeSubfolders", 1)
+    , m_regIncludeBinary(L"Software\\grepWin\\IncludeBinary", 1)
+    , m_regCreateBackup(L"Software\\grepWin\\CreateBackup")
+    , m_regUTF8(L"Software\\grepWin\\UTF8")
+    , m_regCaseSensitive(L"Software\\grepWin\\CaseSensitive")
+    , m_regDotMatchesNewline(L"Software\\grepWin\\DotMatchesNewline")
+    , m_regUseRegexForPaths(L"Software\\grepWin\\UseFileMatchRegex")
+    , m_regPattern(L"Software\\grepWin\\pattern")
+    , m_regExcludeDirsPattern(L"Software\\grepWin\\ExcludeDirsPattern")
+    , m_regSearchPath(L"Software\\grepWin\\searchpath")
+    , m_regEditorCmd(L"Software\\grepWin\\editorcmd")
     , m_regBackupInFolder(L"Software\\grepWin\\backupinfolder", FALSE)
     , m_regDateLimit(L"Software\\grepWin\\DateLimit", 0)
     , m_regDate1Low(L"Software\\grepWin\\Date1Low", 0)
@@ -182,18 +182,18 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
         {
             SHAutoComplete(GetDlgItem(*this, IDC_SEARCHPATH), SHACF_FILESYSTEM | SHACF_AUTOSUGGEST_FORCE_ON);
 
-            m_AutoCompleteFilePatterns.Load(_T("Software\\grepWin\\History"), _T("FilePattern"));
+            m_AutoCompleteFilePatterns.Load(L"Software\\grepWin\\History", L"FilePattern");
             m_AutoCompleteFilePatterns.Init(GetDlgItem(hwndDlg, IDC_PATTERN));
-            m_AutoCompleteExcludeDirsPatterns.Load(_T("Software\\grepWin\\History"), _T("ExcludeDirsPattern"));
+            m_AutoCompleteExcludeDirsPatterns.Load(L"Software\\grepWin\\History", L"ExcludeDirsPattern");
             m_AutoCompleteExcludeDirsPatterns.Init(GetDlgItem(hwndDlg, IDC_EXCLUDEDIRSPATTERN));
-            m_AutoCompleteSearchPatterns.Load(_T("Software\\grepWin\\History"), _T("SearchPattern"));
+            m_AutoCompleteSearchPatterns.Load(L"Software\\grepWin\\History", L"SearchPattern");
             m_AutoCompleteSearchPatterns.Init(GetDlgItem(hwndDlg, IDC_SEARCHTEXT));
-            m_AutoCompleteReplacePatterns.Load(_T("Software\\grepWin\\History"), _T("ReplacePattern"));
+            m_AutoCompleteReplacePatterns.Load(L"Software\\grepWin\\History", L"ReplacePattern");
             m_AutoCompleteReplacePatterns.Init(GetDlgItem(hwndDlg, IDC_REPLACETEXT));
-            m_AutoCompleteSearchPaths.Load(_T("Software\\grepWin\\History"), _T("SearchPaths"));
+            m_AutoCompleteSearchPaths.Load(L"Software\\grepWin\\History", L"SearchPaths");
             m_AutoCompleteSearchPaths.Init(GetDlgItem(hwndDlg, IDC_SEARCHPATH));
 
-            m_link.ConvertStaticToHyperlink(hwndDlg, IDC_ABOUTLINK, _T(""));
+            m_link.ConvertStaticToHyperlink(hwndDlg, IDC_ABOUTLINK, L"");
 
             m_themeCallbackId = CTheme::Instance().RegisterThemeChangeCallback(
                 [this]() {
@@ -498,7 +498,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             }
             else
             {
-                if (SHGetValue(HKEY_CURRENT_USER, _T("Software\\grepWin"), _T("windowpos"), REG_NONE, &wpl, &size) == ERROR_SUCCESS)
+                if (SHGetValue(HKEY_CURRENT_USER, L"Software\\grepWin", L"windowpos", REG_NONE, &wpl, &size) == ERROR_SUCCESS)
                     SetWindowPlacement(*this, &wpl);
                 else
                     ShowWindow(*this, SW_SHOW);
@@ -728,7 +728,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                     if (wParam == 1)
                         m_searchpath.clear();
                     else
-                        m_searchpath += _T("|");
+                        m_searchpath += L"|";
                     m_searchpath += newpath;
                     SetDlgItemText(hwndDlg, IDC_SEARCHPATH, m_searchpath.c_str());
                     g_startTime = GetTickCount();
@@ -925,7 +925,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                         auto msgtext = CStringUtils::Format((LPCWSTR)TranslatedString(hResource, IDS_REPLACECONFIRM).c_str(),
                             m_searchString.c_str(),
                             m_replaceString.empty() ? (LPCWSTR)TranslatedString(hResource, IDS_ANEMPTYSTRING).c_str() : m_replaceString.c_str());
-                        if (::MessageBox(*this, msgtext.c_str(), _T("grepWin"), MB_ICONQUESTION | MB_YESNO) != IDYES)
+                        if (::MessageBox(*this, msgtext.c_str(), L"grepWin", MB_ICONQUESTION | MB_YESNO) != IDYES)
                         {
                             break;
                         }
@@ -1073,7 +1073,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 TCHAR compactPath[100] = {0};
                 PathCompactPathEx(compactPath, buf.get(), 40, 0);
                 TCHAR titleBuf[MAX_PATH] = {0};
-                _stprintf_s(titleBuf, _countof(titleBuf), _T("grepWin : %s"), compactPath);
+                _stprintf_s(titleBuf, _countof(titleBuf), L"grepWin : %s", compactPath);
                 SetWindowText(*this, titleBuf);
             }
         }
@@ -1466,7 +1466,7 @@ void CSearchDlg::SaveWndPosition()
     }
     else
     {
-        SHSetValue(HKEY_CURRENT_USER, _T("Software\\grepWin"), _T("windowpos"), REG_NONE, &wpl, sizeof(wpl));
+        SHSetValue(HKEY_CURRENT_USER, L"Software\\grepWin", L"windowpos", REG_NONE, &wpl, sizeof(wpl));
     }
 }
 
@@ -2081,7 +2081,7 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
                             wcsncpy_s(pItem->pszText, pItem->cchTextMax, pInfo->filepath.substr(pInfo->filepath.find_last_of('\\') + 1).c_str(), pItem->cchTextMax - 1);
                             break;
                         case 1: // line number
-                            swprintf_s(pItem->pszText, pItem->cchTextMax, _T("%ld"), pInfo->matchlinesnumbers[subIndex]);
+                            swprintf_s(pItem->pszText, pItem->cchTextMax, L"%ld", pInfo->matchlinesnumbers[subIndex]);
                             break;
                         case 2: // line
                         {
@@ -2186,8 +2186,8 @@ void CSearchDlg::OpenFileAtListIndex(int listIndex)
     application = cmdbuf.get();
 
     // resolve parameters
-    if (application.find(_T("%1")) == std::wstring::npos)
-        application += _T(" %1");
+    if (application.find(L"%1") == std::wstring::npos)
+        application += L" %1";
 
     bool         filelist = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
     std::wstring linenumberparam_before;
@@ -2218,39 +2218,39 @@ void CSearchDlg::OpenFileAtListIndex(int listIndex)
     // now find out if the application which opens the file is known to us
     // and if it has a 'linenumber' switch to jump directly to a specific
     // line number.
-    if (appname.find(_T("notepad++.exe")) != std::wstring::npos)
+    if (appname.find(L"notepad++.exe") != std::wstring::npos)
     {
         // notepad++
         linenumberparam = CStringUtils::Format(L"-n%s", textlinebuf);
     }
-    else if (appname.find(_T("xemacs.exe")) != std::wstring::npos)
+    else if (appname.find(L"xemacs.exe") != std::wstring::npos)
     {
         // XEmacs
         linenumberparam = CStringUtils::Format(L"+%s", textlinebuf);
     }
-    else if (appname.find(_T("uedit32.exe")) != std::wstring::npos)
+    else if (appname.find(L"uedit32.exe") != std::wstring::npos)
     {
         // UltraEdit
         linenumberparam = CStringUtils::Format(L"-l%s", textlinebuf);
     }
-    else if (appname.find(_T("codewright.exe")) != std::wstring::npos)
+    else if (appname.find(L"codewright.exe") != std::wstring::npos)
     {
         // CodeWright
         linenumberparam = CStringUtils::Format(L"-G%s", textlinebuf);
     }
-    else if (appname.find(_T("notepad2.exe")) != std::wstring::npos)
+    else if (appname.find(L"notepad2.exe") != std::wstring::npos)
     {
         // Notepad2
         auto escapedsearch = m_searchString;
         SearchReplace(escapedsearch, L"\"", L"\\\"");
         linenumberparam_before = CStringUtils::Format(L"/g %s /mr \"%s\"", textlinebuf, escapedsearch.c_str());
     }
-    else if ((appname.find(_T("bowpad.exe")) != std::wstring::npos) || (appname.find(_T("bowpad64.exe")) != std::wstring::npos))
+    else if ((appname.find(L"bowpad.exe") != std::wstring::npos) || (appname.find(L"bowpad64.exe") != std::wstring::npos))
     {
         // BowPad
         linenumberparam = CStringUtils::Format(L"/line:%s", textlinebuf);
     }
-    else if (appname.find(_T("code.exe")) != std::wstring::npos)
+    else if (appname.find(L"code.exe") != std::wstring::npos)
     {
         // Visual Studio Code
         linenumberparam_before = L"--goto";
@@ -2258,8 +2258,8 @@ void CSearchDlg::OpenFileAtListIndex(int listIndex)
     }
 
     // replace "%1" with %1
-    std::wstring           tag      = _T("\"%1\"");
-    std::wstring           repl     = _T("%1");
+    std::wstring           tag      = L"\"%1\"";
+    std::wstring           repl     = L"%1";
     std::wstring::iterator it_begin = search(application.begin(), application.end(), tag.begin(), tag.end());
     if (it_begin != application.end())
     {
@@ -2267,9 +2267,9 @@ void CSearchDlg::OpenFileAtListIndex(int listIndex)
         application.replace(it_begin, it_end, repl);
     }
     // replace %1 with "path/of/selected/file"
-    tag = _T("%1");
+    tag = L"%1";
     if (application.find(L"rundll32.exe") == std::wstring::npos)
-        repl = _T("\"") + inf.filepath + _T("\"");
+        repl = L"\"" + inf.filepath + L"\"";
     else
         repl = inf.filepath;
     if (!linenumberparam_before.empty())
@@ -2286,7 +2286,7 @@ void CSearchDlg::OpenFileAtListIndex(int listIndex)
     {
         if (!linenumberparam.starts_with(L":"))
         {
-            application += _T(" ");
+            application += L" ";
         }
         application += linenumberparam;
     }
@@ -2342,7 +2342,7 @@ bool CSearchDlg::SaveSettings()
     m_patterns.clear();
     do
     {
-        pos            = _tcscspn(pBuf, _T("|"));
+        pos            = _tcscspn(pBuf, L"|");
         std::wstring s = std::wstring(pBuf, pos);
         if (!s.empty())
         {
@@ -2620,7 +2620,7 @@ DWORD CSearchDlg::SearchThread()
     std::vector<std::wstring> pathvector;
     do
     {
-        pos            = _tcscspn(pBufSearchPath, _T("|"));
+        pos            = _tcscspn(pBufSearchPath, L"|");
         std::wstring s = std::wstring(pBufSearchPath, pos);
         if (!s.empty())
         {
@@ -2980,7 +2980,7 @@ void CSearchDlg::SearchFile(CSearchInfo sinfo, const std::wstring& searchRoot, b
     if (!bUseRegex)
     {
         SearchReplace(localSearchString, L"\\E", L"\\\\E");
-        localSearchString = _T("\\Q") + localSearchString + _T("\\E");
+        localSearchString = L"\\Q" + localSearchString + L"\\E";
     }
 
     SearchReplace(localSearchString, L"${filepath}", sinfo.filepath);
@@ -3122,7 +3122,7 @@ void CSearchDlg::SearchFile(CSearchInfo sinfo, const std::wstring& searchRoot, b
                     textfile.SetFileContent(replaced);
                     if (m_bCreateBackup)
                     {
-                        std::wstring backupfile = sinfo.filepath + _T(".bak");
+                        std::wstring backupfile = sinfo.filepath + L".bak";
                         auto backupInFolder = bPortable 
                             ? (_wtoi(g_iniFile.GetValue(L"settings", L"backupinfolder", L"0")) != 0)
                             : (DWORD(m_regBackupInFolder) != 0);
@@ -3327,7 +3327,7 @@ void CSearchDlg::SearchFile(CSearchInfo sinfo, const std::wstring& searchRoot, b
 
                     if (m_bReplace)
                     {
-                        std::wstring backupfile = sinfo.filepath + _T(".bak");
+                        std::wstring backupfile = sinfo.filepath + L".bak";
                         if (m_bCreateBackup)
                         {
                             if (DWORD(m_regBackupInFolder))
@@ -3432,7 +3432,7 @@ void CSearchDlg::formatDate(TCHAR date_native[], const FILETIME& filetime, bool 
     GetDateFormat(locale, flags, &localsystime, NULL, datebuf, GREPWIN_DATEBUFFER);
     GetTimeFormat(locale, 0, &localsystime, NULL, timebuf, GREPWIN_DATEBUFFER);
     _tcsncat_s(date_native, GREPWIN_DATEBUFFER, datebuf, GREPWIN_DATEBUFFER);
-    _tcsncat_s(date_native, GREPWIN_DATEBUFFER, _T(" "), GREPWIN_DATEBUFFER);
+    _tcsncat_s(date_native, GREPWIN_DATEBUFFER, L" ", GREPWIN_DATEBUFFER);
     _tcsncat_s(date_native, GREPWIN_DATEBUFFER, timebuf, GREPWIN_DATEBUFFER);
 }
 
@@ -3479,7 +3479,7 @@ int CSearchDlg::CheckRegex()
         }
         else
         {
-            SetDlgItemText(*this, IDC_REGEXOKLABEL, _T(""));
+            SetDlgItemText(*this, IDC_REGEXOKLABEL, L"");
             DialogEnableWindow(IDOK, true);
             DialogEnableWindow(IDC_REPLACE, false);
             DialogEnableWindow(IDC_CREATEBACKUP, false);
@@ -3487,7 +3487,7 @@ int CSearchDlg::CheckRegex()
     }
     else
     {
-        SetDlgItemText(*this, IDC_REGEXOKLABEL, _T(""));
+        SetDlgItemText(*this, IDC_REGEXOKLABEL, L"");
         DialogEnableWindow(IDOK, true);
         DialogEnableWindow(IDC_REPLACE, len > 0);
         DialogEnableWindow(IDC_CREATEBACKUP, len > 0);

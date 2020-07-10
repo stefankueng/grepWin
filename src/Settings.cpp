@@ -28,8 +28,8 @@
 
 CSettingsDlg::CSettingsDlg(HWND hParent)
     : m_hParent(hParent)
-    , m_regEditorCmd(_T("Software\\grepWin\\editorcmd"))
-    , m_regEsc(_T("Software\\grepWin\\escclose"), FALSE)
+    , m_regEditorCmd(L"Software\\grepWin\\editorcmd")
+    , m_regEsc(L"Software\\grepWin\\escclose", FALSE)
     , m_themeCallbackId(0)
 {
 }
