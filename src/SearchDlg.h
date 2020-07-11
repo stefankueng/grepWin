@@ -163,6 +163,7 @@ private:
     bool                    m_bDotMatchesNewline;
     bool                    m_bDotMatchesNewlineC;
     bool                    m_bNOTSearch;
+    bool                    m_bCaptureSearch;
     bool                    m_bSizeC;
     bool                    m_endDialog;
     ExecuteAction           m_ExecuteImmediately;

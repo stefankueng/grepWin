@@ -109,6 +109,7 @@ CSearchDlg::CSearchDlg(HWND hParent)
     , m_bDotMatchesNewline(false)
     , m_bDotMatchesNewlineC(false)
     , m_bNOTSearch(false)
+    , m_bCaptureSearch(false)
     , m_bSizeC(false)
     , m_bAllSize(false)
     , m_bReplace(false)
@@ -601,8 +602,10 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                             {
                                 auto sInverseSearch      = TranslatedString(hResource, IDS_INVERSESEARCH);
                                 auto sSearchInFoundFiles = TranslatedString(hResource, IDS_SEARCHINFOUNDFILES);
+                                auto sCaptureSearch      = TranslatedString(hResource, IDS_CAPTURESEARCH);
                                 AppendMenu(hSplitMenu, MF_STRING, IDC_INVERSESEARCH, sInverseSearch.c_str());
                                 AppendMenu(hSplitMenu, MF_STRING, IDC_SEARCHINFOUNDFILES, sSearchInFoundFiles.c_str());
+                                AppendMenu(hSplitMenu, MF_STRING, IDC_CAPTURESEARCH, sCaptureSearch.c_str());
                             }
                             // Display the menu.
                             TrackPopupMenu(hSplitMenu, TPM_LEFTALIGN | TPM_TOPALIGN, pt.x, pt.y, 0, *this, nullptr);
@@ -854,6 +857,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
         case IDOK:
         case IDC_INVERSESEARCH:
         case IDC_SEARCHINFOUNDFILES:
+        case IDC_CAPTURESEARCH:
         {
             if (m_dwThreadRunning)
             {
@@ -944,6 +948,12 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 m_bNOTSearch             = (GetKeyState(VK_SHIFT) & 0x8000) != 0;
                 if (id == IDC_INVERSESEARCH)
                     m_bNOTSearch = true;
+                if (id == IDC_CAPTURESEARCH)
+                {
+                    m_bCaptureSearch = true;
+                    m_bNOTSearch = false;
+                    m_bReplace = false;
+                }
 
                 InterlockedExchange(&m_dwThreadRunning, TRUE);
                 InterlockedExchange(&m_Cancelled, FALSE);
@@ -3071,7 +3081,13 @@ void CSearchDlg::SearchFile(CSearchInfo sinfo, const std::wstring& searchRoot, b
                         for (long l = linestart; l <= lineend; ++l)
                         {
                             auto sLine = textfile.GetLineString(l);
-                            sinfo.matchlines.push_back(sLine.substr(0, 1024));
+                            if (m_bCaptureSearch)
+                            {
+                                auto out = whatc.format(m_replaceString, flags);
+                                sinfo.matchlines.push_back(out);
+                            }
+                            else
+                                sinfo.matchlines.push_back(sLine.substr(0, 1024));
                             sinfo.matchlinesnumbers.push_back(l);
                         }
                     }
@@ -3105,12 +3121,21 @@ void CSearchDlg::SearchFile(CSearchInfo sinfo, const std::wstring& searchRoot, b
                             break;
                         long linestart = textfile.LineFromPosition(long(whatc[0].first - textfile.GetFileString().begin()));
                         long lineend   = textfile.LineFromPosition(long(whatc[0].second - textfile.GetFileString().begin()));
-                        if ((linestart != prevlinestart) || (lineend != prevlineend))
+                        if (m_bCaptureSearch)
                         {
-                            for (long l = linestart; l <= lineend; ++l)
+                            auto out = whatc.format(m_replaceString, flags);
+                            sinfo.matchlines.push_back(out);
+                            sinfo.matchlinesnumbers.push_back(linestart);
+                        }
+                        else
+                        {
+                            if ((linestart != prevlinestart) || (lineend != prevlineend))
                             {
-                                sinfo.matchlines.push_back(textfile.GetLineString(l));
-                                sinfo.matchlinesnumbers.push_back(l);
+                                for (long l = linestart; l <= lineend; ++l)
+                                {
+                                    sinfo.matchlines.push_back(textfile.GetLineString(l));
+                                    sinfo.matchlinesnumbers.push_back(l);
+                                }
                             }
                         }
                         ++sinfo.matchcount;
