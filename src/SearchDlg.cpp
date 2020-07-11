@@ -604,8 +604,8 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                                 auto sSearchInFoundFiles = TranslatedString(hResource, IDS_SEARCHINFOUNDFILES);
                                 auto sCaptureSearch      = TranslatedString(hResource, IDS_CAPTURESEARCH);
                                 AppendMenu(hSplitMenu, MF_STRING, IDC_INVERSESEARCH, sInverseSearch.c_str());
-                                AppendMenu(hSplitMenu, MF_STRING, IDC_SEARCHINFOUNDFILES, sSearchInFoundFiles.c_str());
-                                AppendMenu(hSplitMenu, MF_STRING, IDC_CAPTURESEARCH, sCaptureSearch.c_str());
+                                AppendMenu(hSplitMenu, m_items.empty() ? MF_STRING | MF_DISABLED : MF_STRING, IDC_SEARCHINFOUNDFILES, sSearchInFoundFiles.c_str());
+                                AppendMenu(hSplitMenu, GetDlgItemTextLength(IDC_REPLACETEXT) ? MF_STRING : MF_STRING | MF_DISABLED, IDC_CAPTURESEARCH, sCaptureSearch.c_str());
                             }
                             // Display the menu.
                             TrackPopupMenu(hSplitMenu, TPM_LEFTALIGN | TPM_TOPALIGN, pt.x, pt.y, 0, *this, nullptr);
