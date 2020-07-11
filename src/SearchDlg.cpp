@@ -3045,6 +3045,13 @@ void CSearchDlg::SearchFile(CSearchInfo sinfo, const std::wstring& searchRoot, b
     else
     {
         ProfileTimer profile((L"file load and parse: " + sinfo.filepath).c_str());
+        auto         nNullCount = bPortable ? _wtoi(g_iniFile.GetValue(L"settings", L"nullbytes", L"0")) : int(DWORD(CRegStdDWORD(L"Software\\grepWin\\nullbytes", 0)));
+        if (nNullCount > 0)
+        {
+            constexpr __int64 oneMB = 1024 * 1024;
+            auto              megs  = sinfo.filesize / oneMB;
+            textfile.SetNullbyteCountForBinary(nNullCount * ((int)megs + 1));
+        }
         bLoadResult = textfile.Load(sinfo.filepath.c_str(), type, m_bUTF8, bCancelled);
     }
     sinfo.encoding = type;

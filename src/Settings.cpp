@@ -104,6 +104,7 @@ LRESULT CSettingsDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
             SendDlgItemMessage(hwndDlg, IDC_DOUPDATECHECKS, BM_SETCHECK, bPortable ? _wtoi(g_iniFile.GetValue(L"global", L"CheckForUpdates", L"1")) : DWORD(CRegStdDWORD(L"Software\\grepWin\\CheckForUpdates", FALSE)) ? BST_CHECKED : BST_UNCHECKED, 0);
             SendDlgItemMessage(hwndDlg, IDC_DARKMODE, BM_SETCHECK, CTheme::Instance().IsDarkTheme() ? BST_CHECKED : BST_UNCHECKED, 0);
             EnableWindow(GetDlgItem(*this, IDC_DARKMODE), CTheme::Instance().IsDarkModeAllowed());
+            SetDlgItemText(*this, IDC_NUMNULL, bPortable ? g_iniFile.GetValue(L"settings", L"nullbytes", L"0") : std::to_wstring(DWORD(CRegStdDWORD(L"Software\\grepWin\\nullbytes", 0))).c_str());
 
             AddToolTip(IDC_BACKUPINFOLDER, TranslatedString(hResource, IDS_BACKUPINFOLDER_TT).c_str());
             if (!CTheme::Instance().IsDarkModeAllowed())
@@ -118,6 +119,7 @@ LRESULT CSettingsDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
             m_resizer.AddControl(hwndDlg, IDC_STATIC2, RESIZER_TOPLEFTRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_STATIC3, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_STATIC4, RESIZER_TOPLEFT);
+            m_resizer.AddControl(hwndDlg, IDC_NUMNULL, RESIZER_TOPRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_LANGUAGE, RESIZER_TOPRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_ESCKEY, RESIZER_TOPLEFTRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_BACKUPINFOLDER, RESIZER_TOPLEFTRIGHT);
@@ -184,6 +186,8 @@ LRESULT CSettingsDlg::DoCommand(int id, int /*msg*/)
             CLanguage::Instance().LoadFile(langpath);
             CLanguage::Instance().TranslateWindow(::GetParent(*this));
 
+            std::wstring sNumNull = GetDlgItemText(IDC_NUMNULL).get();
+
             if (bPortable)
             {
                 g_iniFile.SetValue(L"settings", L"escclose", (IsDlgButtonChecked(*this, IDC_ESCKEY) == BST_CHECKED) ? L"1" : L"0");
@@ -191,6 +195,7 @@ LRESULT CSettingsDlg::DoCommand(int id, int /*msg*/)
                 g_iniFile.SetValue(L"settings", L"nowarnifnobackup", (IsDlgButtonChecked(*this, IDC_NOWARNINGIFNOBACKUP) == BST_CHECKED) ? L"1" : L"0");
                 g_iniFile.SetValue(L"global", L"onlyone", IsDlgButtonChecked(*this, IDC_ONLYONE) == BST_CHECKED ? L"1" : L"0");
                 g_iniFile.SetValue(L"global", L"CheckForUpdates", IsDlgButtonChecked(*this, IDC_DOUPDATECHECKS) == BST_CHECKED ? L"1" : L"0");
+                g_iniFile.SetValue(L"settings", L"nullbytes", sNumNull.c_str());
             }
             else
             {
@@ -204,6 +209,8 @@ LRESULT CSettingsDlg::DoCommand(int id, int /*msg*/)
                 regOnlyOne = (IsDlgButtonChecked(*this, IDC_ONLYONE) == BST_CHECKED);
                 CRegStdDWORD regCheckForUpdates(L"Software\\grepWin\\CheckForUpdates", FALSE);
                 regCheckForUpdates = (IsDlgButtonChecked(*this, IDC_DOUPDATECHECKS) == BST_CHECKED);
+                CRegStdDWORD regNumNull(L"Software\\grepWin\\nullbytes", FALSE);
+                regNumNull = _wtoi(sNumNull.c_str());
             }
             CTheme::Instance().SetDarkTheme(IsDlgButtonChecked(*this, IDC_DARKMODE) == BST_CHECKED);
         }
