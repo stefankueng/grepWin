@@ -9,9 +9,9 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 1900-01-01 00:00+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"PO-Revision-Date: 2020-07-11 14:00:52 +0300\n"
+"Last-Translator: VictorVG\n"
+"Language-Team: Russian\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -101,7 +101,7 @@ msgstr "Отмена"
 
 #. Resource IDs: (169)
 msgid "Capture search"
-msgstr ""
+msgstr "Захват найденного"
 
 #. Resource IDs: (1088)
 msgid "Check for updates"
@@ -233,7 +233,7 @@ msgstr "Включая скрытые"
 
 #. Resource IDs: (1062)
 msgid "Include search path"
-msgstr ""
+msgstr "Включая путь поиска"
 
 #. Resource IDs: (1011)
 msgid "Include subfolders"
@@ -374,7 +374,7 @@ msgstr "Заменить строку"
 
 #. Resource IDs: (1027)
 msgid "Replace with/\nCapture format:"
-msgstr ""
+msgstr "Заменить на/\nФормат захвата:"
 
 #. Resource IDs: (126)
 msgid "S&top"
@@ -463,7 +463,7 @@ msgstr "Файлы как UTF-8"
 
 #. Resource IDs: (1054)
 msgid "Treat files as binary"
-msgstr ""
+msgstr "Считать файлы двоичными"
 
 #. Resource IDs: (1045)
 msgid "Visit our website"
@@ -548,7 +548,7 @@ msgstr "нет текста для тестирования"
 
 #. Resource IDs: (1074)
 msgid "number of NULL bytes per MB allowed for a file to still be considered text instead of binary"
-msgstr ""
+msgstr "количество допустимых NULL-байтов на МБ для файла который считается текстовым, а не двоичным"
 
 #. Resource IDs: (112)
 msgid "only files that match this pattern are searched.\r\nUse \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
