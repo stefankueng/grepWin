@@ -235,14 +235,17 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                 else
                     m_searchpath = std::wstring(m_regSearchPath);
             }
-            // expand a possible 'short' path
-            DWORD ret = 0;
-            ret       = ::GetLongPathName(m_searchpath.c_str(), NULL, 0);
-            if (ret)
+            else
             {
-                std::unique_ptr<TCHAR[]> pathbuf(new TCHAR[ret + 2]);
-                ret          = ::GetLongPathName(m_searchpath.c_str(), pathbuf.get(), ret + 1);
-                m_searchpath = std::wstring(pathbuf.get(), ret);
+                // expand a possible 'short' path
+                DWORD ret = 0;
+                ret       = ::GetLongPathName(m_searchpath.c_str(), NULL, 0);
+                if (ret)
+                {
+                    std::unique_ptr<TCHAR[]> pathbuf(new TCHAR[ret + 2]);
+                    ret          = ::GetLongPathName(m_searchpath.c_str(), pathbuf.get(), ret + 1);
+                    m_searchpath = std::wstring(pathbuf.get(), ret);
+                }
             }
 
             if (m_patternregex.empty())
