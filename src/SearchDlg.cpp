@@ -603,10 +603,15 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                             OnOutOfScope(DestroyMenu(hSplitMenu));
                             if (pDropDown->hdr.hwndFrom == GetDlgItem(*this, IDOK))
                             {
+                                auto buf    = GetDlgItemText(IDC_SEARCHPATH);
+                                bool bIsDir = !!PathIsDirectory(buf.get());
+                                if ((!bIsDir) && _tcschr(buf.get(), '|'))
+                                    bIsDir = true; // assume directories in case of multiple paths
+
                                 auto sInverseSearch      = TranslatedString(hResource, IDS_INVERSESEARCH);
                                 auto sSearchInFoundFiles = TranslatedString(hResource, IDS_SEARCHINFOUNDFILES);
                                 auto sCaptureSearch      = TranslatedString(hResource, IDS_CAPTURESEARCH);
-                                AppendMenu(hSplitMenu, MF_STRING, IDC_INVERSESEARCH, sInverseSearch.c_str());
+                                AppendMenu(hSplitMenu, bIsDir ? MF_STRING : MF_STRING | MF_DISABLED, IDC_INVERSESEARCH, sInverseSearch.c_str());
                                 AppendMenu(hSplitMenu, m_items.empty() ? MF_STRING | MF_DISABLED : MF_STRING, IDC_SEARCHINFOUNDFILES, sSearchInFoundFiles.c_str());
                                 AppendMenu(hSplitMenu, GetDlgItemTextLength(IDC_REPLACETEXT) ? MF_STRING : MF_STRING | MF_DISABLED, IDC_CAPTURESEARCH, sCaptureSearch.c_str());
                             }
