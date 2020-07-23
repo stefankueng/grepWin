@@ -3099,10 +3099,10 @@ void CSearchDlg::SearchFile(CSearchInfo sinfo, const std::wstring& searchRoot, b
                             if (m_bCaptureSearch)
                             {
                                 auto out = whatc.format(m_replaceString, flags);
-                                sinfo.matchlines.push_back(out);
+                                sinfo.matchlines.push_back(std::move(out));
                             }
                             else
-                                sinfo.matchlines.push_back(sLine.substr(0, 1024));
+                                sinfo.matchlines.push_back(std::move(sLine));
                             sinfo.matchlinesnumbers.push_back(l);
                         }
                     }
