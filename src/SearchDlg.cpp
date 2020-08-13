@@ -549,19 +549,16 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
         {
             if (m_updateCheckThread.joinable())
                 m_updateCheckThread.join();
-            if (!DWORD(CRegStdDWORD(L"Software\\grepWin\\escclose", FALSE)))
+            if (m_dwThreadRunning)
+                InterlockedExchange(&m_Cancelled, TRUE);
+            else
             {
-                if (m_dwThreadRunning)
-                    InterlockedExchange(&m_Cancelled, TRUE);
-                else
-                {
-                    SaveSettings();
-                    m_AutoCompleteFilePatterns.Save();
-                    m_AutoCompleteSearchPatterns.Save();
-                    m_AutoCompleteReplacePatterns.Save();
-                    m_AutoCompleteSearchPaths.Save();
-                    EndDialog(*this, IDCANCEL);
-                }
+                SaveSettings();
+                m_AutoCompleteFilePatterns.Save();
+                m_AutoCompleteSearchPatterns.Save();
+                m_AutoCompleteReplacePatterns.Save();
+                m_AutoCompleteSearchPaths.Save();
+                EndDialog(*this, IDCANCEL);
             }
         }
         break;
@@ -994,7 +991,10 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
         {
             if (m_updateCheckThread.joinable())
                 m_updateCheckThread.join();
-            if (DWORD(CRegStdDWORD(L"Software\\grepWin\\escclose", FALSE)))
+            bool escClose = !!DWORD(CRegStdDWORD(L"Software\\grepWin\\escclose", FALSE));
+            if (bPortable)
+                escClose = !!_wtoi(g_iniFile.GetValue(L"settings", L"escclose", L"0"));
+            if (escClose)
             {
                 if (m_dwThreadRunning)
                     InterlockedExchange(&m_Cancelled, TRUE);
