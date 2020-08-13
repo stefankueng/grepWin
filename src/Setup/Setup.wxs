@@ -86,6 +86,9 @@
             <RegistryValue Root="HKLM" Key="Software\Classes\*\shell\grepWin\command" Value='[INSTALLDIR]grepWin.exe /searchpath:"%1"' Type="string" />
             <RegistryValue Root="HKLM" Key="Software\Classes\*\shell\grepWin" Name="MultiSelectModel" Value='Player' Type="string" />
             <RegistryValue Root="HKLM" Key="Software\grepWin" Name="installDir" Value='[INSTALLDIR]' Type="string" />
+            <RegistryKey Root="HKLM" Key="Software\Microsoft\Windows\CurrentVersion\App Paths\grepWin.exe" />
+            <RegistryValue Root="HKLM" Key="Software\Microsoft\Windows\CurrentVersion\App Paths\grepWin.exe" Name="Path" Value="[INSTALLDIR]" Type="string" />
+            <RegistryValue Root="HKLM" Key="Software\Microsoft\Windows\CurrentVersion\App Paths\grepWin.exe" Value="[INSTALLDIR]grepWin.exe" Type="string" />
           </Component>
 
         </Directory>
