@@ -298,10 +298,7 @@
     <None Include="Setup\Setup64.wxs">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Setup\Setup64_user.wxs" />
-    <None Include="Setup\Setup_user.wxs" />
     <None Include="Setup\VersionNumberInclude.in.wxi" />
-    <None Include="Setup\WixUI_Custom.wxs" />
     <None Include="version.in" />
   </ItemGroup>
   <ItemGroup>

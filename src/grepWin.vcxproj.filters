@@ -310,19 +310,10 @@
     <None Include="..\versioninfo.build">
       <Filter>Scripts</Filter>
     </None>
-    <None Include="Setup\WixUI_Custom.wxs">
-      <Filter>Scripts</Filter>
-    </None>
     <None Include="Resources\infodlg.htm">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="Setup\Setup64.wxs">
-      <Filter>Scripts</Filter>
-    </None>
-    <None Include="Setup\Setup_user.wxs">
-      <Filter>Scripts</Filter>
-    </None>
-    <None Include="Setup\Setup64_user.wxs">
       <Filter>Scripts</Filter>
     </None>
     <None Include="Setup\VersionNumberInclude.in.wxi">
