@@ -1366,6 +1366,8 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 
             // Show the save file dialog
             hr = pfd->Show(*this);
+            if (hr == HRESULT_FROM_WIN32(ERROR_CANCELLED))
+                break;
             if (FailedShowMessage(hr))
                 break;
             IShellItemPtr psiResult = nullptr;
