@@ -2027,7 +2027,11 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
                             if (len > 0)
                                 --len;
                             if (m_searchpath.size() < pInfo->filepath.size())
+                            {
                                 wcsncpy_s(pItem->pszText, pItem->cchTextMax, pInfo->filepath.substr(m_searchpath.size() + 1, len).c_str(), pItem->cchTextMax - 1);
+                                if (pItem->pszText[0] == 0)
+                                    wcscpy_s(pItem->pszText, pItem->cchTextMax, L"\\.");
+                            }
                             else
                                 wcsncpy_s(pItem->pszText, pItem->cchTextMax, pInfo->filepath.c_str(), pItem->cchTextMax - 1);
                         }
