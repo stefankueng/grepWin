@@ -57,6 +57,9 @@
             <File Id="Portuguese.lang" Name="Portuguese.lang" DiskId="1" Source="../../translations/Portuguese.lang" />
             <File Id="Slovak.lang" Name="Slovak.lang" DiskId="1" Source="../../translations/Slovak.lang" />
             <File Id="Swedish.lang" Name="Swedish.lang" DiskId="1" Source="../../translations/Swedish.lang" />
+            <File Id="Afrikaans.lang" Name="Afrikaans.lang" DiskId="1" Source="../../translations/Afrikaans.lang" />
+            <File Id="Korean.lang" Name="Korean.lang" DiskId="1" Source="../../translations/Korean.lang" />
+            <File Id="Spanish Mexican.lang" Name="Spanish Mexican.lang" DiskId="1" Source="../../translations/Spanish Mexican.lang" />
             <RegistryKey Root="HKCU" Key="Software\Classes\Directory\shell\grepWin" />
             <RegistryValue Root="HKCU" Key="Software\Classes\Directory\shell\grepWin" Value="search with grepWin" Type="string" KeyPath="yes" />
             <RegistryValue Root="HKCU" Key="Software\Classes\Directory\shell\grepWin\command" Value='[INSTALLDIR]grepWin.exe /searchpath:"%1"' Type="string" />

@@ -36,23 +36,23 @@ msgstr ""
 #. Resource IDs: (149)
 #, c-format
 msgid "%ld more matches"
-msgstr "%ld ulteriori risultati"
+msgstr "%ld más resultados"
 
 #. Resource IDs: (1069)
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to"
-msgstr "%path% viene sostituito dal percorso del file, %line% dalla riga a cui saltare"
+msgstr "%path% es reemplazada con la ruta del archivo, %line% por la línea a ir, %pattern% con la cadena de búsqueda."
 
 #. Resource IDs: (119)
 msgid "&About grepWin..."
-msgstr "&Informazioni su grepWin..."
+msgstr "&Acerca de grepWin..."
 
 #. Resource IDs: (1049)
 msgid "&Replace"
-msgstr "&Sostituisci"
+msgstr "&Reemplazar"
 
 #. Resource IDs: (123)
 msgid "&Search"
-msgstr "&Cerca"
+msgstr "&Buscar"
 
 #. Resource IDs: (1013)
 msgid "..."
@@ -68,112 +68,112 @@ msgstr ">"
 
 #. Resource IDs: (1052, 135)
 msgid "About grepWin"
-msgstr "Informazioni su grepWin"
+msgstr "Acerca de grepWin"
 
 #. Resource IDs: (1021)
 msgid "Add to Presets"
-msgstr "Aggiungi a Predefiniti"
+msgstr "Añadir a preestablecidos"
 
 #. Resource IDs: (155)
 msgid "All Files"
-msgstr "Tutti i File"
+msgstr "Todos los archivos"
 
 #. Resource IDs: (1078)
 msgid "All dates"
-msgstr "Qualsiasi data"
+msgstr "Todas las fechas"
 
 #. Resource IDs: (1005)
 msgid "All sizes"
-msgstr "Tutte le dimensioni"
+msgstr "Todos los tamaños"
 
 #. Resource IDs: (124)
 #, c-format
 msgid "Are you sure you want to replace\n%s\nwith\n%s\nwithout creating backups?"
-msgstr "Sei sicuro di voler sostituire\n%s\ncon\n%s\nsenza creane copie?"
+msgstr "¿Estás seguro de querer reemplazar\s%s\ncon\n%s\nsin crear respaldos?"
 
 #. Resource IDs: (1081)
 msgid "Between"
-msgstr "Fra"
+msgstr "Entre fechas"
 
 #. Resource IDs: (2)
 msgid "Cancel"
-msgstr "Annulla"
+msgstr "Cancelar"
 
 #. Resource IDs: (169)
 msgid "Capture search"
-msgstr "Cerca cattura"
+msgstr "Capture búsqueda"
 
 #. Resource IDs: (1088)
 msgid "Check for updates"
-msgstr "Controlla gli aggiornamenti"
+msgstr "Checar actualizaciones"
 
 #. Resource IDs: (1068)
 msgid "Command line to start an editor at a specific line:"
-msgstr "Linea di comando per avviare un editor su una riga specifica:"
+msgstr "Línea de comandos para iniciar un editor en la línea especificada:"
 
 #. Resource IDs: (1060)
 msgid "Content"
-msgstr "Testo"
+msgstr "Contenido"
 
 #. Resource IDs: (145)
 msgid "Copy filename to clipboard"
-msgstr "Copia il nome del file negli appunti"
+msgstr "Copiar el nombre de archivo al portapapeles"
 
 #. Resource IDs: (146)
 msgid "Copy filenames to clipboard"
-msgstr "Copia i nomi dei file negli appunti"
+msgstr "Copiar los nombres de archivos al portapapeles"
 
 #. Resource IDs: (143)
 msgid "Copy path to clipboard"
-msgstr "Copia il percorso negli appunti"
+msgstr "Copiar la ruta al portapapeles"
 
 #. Resource IDs: (144)
 msgid "Copy paths to clipboard"
-msgstr "Copia i percorsi negli appunti"
+msgstr "Copiar las rutas al portapapeles"
 
 #. Resource IDs: (147)
 msgid "Copy text result to clipboard"
-msgstr "Copia il testo risultante negli appunti"
+msgstr "Copiar el texto resultante al portapapeles"
 
 #. Resource IDs: (148)
 msgid "Copy text results to clipboard"
-msgstr "Copia i testi risultanti negli appunti"
+msgstr "Copiar los textos resultantes al portapapeles"
 
 #. Resource IDs: (1029)
 msgid "Create backup files"
-msgstr "Crea copie dei file"
+msgstr "Crear un respaldo de archivos"
 
 #. Resource IDs: (1077)
 msgid "Create backup files in a separate folder"
-msgstr "Crea copie dei file in una cartella separata"
+msgstr "Crear el respaldo de archivos en una carpeta separada"
 
 #. Resource IDs: (1064)
 msgid "Dark mode"
-msgstr "Modalità scura"
+msgstr "Modo obscuro"
 
 #. Resource IDs: (139)
 msgid "Date modified"
-msgstr "Data di ultima modifica"
+msgstr "Fecha de modificación"
 
 #. Resource IDs: (137)
 msgid "Dialog"
-msgstr "Finestra di dialogo"
+msgstr "Diálogo"
 
 #. Resource IDs: (1078)
 msgid "Don't warn when replacing without creating backups"
-msgstr "Non avvisare quando si sostituisce senza creare dei backup"
+msgstr "No advertir al reemplazar sin haber creado copias de seguridad"
 
 #. Resource IDs: (1051)
 msgid "Dot matches newline"
-msgstr "Il punto corrisponde a newline"
+msgstr "Punto significa nueva línea"
 
 #. Resource IDs: (1056)
 msgid "Double-Click to select a preset"
-msgstr "Doppio-Click per selezionare un predefinito"
+msgstr "Doble clic para seleccionar un preestablecido"
 
 #. Resource IDs: (65535 - PopupMenu)
 msgid "Dummy"
-msgstr "Fittizio"
+msgstr "Ficticio"
 
 #. Resource IDs: (1067)
 msgid "Editor"
@@ -181,39 +181,39 @@ msgstr "Editor"
 
 #. Resource IDs: (138)
 msgid "Encoding"
-msgstr "Codifica"
+msgstr "Codificación"
 
 #. Resource IDs: (1056)
 msgid "Enter a name for the regex:"
-msgstr "Inserisci un nome per l'espressione regolare:"
+msgstr "Introduzca un nombre para el regex:"
 
 #. Resource IDs: (1062)
 msgid "Escape key closes grepWin"
-msgstr "Il tasto Escape chiude grepWin"
+msgstr "La tecla Escape cierra grepWin"
 
 #. Resource IDs: (1041)
 msgid "Exclude dirs (Regex):"
-msgstr "Escludi cartelle (espr. reg.):"
+msgstr "Excluir los directorios (Regex):"
 
 #. Resource IDs: (164)
 msgid "Export resultlist"
-msgstr "Esporta la lista dei risultati"
+msgstr "Exportar la lista de resultados"
 
 #. Resource IDs: (163)
 msgid "Export results..."
-msgstr "Esporta risultati..."
+msgstr "Exportar los resultados..."
 
 #. Resource IDs: (158)
 msgid "Ext"
-msgstr "Estensione"
+msgstr "Ext"
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
-msgstr "Limita Nomi di File:\nusa '|' per separare più modelli di corrispondenza, ante&poni '-' per escluderne"
+msgstr "Nombres de archivo:\nutilice '|' para separar múltiples patrones, prefije '-' para excluir"
 
 #. Resource IDs: (1059)
 msgid "Files"
-msgstr "File"
+msgstr "Archivos"
 
 #. Resource IDs: (109)
 msgid "GREPWIN"
@@ -221,35 +221,35 @@ msgstr "GREPWIN"
 
 #. Resource IDs: (156)
 msgid "If enabled, a backup folder is created inside the folder that's searched/replaced in, and the files are backed up into that folder"
-msgstr "Se abilitato, viene creata una cartella di salvataggio all'interno della cartella in cui viene eseguita la ricerca/sostituzione e i file vengono copiati in tale cartella"
+msgstr "Si está activado, una carpeta de respaldo se crea dentro de la cual se busca/reemplaza, y los archivos son respaldados en esta"
 
 #. Resource IDs: (1050)
 msgid "Include binary files"
-msgstr "Includi file binari"
+msgstr "Incluir archivos binarios"
 
 #. Resource IDs: (1010)
 msgid "Include hidden items"
-msgstr "Includi oggetti nascosti"
+msgstr "Incluir archivos ocultos"
 
 #. Resource IDs: (1062)
 msgid "Include search path"
-msgstr "Includi percorso di ricerca"
+msgstr "Incluir ruta de búsqueda"
 
 #. Resource IDs: (1011)
 msgid "Include subfolders"
-msgstr "Includi sottocartelle"
+msgstr "Incluir subcarpetas"
 
 #. Resource IDs: (1009)
 msgid "Include system items"
-msgstr "Includi oggetti di sistema"
+msgstr "Archivos del sistema"
 
 #. Resource IDs: (153)
 msgid "Invalid path!"
-msgstr "Percorso non valido!"
+msgstr "¡Ruta inválida!"
 
 #. Resource IDs: (161)
 msgid "Inverse search (NOT searchstring)"
-msgstr "Ricerca inversa (NON stringa di ricerca)"
+msgstr "Búsqueda inversa (NO cadena de búsqueda)"
 
 #. Resource IDs: (1019)
 msgid "KB"
@@ -257,36 +257,36 @@ msgstr "KB"
 
 #. Resource IDs: (1075)
 msgid "Language:"
-msgstr "Lingua:"
+msgstr "Idioma:"
 
 #. Resource IDs: (1017)
 msgid "Limit search"
-msgstr "Limita la ricerca"
+msgstr "Limitar búsqueda"
 
 #. Resource IDs: (134)
 msgid "Line"
-msgstr "Riga"
+msgstr "Línea"
 
 #. Resource IDs: (150)
 #, c-format
 msgid "Line %5ld : %30s\n"
-msgstr "Riga %5ld : %30s\n"
+msgstr "Línea %5ld : %30s\n"
 
 #. Resource IDs: (135)
 msgid "Matches"
-msgstr "Corrispondenze"
+msgstr "Coincidencias"
 
 #. Resource IDs: (104)
 msgid "Name"
-msgstr "Nome"
+msgstr "Nombre"
 
 #. Resource IDs: (1079)
 msgid "Newer than"
-msgstr "Prima del"
+msgstr "Más nuevo que"
 
 #. Resource IDs: (115)
 msgid "Newline is matched by '.'"
-msgstr "Newline corrisponde a '.'"
+msgstr "Nueva línea coincide con '.'"
 
 #. Resource IDs: (1)
 msgid "OK"
@@ -294,188 +294,188 @@ msgstr "OK"
 
 #. Resource IDs: (1080)
 msgid "Older than"
-msgstr "Dopo il"
+msgstr "Más antiguo que"
 
 #. Resource IDs: (1063)
 msgid "Only one instance"
-msgstr "Solo un'istanza"
+msgstr "Sólo una instancia"
 
 #. Resource IDs: (142)
 msgid "Open containing folder"
-msgstr "Apri la cartella contenente"
+msgstr "Abrir carpeta"
 
 #. Resource IDs: (141)
 msgid "Open with Editor"
-msgstr "Apri con l'Editor"
+msgstr "Abrir con editor"
 
 #. Resource IDs: (1056)
 msgid "Paste text to test the regex with:"
-msgstr "Incolla del testo con cui verificare l'espressione regolare:"
+msgstr "Pegue el texto para probar el regex con:"
 
 #. Resource IDs: (137)
 msgid "Path"
-msgstr "Percorso"
+msgstr "Ruta"
 
 #. Resource IDs: (160)
 msgid "Path does not exist or is not accessible!"
-msgstr "Il percorso non esiste o non è accessibile!"
+msgstr "¡La ruta no existe o no es accesible!"
 
 #. Resource IDs: (131)
 msgid "Preset name"
-msgstr "Nome Predefinito"
+msgstr "Nombre del preestablecido"
 
 #. Resource IDs: (1022, 132)
 msgid "Presets"
-msgstr "Predefiniti"
+msgstr "Preestablecidos"
 
 #. Resource IDs: (1065)
 msgid "Press F1 for help"
-msgstr "Premi F1 per aiuto"
+msgstr "Presione F1 para ayuda"
 
 #. Resource IDs: (154)
 msgid "Programs"
-msgstr "Programmi"
+msgstr "Programas"
 
 #. Resource IDs: (32775 - Menu)
 msgid "Re&name Preset"
-msgstr "Ri&nomina Predefinito"
+msgstr "Re&nombrar preestablecido"
 
 #. Resource IDs: (130)
 msgid "Regex Test"
-msgstr "Test espressione regolare"
+msgstr "Prueba regex"
 
 #. Resource IDs: (1046)
 msgid "Regex match"
-msgstr "Modelli espr. reg."
+msgstr "Modelo Regex"
 
 #. Resource IDs: (65535)
 msgid "Regex replace string:"
-msgstr "Espressione regolare della stringa di sostituzione:"
+msgstr "Regex reemplaza por cadena:"
 
 #. Resource IDs: (1001)
 msgid "Regex search"
-msgstr "Ricerca espr. reg."
+msgstr "Búsqueda regex"
 
 #. Resource IDs: (65535)
 msgid "Regex search string:"
-msgstr "Espressione regolare della stringa di ricerca:"
+msgstr "Cadena de búsqueda Regex:"
 
 #. Resource IDs: (152)
 msgid "Relative paths are not allowed. Please enter an absolute path!"
-msgstr "I percorsi relativi non sono consentiti. Si prega di inserire un percorso assoluto!"
+msgstr "Las rutas relativas no son permitidas. ¡Por favor ingrese una ruta absoluta!"
 
 #. Resource IDs: (32771 - Menu)
 msgid "Remo&ve Preset"
-msgstr "Rimuo&vi Predefinito"
+msgstr "Eliminar preestablecido"
 
 #. Resource IDs: (106)
 msgid "Replace string"
-msgstr "Stringa di sostituzione"
+msgstr "Reemplazar cadena"
 
 #. Resource IDs: (1027)
 msgid "Replace with/\nCapture format:"
-msgstr "Sostituisci con/\nFormato cattura:"
+msgstr "Reemplazar con/\ncapturar formato:"
 
 #. Resource IDs: (126)
 msgid "S&top"
-msgstr "In&terrompi"
+msgstr "De&tener"
 
 #. Resource IDs: (1, 1016)
 msgid "Search"
-msgstr "Ricerca"
+msgstr "Buscar"
 
 #. Resource IDs: (1026)
 msgid "Search &for:"
-msgstr "Ricerca &per:"
+msgstr "Buscar por:"
 
 #. Resource IDs: (1042)
 msgid "Search case-sensitive"
-msgstr "Maiuscole/minuscole"
+msgstr "Distinguir mayús.-minús."
 
 #. Resource IDs: (1015)
 msgid "Search in"
-msgstr "Ricerca in"
+msgstr "Buscar en"
 
 #. Resource IDs: (162)
 msgid "Search in found files"
-msgstr "Cerca nei file trovati"
+msgstr "Buscar en archivos encontrados"
 
 #. Resource IDs: (1018)
 msgid "Search results"
-msgstr "Risultati della ricerca"
+msgstr "Resultados de la búsqueda"
 
 #. Resource IDs: (105)
 msgid "Search string"
-msgstr "Stringa di ricerca"
+msgstr "Cadena de búsqueda"
 
 #. Resource IDs: (128)
 #, c-format
 msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files."
-msgstr "Cercati %ld file, saltati %ld file. Trovate %ld corrispondenze in %ld file."
+msgstr "Se buscó en %ld archivos, y se omitieron %ld archivos. Se encontraron %ld coincidencias en %ld archivos."
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."
-msgstr "Seleziona l'Applicazione Editor..."
+msgstr "Seleccione una aplicación de editor..."
 
 #. Resource IDs: (127)
 msgid "Select path to search"
-msgstr "Seleziona percorso di ricerca"
+msgstr "Seleccione ruta a buscar"
 
 #. Resource IDs: (1071)
 msgid "Settings"
-msgstr "Impostazioni"
+msgstr "Configuración"
 
 #. Resource IDs: (133)
 msgid "Size"
-msgstr "Dimensione"
+msgstr "Tamaño"
 
 #. Resource IDs: (1006)
 msgid "Size is"
-msgstr "Dimens."
+msgstr "Tamaño es"
 
 #. Resource IDs: (1028)
 msgid "Test regex"
-msgstr "Prova espr. reg."
+msgstr "Probar regex"
 
 #. Resource IDs: (136)
 msgid "Text"
-msgstr "Testo"
+msgstr "Texto"
 
 #. Resource IDs: (1048)
 msgid "Text match"
-msgstr "Modelli di testo"
+msgstr "Modelo de texto"
 
 #. Resource IDs: (1002)
 msgid "Text search"
-msgstr "Ricerca testo"
+msgstr "Buscar texto"
 
 #. Resource IDs: (65535)
 msgid "The regex search string matches:"
-msgstr "La stringa di ricerca dell'espressione regolare corrisponde:"
+msgstr "La cadena de búsqueda regex coincide con:"
 
 #. Resource IDs: (65535)
 msgid "The resulting text after replacing:"
-msgstr "Il testo risultante dopo la sostituzione:"
+msgstr "El texto resultante después de reemplazar:"
 
 #. Resource IDs: (1053)
 msgid "Treat files as UTF8"
-msgstr "Tratta i file come UTF8"
+msgstr "Tratar archivos como UTF-8"
 
 #. Resource IDs: (1054)
 msgid "Treat files as binary"
-msgstr "Tratta i file come binari"
+msgstr "Tratar archivos como binario"
 
 #. Resource IDs: (1045)
 msgid "Visit our website"
-msgstr "Visita il nostro sito web"
+msgstr "Visitar el sitio web de Stefan Küng"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
-msgstr "un'espressione regolare usata per la ricerca. Premi F1 per maggiori informazioni."
+msgstr "una expresión regular utilizada para buscar. Presione F1 para más información."
 
 #. Resource IDs: (125)
 msgid "an empty string"
-msgstr "una stringa vuota"
+msgstr "una cadena vacía"
 
 #. Resource IDs: (130)
 msgid "binary"
@@ -483,19 +483,19 @@ msgstr "binario"
 
 #. Resource IDs: (118)
 msgid "click to edit the text as a multiline text"
-msgstr "fare clic per modificare il testo come testo multilinea"
+msgstr "clic para editar el texto como un texto multilínea"
 
 #. Resource IDs: (159)
 msgid "dark mode requires at least Win10 1803, and it must be enabled in the Windows system settings."
-msgstr "La modalità scura richiede almeno Win10 1803, e deve essere abilitata nelle impostazioni di sistema di Windows."
+msgstr "El modo obscuro requiere al menos Win10 v1803, y debe estar habilitado en la configuración de Windows."
 
 #. Resource IDs: (121)
 msgid "equal to"
-msgstr "uguale a"
+msgstr "igual a"
 
 #. Resource IDs: (122)
 msgid "greater than"
-msgstr "più grande di"
+msgstr "mayor que"
 
 #. Resource IDs: (103, 129)
 msgid "grepWin"
@@ -504,82 +504,82 @@ msgstr "grepWin"
 #. Resource IDs: (168)
 #, c-format
 msgid "grepWin %s is available"
-msgstr "È disponibile grepWin %s"
+msgstr "grepWin %s está disponible"
 
 #. Resource IDs: (138)
 msgid "grepWin Settings"
-msgstr "Impostazioni grepWin"
+msgstr "Opciones de grepWin"
 
 #. Resource IDs: (157)
 msgid "hold down the shift key to find files that DO NOT contain the search string"
-msgstr "tieni premuto il tasto \"Maiusc\" per trovare i file che NON contengono la stringa di ricerca"
+msgstr "mantenga presionado la tecla shift para buscar archivos que NO contengan la cadena de búsqueda"
 
 #. Resource IDs: (165)
 msgid "include file paths"
-msgstr "includi percorsi dei file"
+msgstr "incluir rutas de archivo"
 
 #. Resource IDs: (166)
 msgid "include match line numbers"
-msgstr "includi i numeri di riga delle corrispondenze"
+msgstr "incluir números de línea correspondientes"
 
 #. Resource IDs: (167)
 msgid "include match line text"
-msgstr "includi il testo delle linee con corrispondenze"
+msgstr "incluir el texto de línea correspondiente"
 
 #. Resource IDs: (132)
 msgid "invalid regex!"
-msgstr "espressione regolare non valida!"
+msgstr "¡regex inválido!"
 
 #. Resource IDs: (120)
 msgid "less than"
-msgstr "minore di"
+msgstr "menos que"
 
 #. Resource IDs: (111)
 msgid "no match"
-msgstr "nessuna corrispondenza"
+msgstr "sin coincidencia"
 
 #. Resource IDs: (110)
 msgid "no text to replace with"
-msgstr "nessun testo da sostituire"
+msgstr "no hay texto para reemplazar"
 
 #. Resource IDs: (107)
 msgid "no text to test with available"
-msgstr "nessun testo disponibile da provare"
+msgstr "no hay texto disponible para probar"
 
 #. Resource IDs: (1074)
 msgid "number of NULL bytes per MB allowed for a file to still be considered text instead of binary"
-msgstr "numero consentito di byte NULL per MB in un file per essere ancora considerato testo anziché binario"
+msgstr "Número de bytes NULL por MB permitidos para que un archivo se considere como texto en lugar de binario"
 
 #. Resource IDs: (112)
 msgid "only files that match this pattern are searched.\r\nUse \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
-msgstr "vengono cercati solo i file che corrispondono a questo modello.\nUsa \"|\" come delimitatore.\nEsempio: *.cpp|*.h"
+msgstr "solo archivos que coincidan con este patrón son buscados.\nUse '|' como el delimitador.\nEjemplo: *.cpp|*.h"
 
 #. Resource IDs: (129)
 msgid "read error"
-msgstr "errore di lettura"
+msgstr "error de lectura"
 
 #. Resource IDs: (131)
 msgid "regex ok"
-msgstr "espressione regolare valida"
+msgstr "regex ok"
 
 #. Resource IDs: (117)
 msgid "reuse grepWin instances."
-msgstr "riusa istanze di grepWin"
+msgstr "reutilizar instancias de grepWin."
 
 #. Resource IDs: (151)
 #, c-format
 msgid "scanning file '%s'"
-msgstr "scansione del file '%s'"
+msgstr "escaneando el archivo '%s'"
 
 #. Resource IDs: (108)
 msgid "search string is empty"
-msgstr "la stringa di ricerca è vuota"
+msgstr "La cadena de búsqueda está vacía"
 
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"
-msgstr "il percorso(i) che viene cercato in modo ricorsivo.\nSeparare i percorsi con il simbolo \"|\".\nEsempio: c:\\temp|d:\\logs"
+msgstr "la(s) ruta(s) en las que se busca(n) recursivamente.\nSepare las rutas con el símbolo |.\nEjemplo: c:\\temp|d:\\logs"
 
 #. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
-msgstr "puoi escludere le cartelle, ad es. CVS e immagini.\nEsempio: ^(CVS|immagini)$\nNota, le cartelle '.svn' sono 'nascoste' su Windows, quindi di solito non vengono scansionate."
+msgstr "puede excluir directorios, ej. CVS e imágenes.\nEjemplo: ^(CVS|imágenes)$\nNota, las carpetas '.svn' están 'ocultas' en Windows, por lo que usualmente no son escaneadas."
 
