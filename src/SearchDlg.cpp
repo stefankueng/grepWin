@@ -419,6 +419,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             m_resizer.Init(hwndDlg);
             m_resizer.UseSizeGrip(!CTheme::Instance().IsDarkTheme());
             m_resizer.AddControl(hwndDlg, IDC_HELPLABEL, RESIZER_TOPLEFT);
+            m_resizer.AddControl(hwndDlg, IDC_CLONE, RESIZER_TOPRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_ABOUTLINK, RESIZER_TOPRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_GROUPSEARCHIN, RESIZER_TOPLEFTRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_PATHMRU, RESIZER_TOPLEFT);
@@ -639,18 +640,34 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                 case IDC_ABOUTLINK:
                     switch (((LPNMHDR)lParam)->code)
                     {
-                    case NM_CLICK:
-                    case NM_RETURN:
-                    {
-                        PNMLINK pNMLink = (PNMLINK)lParam;
-                        LITEM   item = pNMLink->item;
-                        if (item.iLink == 0)
+                        case NM_CLICK:
+                        case NM_RETURN:
                         {
-                            CAboutDlg dlgAbout(*this);
-                            dlgAbout.DoModal(hResource, IDD_ABOUT, *this);
+                            PNMLINK pNMLink = (PNMLINK)lParam;
+                            LITEM   item    = pNMLink->item;
+                            if (item.iLink == 0)
+                            {
+                                CAboutDlg dlgAbout(*this);
+                                dlgAbout.DoModal(hResource, IDD_ABOUT, *this);
+                            }
+                            break;
                         }
-                        break;
                     }
+                    break;
+                case IDC_CLONE:
+                    switch (((LPNMHDR)lParam)->code)
+                    {
+                        case NM_CLICK:
+                        case NM_RETURN:
+                        {
+                            PNMLINK pNMLink = (PNMLINK)lParam;
+                            LITEM   item    = pNMLink->item;
+                            if (item.iLink == 0)
+                            {
+                                CloneWindow();
+                            }
+                            break;
+                        }
                     }
                     break;
             }
@@ -1536,7 +1553,7 @@ void CSearchDlg::UpdateInfoLabel()
     std::wstring sText;
     wchar_t      buf[1024] = {0};
     swprintf_s(buf, _countof(buf), TranslatedString(hResource, IDS_INFOLABEL).c_str(),
-                m_searchedItems, m_totalitems - m_searchedItems, m_totalmatches, m_items.size());
+               m_searchedItems, m_totalitems - m_searchedItems, m_totalmatches, m_items.size());
     sText = buf;
 
     SetDlgItemText(*this, IDC_SEARCHINFOLABEL, sText.c_str());
@@ -3814,7 +3831,7 @@ bool CSearchDlg::CloneWindow()
     arguments += CStringUtils::Format(L" /searchpath:\"%s\"", m_searchpath.c_str());
     arguments += CStringUtils::Format(L" /searchfor:\"%s\"", m_searchString.c_str());
     arguments += CStringUtils::Format(L" /replacewith:\"%s\"", m_replaceString.c_str());
-
+    arguments += L" /new";
     auto file = CPathUtils::GetModulePath();
 
     SHELLEXECUTEINFO sei = {0};

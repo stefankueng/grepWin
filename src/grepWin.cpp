@@ -189,7 +189,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
     HWND hWnd    = NULL;
     int  timeout = 20;
     // find already running grepWin windows
-    if (alreadyRunning)
+    if (alreadyRunning && !parser.HasKey(L"new"))
     {
         do
         {
