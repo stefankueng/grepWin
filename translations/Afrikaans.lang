@@ -62,11 +62,23 @@ msgstr "..."
 msgid "/"
 msgstr "/"
 
+#. Resource IDs: (1045)
+msgid "<a href=\"https://tools.stefankueng.com\">Visit our website</a>"
+msgstr ""
+
+#. Resource IDs: (1052)
+msgid "<a>about grepWin</a>"
+msgstr ""
+
+#. Resource IDs: (1055)
+msgid "<a>start new grepWin window</a>"
+msgstr ""
+
 #. Resource IDs: (1086)
 msgid ">"
 msgstr ">"
 
-#. Resource IDs: (1052, 135)
+#. Resource IDs: (135)
 msgid "About grepWin"
 msgstr "Oor grepWin"
 
@@ -410,8 +422,8 @@ msgstr "Soekstring"
 
 #. Resource IDs: (128)
 #, c-format
-msgid "Searched %ld, skipped %ld files. Found %ld matches in %ld files."
-msgstr "%ld lêers deursoek, %ld lêers oorgeslaan. %ld ooreenstem met %ld lêers."
+msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files."
+msgstr ""
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."
@@ -464,10 +476,6 @@ msgstr "Behandel lêers as UTF-8"
 #. Resource IDs: (1054)
 msgid "Treat files as binary"
 msgstr "Behandel lêers as binêre"
-
-#. Resource IDs: (1045)
-msgid "Visit our website"
-msgstr "Besoek Stefan Küng se webwerf"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
@@ -574,6 +582,10 @@ msgstr "skandeer lêer '%s'"
 #. Resource IDs: (108)
 msgid "search string is empty"
 msgstr "soekstring is leeg"
+
+#. Resource IDs: (170)
+msgid "start new grepWin window"
+msgstr ""
 
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"

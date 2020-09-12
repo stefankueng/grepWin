@@ -62,11 +62,23 @@ msgstr "..."
 msgid "/"
 msgstr "/"
 
+#. Resource IDs: (1045)
+msgid "<a href=\"https://tools.stefankueng.com\">Visit our website</a>"
+msgstr ""
+
+#. Resource IDs: (1052)
+msgid "<a>about grepWin</a>"
+msgstr ""
+
+#. Resource IDs: (1055)
+msgid "<a>start new grepWin window</a>"
+msgstr ""
+
 #. Resource IDs: (1086)
 msgid ">"
 msgstr ">"
 
-#. Resource IDs: (1052, 135)
+#. Resource IDs: (135)
 msgid "About grepWin"
 msgstr "Informazioni su grepWin"
 
@@ -465,10 +477,6 @@ msgstr "Tratta i file come UTF8"
 msgid "Treat files as binary"
 msgstr "Tratta i file come binari"
 
-#. Resource IDs: (1045)
-msgid "Visit our website"
-msgstr "Visita il nostro sito web"
-
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
 msgstr "un'espressione regolare usata per la ricerca. Premi F1 per maggiori informazioni."
@@ -574,6 +582,10 @@ msgstr "scansione del file '%s'"
 #. Resource IDs: (108)
 msgid "search string is empty"
 msgstr "la stringa di ricerca è vuota"
+
+#. Resource IDs: (170)
+msgid "start new grepWin window"
+msgstr ""
 
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"

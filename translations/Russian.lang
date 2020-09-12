@@ -9,9 +9,9 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 1900-01-01 00:00+0000\n"
-"PO-Revision-Date: 2020-07-11 14:00:52 +0300\n"
-"Last-Translator: VictorVG\n"
-"Language-Team: Russian\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -62,11 +62,23 @@ msgstr "..."
 msgid "/"
 msgstr "/"
 
+#. Resource IDs: (1045)
+msgid "<a href=\"https://tools.stefankueng.com\">Visit our website</a>"
+msgstr ""
+
+#. Resource IDs: (1052)
+msgid "<a>about grepWin</a>"
+msgstr ""
+
+#. Resource IDs: (1055)
+msgid "<a>start new grepWin window</a>"
+msgstr ""
+
 #. Resource IDs: (1086)
 msgid ">"
 msgstr ">"
 
-#. Resource IDs: (1052, 135)
+#. Resource IDs: (135)
 msgid "About grepWin"
 msgstr "О grepWin"
 
@@ -465,10 +477,6 @@ msgstr "Файлы как UTF-8"
 msgid "Treat files as binary"
 msgstr "Считать файлы двоичными"
 
-#. Resource IDs: (1045)
-msgid "Visit our website"
-msgstr "Посетить сайт"
-
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
 msgstr "Регулярные выражения для поиска. Нажмите F1 для справки."
@@ -574,6 +582,10 @@ msgstr "Поиск файлов '%s'"
 #. Resource IDs: (108)
 msgid "search string is empty"
 msgstr "Строка поиска пуста"
+
+#. Resource IDs: (170)
+msgid "start new grepWin window"
+msgstr ""
 
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"

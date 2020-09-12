@@ -62,11 +62,23 @@ msgstr "..."
 msgid "/"
 msgstr "/"
 
+#. Resource IDs: (1045)
+msgid "<a href=\"https://tools.stefankueng.com\">Visit our website</a>"
+msgstr ""
+
+#. Resource IDs: (1052)
+msgid "<a>about grepWin</a>"
+msgstr ""
+
+#. Resource IDs: (1055)
+msgid "<a>start new grepWin window</a>"
+msgstr ""
+
 #. Resource IDs: (1086)
 msgid ">"
 msgstr ""
 
-#. Resource IDs: (1052, 135)
+#. Resource IDs: (135)
 msgid "About grepWin"
 msgstr "关于 grepWin"
 
@@ -465,10 +477,6 @@ msgstr "将文件视为 UTF8"
 msgid "Treat files as binary"
 msgstr ""
 
-#. Resource IDs: (1045)
-msgid "Visit our website"
-msgstr "访问我们的网站"
-
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
 msgstr "用于搜索的正则表达式. 按 F1 键获取更多信息."
@@ -574,6 +582,10 @@ msgstr "正在扫描文件 '%s'"
 #. Resource IDs: (108)
 msgid "search string is empty"
 msgstr "搜索字符串为空"
+
+#. Resource IDs: (170)
+msgid "start new grepWin window"
+msgstr ""
 
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"

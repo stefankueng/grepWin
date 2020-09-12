@@ -62,11 +62,23 @@ msgstr "..."
 msgid "/"
 msgstr "/"
 
+#. Resource IDs: (1045)
+msgid "<a href=\"https://tools.stefankueng.com\">Visit our website</a>"
+msgstr ""
+
+#. Resource IDs: (1052)
+msgid "<a>about grepWin</a>"
+msgstr ""
+
+#. Resource IDs: (1055)
+msgid "<a>start new grepWin window</a>"
+msgstr ""
+
 #. Resource IDs: (1086)
 msgid ">"
 msgstr ">"
 
-#. Resource IDs: (1052, 135)
+#. Resource IDs: (135)
 msgid "About grepWin"
 msgstr "grepWin에 대해"
 
@@ -465,10 +477,6 @@ msgstr "파일들을 UTF-8로 취급"
 msgid "Treat files as binary"
 msgstr "파일들을 바이너리로 취급"
 
-#. Resource IDs: (1045)
-msgid "Visit our website"
-msgstr "Stefan Küng의 웹사이트"
-
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
 msgstr "검색에 사용되는 정규표현식입니다. 추가 정보는 F1을 눌러주세요."
@@ -574,6 +582,10 @@ msgstr "'%s' 파일 스캔중"
 #. Resource IDs: (108)
 msgid "search string is empty"
 msgstr "검색 문자열이 없습니다"
+
+#. Resource IDs: (170)
+msgid "start new grepWin window"
+msgstr ""
 
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"
