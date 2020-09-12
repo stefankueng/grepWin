@@ -323,6 +323,7 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
                     for (auto it2 = it->lines.cbegin(); it2 != it->lines.cend(); ++it2)
                     {
                         std::wstring l = it2->text;
+                        CStringUtils::trim(l, L"\r\n");
                         std::replace(l.begin(), l.end(), '\n', ' ');
                         std::replace(l.begin(), l.end(), '\r', ' ');
 
