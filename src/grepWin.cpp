@@ -31,10 +31,11 @@
 #pragma warning(pop)
 
 // Global Variables:
-HINSTANCE  g_hInst; // current instance
-bool       bPortable = false;
-CSimpleIni g_iniFile;
-HANDLE     hInitProtection = nullptr;
+HINSTANCE    g_hInst; // current instance
+bool         bPortable = false;
+CSimpleIni   g_iniFile;
+std::wstring g_iniPath;
+HANDLE       hInitProtection = nullptr;
 
 ULONGLONG g_startTime        = GetTickCount64();
 UINT      GREPWIN_STARTUPMSG = RegisterWindowMessage(L"grepWin_StartupMessage");
@@ -201,7 +202,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
                 {
                     CloseHandle(hInitProtection);
                     Sleep(100);
-                    initInProgress = false;
+                    initInProgress  = false;
                     hInitProtection = ::CreateMutex(NULL, FALSE, L"{6473AA76-0EAE-4C96-8C99-AFDFEFFE42B6}");
                     if ((!hInitProtection) || (GetLastError() == ERROR_ALREADY_EXISTS))
                     {
@@ -221,15 +222,15 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
     auto modulename = CPathUtils::GetFileName(CPathUtils::GetModulePath(0));
     bPortable       = ((_tcsstr(modulename.c_str(), L"portable")) || (parser.HasKey(L"portable")));
 
-    std::wstring iniPath = CPathUtils::GetModuleDir(0);
-    iniPath += L"\\grepwin.ini";
+    g_iniPath = CPathUtils::GetModuleDir(0);
+    g_iniPath += L"\\grepwin.ini";
     if (parser.HasVal(L"inipath"))
-        iniPath = parser.GetVal(L"inipath");
+        g_iniPath = parser.GetVal(L"inipath");
 
     if (bPortable)
     {
         g_iniFile.SetUnicode();
-        g_iniFile.LoadFile(iniPath.c_str());
+        g_iniFile.LoadFile(g_iniPath.c_str());
     }
 
     if (hWnd)
@@ -390,7 +391,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
         if (bPortable)
         {
             FILE* pFile = NULL;
-            _tfopen_s(&pFile, iniPath.c_str(), L"wb");
+            _wfopen_s(&pFile, g_iniPath.c_str(), L"wb");
             g_iniFile.SaveFile(pFile);
             fclose(pFile);
         }

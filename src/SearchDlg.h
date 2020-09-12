@@ -40,6 +40,7 @@
 #define WM_GREPWIN_THREADEND (WM_APP+5)
 
 #define ID_ABOUTBOX         0x0010
+#define ID_CLONE            0x0011
 
 enum ExecuteAction
 {
@@ -107,7 +108,7 @@ protected:
     void                    CheckForUpdates(bool force = false);
     void                    ShowUpdateAvailable();
     bool                    IsVersionNewer(const std::wstring& sVer);
-
+    bool                    CloneWindow();
 private:
     static bool             NameCompareAsc(const CSearchInfo& Entry1, const CSearchInfo& Entry2);
     static bool             SizeCompareAsc(const CSearchInfo& Entry1, const CSearchInfo& Entry2);

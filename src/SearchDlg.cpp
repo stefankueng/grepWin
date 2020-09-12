@@ -304,11 +304,13 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                 if (menuItemsCount > 2)
                 {
                     InsertMenu(hSysMenu, menuItemsCount - 2, MF_STRING | MF_BYPOSITION, ID_ABOUTBOX, TranslatedString(hResource, IDS_ABOUT).c_str());
+                    InsertMenu(hSysMenu, menuItemsCount - 2, MF_STRING | MF_BYPOSITION, ID_CLONE, TranslatedString(hResource, IDS_CLONE).c_str());
                     InsertMenu(hSysMenu, menuItemsCount - 2, MF_SEPARATOR | MF_BYPOSITION, NULL, NULL);
                 }
                 else
                 {
                     AppendMenu(hSysMenu, MF_SEPARATOR, NULL, NULL);
+                    AppendMenu(hSysMenu, MF_STRING, ID_CLONE, TranslatedString(hResource, IDS_CLONE).c_str());
                     AppendMenu(hSysMenu, MF_STRING, ID_ABOUTBOX, TranslatedString(hResource, IDS_ABOUT).c_str());
                 }
             }
@@ -722,10 +724,19 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
         break;
         case WM_SYSCOMMAND:
         {
-            if ((wParam & 0xFFF0) == ID_ABOUTBOX)
+            switch (wParam & 0xFFFF)
             {
-                CAboutDlg dlgAbout(*this);
-                dlgAbout.DoModal(hResource, IDD_ABOUT, *this);
+                case ID_ABOUTBOX:
+                {
+                    CAboutDlg dlgAbout(*this);
+                    dlgAbout.DoModal(hResource, IDD_ABOUT, *this);
+                }
+                break;
+                case ID_CLONE:
+                {
+                    CloneWindow();
+                }
+                break;
             }
         }
         break;
@@ -3776,4 +3787,33 @@ bool CSearchDlg::IsVersionNewer(const std::wstring& sVer)
     else if ((build > GREPWIN_VERBUILD) && (micro == GREPWIN_VERMICRO) && (minor == GREPWIN_VERMINOR) && (major == GREPWIN_VERMAJOR))
         isNewer = true;
     return isNewer;
+}
+
+bool CSearchDlg::CloneWindow()
+{
+    if (!SaveSettings())
+        return false;
+    if (bPortable)
+    {
+        FILE* pFile = NULL;
+        _wfopen_s(&pFile, g_iniPath.c_str(), L"wb");
+        g_iniFile.SaveFile(pFile);
+        fclose(pFile);
+    }
+
+    std::wstring arguments;
+    arguments += CStringUtils::Format(L" /searchpath:\"%s\"", m_searchpath.c_str());
+    arguments += CStringUtils::Format(L" /searchfor:\"%s\"", m_searchString.c_str());
+    arguments += CStringUtils::Format(L" /replacewith:\"%s\"", m_replaceString.c_str());
+
+    auto file = CPathUtils::GetModulePath();
+
+    SHELLEXECUTEINFO sei = {0};
+    sei.cbSize           = sizeof(SHELLEXECUTEINFO);
+    sei.lpVerb           = TEXT("open");
+    sei.lpFile           = file.c_str();
+    sei.lpParameters     = arguments.c_str();
+    sei.nShow            = SW_SHOWNORMAL;
+    ShellExecuteEx(&sei);
+    return true;
 }
