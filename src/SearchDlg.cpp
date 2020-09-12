@@ -318,7 +318,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             wchar_t buf[MAX_PATH] = {0};
             if (m_bSizeC && (m_lSize != (uint64_t)-1))
             {
-                _stprintf_s(buf, _countof(buf), L"%I64u", m_lSize);
+                swprintf_s(buf, _countof(buf), L"%I64u", m_lSize);
                 SetDlgItemText(hwndDlg, IDC_SIZEEDIT, buf);
             }
             else
@@ -326,7 +326,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                 uint64_t s = _wtoll(std::wstring(m_regSize).c_str());
                 if (bPortable)
                     s = _wtoi(g_iniFile.GetValue(L"global", L"size", L"2000"));
-                _stprintf_s(buf, _countof(buf), L"%I64u", s);
+                swprintf_s(buf, _countof(buf), L"%I64u", s);
                 SetDlgItemText(hwndDlg, IDC_SIZEEDIT, buf);
             }
 
@@ -1111,7 +1111,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 wchar_t compactPath[100] = {0};
                 PathCompactPathEx(compactPath, buf.get(), 40, 0);
                 wchar_t titleBuf[MAX_PATH] = {0};
-                _stprintf_s(titleBuf, _countof(titleBuf), L"grepWin : %s", compactPath);
+                swprintf_s(titleBuf, _countof(titleBuf), L"grepWin : %s", compactPath);
                 SetWindowText(*this, titleBuf);
             }
         }
@@ -1526,7 +1526,7 @@ void CSearchDlg::UpdateInfoLabel()
 {
     std::wstring sText;
     wchar_t      buf[1024] = {0};
-    _stprintf_s(buf, _countof(buf), TranslatedString(hResource, IDS_INFOLABEL).c_str(),
+    swprintf_s(buf, _countof(buf), TranslatedString(hResource, IDS_INFOLABEL).c_str(),
                 m_searchedItems, m_totalitems - m_searchedItems, m_totalmatches, m_items.size());
     sText = buf;
 
@@ -2472,7 +2472,7 @@ bool CSearchDlg::SaveSettings()
     if (!m_bAllSize)
     {
         buf     = GetDlgItemText(IDC_SIZEEDIT);
-        m_lSize = _tstol(buf.get());
+        m_lSize = _wtol(buf.get());
         if (bPortable)
             g_iniFile.SetValue(L"global", L"Size", CStringUtils::Format(L"%I64u", m_lSize).c_str());
         else

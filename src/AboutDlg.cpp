@@ -48,8 +48,8 @@ LRESULT CAboutDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
             CTheme::Instance().SetThemeForDialog(*this, CTheme::Instance().IsDarkTheme());
             InitDialog(hwndDlg, IDI_GREPWIN);
             CLanguage::Instance().TranslateWindow(*this);
-            TCHAR buf[MAX_PATH] = {0};
-            _stprintf_s(buf, _countof(buf), L"grepWin version %ld.%ld.%ld.%ld", GREPWIN_VERMAJOR, GREPWIN_VERMINOR, GREPWIN_VERMICRO, GREPWIN_VERBUILD);
+            wchar_t buf[MAX_PATH] = {0};
+            swprintf_s(buf, _countof(buf), L"grepWin version %ld.%ld.%ld.%ld", GREPWIN_VERMAJOR, GREPWIN_VERMINOR, GREPWIN_VERMICRO, GREPWIN_VERBUILD);
             SetDlgItemText(*this, IDC_VERSIONINFO, buf);
             SetDlgItemText(*this, IDC_DATE, TEXT(GREPWIN_VERDATE));
         }

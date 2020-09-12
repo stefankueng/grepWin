@@ -117,10 +117,10 @@ BOOL CALLBACK windowenumerator(__in HWND hwnd, __in LPARAM lParam)
     return TRUE;
 }
 
-int APIENTRY _tWinMain(HINSTANCE hInstance,
-                       HINSTANCE hPrevInstance,
-                       LPTSTR    lpCmdLine,
-                       int       nCmdShow)
+int APIENTRY wWinMain(HINSTANCE hInstance,
+                      HINSTANCE hPrevInstance,
+                      LPTSTR    lpCmdLine,
+                      int       nCmdShow)
 {
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
@@ -220,7 +220,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
     }
 
     auto modulename = CPathUtils::GetFileName(CPathUtils::GetModulePath(0));
-    bPortable       = ((_tcsstr(modulename.c_str(), L"portable")) || (parser.HasKey(L"portable")));
+    bPortable       = ((wcsstr(modulename.c_str(), L"portable")) || (parser.HasKey(L"portable")));
 
     g_iniPath = CPathUtils::GetModuleDir(0);
     g_iniPath += L"\\grepwin.ini";
@@ -309,15 +309,15 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
                 searchDlg.SetPreset(parser.GetVal(L"preset"));
 
             if (parser.HasVal(L"i"))
-                searchDlg.SetCaseSensitive(_tcsicmp(parser.GetVal(L"i"), L"yes") != 0);
+                searchDlg.SetCaseSensitive(_wcsicmp(parser.GetVal(L"i"), L"yes") != 0);
             if (parser.HasVal(L"n"))
-                searchDlg.SetMatchesNewline(_tcsicmp(parser.GetVal(L"n"), L"yes") == 0);
+                searchDlg.SetMatchesNewline(_wcsicmp(parser.GetVal(L"n"), L"yes") == 0);
             if (parser.HasVal(L"k"))
-                searchDlg.SetCreateBackups(_tcsicmp(parser.GetVal(L"k"), L"yes") == 0);
+                searchDlg.SetCreateBackups(_wcsicmp(parser.GetVal(L"k"), L"yes") == 0);
             if (parser.HasVal(L"utf8"))
-                searchDlg.SetUTF8(_tcsicmp(parser.GetVal(L"utf8"), L"yes") == 0);
+                searchDlg.SetUTF8(_wcsicmp(parser.GetVal(L"utf8"), L"yes") == 0);
             if (parser.HasVal(L"binary"))
-                searchDlg.SetBinary(_tcsicmp(parser.GetVal(L"binary"), L"yes") == 0);
+                searchDlg.SetBinary(_wcsicmp(parser.GetVal(L"binary"), L"yes") == 0);
             if (parser.HasVal(L"size"))
             {
                 int cmp = 0;
@@ -326,15 +326,15 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
                 searchDlg.SetSize(parser.GetLongVal(L"size"), cmp);
             }
             if (parser.HasVal(L"s"))
-                searchDlg.SetIncludeSystem(_tcsicmp(parser.GetVal(L"s"), L"yes") == 0);
+                searchDlg.SetIncludeSystem(_wcsicmp(parser.GetVal(L"s"), L"yes") == 0);
             if (parser.HasVal(L"h"))
-                searchDlg.SetIncludeHidden(_tcsicmp(parser.GetVal(L"h"), L"yes") == 0);
+                searchDlg.SetIncludeHidden(_wcsicmp(parser.GetVal(L"h"), L"yes") == 0);
             if (parser.HasVal(L"u"))
-                searchDlg.SetIncludeSubfolders(_tcsicmp(parser.GetVal(L"u"), L"yes") == 0);
+                searchDlg.SetIncludeSubfolders(_wcsicmp(parser.GetVal(L"u"), L"yes") == 0);
             if (parser.HasVal(L"b"))
-                searchDlg.SetIncludeBinary(_tcsicmp(parser.GetVal(L"b"), L"yes") == 0);
+                searchDlg.SetIncludeBinary(_wcsicmp(parser.GetVal(L"b"), L"yes") == 0);
             if (parser.HasVal(L"regex"))
-                searchDlg.SetUseRegex(_tcsicmp(parser.GetVal(L"regex"), L"yes") == 0);
+                searchDlg.SetUseRegex(_wcsicmp(parser.GetVal(L"regex"), L"yes") == 0);
             else if (parser.HasVal(L"searchfor"))
                 searchDlg.SetUseRegex(true);
 

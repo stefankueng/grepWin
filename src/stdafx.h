@@ -16,7 +16,6 @@
 #include <stdlib.h>
 #include <malloc.h>
 #include <memory.h>
-#include <tchar.h>
 
 #include <commctrl.h>
 #include <shlwapi.h>
