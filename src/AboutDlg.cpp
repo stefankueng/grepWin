@@ -21,6 +21,7 @@
 #include "AboutDlg.h"
 #include "version.h"
 #include "Theme.h"
+#include <shellapi.h>
 #include <string>
 
 CAboutDlg::CAboutDlg(HWND hParent)
@@ -44,7 +45,6 @@ LRESULT CAboutDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
                 [this]() {
                     CTheme::Instance().SetThemeForDialog(*this, CTheme::Instance().IsDarkTheme());
                 });
-            m_link.ConvertStaticToHyperlink(hwndDlg, IDC_WEBLINK, L"http://tools.stefankueng.com");
             CTheme::Instance().SetThemeForDialog(*this, CTheme::Instance().IsDarkTheme());
             InitDialog(hwndDlg, IDI_GREPWIN);
             CLanguage::Instance().TranslateWindow(*this);
@@ -59,6 +59,30 @@ LRESULT CAboutDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
         case WM_CLOSE:
             CTheme::Instance().RemoveRegisteredCallback(m_themeCallbackId);
             break;
+        case WM_NOTIFY:
+        {
+            switch (wParam)
+            {
+            case IDC_WEBLINK:
+                switch (((LPNMHDR)lParam)->code)
+                {
+                case NM_CLICK:
+                case NM_RETURN:
+                {
+                    PNMLINK pNMLink = (PNMLINK)lParam;
+                    LITEM   item = pNMLink->item;
+                    if (item.iLink == 0)
+                    {
+                        ShellExecute(*this, L"open", item.szUrl, nullptr, nullptr, SW_SHOW);
+                    }
+                    break;
+                }
+                }
+                break;
+
+            }
+        }
+        break;
         default:
             return FALSE;
     }

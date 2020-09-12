@@ -24,7 +24,6 @@
 #include "FileDropTarget.h"
 #include "AutoComplete.h"
 #include "Registry.h"
-#include "hyperlink.h"
 #include "EditDoubleClick.h"
 #include "StringUtils.h"
 #include <string>
@@ -188,7 +187,6 @@ private:
     std::wstring            m_resultString;
 
     CDlgResizer             m_resizer;
-    CHyperLink              m_link;
     int                     m_themeCallbackId;
 
     CFileDropTarget *       m_pDropTarget;

@@ -20,7 +20,6 @@
 #include "BaseDialog.h"
 #include "DlgResizer.h"
 #include "Bookmarks.h"
-#include "hyperlink.h"
 #include <string>
 
 /**
@@ -38,6 +37,5 @@ protected:
 
 private:
     HWND       m_hParent;
-    CHyperLink m_link;
     int        m_themeCallbackId;
 };

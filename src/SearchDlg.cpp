@@ -196,8 +196,6 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             m_AutoCompleteSearchPaths.Load(L"Software\\grepWin\\History", L"SearchPaths");
             m_AutoCompleteSearchPaths.Init(GetDlgItem(hwndDlg, IDC_SEARCHPATH));
 
-            m_link.ConvertStaticToHyperlink(hwndDlg, IDC_ABOUTLINK, L"");
-
             m_themeCallbackId = CTheme::Instance().RegisterThemeChangeCallback(
                 [this]() {
                     auto bDark = CTheme::Instance().IsDarkTheme();
@@ -636,6 +634,23 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                             }
                             break;
                         }
+                    }
+                    break;
+                case IDC_ABOUTLINK:
+                    switch (((LPNMHDR)lParam)->code)
+                    {
+                    case NM_CLICK:
+                    case NM_RETURN:
+                    {
+                        PNMLINK pNMLink = (PNMLINK)lParam;
+                        LITEM   item = pNMLink->item;
+                        if (item.iLink == 0)
+                        {
+                            CAboutDlg dlgAbout(*this);
+                            dlgAbout.DoModal(hResource, IDD_ABOUT, *this);
+                        }
+                        break;
+                    }
                     }
                     break;
             }
@@ -1225,12 +1240,6 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
         {
             InitResultList();
             FillResultList();
-        }
-        break;
-        case IDC_ABOUTLINK:
-        {
-            CAboutDlg dlgAbout(*this);
-            dlgAbout.DoModal(hResource, IDD_ABOUT, *this);
         }
         break;
         case IDC_SETTINGSBUTTON:

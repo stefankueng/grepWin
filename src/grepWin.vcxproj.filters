@@ -114,9 +114,6 @@
     <ClCompile Include="..\sktoolslib\FileDropTarget.cpp">
       <Filter>sktoolslib</Filter>
     </ClCompile>
-    <ClCompile Include="..\sktoolslib\hyperlink.cpp">
-      <Filter>sktoolslib</Filter>
-    </ClCompile>
     <ClCompile Include="..\sktoolslib\RegHistory.cpp">
       <Filter>sktoolslib</Filter>
     </ClCompile>
@@ -243,9 +240,6 @@
       <Filter>sktoolslib</Filter>
     </ClInclude>
     <ClInclude Include="..\sktoolslib\FileDropTarget.h">
-      <Filter>sktoolslib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\sktoolslib\hyperlink.h">
       <Filter>sktoolslib</Filter>
     </ClInclude>
     <ClInclude Include="..\sktoolslib\maxpath.h">
