@@ -216,6 +216,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             SetWindowTheme(GetToolTipHWND(), L"Explorer", nullptr);
 
             CLanguage::Instance().TranslateWindow(*this);
+            AddToolTip(IDC_NEWINSTANCE, TranslatedString(hResource, IDS_NEWINSTANCE_TT).c_str());
             AddToolTip(IDC_PATTERN, TranslatedString(hResource, IDS_PATTERN_TT).c_str());
             AddToolTip(IDC_EXCLUDEDIRSPATTERN, TranslatedString(hResource, IDS_EXCLUDEDIR_TT).c_str());
             AddToolTip(IDC_SEARCHPATH, TranslatedString(hResource, IDS_SEARCHPATH_TT).c_str());
@@ -419,11 +420,11 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             m_resizer.Init(hwndDlg);
             m_resizer.UseSizeGrip(!CTheme::Instance().IsDarkTheme());
             m_resizer.AddControl(hwndDlg, IDC_HELPLABEL, RESIZER_TOPLEFT);
-            m_resizer.AddControl(hwndDlg, IDC_CLONE, RESIZER_TOPRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_ABOUTLINK, RESIZER_TOPRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_GROUPSEARCHIN, RESIZER_TOPLEFTRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_PATHMRU, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_SEARCHPATH, RESIZER_TOPLEFTRIGHT);
+            m_resizer.AddControl(hwndDlg, IDC_NEWINSTANCE, RESIZER_TOPRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_SEARCHPATHBROWSE, RESIZER_TOPRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_GROUPSEARCHFOR, RESIZER_TOPLEFTRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_REGEXRADIO, RESIZER_TOPLEFT);
@@ -649,22 +650,6 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                             {
                                 CAboutDlg dlgAbout(*this);
                                 dlgAbout.DoModal(hResource, IDD_ABOUT, *this);
-                            }
-                            break;
-                        }
-                    }
-                    break;
-                case IDC_CLONE:
-                    switch (((LPNMHDR)lParam)->code)
-                    {
-                        case NM_CLICK:
-                        case NM_RETURN:
-                        {
-                            PNMLINK pNMLink = (PNMLINK)lParam;
-                            LITEM   item    = pNMLink->item;
-                            if (item.iLink == 0)
-                            {
-                                CloneWindow();
                             }
                             break;
                         }
@@ -1085,6 +1070,9 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
             }
         }
         break;
+        case IDC_NEWINSTANCE:
+            CloneWindow();
+            break;
         case IDC_SEARCHPATHBROWSE:
         {
             CBrowseFolder browse;
