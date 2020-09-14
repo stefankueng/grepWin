@@ -70,10 +70,6 @@ msgstr ""
 msgid "<a>about grepWin</a>"
 msgstr ""
 
-#. Resource IDs: (1055)
-msgid "<a>start new grepWin window</a>"
-msgstr ""
-
 #. Resource IDs: (1086)
 msgid ">"
 msgstr ""
@@ -583,7 +579,7 @@ msgstr "söker i filen '%s'"
 msgid "search string is empty"
 msgstr "söksträngen är tom"
 
-#. Resource IDs: (170)
+#. Resource IDs: (170, 171)
 msgid "start new grepWin window"
 msgstr ""
 
@@ -594,4 +590,8 @@ msgstr "sökväg(arna) söks rekursivt.\r\nSeparera sökvägar med | symbolen.\r
 #. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "du kan exkludera mappar, exempelvis CVS och bilder.\r\nExempelvis: ^(CVS|bilder)$\r\nMärk, '.svn'-mappar are är dolda i Windows, så de är vanligtvis inte sökta i."
+
+#. Resource IDs: (1024)
+msgid "⑂"
+msgstr "⑂"
 

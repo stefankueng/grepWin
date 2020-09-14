@@ -9,9 +9,9 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 1900-01-01 00:00+0000\n"
-"PO-Revision-Date: 2020-09-12 21:12:26 +0300\n"
-"Last-Translator: VictorVG\n"
-"Language-Team: Russian\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -69,10 +69,6 @@ msgstr "<a href=\"https://tools.stefankueng.com\">Перейти на сайт</
 #. Resource IDs: (1052)
 msgid "<a>about grepWin</a>"
 msgstr "<a>О grepWin</a>"
-
-#. Resource IDs: (1055)
-msgid "<a>start new grepWin window</a>"
-msgstr "<a>Открыть новое окно grepWin</a>"
 
 #. Resource IDs: (1086)
 msgid ">"
@@ -583,7 +579,7 @@ msgstr "Поиск файлов '%s'"
 msgid "search string is empty"
 msgstr "Строка поиска пуста"
 
-#. Resource IDs: (170)
+#. Resource IDs: (170, 171)
 msgid "start new grepWin window"
 msgstr "Открыть новое окно grepWin"
 
@@ -594,4 +590,8 @@ msgstr "Рекурсивный поиск путей.\r\nРазделяйте п
 #. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "Вы можете исключить каталоги, например, CVS и изображения.\r\nПример: ^(CVS|images)$\r\nВнимание: папки '.svn', обычно скрыты в Windows и поэтому пропускаются."
+
+#. Resource IDs: (1024)
+msgid "⑂"
+msgstr "⑂"
 

@@ -70,10 +70,6 @@ msgstr "<a href=\"https://tools.stefankueng.com\">Besuchen Sie unsere website</a
 msgid "<a>about grepWin</a>"
 msgstr "<a>über grepWin</a>"
 
-#. Resource IDs: (1055)
-msgid "<a>start new grepWin window</a>"
-msgstr "<a>neues grepWin Fenster</a>"
-
 #. Resource IDs: (1086)
 msgid ">"
 msgstr ">"
@@ -583,7 +579,7 @@ msgstr "Scanning der Datei '%s'"
 msgid "search string is empty"
 msgstr "Suchstring ist leer"
 
-#. Resource IDs: (170)
+#. Resource IDs: (170, 171)
 msgid "start new grepWin window"
 msgstr "neues grepWin-Fenster starten"
 
@@ -594,4 +590,8 @@ msgstr "Der Pfad bzw. die Pfade, der bzw. die rekursiv gesucht wird bzw. werden.
 #. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "Sie können Verzeichnisse ausschließen, z.B. CVS und Images.\r\nBeispiel: ^(CVS|images)$\r\nHinweis´, '.svn'-Ordner sind in Windows 'versteckt', so werden diese üblicherweise nicht gescannt."
+
+#. Resource IDs: (1024)
+msgid "⑂"
+msgstr "⑂"
 

@@ -70,10 +70,6 @@ msgstr ""
 msgid "<a>about grepWin</a>"
 msgstr ""
 
-#. Resource IDs: (1055)
-msgid "<a>start new grepWin window</a>"
-msgstr ""
-
 #. Resource IDs: (1086)
 msgid ">"
 msgstr ""
@@ -583,7 +579,7 @@ msgstr "σάρωση του αρχείου '%s'"
 msgid "search string is empty"
 msgstr "η συμβολοσειρά αναζήτησης είναι κενή"
 
-#. Resource IDs: (170)
+#. Resource IDs: (170, 171)
 msgid "start new grepWin window"
 msgstr ""
 
@@ -594,4 +590,8 @@ msgstr "διαδρομές που αναζητούνται διαδοχικά. \
 #. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "μπορείτε να εξαιρέσετε καταλόγους, π.χ. CVS και εικόνες.\r\nΠαράδειγμα: ^(CVS|images)$\r\nΣημείωση, οι φάκελοι '.svn' είναι 'κρυφοί' στα Windows, επομένως συνήθως δεν σαρώνονται."
+
+#. Resource IDs: (1024)
+msgid "⑂"
+msgstr "⑂"
 

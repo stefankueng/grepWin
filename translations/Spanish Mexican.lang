@@ -70,10 +70,6 @@ msgstr ""
 msgid "<a>about grepWin</a>"
 msgstr ""
 
-#. Resource IDs: (1055)
-msgid "<a>start new grepWin window</a>"
-msgstr ""
-
 #. Resource IDs: (1086)
 msgid ">"
 msgstr ">"
@@ -583,7 +579,7 @@ msgstr "escaneando el archivo '%s'"
 msgid "search string is empty"
 msgstr "La cadena de búsqueda está vacía"
 
-#. Resource IDs: (170)
+#. Resource IDs: (170, 171)
 msgid "start new grepWin window"
 msgstr ""
 
@@ -594,4 +590,8 @@ msgstr "la(s) ruta(s) en las que se busca(n) recursivamente.\nSepare las rutas c
 #. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "puede excluir directorios, ej. CVS e imágenes.\nEjemplo: ^(CVS|imágenes)$\nNota, las carpetas '.svn' están 'ocultas' en Windows, por lo que usualmente no son escaneadas."
+
+#. Resource IDs: (1024)
+msgid "⑂"
+msgstr "⑂"
 
