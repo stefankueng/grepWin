@@ -63,15 +63,15 @@ msgid "/"
 msgstr "/"
 
 #. Resource IDs: (1045)
-msgid "<a href=\"https://tools.stefankueng.com\">Visit our website</a>"
+msgid "<a href=\"https://tools.stefankueng.com\">公式サイトを開く</a>"
 msgstr ""
 
 #. Resource IDs: (1052)
-msgid "<a>about grepWin</a>"
+msgid "<a>grepWin について</a>"
 msgstr ""
 
 #. Resource IDs: (1055)
-msgid "<a>start new grepWin window</a>"
+msgid "<a>新規 grepWin ウィンドウを開始</a>"
 msgstr ""
 
 #. Resource IDs: (1086)
@@ -585,7 +585,7 @@ msgstr "検索文字列が空です"
 
 #. Resource IDs: (170)
 msgid "start new grepWin window"
-msgstr ""
+msgstr "新規 grepWin ウィンドウを開始"
 
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"
