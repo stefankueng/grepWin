@@ -6,15 +6,17 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 1900-01-01 00:00+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"Project-Id-Version: grepWin 2.0.4\n"
+"Report-Msgid-Bugs-To: tortoisesvn@gmail.com\n"
+"POT-Creation-Date: 2018-03-15 12:37+0100\n"
+"PO-Revision-Date: 2020-09-18 18:25+0200\n"
+"Last-Translator: Stefano Gibellini <daneel@hotmail.it>\n"
+"Language-Team: Stefano Gibellini <daneel@hotmail.it>\n"
+"Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 
 # msgid/msgstr fields for Accelerator keys
@@ -64,11 +66,11 @@ msgstr "/"
 
 #. Resource IDs: (1045)
 msgid "<a href=\"https://tools.stefankueng.com\">Visit our website</a>"
-msgstr ""
+msgstr "<a href=\"https://tools.stefankueng.com\">Visita il nostro sito web</a>"
 
 #. Resource IDs: (1052)
 msgid "<a>about grepWin</a>"
-msgstr ""
+msgstr "<a>informazioni su grepWin</a>"
 
 #. Resource IDs: (1086)
 msgid ">"
@@ -581,7 +583,7 @@ msgstr "la stringa di ricerca è vuota"
 
 #. Resource IDs: (170, 171)
 msgid "start new grepWin window"
-msgstr ""
+msgstr "avvia una nuova finestra di grepWin"
 
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"
