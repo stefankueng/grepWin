@@ -736,7 +736,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
         break;
         case WM_HELP:
         {
-            CInfoDlg::ShowDialog(IDR_INFODLG, hResource);
+            CInfoDlg::ShowDialog(*this, IDR_INFODLG, hResource);
         }
         break;
         case WM_SYSCOMMAND:
