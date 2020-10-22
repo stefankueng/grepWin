@@ -203,12 +203,9 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             m_themeCallbackId = CTheme::Instance().RegisterThemeChangeCallback(
                 [this]() {
                     auto bDark = CTheme::Instance().IsDarkTheme();
-                    if (bDark)
-                        DarkModeHelper::Instance().AllowDarkModeForApp(bDark);
+                    DarkModeHelper::Instance().AllowDarkModeForApp(bDark);
                     CTheme::Instance().SetThemeForDialog(*this, bDark);
                     DarkModeHelper::Instance().AllowDarkModeForWindow(GetToolTipHWND(), bDark);
-                    if (!bDark)
-                        DarkModeHelper::Instance().AllowDarkModeForApp(bDark);
                 });
             auto bDark = CTheme::Instance().IsDarkTheme();
             if (bDark)
