@@ -206,6 +206,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                     DarkModeHelper::Instance().AllowDarkModeForApp(bDark);
                     CTheme::Instance().SetThemeForDialog(*this, bDark);
                     DarkModeHelper::Instance().AllowDarkModeForWindow(GetToolTipHWND(), bDark);
+                    DarkModeHelper::Instance().RefreshTitleBarThemeColor(*this, bDark);
                 });
             auto bDark = CTheme::Instance().IsDarkTheme();
             if (bDark)
