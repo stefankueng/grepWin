@@ -81,6 +81,7 @@
             <File Id="Afrikaans.lang" Name="Afrikaans.lang" DiskId="1" Source="../../translations/Afrikaans.lang" />
             <File Id="Korean.lang" Name="Korean.lang" DiskId="1" Source="../../translations/Korean.lang" />
             <File Id="Spanish_Mexican.lang" Name="Spanish Mexican.lang" DiskId="1" Source="../../translations/Spanish Mexican.lang" />
+            <File Id="Hindi.lang" Name="Hindi.lang" DiskId="1" Source="../../translations/Hindi.lang" />
             <RegistryKey Root="HKMU" Key="Software\Classes\Directory\shell\grepWin" />
             <RegistryValue Root="HKMU" Key="Software\Classes\Directory\shell\grepWin" Value="search with grepWin" Type="string" />
             <RegistryValue Root="HKMU" Key="Software\Classes\Directory\shell\grepWin\command" Value='[APPLICATIONFOLDER]grepWin.exe /searchpath:"%1"' Type="string" />
