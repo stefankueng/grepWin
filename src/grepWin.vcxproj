@@ -201,7 +201,9 @@
     <ClCompile Include="..\sktoolslib\DropFiles.cpp" />
     <ClCompile Include="..\sktoolslib\EditDoubleClick.cpp" />
     <ClCompile Include="..\sktoolslib\FileDropTarget.cpp" />
+    <ClCompile Include="..\sktoolslib\Hash.cpp" />
     <ClCompile Include="..\sktoolslib\Language.cpp" />
+    <ClCompile Include="..\sktoolslib\Monitor.cpp" />
     <ClCompile Include="..\sktoolslib\PathUtils.cpp" />
     <ClCompile Include="..\sktoolslib\PreserveChdir.cpp" />
     <ClCompile Include="..\sktoolslib\RegHistory.cpp" />
@@ -246,8 +248,10 @@
     <ClInclude Include="..\sktoolslib\DropFiles.h" />
     <ClInclude Include="..\sktoolslib\EditDoubleClick.h" />
     <ClInclude Include="..\sktoolslib\FileDropTarget.h" />
+    <ClInclude Include="..\sktoolslib\Hash.h" />
     <ClInclude Include="..\sktoolslib\Language.h" />
     <ClInclude Include="..\sktoolslib\maxpath.h" />
+    <ClInclude Include="..\sktoolslib\Monitor.h" />
     <ClInclude Include="..\sktoolslib\PathUtils.h" />
     <ClInclude Include="..\sktoolslib\PreserveChdir.h" />
     <ClInclude Include="..\sktoolslib\RegHistory.h" />

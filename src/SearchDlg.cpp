@@ -50,6 +50,7 @@
 #include "COMPtrs.h"
 #include "PreserveChdir.h"
 #include "TempFile.h"
+#include "Monitor.h"
 #include "version.h"
 
 #include <string>
@@ -490,9 +491,11 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 
             WINDOWPLACEMENT wpl  = {0};
             DWORD           size = sizeof(wpl);
+            std::wstring    winPosKey = L"windowpos_" + GetMonitorSetupHash();
             if (bPortable)
             {
-                std::wstring sPos = g_iniFile.GetValue(L"global", L"windowpos", L"");
+
+                std::wstring sPos = g_iniFile.GetValue(L"global", winPosKey.c_str(), L"");
 
                 if (!sPos.empty())
                 {
@@ -513,7 +516,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             }
             else
             {
-                if (SHGetValue(HKEY_CURRENT_USER, L"Software\\grepWin", L"windowpos", REG_NONE, &wpl, &size) == ERROR_SUCCESS)
+                if (SHGetValue(HKEY_CURRENT_USER, L"Software\\grepWin", winPosKey.c_str(), REG_NONE, &wpl, &size) == ERROR_SUCCESS)
                     SetWindowPlacement(*this, &wpl);
                 else
                     ShowWindow(*this, SW_SHOW);
@@ -1527,6 +1530,7 @@ void CSearchDlg::SaveWndPosition()
     WINDOWPLACEMENT wpl = {0};
     wpl.length          = sizeof(WINDOWPLACEMENT);
     GetWindowPlacement(*this, &wpl);
+    std::wstring winPosKey = L"windowpos_" + GetMonitorSetupHash();
     if (bPortable)
     {
         auto sPos = CStringUtils::Format(L"%d;%d;%d;%d;%d;%d;%d;%d;%d;%d",
@@ -1534,11 +1538,11 @@ void CSearchDlg::SaveWndPosition()
                                          wpl.ptMinPosition.x, wpl.ptMinPosition.y,
                                          wpl.ptMaxPosition.x, wpl.ptMaxPosition.y,
                                          wpl.rcNormalPosition.left, wpl.rcNormalPosition.top, wpl.rcNormalPosition.right, wpl.rcNormalPosition.bottom);
-        g_iniFile.SetValue(L"global", L"windowpos", sPos.c_str());
+        g_iniFile.SetValue(L"global", winPosKey.c_str(), sPos.c_str());
     }
     else
     {
-        SHSetValue(HKEY_CURRENT_USER, L"Software\\grepWin", L"windowpos", REG_NONE, &wpl, sizeof(wpl));
+        SHSetValue(HKEY_CURRENT_USER, L"Software\\grepWin", winPosKey.c_str(), REG_NONE, &wpl, sizeof(wpl));
     }
 }
 
