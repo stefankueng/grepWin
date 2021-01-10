@@ -289,10 +289,10 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
             CSearchDlg searchDlg(NULL);
             if (parser.HasVal(L"searchini"))
             {
-                std::wstring spath = parser.GetVal(L"searchini");
+                std::wstring inipath = parser.GetVal(L"searchini");
                 CSimpleIni   searchIni;
                 searchIni.SetUnicode(true);
-                searchIni.LoadFile(spath.c_str());
+                searchIni.LoadFile(inipath.c_str());
                 std::wstring section;
                 if (parser.HasVal(L"name"))
                     section = parser.GetVal(L"name");
