@@ -45,11 +45,11 @@ jobs:
         fetch-depth: 2
         submodules: recursive
 
-      - name: nuget-restore
-        uses: nuget/setup-nuget@v1
-        with:
+    - name: nuget-restore
+      uses: nuget/setup-nuget@v1
+      with:
           nuget-version: "latest"
-      - run: nuget restore grepWin.sln
+      run: nuget restore grepWin.sln
 
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
