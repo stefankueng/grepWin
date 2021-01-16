@@ -2230,7 +2230,7 @@ void CSearchDlg::OpenFileAtListIndex(int listIndex)
         {
             // use the first matching line in this file
             if (!inf.matchlinesnumbers.empty())
-                SearchReplace(cmd, L"%line%", CStringUtils::Format(L"%Iu", inf.matchlinesnumbers[0]));
+                SearchReplace(cmd, L"%line%", CStringUtils::Format(L"%lu", inf.matchlinesnumbers[0]));
             else
                 SearchReplace(cmd, L"%line%", L"0");
         }
