@@ -49,6 +49,8 @@ jobs:
       uses: nuget/setup-nuget@v1
       with:
           nuget-version: "latest"
+          
+    - name: nuget-sln-restore
       run: nuget restore grepWin.sln
 
     # Initializes the CodeQL tools for scanning.
