@@ -14,6 +14,11 @@ name: "CodeQL"
 on:
   push:
     branches: [ main ]
+    paths-ignore:
+            - "Languages/**"
+            - "plugins/**"
+            - "ext/**"
+            - "*.md"
   pull_request:
     # The branches below must be a subset of the branches above
     branches: [ main ]
@@ -38,6 +43,7 @@ jobs:
       uses: actions/checkout@v2
       with:
         fetch-depth: 2
+        submodules: recursive
 
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
