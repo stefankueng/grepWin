@@ -1465,7 +1465,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                                 {
                                     if (needSeparator)
                                         file << separator;
-                                    file << CStringUtils::Format("%lld", item.matchlinesnumbers[i]);
+                                    file << CStringUtils::Format("%lu", item.matchlinesnumbers[i]);
                                     needSeparator = true;
                                 }
                                 if (includeMatchLineTexts)
@@ -2230,7 +2230,7 @@ void CSearchDlg::OpenFileAtListIndex(int listIndex)
         {
             // use the first matching line in this file
             if (!inf.matchlinesnumbers.empty())
-                SearchReplace(cmd, L"%line%", CStringUtils::Format(L"%Id", inf.matchlinesnumbers[0]));
+                SearchReplace(cmd, L"%line%", CStringUtils::Format(L"%Iu", inf.matchlinesnumbers[0]));
             else
                 SearchReplace(cmd, L"%line%", L"0");
         }
