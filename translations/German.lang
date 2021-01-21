@@ -217,7 +217,7 @@ msgstr "Ext"
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
-msgstr "Dateinamen-Übereinstimmung:\n'|' zum Trennen multipler Text- Übereinstimmungsmuster, zum Ausschließen '-' vorans&tellen"
+msgstr "Datei-Suchmaske:\n'|' zum Trennen mehfacher Suchmasken, zum Ausschließen '-' voranstellen"
 
 #. Resource IDs: (1059)
 msgid "Files"
@@ -233,11 +233,11 @@ msgstr "Wenn aktiviert, wird ein Backup-Ordner innerhalb des Ordners erstellt, i
 
 #. Resource IDs: (1050)
 msgid "Include binary files"
-msgstr "Binärdateien einbeziehen"
+msgstr "Binärdateien"
 
 #. Resource IDs: (1010)
 msgid "Include hidden items"
-msgstr "Versteckte Items einbeziehen"
+msgstr "Versteckte Dateien"
 
 #. Resource IDs: (1062)
 msgid "Include search path"
@@ -245,11 +245,11 @@ msgstr "Suchpfad mit speichern"
 
 #. Resource IDs: (1011)
 msgid "Include subfolders"
-msgstr "Unterordner einbeziehen"
+msgstr "Unterordner"
 
 #. Resource IDs: (1009)
 msgid "Include system items"
-msgstr "System-Items einbeziehen"
+msgstr "System-Dateien"
 
 #. Resource IDs: (153)
 msgid "Invalid path!"
@@ -338,7 +338,7 @@ msgstr "Presets"
 
 #. Resource IDs: (1065)
 msgid "Press F1 for help"
-msgstr "   Für Hilfe drücken Sie F1"
+msgstr "Für Hilfe drücken Sie F1"
 
 #. Resource IDs: (154)
 msgid "Programs"
@@ -354,7 +354,7 @@ msgstr "Regex-Test"
 
 #. Resource IDs: (1046)
 msgid "Regex match"
-msgstr "Regex-Übereinstimmung"
+msgstr "Regex"
 
 #. Resource IDs: (65535)
 msgid "Regex replace string:"
@@ -451,7 +451,7 @@ msgstr "Text"
 
 #. Resource IDs: (1048)
 msgid "Text match"
-msgstr "Text-Übereinstimmung"
+msgstr "Text"
 
 #. Resource IDs: (1002)
 msgid "Text search"
@@ -467,11 +467,11 @@ msgstr "Der resultierende Text nach Ersetzung:"
 
 #. Resource IDs: (1053)
 msgid "Treat files as UTF8"
-msgstr "Dateien als UTF8 behandeln"
+msgstr "Dateien als UTF8 laden"
 
 #. Resource IDs: (1054)
 msgid "Treat files as binary"
-msgstr "Dateien als Binär behandeln"
+msgstr "Dateien als Binär laden"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
