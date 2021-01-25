@@ -480,6 +480,8 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
                     searchDlg.SetSearchPath(spath);
                 }
             }
+            if (parser.HasKey(L"nosavesettings"))
+                searchDlg.SetNoSaveSettings(true);
 
             ret = (int)searchDlg.DoModal(hInstance, IDD_SEARCHDLG, NULL, IDR_SEARCHDLG);
         }

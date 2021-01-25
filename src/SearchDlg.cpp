@@ -155,6 +155,7 @@ CSearchDlg::CSearchDlg(HWND hParent)
     , m_showContent(false)
     , m_showContentSet(false)
     , m_themeCallbackId(0)
+    , m_bNoSaveSettings(false)
 {
     if (FAILED(CoCreateInstance(CLSID_TaskbarList, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(m_pTaskbarList.GetAddressOf()))))
         m_pTaskbarList = nullptr;
@@ -489,12 +490,11 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 
             InitDialog(hwndDlg, IDI_GREPWIN);
 
-            WINDOWPLACEMENT wpl  = {0};
-            DWORD           size = sizeof(wpl);
+            WINDOWPLACEMENT wpl       = {0};
+            DWORD           size      = sizeof(wpl);
             std::wstring    winPosKey = L"windowpos_" + GetMonitorSetupHash();
             if (bPortable)
             {
-
                 std::wstring sPos = g_iniFile.GetValue(L"global", winPosKey.c_str(), L"");
 
                 if (!sPos.empty())
@@ -561,10 +561,13 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             else
             {
                 SaveSettings();
-                m_AutoCompleteFilePatterns.Save();
-                m_AutoCompleteSearchPatterns.Save();
-                m_AutoCompleteReplacePatterns.Save();
-                m_AutoCompleteSearchPaths.Save();
+                if (!m_bNoSaveSettings)
+                {
+                    m_AutoCompleteFilePatterns.Save();
+                    m_AutoCompleteSearchPatterns.Save();
+                    m_AutoCompleteReplacePatterns.Save();
+                    m_AutoCompleteSearchPaths.Save();
+                }
                 EndDialog(*this, IDCANCEL);
             }
         }
@@ -963,10 +966,13 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 m_AutoCompleteReplacePatterns.AddEntry(m_replaceString.c_str());
                 m_AutoCompleteSearchPaths.AddEntry(m_searchpath.c_str());
 
-                m_AutoCompleteFilePatterns.Save();
-                m_AutoCompleteSearchPatterns.Save();
-                m_AutoCompleteReplacePatterns.Save();
-                m_AutoCompleteSearchPaths.Save();
+                if (!m_bNoSaveSettings)
+                {
+                    m_AutoCompleteFilePatterns.Save();
+                    m_AutoCompleteSearchPatterns.Save();
+                    m_AutoCompleteReplacePatterns.Save();
+                    m_AutoCompleteSearchPaths.Save();
+                }
 
                 m_bReplace = id == IDC_REPLACE;
 
@@ -1038,10 +1044,13 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 else
                 {
                     SaveSettings();
-                    m_AutoCompleteFilePatterns.Save();
-                    m_AutoCompleteSearchPatterns.Save();
-                    m_AutoCompleteReplacePatterns.Save();
-                    m_AutoCompleteSearchPaths.Save();
+                    if (!m_bNoSaveSettings)
+                    {
+                        m_AutoCompleteFilePatterns.Save();
+                        m_AutoCompleteSearchPatterns.Save();
+                        m_AutoCompleteReplacePatterns.Save();
+                        m_AutoCompleteSearchPaths.Save();
+                    }
                     EndDialog(*this, IDCANCEL);
                 }
             }
@@ -2404,6 +2413,8 @@ bool grepWin_is_regex_valid(const std::wstring& m_searchString)
 
 bool CSearchDlg::SaveSettings()
 {
+    if (m_bNoSaveSettings)
+        return true;
     // get all the information we need from the dialog
     auto buf     = GetDlgItemText(IDC_SEARCHPATH);
     m_searchpath = buf.get();
