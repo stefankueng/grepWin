@@ -3489,7 +3489,7 @@ void CSearchDlg::SearchFile(CSearchInfo sinfo, const std::wstring& searchRoot, b
                         if (!m_bCreateBackup)
                             m_backupandtempfiles.insert(sinfo.filepath + L".grepwinreplaced");
                         boost::iostreams::mapped_file_source replaceinfile(m_bCreateBackup ? CUnicodeUtils::StdGetANSI(backupfile).c_str() : filepath.c_str());
-                        std::ofstream                        os(filepathout.c_str(), std::ios::out | std::ios::trunc);
+                        std::ofstream                        os(filepathout.c_str(), std::ios::out | std::ios::trunc | std::ios::binary);
                         std::ostream_iterator<char, char>    out(os);
                         regex_replace(out, replaceinfile.begin(), replaceinfile.end(), expression, replaceFmt, flags);
                         os.close();
