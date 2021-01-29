@@ -990,6 +990,16 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                         }
                     }
                 }
+                if (m_bReplace && m_bUTF8)
+                {
+                    auto utf8OptionText = GetDlgItemText(IDC_UTF8);
+                    auto msgtext = CStringUtils::Format(TranslatedString(hResource, IDS_REPLACEUTF8).c_str(),
+                                                        utf8OptionText.get());
+                    if (::MessageBox(*this, msgtext.c_str(), L"grepWin", MB_ICONWARNING | MB_YESNO | MB_DEFBUTTON2) != IDYES)
+                    {
+                        break;
+                    }
+                }
                 m_bConfirmationOnReplace = true;
                 m_bNOTSearch             = (GetKeyState(VK_SHIFT) & 0x8000) != 0;
                 if (id == IDC_INVERSESEARCH)
