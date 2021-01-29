@@ -63,7 +63,7 @@ msgid "/"
 msgstr "/"
 
 #. Resource IDs: (1045)
-msgid "<a href=\"https://tools.stefankueng.com\">公式サイトを開く</a>"
+msgid "<a href=\"https://tools.stefankueng.com\">Visit our website</a>"
 msgstr ""
 
 #. Resource IDs: (1052)
@@ -472,6 +472,11 @@ msgstr "ファイルを UTF-8 として処理"
 #. Resource IDs: (1054)
 msgid "Treat files as binary"
 msgstr "ファイルをバイナリとして処理"
+
+#. Resource IDs: (172)
+#, c-format
+msgid "You have the option \"%s\" enabled.\r\nWhen replacing, this option can lead to corrupted files.\r\nDo you want to proceed anyway?"
+msgstr ""
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."

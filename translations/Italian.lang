@@ -6,17 +6,15 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: grepWin 2.0.4\n"
-"Report-Msgid-Bugs-To: tortoisesvn@gmail.com\n"
-"POT-Creation-Date: 2018-03-15 12:37+0100\n"
-"PO-Revision-Date: 2020-09-18 18:25+0200\n"
-"Last-Translator: Stefano Gibellini <daneel@hotmail.it>\n"
-"Language-Team: Stefano Gibellini <daneel@hotmail.it>\n"
-"Language: it\n"
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 1900-01-01 00:00+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 
 # msgid/msgstr fields for Accelerator keys
@@ -474,6 +472,11 @@ msgstr "Tratta i file come UTF8"
 #. Resource IDs: (1054)
 msgid "Treat files as binary"
 msgstr "Tratta i file come binari"
+
+#. Resource IDs: (172)
+#, c-format
+msgid "You have the option \"%s\" enabled.\r\nWhen replacing, this option can lead to corrupted files.\r\nDo you want to proceed anyway?"
+msgstr ""
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
