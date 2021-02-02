@@ -64,7 +64,7 @@ msgstr "/"
 
 #. Resource IDs: (1045)
 msgid "<a href=\"https://tools.stefankueng.com\">Visit our website</a>"
-msgstr ""
+msgstr "<a href=\"https://tools.stefankueng.com\">Visit our website</a>"
 
 #. Resource IDs: (1052)
 msgid "<a>about grepWin</a>"
@@ -476,7 +476,7 @@ msgstr "ファイルをバイナリとして処理"
 #. Resource IDs: (172)
 #, c-format
 msgid "You have the option \"%s\" enabled.\r\nWhen replacing, this option can lead to corrupted files.\r\nDo you want to proceed anyway?"
-msgstr ""
+msgstr "設定の「%s」が有効になっています。\r\nこの設定のまま置換すると、ファイルが破損する場合があります。\r\n続行しますか?"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
