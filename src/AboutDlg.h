@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008, 2012-2013, 2020 - Stefan Kueng
+// Copyright (C) 2007-2008, 2012-2013, 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -18,9 +18,6 @@
 //
 #pragma once
 #include "BaseDialog.h"
-#include "DlgResizer.h"
-#include "Bookmarks.h"
-#include <string>
 
 /**
  * bookmarks dialog.
@@ -29,13 +26,13 @@ class CAboutDlg : public CDialog
 {
 public:
     CAboutDlg(HWND hParent);
-    ~CAboutDlg(void);
+    ~CAboutDlg();
 
 protected:
-    LRESULT CALLBACK DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
+    LRESULT CALLBACK DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) override;
     LRESULT          DoCommand(int id, int msg);
 
 private:
-    HWND       m_hParent;
-    int        m_themeCallbackId;
+    HWND m_hParent;
+    int  m_themeCallbackId;
 };

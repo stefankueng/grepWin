@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2009, 2012-2013, 2017, 2020 - Stefan Kueng
+// Copyright (C) 2007-2009, 2012-2013, 2017, 2020-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -19,23 +19,22 @@
 #include "stdafx.h"
 #include "Bookmarks.h"
 #include "maxpath.h"
-#include "CmdLineParser.h"
 #include <shlobj.h>
 #include <memory>
 
-CBookmarks::CBookmarks(void)
+CBookmarks::CBookmarks()
 {
     SetUnicode(true);
 }
 
-CBookmarks::~CBookmarks(void)
+CBookmarks::~CBookmarks()
 {
 }
 
 void CBookmarks::Load()
 {
     auto path = std::make_unique<wchar_t[]>(MAX_PATH_NEW);
-    GetModuleFileName(NULL, path.get(), MAX_PATH_NEW);
+    GetModuleFileName(nullptr, path.get(), MAX_PATH_NEW);
     if (bPortable)
     {
         m_iniPath = path.get();
@@ -43,11 +42,11 @@ void CBookmarks::Load()
     }
     else
     {
-        SHGetFolderPath(NULL, CSIDL_APPDATA, NULL, SHGFP_TYPE_CURRENT, path.get());
+        SHGetFolderPath(nullptr, CSIDL_APPDATA, nullptr, SHGFP_TYPE_CURRENT, path.get());
         m_iniPath = path.get();
         m_iniPath += L"\\grepWin";
     }
-    CreateDirectory(m_iniPath.c_str(), NULL);
+    CreateDirectory(m_iniPath.c_str(), nullptr);
     m_iniPath += L"\\bookmarks";
     SetUnicode();
     LoadFile(m_iniPath.c_str());
@@ -56,7 +55,7 @@ void CBookmarks::Load()
 void CBookmarks::Save()
 {
     auto path = std::make_unique<wchar_t[]>(MAX_PATH_NEW);
-    GetModuleFileName(NULL, path.get(), MAX_PATH_NEW);
+    GetModuleFileName(nullptr, path.get(), MAX_PATH_NEW);
     if (bPortable)
     {
         m_iniPath = path.get();
@@ -64,13 +63,13 @@ void CBookmarks::Save()
     }
     else
     {
-        SHGetFolderPath(NULL, CSIDL_APPDATA, NULL, SHGFP_TYPE_CURRENT, path.get());
+        SHGetFolderPath(nullptr, CSIDL_APPDATA, nullptr, SHGFP_TYPE_CURRENT, path.get());
         m_iniPath = path.get();
         m_iniPath += L"\\grepWin";
     }
-    CreateDirectory(m_iniPath.c_str(), NULL);
+    CreateDirectory(m_iniPath.c_str(), nullptr);
     m_iniPath += L"\\bookmarks";
-    FILE* pFile = NULL;
+    FILE* pFile = nullptr;
     _wfopen_s(&pFile, m_iniPath.c_str(), L"wb");
     SaveFile(pFile);
     fclose(pFile);
@@ -127,7 +126,7 @@ void CBookmarks::RemoveBookmark(const std::wstring& name)
     Delete(name.c_str(), L"searchpath", true);
 }
 
-Bookmark CBookmarks::GetBookmark(const std::wstring& name)
+Bookmark CBookmarks::GetBookmark(const std::wstring& name) const
 {
     Bookmark bk;
     if (GetSectionSize(name.c_str()) >= 0)
