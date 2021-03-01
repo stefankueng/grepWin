@@ -123,9 +123,6 @@
     <ClCompile Include="..\sktoolslib\Language.cpp">
       <Filter>sktoolslib</Filter>
     </ClCompile>
-    <ClCompile Include="..\sktoolslib\codecvt.cpp">
-      <Filter>sktoolslib</Filter>
-    </ClCompile>
     <ClCompile Include="..\sktoolslib\PathUtils.cpp">
       <Filter>sktoolslib</Filter>
     </ClCompile>
@@ -258,9 +255,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\sktoolslib\Language.h">
-      <Filter>sktoolslib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\sktoolslib\codecvt.h">
       <Filter>sktoolslib</Filter>
     </ClInclude>
     <ClInclude Include="..\sktoolslib\ResString.h">

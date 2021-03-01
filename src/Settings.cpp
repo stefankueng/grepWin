@@ -18,7 +18,6 @@
 //
 #include "stdafx.h"
 #include "resource.h"
-#include "maxpath.h"
 #include "Settings.h"
 #include "ResString.h"
 #include "DirFileEnum.h"
@@ -34,7 +33,7 @@ CSettingsDlg::CSettingsDlg(HWND hParent)
 {
 }
 
-CSettingsDlg::~CSettingsDlg(void)
+CSettingsDlg::~CSettingsDlg()
 {
 }
 
@@ -60,7 +59,7 @@ LRESULT CSettingsDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
             SetDlgItemText(hwndDlg, IDC_EDITORCMD, bPortable ? g_iniFile.GetValue(L"global", L"editorcmd", L"") : std::wstring(m_regEditorCmd).c_str());
 
             wchar_t modulepath[MAX_PATH] = {0};
-            GetModuleFileName(NULL, modulepath, MAX_PATH);
+            GetModuleFileName(nullptr, modulepath, MAX_PATH);
             std::wstring path = modulepath;
             path              = path.substr(0, path.find_last_of('\\'));
             CDirFileEnum  fileEnumerator(path.c_str());
@@ -74,37 +73,37 @@ LRESULT CSettingsDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 
             int index     = 1;
             int langIndex = 0;
-            SendDlgItemMessage(hwndDlg, IDC_LANGUAGE, CB_INSERTSTRING, (WPARAM)-1, (LPARAM)L"English");
+            SendDlgItemMessage(hwndDlg, IDC_LANGUAGE, CB_INSERTSTRING, static_cast<WPARAM>(-1), reinterpret_cast<LPARAM>(L"English"));
             while (fileEnumerator.NextFile(sPath, &bIsDirectory, bRecurse))
             {
-                size_t dotpos = sPath.find_last_of('.');
-                if (dotpos == std::wstring::npos)
+                size_t dotPos = sPath.find_last_of('.');
+                if (dotPos == std::wstring::npos)
                     continue;
-                std::wstring ext = sPath.substr(dotpos);
+                std::wstring ext = sPath.substr(dotPos);
                 if (ext.compare(L".lang"))
                     continue;
-                m_langpaths.push_back(sPath);
+                m_langPaths.push_back(sPath);
                 if (sPath.compare(setLang) == 0)
                     langIndex = index;
-                size_t slashpos = sPath.find_last_of('\\');
-                if (slashpos == std::wstring::npos)
+                size_t slashPos = sPath.find_last_of('\\');
+                if (slashPos == std::wstring::npos)
                     continue;
-                sPath  = sPath.substr(slashpos + 1);
-                dotpos = sPath.find_last_of('.');
-                sPath  = sPath.substr(0, dotpos);
-                SendDlgItemMessage(hwndDlg, IDC_LANGUAGE, CB_INSERTSTRING, (WPARAM)-1, (LPARAM)sPath.c_str());
+                sPath  = sPath.substr(slashPos + 1);
+                dotPos = sPath.find_last_of('.');
+                sPath  = sPath.substr(0, dotPos);
+                SendDlgItemMessage(hwndDlg, IDC_LANGUAGE, CB_INSERTSTRING, static_cast<WPARAM>(-1), reinterpret_cast<LPARAM>(sPath.c_str()));
                 ++index;
             }
 
             SendDlgItemMessage(hwndDlg, IDC_LANGUAGE, CB_SETCURSEL, langIndex, 0);
-            SendDlgItemMessage(hwndDlg, IDC_ESCKEY, BM_SETCHECK, bPortable ? !!_wtoi(g_iniFile.GetValue(L"settings", L"escclose", L"0")) : DWORD(CRegStdDWORD(L"Software\\grepWin\\escclose", FALSE)) ? BST_CHECKED : BST_UNCHECKED, 0);
-            SendDlgItemMessage(hwndDlg, IDC_BACKUPINFOLDER, BM_SETCHECK, bPortable ? !!_wtoi(g_iniFile.GetValue(L"settings", L"backupinfolder", L"0")) : DWORD(CRegStdDWORD(L"Software\\grepWin\\backupinfolder", FALSE)) ? BST_CHECKED : BST_UNCHECKED, 0);
-            SendDlgItemMessage(hwndDlg, IDC_NOWARNINGIFNOBACKUP, BM_SETCHECK, bPortable ? !!_wtoi(g_iniFile.GetValue(L"settings", L"nowarnifnobackup", L"0")) : DWORD(CRegStdDWORD(L"Software\\grepWin\\nowarnifnobackup", FALSE)) ? BST_CHECKED : BST_UNCHECKED, 0);
-            SendDlgItemMessage(hwndDlg, IDC_ONLYONE, BM_SETCHECK, bPortable ? _wtoi(g_iniFile.GetValue(L"global", L"onlyone", L"0")) : DWORD(CRegStdDWORD(L"Software\\grepWin\\onlyone", FALSE)) ? BST_CHECKED : BST_UNCHECKED, 0);
-            SendDlgItemMessage(hwndDlg, IDC_DOUPDATECHECKS, BM_SETCHECK, bPortable ? _wtoi(g_iniFile.GetValue(L"global", L"CheckForUpdates", L"1")) : DWORD(CRegStdDWORD(L"Software\\grepWin\\CheckForUpdates", FALSE)) ? BST_CHECKED : BST_UNCHECKED, 0);
+            SendDlgItemMessage(hwndDlg, IDC_ESCKEY, BM_SETCHECK, bPortable ? !!_wtoi(g_iniFile.GetValue(L"settings", L"escclose", L"0")) : static_cast<DWORD>(CRegStdDWORD(L"Software\\grepWin\\escclose", FALSE)) ? BST_CHECKED : BST_UNCHECKED, 0);
+            SendDlgItemMessage(hwndDlg, IDC_BACKUPINFOLDER, BM_SETCHECK, bPortable ? !!_wtoi(g_iniFile.GetValue(L"settings", L"backupinfolder", L"0")) : static_cast<DWORD>(CRegStdDWORD(L"Software\\grepWin\\backupinfolder", FALSE)) ? BST_CHECKED : BST_UNCHECKED, 0);
+            SendDlgItemMessage(hwndDlg, IDC_NOWARNINGIFNOBACKUP, BM_SETCHECK, bPortable ? !!_wtoi(g_iniFile.GetValue(L"settings", L"nowarnifnobackup", L"0")) : static_cast<DWORD>(CRegStdDWORD(L"Software\\grepWin\\nowarnifnobackup", FALSE)) ? BST_CHECKED : BST_UNCHECKED, 0);
+            SendDlgItemMessage(hwndDlg, IDC_ONLYONE, BM_SETCHECK, bPortable ? _wtoi(g_iniFile.GetValue(L"global", L"onlyone", L"0")) : static_cast<DWORD>(CRegStdDWORD(L"Software\\grepWin\\onlyone", FALSE)) ? BST_CHECKED : BST_UNCHECKED, 0);
+            SendDlgItemMessage(hwndDlg, IDC_DOUPDATECHECKS, BM_SETCHECK, bPortable ? _wtoi(g_iniFile.GetValue(L"global", L"CheckForUpdates", L"1")) : static_cast<DWORD>(CRegStdDWORD(L"Software\\grepWin\\CheckForUpdates", FALSE)) ? BST_CHECKED : BST_UNCHECKED, 0);
             SendDlgItemMessage(hwndDlg, IDC_DARKMODE, BM_SETCHECK, CTheme::Instance().IsDarkTheme() ? BST_CHECKED : BST_UNCHECKED, 0);
             EnableWindow(GetDlgItem(*this, IDC_DARKMODE), CTheme::Instance().IsDarkModeAllowed());
-            SetDlgItemText(*this, IDC_NUMNULL, bPortable ? g_iniFile.GetValue(L"settings", L"nullbytes", L"0") : std::to_wstring(DWORD(CRegStdDWORD(L"Software\\grepWin\\nullbytes", 0))).c_str());
+            SetDlgItemText(*this, IDC_NUMNULL, bPortable ? g_iniFile.GetValue(L"settings", L"nullbytes", L"0") : std::to_wstring(static_cast<DWORD>(CRegStdDWORD(L"Software\\grepWin\\nullbytes", 0))).c_str());
 
             AddToolTip(IDC_BACKUPINFOLDER, TranslatedString(hResource, IDS_BACKUPINFOLDER_TT).c_str());
             if (!CTheme::Instance().IsDarkModeAllowed())
@@ -141,12 +140,11 @@ LRESULT CSettingsDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
         break;
         case WM_GETMINMAXINFO:
         {
-            MINMAXINFO* mmi       = (MINMAXINFO*)lParam;
+            MINMAXINFO* mmi       = reinterpret_cast<MINMAXINFO*>(lParam);
             mmi->ptMinTrackSize.x = m_resizer.GetDlgRectScreen()->right;
             mmi->ptMinTrackSize.y = m_resizer.GetDlgRectScreen()->bottom;
             return 0;
         }
-        break;
         case WM_CLOSE:
             CTheme::Instance().RemoveRegisteredCallback(m_themeCallbackId);
             break;
@@ -167,10 +165,10 @@ LRESULT CSettingsDlg::DoCommand(int id, int /*msg*/)
                 g_iniFile.SetValue(L"global", L"editorcmd", buf.get());
             else
                 m_regEditorCmd = buf.get();
-            int          langIndex = (int)SendDlgItemMessage(*this, IDC_LANGUAGE, CB_GETCURSEL, 0, 0);
-            std::wstring langpath  = langIndex == 0 ? L"" : m_langpaths[langIndex - 1];
+            int          langIndex = static_cast<int>(SendDlgItemMessage(*this, IDC_LANGUAGE, CB_GETCURSEL, 0, 0));
+            std::wstring langPath  = langIndex == 0 ? L"" : m_langPaths[langIndex - 1];
             if (bPortable)
-                g_iniFile.SetValue(L"global", L"languagefile", langpath.c_str());
+                g_iniFile.SetValue(L"global", L"languagefile", langPath.c_str());
             else
             {
                 CRegStdString regLang(L"Software\\grepWin\\languagefile");
@@ -180,10 +178,10 @@ LRESULT CSettingsDlg::DoCommand(int id, int /*msg*/)
                 }
                 else
                 {
-                    regLang = langpath;
+                    regLang = langPath;
                 }
             }
-            CLanguage::Instance().LoadFile(langpath);
+            CLanguage::Instance().LoadFile(langPath);
             CLanguage::Instance().TranslateWindow(::GetParent(*this));
 
             std::wstring sNumNull = GetDlgItemText(IDC_NUMNULL).get();
@@ -199,6 +197,7 @@ LRESULT CSettingsDlg::DoCommand(int id, int /*msg*/)
             }
             else
             {
+                // ReSharper disable CppEntityAssignedButNoRead
                 CRegStdDWORD esc(L"Software\\grepWin\\escclose", FALSE);
                 esc = (IsDlgButtonChecked(*this, IDC_ESCKEY) == BST_CHECKED);
                 CRegStdDWORD backup(L"Software\\grepWin\\backupinfolder", FALSE);
@@ -211,10 +210,11 @@ LRESULT CSettingsDlg::DoCommand(int id, int /*msg*/)
                 regCheckForUpdates = (IsDlgButtonChecked(*this, IDC_DOUPDATECHECKS) == BST_CHECKED);
                 CRegStdDWORD regNumNull(L"Software\\grepWin\\nullbytes", FALSE);
                 regNumNull = _wtoi(sNumNull.c_str());
+                // ReSharper restore CppEntityAssignedButNoRead
             }
             CTheme::Instance().SetDarkTheme(IsDlgButtonChecked(*this, IDC_DARKMODE) == BST_CHECKED);
         }
-            // fall through
+            [[fallthrough]];
         case IDCANCEL:
             CTheme::Instance().RemoveRegisteredCallback(m_themeCallbackId);
             EndDialog(*this, id);

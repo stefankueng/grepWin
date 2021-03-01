@@ -193,7 +193,6 @@
     <ClCompile Include="..\sktoolslib\BaseWindow.cpp" />
     <ClCompile Include="..\sktoolslib\BrowseFolder.cpp" />
     <ClCompile Include="..\sktoolslib\CmdLineParser.cpp" />
-    <ClCompile Include="..\sktoolslib\codecvt.cpp" />
     <ClCompile Include="..\sktoolslib\DarkModeHelper.cpp" />
     <ClCompile Include="..\sktoolslib\DebugOutput.cpp" />
     <ClCompile Include="..\sktoolslib\DirFileEnum.cpp" />
@@ -240,7 +239,6 @@
     <ClInclude Include="..\sktoolslib\BaseWindow.h" />
     <ClInclude Include="..\sktoolslib\BrowseFolder.h" />
     <ClInclude Include="..\sktoolslib\CmdLineParser.h" />
-    <ClInclude Include="..\sktoolslib\codecvt.h" />
     <ClInclude Include="..\sktoolslib\DarkModeHelper.h" />
     <ClInclude Include="..\sktoolslib\DebugOutput.h" />
     <ClInclude Include="..\sktoolslib\DirFileEnum.h" />
