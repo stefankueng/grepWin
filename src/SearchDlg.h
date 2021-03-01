@@ -34,14 +34,14 @@
 #include <wrl.h>
 using namespace Microsoft::WRL;
 
-#define SEARCH_FOUND        (WM_APP+1)
-#define SEARCH_START        (WM_APP+2)
-#define SEARCH_PROGRESS     (WM_APP+3)
-#define SEARCH_END          (WM_APP+4)
-#define WM_GREPWIN_THREADEND (WM_APP+5)
+#define SEARCH_FOUND         (WM_APP + 1)
+#define SEARCH_START         (WM_APP + 2)
+#define SEARCH_PROGRESS      (WM_APP + 3)
+#define SEARCH_END           (WM_APP + 4)
+#define WM_GREPWIN_THREADEND (WM_APP + 5)
 
-#define ID_ABOUTBOX         0x0010
-#define ID_CLONE            0x0011
+#define ID_ABOUTBOX 0x0010
+#define ID_CLONE    0x0011
 
 enum ExecuteAction
 {
@@ -57,184 +57,187 @@ class CSearchDlg : public CDialog
 {
 public:
     CSearchDlg(HWND hParent);
-    ~CSearchDlg(void);
+    ~CSearchDlg();
 
-    DWORD                   SearchThread();
-    void                    SetSearchPath(const std::wstring& path) {m_searchpath = path; SearchReplace(m_searchpath, L"/", L"\\"); }
-    void                    SetSearchString(const std::wstring& search) {m_searchString = search;}
-    void                    SetFileMask(const std::wstring& mask, bool reg) {m_patternregex = mask; m_bUseRegexForPaths = reg;}
-    void                    SetDirExcludeRegexMask(const std::wstring& mask) {m_excludedirspatternregex = mask;}
-    void                    SetReplaceWith(const std::wstring& replace) { m_replaceString = replace; }
-    void                    SetUseRegex(bool reg) { m_bUseRegex = reg; }
-    void                    SetPreset(const std::wstring& preset);
+    DWORD SearchThread();
+    void  SetSearchPath(const std::wstring& path);
+    void  SetSearchString(const std::wstring& search) { m_searchString = search; }
+    void  SetFileMask(const std::wstring& mask, bool reg);
+    void  SetDirExcludeRegexMask(const std::wstring& mask) { m_excludeDirsPatternRegex = mask; }
+    void  SetReplaceWith(const std::wstring& replace) { m_replaceString = replace; }
+    void  SetUseRegex(bool reg) { m_bUseRegex = reg; }
+    void  SetPreset(const std::wstring& preset);
+    void  SetCaseSensitive(bool bSet);
+    void  SetMatchesNewline(bool bSet);
+    void  SetCreateBackups(bool bSet);
+    void  SetCreateBackupsInFolders(bool bSet);
+    void  SetUTF8(bool bSet);
+    void  SetBinary(bool bSet);
+    void  SetSize(uint64_t size, int cmp);
+    void  SetIncludeSystem(bool bSet);
+    void  SetIncludeHidden(bool bSet);
+    void  SetIncludeSubfolders(bool bSet);
+    void  SetIncludeBinary(bool bSet);
+    void  SetDateLimit(int datelimit, FILETIME t1, FILETIME t2);
+    void  SetNoSaveSettings(bool nosave) { m_bNoSaveSettings = nosave; }
 
-    void                    SetCaseSensitive(bool bSet) {m_bCaseSensitiveC = true; m_bCaseSensitive = bSet;}
-    void                    SetMatchesNewline(bool bSet) {m_bDotMatchesNewlineC = true; m_bDotMatchesNewline = bSet;}
-    void                    SetCreateBackups(bool bSet) { m_bCreateBackupC = true; m_bCreateBackup = bSet; m_bConfirmationOnReplace = false; }
-    void                    SetCreateBackupsInFolders(bool bSet) { m_bCreateBackupInFoldersC = true; m_bCreateBackupInFolders = bSet; SetCreateBackups(bSet); }
-    void                    SetUTF8(bool bSet) { m_bUTF8C = true; m_bUTF8 = bSet; m_bForceBinary = false; }
-    void                    SetBinary(bool bSet) { m_bUTF8C = true; m_bForceBinary = bSet; m_bUTF8 = false; }
-    void                    SetSize(uint64_t size, int cmp) {m_bSizeC = true; m_lSize = size; m_sizeCmp = cmp; m_bAllSize = (size == (uint64_t)-1);}
-    void                    SetIncludeSystem(bool bSet) {m_bIncludeSystemC = true; m_bIncludeSystem = bSet;}
-    void                    SetIncludeHidden(bool bSet) {m_bIncludeHiddenC = true; m_bIncludeHidden = bSet;}
-    void                    SetIncludeSubfolders(bool bSet) {m_bIncludeSubfoldersC = true; m_bIncludeSubfolders = bSet;}
-    void                    SetIncludeBinary(bool bSet) {m_bIncludeBinaryC = true; m_bIncludeBinary = bSet;}
-    void                    SetDateLimit(int datelimit, FILETIME t1, FILETIME t2) { m_bDateLimitC = true; m_DateLimit = datelimit; m_Date1 = t1; m_Date2 = t2; }
-    void                    SetNoSaveSettings(bool nosave) { m_bNoSaveSettings = nosave; }
+    void SetExecute(ExecuteAction execute) { m_executeImmediately = execute; }
+    void SetEndDialog() { m_endDialog = true; }
+    void SetShowContent()
+    {
+        m_showContent    = true;
+        m_showContentSet = true;
+    }
 
-    void                    SetExecute(ExecuteAction execute) {m_ExecuteImmediately = execute;}
-    void                    SetEndDialog() { m_endDialog = true; }
-    void                    SetShowContent() { m_showContent = true; m_showContentSet = true; }
 protected:
-    LRESULT CALLBACK        DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
-    LRESULT                 DoCommand(int id, int msg);
-    bool                    PreTranslateMessage(MSG* pMsg);
+    LRESULT CALLBACK DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) override;
+    LRESULT          DoCommand(int id, int msg);
+    bool             PreTranslateMessage(MSG* pMsg) override;
 
-    void                    SearchFile(CSearchInfo sinfo, const std::wstring& searchRoot, bool bSearchAlways, bool bIncludeBinary, bool bUseRegex, bool bCaseSensitive, bool bDotMatchesNewline, const std::wstring& searchString, const std::wstring& searchStringUtf16le, volatile LONG * bCancelled);
+    void SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, bool bSearchAlways, bool bIncludeBinary, bool bUseRegex, bool bCaseSensitive, bool bDotMatchesNewline, const std::wstring& searchString, const std::wstring& searchStringUtf16Le, volatile LONG* bCancelled);
 
-    bool                    InitResultList();
-    void                    FillResultList();
-    bool                    AddFoundEntry(CSearchInfo * pInfo, bool bOnlyListControl = false);
-    void                    ShowContextMenu(int x, int y);
-    void                    DoListNotify(LPNMITEMACTIVATE lpNMItemActivate);
-    void                    OpenFileAtListIndex(int listIndex);
-    void                    UpdateInfoLabel();
-    bool                    SaveSettings();
-    void                    SaveWndPosition();
-    void                    formatDate(wchar_t date_native[], const FILETIME& filetime, bool force_short_fmt);
-    int                     CheckRegex();
-    bool                    MatchPath(LPCTSTR pathbuf);
-    void                    AutoSizeAllColumns();
-    int                     GetSelectedListIndex(int index);
-    bool                    FailedShowMessage(HRESULT hr);
-    void                    CheckForUpdates(bool force = false);
-    void                    ShowUpdateAvailable();
-    bool                    IsVersionNewer(const std::wstring& sVer);
-    bool                    CloneWindow();
-private:
-    static bool             NameCompareAsc(const CSearchInfo& Entry1, const CSearchInfo& Entry2);
-    static bool             SizeCompareAsc(const CSearchInfo& Entry1, const CSearchInfo& Entry2);
-    static bool             MatchesCompareAsc(const CSearchInfo& Entry1, const CSearchInfo& Entry2);
-    static bool             PathCompareAsc(const CSearchInfo& Entry1, const CSearchInfo& Entry2);
-    static bool             EncodingCompareAsc(const CSearchInfo& Entry1, const CSearchInfo& Entry2);
-    static bool             ModifiedTimeCompareAsc(const CSearchInfo& Entry1, const CSearchInfo& Entry2);
-    static bool             ExtCompareAsc(const CSearchInfo& Entry1, const CSearchInfo& Entry2);
-
-    static bool             NameCompareDesc(const CSearchInfo& Entry1, const CSearchInfo& Entry2);
-    static bool             SizeCompareDesc(const CSearchInfo& Entry1, const CSearchInfo& Entry2);
-    static bool             MatchesCompareDesc(const CSearchInfo& Entry1, const CSearchInfo& Entry2);
-    static bool             PathCompareDesc(const CSearchInfo& Entry1, const CSearchInfo& Entry2);
-    static bool             EncodingCompareDesc(const CSearchInfo& Entry1, const CSearchInfo& Entry2);
-    static bool             ModifiedTimeCompareDesc(const CSearchInfo& Entry1, const CSearchInfo& Entry2);
-    static bool             ExtCompareDesc(const CSearchInfo& Entry1, const CSearchInfo& Entry2);
+    bool        InitResultList();
+    void        FillResultList();
+    bool        AddFoundEntry(CSearchInfo* pInfo, bool bOnlyListControl = false);
+    void        ShowContextMenu(int x, int y);
+    void        DoListNotify(LPNMITEMACTIVATE lpNMItemActivate);
+    void        OpenFileAtListIndex(int listIndex);
+    void        UpdateInfoLabel();
+    bool        SaveSettings();
+    void        SaveWndPosition();
+    void        formatDate(wchar_t dateNative[], const FILETIME& fileTime, bool forceShortFmt) const;
+    int         CheckRegex();
+    bool        MatchPath(LPCTSTR pathBuf);
+    void        AutoSizeAllColumns();
+    int         GetSelectedListIndex(int index);
+    static bool FailedShowMessage(HRESULT hr);
+    void        CheckForUpdates(bool force = false);
+    void        ShowUpdateAvailable();
+    bool        IsVersionNewer(const std::wstring& sVer) const;
+    bool        CloneWindow();
 
 private:
-    HWND                    m_hParent;
-    volatile LONG           m_dwThreadRunning;
-    volatile LONG           m_Cancelled;
+    static bool NameCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2);
+    static bool SizeCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2);
+    static bool MatchesCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2);
+    static bool PathCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2);
+    static bool EncodingCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2);
+    static bool ModifiedTimeCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2);
+    static bool ExtCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2);
 
-    CBookmarksDlg *         m_pBookmarksDlg;
-    ComPtr<ITaskbarList3>   m_pTaskbarList;
+    static bool NameCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2);
+    static bool SizeCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2);
+    static bool MatchesCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2);
+    static bool PathCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2);
+    static bool EncodingCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2);
+    static bool ModifiedTimeCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2);
+    static bool ExtCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2);
 
-    std::wstring            m_searchpath;
-    std::wstring            m_searchString;
-    std::wstring            m_replaceString;
-    std::vector<std::wstring> m_patterns;
-    std::wstring            m_patternregex;
-    std::wstring            m_excludedirspatternregex;
-    bool                    m_bUseRegex;
-    bool                    m_bUseRegexForPaths;
-    bool                    m_bAllSize;
-    uint64_t                m_lSize;
-    int                     m_sizeCmp;
-    bool                    m_bIncludeSystem;
-    bool                    m_bIncludeSystemC;
-    bool                    m_bIncludeHidden;
-    bool                    m_bIncludeHiddenC;
-    bool                    m_bIncludeSubfolders;
-    bool                    m_bIncludeSubfoldersC;
-    bool                    m_bIncludeBinary;
-    bool                    m_bIncludeBinaryC;
-    bool                    m_bCreateBackup;
-    bool                    m_bCreateBackupC;
-    bool                    m_bCreateBackupInFolders;
-    bool                    m_bCreateBackupInFoldersC;
-    bool                    m_bUTF8;
-    bool                    m_bUTF8C;
-    bool                    m_bForceBinary;
-    bool                    m_bCaseSensitive;
-    bool                    m_bCaseSensitiveC;
-    bool                    m_bDotMatchesNewline;
-    bool                    m_bDotMatchesNewlineC;
-    bool                    m_bNOTSearch;
-    bool                    m_bCaptureSearch;
-    bool                    m_bSizeC;
-    bool                    m_endDialog;
-    ExecuteAction           m_ExecuteImmediately;
-    int                     m_DateLimit;
-    bool                    m_bDateLimitC;
-    FILETIME                m_Date1;
-    FILETIME                m_Date2;
-    bool                    m_bNoSaveSettings;
+private:
+    HWND          m_hParent;
+    volatile LONG m_dwThreadRunning;
+    volatile LONG m_cancelled;
 
-    bool                    m_bReplace;
-    bool                    m_bConfirmationOnReplace;
-    bool                    m_showContent;
-    bool                    m_showContentSet;
+    CBookmarksDlg*        m_pBookmarksDlg;
+    ComPtr<ITaskbarList3> m_pTaskbarList;
 
-    std::vector<CSearchInfo> m_items;
+    std::wstring                      m_searchPath;
+    std::wstring                      m_searchString;
+    std::wstring                      m_replaceString;
+    std::vector<std::wstring>         m_patterns;
+    std::wstring                      m_patternRegex;
+    std::wstring                      m_excludeDirsPatternRegex;
+    bool                              m_bUseRegex;
+    bool                              m_bUseRegexForPaths;
+    bool                              m_bAllSize;
+    uint64_t                          m_lSize;
+    int                               m_sizeCmp;
+    bool                              m_bIncludeSystem;
+    bool                              m_bIncludeSystemC;
+    bool                              m_bIncludeHidden;
+    bool                              m_bIncludeHiddenC;
+    bool                              m_bIncludeSubfolders;
+    bool                              m_bIncludeSubfoldersC;
+    bool                              m_bIncludeBinary;
+    bool                              m_bIncludeBinaryC;
+    bool                              m_bCreateBackup;
+    bool                              m_bCreateBackupC;
+    bool                              m_bCreateBackupInFolders;
+    bool                              m_bCreateBackupInFoldersC;
+    bool                              m_bUTF8;
+    bool                              m_bUTF8C;
+    bool                              m_bForceBinary;
+    bool                              m_bCaseSensitive;
+    bool                              m_bCaseSensitiveC;
+    bool                              m_bDotMatchesNewline;
+    bool                              m_bDotMatchesNewlineC;
+    bool                              m_bNotSearch;
+    bool                              m_bCaptureSearch;
+    bool                              m_bSizeC;
+    bool                              m_endDialog;
+    ExecuteAction                     m_executeImmediately;
+    int                               m_dateLimit;
+    bool                              m_bDateLimitC;
+    FILETIME                          m_date1;
+    FILETIME                          m_date2;
+    bool                              m_bNoSaveSettings;
+    bool                              m_bReplace;
+    bool                              m_bConfirmationOnReplace;
+    bool                              m_showContent;
+    bool                              m_showContentSet;
+    std::vector<CSearchInfo>          m_items;
     std::vector<std::tuple<int, int>> m_listItems;
-    std::set<std::wstring>  m_backupandtempfiles;
-    int                     m_totalitems;
-    int                     m_searchedItems;
-    int                     m_totalmatches;
-    bool                    m_bAscending;
-    std::wstring            m_resultString;
+    std::set<std::wstring>            m_backupAndTempFiles;
+    int                               m_totalItems;
+    int                               m_searchedItems;
+    int                               m_totalMatches;
+    bool                              m_bAscending;
+    std::wstring                      m_resultString;
 
-    CDlgResizer             m_resizer;
-    int                     m_themeCallbackId;
+    CDlgResizer m_resizer;
+    int         m_themeCallbackId;
 
-    CFileDropTarget *       m_pDropTarget;
+    CFileDropTarget* m_pDropTarget;
 
-    static UINT             GREPWIN_STARTUPMSG;
+    static UINT m_grepwinStartupmsg;
 
-    std::thread             m_updateCheckThread;
+    std::thread m_updateCheckThread;
 
-    CAutoComplete           m_AutoCompleteFilePatterns;
-    CAutoComplete           m_AutoCompleteExcludeDirsPatterns;
-    CAutoComplete           m_AutoCompleteSearchPatterns;
-    CAutoComplete           m_AutoCompleteReplacePatterns;
-    CAutoComplete           m_AutoCompleteSearchPaths;
+    CAutoComplete m_autoCompleteFilePatterns;
+    CAutoComplete m_autoCompleteExcludeDirsPatterns;
+    CAutoComplete m_autoCompleteSearchPatterns;
+    CAutoComplete m_autoCompleteReplacePatterns;
+    CAutoComplete m_autoCompleteSearchPaths;
 
-    CEditDoubleClick        m_editFilePatterns;
-    CEditDoubleClick        m_editExcludeDirsPatterns;
-    CEditDoubleClick        m_editSearchPatterns;
-    CEditDoubleClick        m_editReplacePatterns;
-    CEditDoubleClick        m_editSearchPaths;
+    CEditDoubleClick m_editFilePatterns;
+    CEditDoubleClick m_editExcludeDirsPatterns;
+    CEditDoubleClick m_editSearchPatterns;
+    CEditDoubleClick m_editReplacePatterns;
+    CEditDoubleClick m_editSearchPaths;
 
-    CRegStdDWORD            m_regUseRegex;
-    CRegStdDWORD            m_regAllSize;
-    CRegStdString           m_regSize;
-    CRegStdDWORD            m_regSizeCombo;
-    CRegStdDWORD            m_regIncludeSystem;
-    CRegStdDWORD            m_regIncludeHidden;
-    CRegStdDWORD            m_regIncludeSubfolders;
-    CRegStdDWORD            m_regIncludeBinary;
-    CRegStdDWORD            m_regCreateBackup;
-    CRegStdDWORD            m_regUTF8;
-    CRegStdDWORD            m_regBinary;
-    CRegStdDWORD            m_regCaseSensitive;
-    CRegStdDWORD            m_regDotMatchesNewline;
-    CRegStdDWORD            m_regUseRegexForPaths;
-    CRegStdString           m_regPattern;
-    CRegStdString           m_regExcludeDirsPattern;
-    CRegStdString           m_regSearchPath;
-    CRegStdString           m_regEditorCmd;
-    CRegStdDWORD            m_regBackupInFolder;
-    CRegStdDWORD            m_regDateLimit;
-    CRegStdDWORD            m_regDate1Low;
-    CRegStdDWORD            m_regDate1High;
-    CRegStdDWORD            m_regDate2Low;
-    CRegStdDWORD            m_regDate2High;
-    CRegStdDWORD            m_regShowContent;
+    CRegStdDWORD  m_regUseRegex;
+    CRegStdDWORD  m_regAllSize;
+    CRegStdString m_regSize;
+    CRegStdDWORD  m_regSizeCombo;
+    CRegStdDWORD  m_regIncludeSystem;
+    CRegStdDWORD  m_regIncludeHidden;
+    CRegStdDWORD  m_regIncludeSubfolders;
+    CRegStdDWORD  m_regIncludeBinary;
+    CRegStdDWORD  m_regCreateBackup;
+    CRegStdDWORD  m_regUTF8;
+    CRegStdDWORD  m_regBinary;
+    CRegStdDWORD  m_regCaseSensitive;
+    CRegStdDWORD  m_regDotMatchesNewline;
+    CRegStdDWORD  m_regUseRegexForPaths;
+    CRegStdString m_regPattern;
+    CRegStdString m_regExcludeDirsPattern;
+    CRegStdString m_regSearchPath;
+    CRegStdString m_regEditorCmd;
+    CRegStdDWORD  m_regBackupInFolder;
+    CRegStdDWORD  m_regDateLimit;
+    CRegStdDWORD  m_regDate1Low;
+    CRegStdDWORD  m_regDate1High;
+    CRegStdDWORD  m_regDate2Low;
+    CRegStdDWORD  m_regDate2High;
+    CRegStdDWORD  m_regShowContent;
 };
