@@ -993,7 +993,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 if (m_bReplace && m_bUTF8)
                 {
                     auto utf8OptionText = GetDlgItemText(IDC_UTF8);
-                    auto msgtext = CStringUtils::Format(TranslatedString(hResource, IDS_REPLACEUTF8).c_str(),
+                    auto msgtext        = CStringUtils::Format(TranslatedString(hResource, IDS_REPLACEUTF8).c_str(),
                                                         utf8OptionText.get());
                     if (::MessageBox(*this, msgtext.c_str(), L"grepWin", MB_ICONWARNING | MB_YESNO | MB_DEFBUTTON2) != IDYES)
                     {
@@ -2423,8 +2423,6 @@ bool grepWin_is_regex_valid(const std::wstring& m_searchString)
 
 bool CSearchDlg::SaveSettings()
 {
-    if (m_bNoSaveSettings)
-        return true;
     // get all the information we need from the dialog
     auto buf     = GetDlgItemText(IDC_SEARCHPATH);
     m_searchpath = buf.get();
@@ -2468,17 +2466,7 @@ bool CSearchDlg::SaveSettings()
         pBuf++;
     } while (*pBuf && (*(pBuf - 1)));
 
-    if (m_searchpath.empty())
-        return false;
-    if (bPortable)
-        g_iniFile.SetValue(L"global", L"searchpath", m_searchpath.c_str());
-    else
-        m_regSearchPath = m_searchpath;
     m_bUseRegex = (IsDlgButtonChecked(*this, IDC_REGEXRADIO) == BST_CHECKED);
-    if (bPortable)
-        g_iniFile.SetValue(L"global", L"UseRegex", m_bUseRegex ? L"1" : L"0");
-    else
-        m_regUseRegex = (DWORD)m_bUseRegex;
     if (m_bUseRegex)
     {
         // check if the regex is valid before doing the search
@@ -2488,10 +2476,6 @@ bool CSearchDlg::SaveSettings()
         }
     }
     m_bUseRegexForPaths = (IsDlgButtonChecked(*this, IDC_FILEPATTERNREGEX) == BST_CHECKED);
-    if (bPortable)
-        g_iniFile.SetValue(L"global", L"UseFileMatchRegex", m_bUseRegexForPaths ? L"1" : L"0");
-    else
-        m_regUseRegexForPaths = (DWORD)m_bUseRegexForPaths;
     if (m_bUseRegexForPaths)
     {
         // check if the regex is valid before doing the search
@@ -2500,7 +2484,6 @@ bool CSearchDlg::SaveSettings()
             return false;
         }
     }
-
     // check if the Exclude Dirs regex is valid before doing the search
     if (!grepWin_is_regex_valid(m_excludedirspatternregex) && !m_excludedirspatternregex.empty())
     {
@@ -2508,26 +2491,15 @@ bool CSearchDlg::SaveSettings()
     }
 
     m_bAllSize = (IsDlgButtonChecked(*this, IDC_ALLSIZERADIO) == BST_CHECKED);
-    if (bPortable)
-        g_iniFile.SetValue(L"global", L"AllSize", m_bAllSize ? L"1" : L"0");
-    else
-        m_regAllSize = (DWORD)m_bAllSize;
+
     m_lSize   = 0;
     m_sizeCmp = 0;
     if (!m_bAllSize)
     {
         buf     = GetDlgItemText(IDC_SIZEEDIT);
         m_lSize = _wtol(buf.get());
-        if (bPortable)
-            g_iniFile.SetValue(L"global", L"Size", CStringUtils::Format(L"%I64u", m_lSize).c_str());
-        else
-            m_regSize = CStringUtils::Format(L"%I64u", m_lSize).c_str();
         m_lSize *= 1024;
         m_sizeCmp = (int)SendDlgItemMessage(*this, IDC_SIZECOMBO, CB_GETCURSEL, 0, 0);
-        if (bPortable)
-            g_iniFile.SetValue(L"global", L"SizeCombo", CStringUtils::Format(L"%d", m_sizeCmp).c_str());
-        else
-            m_regSizeCombo = m_sizeCmp;
     }
     m_bIncludeSystem     = (IsDlgButtonChecked(*this, IDC_INCLUDESYSTEM) == BST_CHECKED);
     m_bIncludeHidden     = (IsDlgButtonChecked(*this, IDC_INCLUDEHIDDEN) == BST_CHECKED);
@@ -2554,6 +2526,40 @@ bool CSearchDlg::SaveSettings()
     DateTime_GetSystemtime(GetDlgItem(*this, IDC_DATEPICK2), &sysTime);
     SystemTimeToFileTime(&sysTime, &m_Date2);
     m_showContent = IsDlgButtonChecked(*this, IDC_RESULTCONTENT) == BST_CHECKED;
+
+    if (m_searchpath.empty())
+        return false;
+
+    if (m_bNoSaveSettings)
+        return true;
+
+    if (bPortable)
+        g_iniFile.SetValue(L"global", L"searchpath", m_searchpath.c_str());
+    else
+        m_regSearchPath = m_searchpath;
+    if (bPortable)
+        g_iniFile.SetValue(L"global", L"UseRegex", m_bUseRegex ? L"1" : L"0");
+    else
+        m_regUseRegex = (DWORD)m_bUseRegex;
+    if (bPortable)
+        g_iniFile.SetValue(L"global", L"UseFileMatchRegex", m_bUseRegexForPaths ? L"1" : L"0");
+    else
+        m_regUseRegexForPaths = (DWORD)m_bUseRegexForPaths;
+
+    if (bPortable)
+        g_iniFile.SetValue(L"global", L"AllSize", m_bAllSize ? L"1" : L"0");
+    else
+        m_regAllSize = (DWORD)m_bAllSize;
+
+    if (bPortable)
+        g_iniFile.SetValue(L"global", L"Size", CStringUtils::Format(L"%I64u", m_lSize).c_str());
+    else
+        m_regSize = CStringUtils::Format(L"%I64u", m_lSize).c_str();
+
+    if (bPortable)
+        g_iniFile.SetValue(L"global", L"SizeCombo", CStringUtils::Format(L"%d", m_sizeCmp).c_str());
+    else
+        m_regSizeCombo = m_sizeCmp;
 
     if (bPortable)
     {
