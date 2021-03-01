@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2010, 2012-2017, 2019-2020 - Stefan Kueng
+// Copyright (C) 2007-2010, 2012-2017, 2019-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -22,6 +22,7 @@
 #include "BookmarksDlg.h"
 #include "NameDlg.h"
 #include "Theme.h"
+#include "ResString.h"
 #include <string>
 
 #pragma warning(push)

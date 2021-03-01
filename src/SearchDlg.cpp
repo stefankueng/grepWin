@@ -38,7 +38,7 @@
 #include "RegexReplaceFormatter.h"
 #include "LineData.h"
 #include "Settings.h"
-#include "SysInfo.h"
+#include "ResString.h"
 #include "Language.h"
 #include "SmartHandle.h"
 #include "PathUtils.h"
@@ -1123,7 +1123,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
             auto pathbuf = std::make_unique<wchar_t[]>(MAX_PATH_NEW);
             wcscpy_s(pathbuf.get(), MAX_PATH_NEW, path.get());
             browse.SetInfo(TranslatedString(hResource, IDS_SELECTPATHTOSEARCH).c_str());
-            if (browse.Show(*this, pathbuf.get(), MAX_PATH_NEW, m_searchpath.c_str()) == CBrowseFolder::OK)
+            if (browse.Show(*this, pathbuf.get(), MAX_PATH_NEW, m_searchpath.c_str()) == CBrowseFolder::RetVal::Ok)
             {
                 SetDlgItemText(*this, IDC_SEARCHPATH, pathbuf.get());
                 m_searchpath = pathbuf.get();
