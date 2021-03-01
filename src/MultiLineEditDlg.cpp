@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2011-2013, 2019-2020 - Stefan Kueng
+// Copyright (C) 2011-2013, 2019-2021 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -33,7 +33,7 @@ CMultiLineEditDlg::CMultiLineEditDlg(HWND hParent)
 {
 }
 
-CMultiLineEditDlg::~CMultiLineEditDlg(void)
+CMultiLineEditDlg::~CMultiLineEditDlg()
 {
 }
 
@@ -53,7 +53,7 @@ LRESULT CMultiLineEditDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARA
             InitDialog(hwndDlg, IDI_GREPWIN);
             CLanguage::Instance().TranslateWindow(*this);
             // initialize the controls
-            SetDlgItemText(hwndDlg, IDC_TEXTCONTENT, m_RegexText.c_str());
+            SetDlgItemText(hwndDlg, IDC_TEXTCONTENT, m_regexText.c_str());
 
             SetFocus(GetDlgItem(hwndDlg, IDC_TEXTCONTENT));
 
@@ -76,12 +76,11 @@ LRESULT CMultiLineEditDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARA
         break;
         case WM_GETMINMAXINFO:
         {
-            MINMAXINFO* mmi       = (MINMAXINFO*)lParam;
+            MINMAXINFO* mmi       = reinterpret_cast<MINMAXINFO*>(lParam);
             mmi->ptMinTrackSize.x = m_resizer.GetDlgRect()->right;
             mmi->ptMinTrackSize.y = m_resizer.GetDlgRect()->bottom;
             return 0;
         }
-        break;
         case WM_CLOSE:
             CTheme::Instance().RemoveRegisteredCallback(m_themeCallbackId);
             break;
@@ -98,9 +97,9 @@ LRESULT CMultiLineEditDlg::DoCommand(int id, int msg)
         case IDOK:
         {
             auto buf    = GetDlgItemText(IDC_TEXTCONTENT);
-            m_RegexText = std::wstring(buf.get());
+            m_regexText = std::wstring(buf.get());
         }
-            // fall through
+            [[fallthrough]];
         case IDCANCEL:
             EndDialog(*this, id);
             break;
@@ -109,7 +108,7 @@ LRESULT CMultiLineEditDlg::DoCommand(int id, int msg)
             if (msg == EN_CHANGE)
             {
                 auto buf    = GetDlgItemText(IDC_TEXTCONTENT);
-                m_RegexText = std::wstring(buf.get());
+                m_regexText = std::wstring(buf.get());
             }
         }
         break;
