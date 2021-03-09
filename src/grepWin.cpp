@@ -352,6 +352,8 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
                     searchDlg.SetExecute(ExecuteAction::Search);
                 if (searchIni.GetValue(section.c_str(), L"executereplace"))
                     searchDlg.SetExecute(ExecuteAction::Replace);
+                if (searchIni.GetValue(section.c_str(), L"executecapture"))
+                    searchDlg.SetExecute(ExecuteAction::Capture);
                 if (searchIni.GetValue(section.c_str(), L"closedialog"))
                     searchDlg.SetEndDialog();
                 if (searchIni.GetValue(section.c_str(), L"content"))
@@ -437,6 +439,8 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
                 searchDlg.SetExecute(ExecuteAction::Search);
             if (parser.HasKey(L"executereplace"))
                 searchDlg.SetExecute(ExecuteAction::Replace);
+            if (parser.HasKey(L"executecapture"))
+                searchDlg.SetExecute(ExecuteAction::Capture);
             if (parser.HasKey(L"closedialog"))
                 searchDlg.SetEndDialog();
             if (parser.HasKey(L"content"))

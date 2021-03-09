@@ -542,13 +542,16 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 
             switch (m_executeImmediately)
             {
-                case Search:
+                case ExecuteAction::Search:
                     DoCommand(IDOK, 0);
                     break;
-                case Replace:
+                case ExecuteAction::Replace:
                     DoCommand(IDC_REPLACE, 0);
                     break;
-                case None:
+                case ExecuteAction::Capture:
+                    DoCommand(IDC_CAPTURESEARCH, 0);
+                    break;
+                case ExecuteAction::None:
                 default:
                     break;
             }

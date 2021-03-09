@@ -43,11 +43,12 @@ using namespace Microsoft::WRL;
 #define ID_ABOUTBOX 0x0010
 #define ID_CLONE    0x0011
 
-enum ExecuteAction
+enum class ExecuteAction
 {
     None,
     Search,
-    Replace
+    Replace,
+    Capture
 };
 
 /**
