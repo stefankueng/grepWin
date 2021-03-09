@@ -78,8 +78,8 @@ public:
     void  SetIncludeHidden(bool bSet);
     void  SetIncludeSubfolders(bool bSet);
     void  SetIncludeBinary(bool bSet);
-    void  SetDateLimit(int datelimit, FILETIME t1, FILETIME t2);
-    void  SetNoSaveSettings(bool nosave) { m_bNoSaveSettings = nosave; }
+    void  SetDateLimit(int dateLimit, FILETIME t1, FILETIME t2);
+    void  SetNoSaveSettings(bool noSave) { m_bNoSaveSettings = noSave; }
 
     void SetExecute(ExecuteAction execute) { m_executeImmediately = execute; }
     void SetEndDialog() { m_endDialog = true; }

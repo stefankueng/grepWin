@@ -1707,11 +1707,11 @@ void CSearchDlg::ShowContextMenu(int x, int y)
     bool                  fileList = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
     if (!fileList)
     {
-        WCHAR numbuf[40] = {0};
+        WCHAR numBuf[40] = {0};
         while ((iItem = ListView_GetNextItem(hListControl, iItem, LVNI_SELECTED)) != (-1))
         {
-            ListView_GetItemText(hListControl, iItem, 1, numbuf, 40);
-            DWORD line = _wtoi(numbuf);
+            ListView_GetItemText(hListControl, iItem, 1, numBuf, 40);
+            DWORD line = _wtoi(numBuf);
             if (line)
             {
                 LineData          data;
@@ -1913,18 +1913,18 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
         {
             case 0:
                 if (m_bAscending)
-                    std::sort(m_items.begin(), m_items.end(), NameCompareAsc);
+                    std::ranges::sort(m_items, NameCompareAsc);
                 else
-                    std::sort(m_items.begin(), m_items.end(), NameCompareDesc);
+                    std::ranges::sort(m_items, NameCompareDesc);
                 bDidSort = true;
                 break;
             case 1:
                 if (fileList)
                 {
                     if (m_bAscending)
-                        std::sort(m_items.begin(), m_items.end(), SizeCompareAsc);
+                        std::ranges::sort(m_items, SizeCompareAsc);
                     else
-                        std::sort(m_items.begin(), m_items.end(), SizeCompareDesc);
+                        std::ranges::sort(m_items, SizeCompareDesc);
                     bDidSort = true;
                 }
                 break;
@@ -1932,38 +1932,38 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
                 if (fileList)
                 {
                     if (m_bAscending)
-                        std::sort(m_items.begin(), m_items.end(), MatchesCompareAsc);
+                        std::ranges::sort(m_items, MatchesCompareAsc);
                     else
-                        std::sort(m_items.begin(), m_items.end(), MatchesCompareDesc);
+                        std::ranges::sort(m_items, MatchesCompareDesc);
                     bDidSort = true;
                 }
                 break;
             case 3:
                 if (m_bAscending)
-                    std::sort(m_items.begin(), m_items.end(), PathCompareAsc);
+                    std::ranges::sort(m_items, PathCompareAsc);
                 else
-                    std::sort(m_items.begin(), m_items.end(), PathCompareDesc);
+                    std::ranges::sort(m_items, PathCompareDesc);
                 bDidSort = true;
                 break;
             case 4:
                 if (m_bAscending)
-                    std::sort(m_items.begin(), m_items.end(), ExtCompareAsc);
+                    std::ranges::sort(m_items, ExtCompareAsc);
                 else
-                    std::sort(m_items.begin(), m_items.end(), ExtCompareDesc);
+                    std::ranges::sort(m_items, ExtCompareDesc);
                 bDidSort = true;
                 break;
             case 5:
                 if (m_bAscending)
-                    std::sort(m_items.begin(), m_items.end(), EncodingCompareAsc);
+                    std::ranges::sort(m_items, EncodingCompareAsc);
                 else
-                    std::sort(m_items.begin(), m_items.end(), EncodingCompareDesc);
+                    std::ranges::sort(m_items, EncodingCompareDesc);
                 bDidSort = true;
                 break;
             case 6:
                 if (m_bAscending)
-                    std::sort(m_items.begin(), m_items.end(), ModifiedTimeCompareAsc);
+                    std::ranges::sort(m_items, ModifiedTimeCompareAsc);
                 else
-                    std::sort(m_items.begin(), m_items.end(), ModifiedTimeCompareDesc);
+                    std::ranges::sort(m_items, ModifiedTimeCompareDesc);
                 bDidSort = true;
                 break;
         }
@@ -2027,9 +2027,9 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
             std::wstring sFormat     = TranslatedString(hResource, IDS_CONTEXTLINE);
             for (size_t i = 0; i < min(inf.matchLines.size(), 5); ++i)
             {
-                std::wstring matchtext = inf.matchLines[i];
-                CStringUtils::trim(matchtext);
-                matchString += CStringUtils::Format(sFormat.c_str(), inf.matchLinesNumbers[i], matchtext.c_str());
+                std::wstring matchText = inf.matchLines[i];
+                CStringUtils::trim(matchText);
+                matchString += CStringUtils::Format(sFormat.c_str(), inf.matchLinesNumbers[i], matchText.c_str());
             }
             if (inf.matchLines.size() > 5)
             {
@@ -2189,9 +2189,9 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
                             std::wstring line;
                             if (pInfo->matchLines.size() > static_cast<size_t>(subIndex))
                                 line = pInfo->matchLines[subIndex];
-                            std::replace(line.begin(), line.end(), '\t', ' ');
-                            std::replace(line.begin(), line.end(), '\n', ' ');
-                            std::replace(line.begin(), line.end(), '\r', ' ');
+                            std::ranges::replace(line, '\t', ' ');
+                            std::ranges::replace(line, '\n', ' ');
+                            std::ranges::replace(line, '\r', ' ');
                             wcsncpy_s(pItem->pszText, pItem->cchTextMax, line.c_str(), pItem->cchTextMax - 1);
                         }
                         break;
@@ -2277,14 +2277,14 @@ void CSearchDlg::OpenFileAtListIndex(int listIndex)
     }
 
     AssocQueryString(ASSOCF_INIT_DEFAULTTOSTAR, ASSOCSTR_COMMAND, ext.c_str(), nullptr, nullptr, &bufLen);
-    auto cmdbuf = std::make_unique<wchar_t[]>(bufLen + 1);
-    AssocQueryString(ASSOCF_INIT_DEFAULTTOSTAR, ASSOCSTR_COMMAND, ext.c_str(), nullptr, cmdbuf.get(), &bufLen);
-    std::wstring application = cmdbuf.get();
+    auto cmdBuf = std::make_unique<wchar_t[]>(bufLen + 1);
+    AssocQueryString(ASSOCF_INIT_DEFAULTTOSTAR, ASSOCSTR_COMMAND, ext.c_str(), nullptr, cmdBuf.get(), &bufLen);
+    std::wstring application = cmdBuf.get();
     // normalize application path
     DWORD len = ExpandEnvironmentStrings(application.c_str(), nullptr, 0);
-    cmdbuf    = std::make_unique<wchar_t[]>(bufLen + 1);
-    ExpandEnvironmentStrings(application.c_str(), cmdbuf.get(), len);
-    application = cmdbuf.get();
+    cmdBuf    = std::make_unique<wchar_t[]>(bufLen + 1);
+    ExpandEnvironmentStrings(application.c_str(), cmdBuf.get(), len);
+    application = cmdBuf.get();
 
     // resolve parameters
     if (application.find(L"%1") == std::wstring::npos)
@@ -2316,7 +2316,7 @@ void CSearchDlg::OpenFileAtListIndex(int listIndex)
     if (textLineBuf[0] == 0)
         wcscpy_s(textLineBuf, L"0");
     std::wstring appname = application;
-    std::transform(appname.begin(), appname.end(), appname.begin(), ::towlower);
+    std::ranges::transform(appname, appname.begin(), ::towlower);
 
     // now find out if the application which opens the file is known to us
     // and if it has a 'linenumber' switch to jump directly to a specific
@@ -2379,7 +2379,7 @@ void CSearchDlg::OpenFileAtListIndex(int listIndex)
     {
         repl = lineNumberParamBefore + L" " + repl;
     }
-    itBegin = search(application.begin(), application.end(), tag.begin(), tag.end());
+    itBegin = std::ranges::search(application, tag).begin();
     if (itBegin != application.end())
     {
         std::wstring::iterator itEnd = itBegin + tag.size();
@@ -2449,7 +2449,7 @@ bool CSearchDlg::SaveSettings()
         std::wstring s = std::wstring(pBuf, pos);
         if (!s.empty())
         {
-            std::transform(s.begin(), s.end(), s.begin(), ::towlower);
+            std::ranges::transform(s, s.begin(), ::towlower);
             m_patterns.push_back(s);
             auto endPart = s.rbegin();
             if (*endPart == '*' && s.size() > 2)
@@ -3117,10 +3117,10 @@ void CSearchDlg::SetIncludeBinary(bool bSet)
     m_bIncludeBinary  = bSet;
 }
 
-void CSearchDlg::SetDateLimit(int datelimit, FILETIME t1, FILETIME t2)
+void CSearchDlg::SetDateLimit(int dateLimit, FILETIME t1, FILETIME t2)
 {
     m_bDateLimitC = true;
-    m_dateLimit   = datelimit;
+    m_dateLimit   = dateLimit;
     m_date1       = t1;
     m_date2       = t2;
 }
@@ -3155,7 +3155,7 @@ bool CSearchDlg::MatchPath(LPCTSTR pathBuf)
                 bPattern = true;
 
             std::wstring fName = pName;
-            std::transform(fName.begin(), fName.end(), fName.begin(), ::towlower);
+            std::ranges::transform(fName, fName.begin(), ::towlower);
 
             for (auto it = m_patterns.begin(); it != m_patterns.end(); ++it)
             {
@@ -3281,9 +3281,9 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
             }
             if (type == CTextFile::Binary)
             {
-                boost::wregex expressionutf16 = boost::wregex(searchStringUtf16Le, ft);
+                boost::wregex expressionUtf16 = boost::wregex(searchStringUtf16Le, ft);
 
-                while (!(InterlockedExchangeAdd(bCancelled, 0)) && regex_search(start, end, whatC, expressionutf16, flags))
+                while (!(InterlockedExchangeAdd(bCancelled, 0)) && regex_search(start, end, whatC, expressionUtf16, flags))
                 {
                     if (whatC[0].matched)
                     {
@@ -3639,15 +3639,15 @@ void CSearchDlg::formatDate(wchar_t dateNative[], const FILETIME& fileTime, bool
     dateNative[0] = '\0';
 
     // Convert UTC to local time
-    SYSTEMTIME systemtime;
-    FileTimeToSystemTime(&fileTime, &systemtime);
+    SYSTEMTIME systemTime;
+    FileTimeToSystemTime(&fileTime, &systemTime);
 
     static TIME_ZONE_INFORMATION timeZone = {-1};
     if (timeZone.Bias == -1)
         GetTimeZoneInformation(&timeZone);
 
     SYSTEMTIME localSystime;
-    SystemTimeToTzSpecificLocalTime(&timeZone, &systemtime, &localSystime);
+    SystemTimeToTzSpecificLocalTime(&timeZone, &systemTime, &localSystime);
 
     wchar_t timeBuf[GREPWIN_DATEBUFFER] = {0};
     wchar_t dateBuf[GREPWIN_DATEBUFFER] = {0};
