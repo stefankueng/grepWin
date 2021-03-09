@@ -1001,6 +1001,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 m_bNotSearch             = (GetKeyState(VK_SHIFT) & 0x8000) != 0;
                 if (id == IDC_INVERSESEARCH)
                     m_bNotSearch = true;
+                m_bCaptureSearch = false;
                 if (id == IDC_CAPTURESEARCH)
                 {
                     m_bCaptureSearch = true;
@@ -3352,8 +3353,8 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
                     {
                         std::wstring backupFile     = sInfo.filePath + L".bak";
                         auto         backupInFolder = bPortable
-                                                  ? (_wtoi(g_iniFile.GetValue(L"settings", L"backupinfolder", L"0")) != 0)
-                                                  : (static_cast<DWORD>(m_regBackupInFolder) != 0);
+                                                          ? (_wtoi(g_iniFile.GetValue(L"settings", L"backupinfolder", L"0")) != 0)
+                                                          : (static_cast<DWORD>(m_regBackupInFolder) != 0);
                         if (backupInFolder)
                         {
                             std::wstring backupFolder = searchRoot + L"\\grepWin_backup\\";
