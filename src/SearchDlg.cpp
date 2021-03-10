@@ -2270,22 +2270,24 @@ void CSearchDlg::OpenFileAtListIndex(int listIndex)
     }
 
     DWORD bufLen = 0;
-    AssocQueryString(ASSOCF_INIT_DEFAULTTOSTAR, ASSOCSTR_DDECOMMAND, ext.c_str(), nullptr, nullptr, &bufLen);
-    if (bufLen)
+    if (AssocQueryString(ASSOCF_INIT_DEFAULTTOSTAR, ASSOCSTR_DDECOMMAND, ext.c_str(), nullptr, nullptr, &bufLen) == S_OK)
     {
-        // application requires DDE to open the file:
-        // since we can't do this the easy way with CreateProcess, we use ShellExecute instead
-        ShellExecute(*this, nullptr, inf.filePath.c_str(), nullptr, nullptr, SW_SHOW);
-        return;
+        if (bufLen)
+        {
+            // application requires DDE to open the file:
+            // since we can't do this the easy way with CreateProcess, we use ShellExecute instead
+            ShellExecute(*this, nullptr, inf.filePath.c_str(), nullptr, nullptr, SW_SHOW);
+            return;
+        }
     }
-
+    bufLen = 0;
     AssocQueryString(ASSOCF_INIT_DEFAULTTOSTAR, ASSOCSTR_COMMAND, ext.c_str(), nullptr, nullptr, &bufLen);
     auto cmdBuf = std::make_unique<wchar_t[]>(bufLen + 1);
     AssocQueryString(ASSOCF_INIT_DEFAULTTOSTAR, ASSOCSTR_COMMAND, ext.c_str(), nullptr, cmdBuf.get(), &bufLen);
     std::wstring application = cmdBuf.get();
     // normalize application path
     DWORD len = ExpandEnvironmentStrings(application.c_str(), nullptr, 0);
-    cmdBuf    = std::make_unique<wchar_t[]>(bufLen + 1);
+    cmdBuf    = std::make_unique<wchar_t[]>(len + 1);
     ExpandEnvironmentStrings(application.c_str(), cmdBuf.get(), len);
     application = cmdBuf.get();
 
