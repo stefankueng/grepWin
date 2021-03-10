@@ -487,6 +487,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
             if (parser.HasKey(L"nosavesettings"))
                 searchDlg.SetNoSaveSettings(true);
 
+            SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOOPENFILEERRORBOX);
             ret = static_cast<int>(searchDlg.DoModal(hInstance, IDD_SEARCHDLG, nullptr, IDR_SEARCHDLG));
         }
         if (bPortable)
