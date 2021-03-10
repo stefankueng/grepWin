@@ -2836,15 +2836,10 @@ DWORD CSearchDlg::SearchThread()
                     FILETIME ft           = {0};
                     if (bAlwaysSearch)
                     {
+                        const WIN32_FIND_DATA* pFindData = fileEnumerator.GetFileInfo();
                         wcscpy_s(pathBuf.get(), MAX_PATH_NEW, searchPath.c_str());
-                        CAutoFile hFile = CreateFile(searchPath.c_str(), FILE_READ_EA, FILE_SHARE_DELETE | FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
-                        if (hFile)
-                        {
-                            BY_HANDLE_FILE_INFORMATION bhfi = {0};
-                            GetFileInformationByHandle(hFile, &bhfi);
-                            fullFileSize = (static_cast<uint64_t>(bhfi.nFileSizeHigh) << 32) | bhfi.nFileSizeLow;
-                            ft           = bhfi.ftLastWriteTime;
-                        }
+                        fullFileSize = (static_cast<uint64_t>(pFindData->nFileSizeHigh) << 32) | pFindData->nFileSizeLow;
+                        ft           = pFindData->ftLastWriteTime;
                     }
                     else
                     {
