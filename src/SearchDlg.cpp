@@ -953,6 +953,8 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 {
                     // switch to file view
                     CheckRadioButton(*this, IDC_RESULTFILES, IDC_RESULTCONTENT, IDC_RESULTFILES);
+                    m_showContent = false;
+                    InitResultList();
                 }
 
                 HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
