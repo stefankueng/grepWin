@@ -2556,9 +2556,9 @@ bool CSearchDlg::SaveSettings()
         m_regAllSize = static_cast<DWORD>(m_bAllSize);
 
     if (bPortable)
-        g_iniFile.SetValue(L"global", L"Size", CStringUtils::Format(L"%I64u", m_lSize).c_str());
+        g_iniFile.SetValue(L"global", L"Size", CStringUtils::Format(L"%I64u", m_lSize / 1024).c_str());
     else
-        m_regSize = CStringUtils::Format(L"%I64u", m_lSize).c_str();
+        m_regSize = CStringUtils::Format(L"%I64u", m_lSize / 1024).c_str();
 
     if (bPortable)
         g_iniFile.SetValue(L"global", L"SizeCombo", CStringUtils::Format(L"%d", m_sizeCmp).c_str());
