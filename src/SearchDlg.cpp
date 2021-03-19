@@ -3463,14 +3463,14 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
                             break;
                     }
                 }
-                if (type == CTextFile::Binary)
+                if (type == CTextFile::Binary && !m_bReplace)
                 {
-                    boost::regex                                                  expressionUtf16Le = boost::regex(CUnicodeUtils::StdGetUTF8(searchStringUtf16Le), ft);
+                    boost::wregex                                                 expressionUtf16Le = boost::wregex(searchStringUtf16Le, ft);
                     boost::spirit::classic::file_iterator<>                       start(filePath.c_str());
                     boost::spirit::classic::file_iterator<>                       fBeg = start;
                     boost::spirit::classic::file_iterator<>                       end  = start.make_end();
                     boost::match_results<boost::spirit::classic::file_iterator<>> whatC;
-                    while (boost::regex_search(start, end, whatC, expression, flags))
+                    while (boost::regex_search(start, end, whatC, expressionUtf16Le, flags))
                     {
                         nFound++;
                         if (m_bNotSearch)
