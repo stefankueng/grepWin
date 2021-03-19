@@ -1660,7 +1660,9 @@ bool CSearchDlg::AddFoundEntry(CSearchInfo* pInfo, bool bOnlyListControl)
     {
         HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
         bool fileList     = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
-        ListView_SetItemCount(hListControl, fileList ? m_items.size() : m_listItems.size());
+        auto count        = ListView_GetItemCount(hListControl);
+        if (count != (fileList ? m_items.size() : m_listItems.size()))
+            ListView_SetItemCountEx(hListControl, fileList ? m_items.size() : m_listItems.size(), LVSICF_NOINVALIDATEALL | LVSICF_NOSCROLL);
     }
     return true;
 }
@@ -1677,7 +1679,7 @@ void CSearchDlg::FillResultList()
     bool filelist     = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
     HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
     SendMessage(hListControl, WM_SETREDRAW, FALSE, 0);
-    ListView_SetItemCount(hListControl, filelist ? m_items.size() : m_listItems.size());
+    ListView_SetItemCountEx(hListControl, filelist ? m_items.size() : m_listItems.size(), LVSICF_NOINVALIDATEALL | LVSICF_NOSCROLL);
     AutoSizeAllColumns();
     SendMessage(hListControl, WM_SETREDRAW, TRUE, 0);
     SetCursor(LoadCursor(nullptr, IDC_ARROW));
@@ -1994,7 +1996,7 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
 
         HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
         SendMessage(hListControl, WM_SETREDRAW, FALSE, 0);
-        ListView_SetItemCount(hListControl, fileList ? m_items.size() : m_listItems.size());
+        ListView_SetItemCountEx(hListControl, fileList ? m_items.size() : m_listItems.size(), LVSICF_NOINVALIDATEALL | LVSICF_NOSCROLL);
 
         AutoSizeAllColumns();
         HDITEM hd    = {0};
