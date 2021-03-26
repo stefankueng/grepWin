@@ -345,7 +345,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             if (!m_bIncludeHiddenC)
                 m_bIncludeHidden = bPortable ? !!_wtoi(g_iniFile.GetValue(L"global", L"IncludeHidden", L"0")) : !!static_cast<DWORD>(m_regIncludeHidden);
             if (!m_bIncludeBinaryC)
-                m_bIncludeBinaryC = bPortable ? !!_wtoi(g_iniFile.GetValue(L"global", L"IncludeBinary", L"0")) : !!static_cast<DWORD>(m_regIncludeBinary);
+                m_bIncludeBinary = bPortable ? !!_wtoi(g_iniFile.GetValue(L"global", L"IncludeBinary", L"0")) : !!static_cast<DWORD>(m_regIncludeBinary);
             if (!m_bCaseSensitiveC)
                 m_bCaseSensitive = bPortable ? !!_wtoi(g_iniFile.GetValue(L"global", L"CaseSensitive", L"0")) : !!static_cast<DWORD>(m_regCaseSensitive);
             if (!m_bDotMatchesNewlineC)
