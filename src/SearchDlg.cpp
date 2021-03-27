@@ -58,6 +58,7 @@
 #include <fstream>
 #include <iterator>
 #include <algorithm>
+#include <iomanip>
 #include <Commdlg.h>
 
 #pragma warning(push)
@@ -232,6 +233,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             AddToolTip(IDC_EDITMULTILINE2, TranslatedString(hResource, IDS_EDITMULTILINE_TT).c_str());
             AddToolTip(IDC_EXPORT, TranslatedString(hResource, IDS_EXPORT_TT).c_str());
             AddToolTip(IDOK, TranslatedString(hResource, IDS_SHIFT_NOTSEARCH).c_str());
+            AddToolTip(IDC_REPLACETEXT, LPSTR_TEXTCALLBACK);
 
             if (m_searchPath.empty())
             {
@@ -592,6 +594,13 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
         break;
         case WM_NOTIFY:
         {
+            if (reinterpret_cast<LPNMHDR>(lParam)->code == TTN_GETDISPINFO)
+            {
+                auto lpnmtdi           = reinterpret_cast<LPNMTTDISPINFOW>(lParam);
+                auto buf               = GetDlgItemText(IDC_REPLACETEXT);
+                m_toolTipReplaceString = ExpandString(buf.get());
+                lpnmtdi->lpszText      = m_toolTipReplaceString.data();
+            }
             switch (wParam)
             {
                 case IDC_RESULTLIST:
@@ -1012,6 +1021,10 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                     m_bCaptureSearch = true;
                     m_bNotSearch     = false;
                     m_bReplace       = false;
+                }
+                if (m_bReplace)
+                {
+                    m_replaceString = ExpandString(m_replaceString);
                 }
 
                 InterlockedExchange(&m_dwThreadRunning, TRUE);
@@ -3960,4 +3973,53 @@ bool CSearchDlg::CloneWindow()
     sei.nShow            = SW_SHOWNORMAL;
     ShellExecuteEx(&sei);
     return true;
+}
+
+std::wstring CSearchDlg::ExpandString(const std::wstring& replaceString) const
+{
+    // ${now,formatString}
+    wchar_t buf[4096] = {};
+    GetDateFormat(LOCALE_USER_DEFAULT, DATE_SHORTDATE, nullptr, nullptr, buf, _countof(buf));
+    std::wstring dateStr = buf;
+    GetTimeFormat(LOCALE_USER_DEFAULT, 0, nullptr, nullptr, buf, _countof(buf));
+    dateStr += L" - ";
+    dateStr += buf;
+    std::time_t                                        now        = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+    int                                                ft         = boost::regex::normal;
+    boost::wregex                                      expression = boost::wregex(L"\\$\\{now\\s*,?([^}]*)\\}", ft);
+    boost::match_results<std::wstring::const_iterator> whatC;
+    boost::match_flag_type                             flags        = boost::match_default | boost::format_all;
+    auto                                               resultString = replaceString;
+    try
+    {
+        while (regex_search(resultString.cbegin(), resultString.cend(), whatC, expression, flags))
+        {
+            if (whatC[0].matched)
+            {
+                auto fullMatch = whatC.str();
+
+                std::wstring formatStr;
+                if (whatC.size() > 1)
+                {
+                    formatStr = whatC[1].str();
+                    if (!formatStr.empty())
+                    {
+                        std::wstring formattedDateStr(4096, '\0');
+                        struct tm    locTime;
+                        _localtime64_s(&locTime, &now);
+                        std::wcsftime(&formattedDateStr[0], formattedDateStr.size(), formatStr.c_str(), &locTime);
+                        SearchReplace(resultString, fullMatch, formattedDateStr);
+                    }
+                }
+                else
+                {
+                    SearchReplace(resultString, fullMatch, dateStr);
+                }
+            }
+        }
+    }
+    catch (const std::exception&)
+    {
+    }
+    return resultString;
 }

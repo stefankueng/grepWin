@@ -97,25 +97,26 @@ protected:
 
     void SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, bool bSearchAlways, bool bIncludeBinary, bool bUseRegex, bool bCaseSensitive, bool bDotMatchesNewline, const std::wstring& searchString, const std::wstring& searchStringUtf16Le, volatile LONG* bCancelled);
 
-    bool        InitResultList();
-    void        FillResultList();
-    bool        AddFoundEntry(CSearchInfo* pInfo, bool bOnlyListControl = false);
-    void        ShowContextMenu(int x, int y);
-    void        DoListNotify(LPNMITEMACTIVATE lpNMItemActivate);
-    void        OpenFileAtListIndex(int listIndex);
-    void        UpdateInfoLabel();
-    bool        SaveSettings();
-    void        SaveWndPosition();
-    void        formatDate(wchar_t dateNative[], const FILETIME& fileTime, bool forceShortFmt) const;
-    int         CheckRegex();
-    bool        MatchPath(LPCTSTR pathBuf);
-    void        AutoSizeAllColumns();
-    int         GetSelectedListIndex(int index);
-    static bool FailedShowMessage(HRESULT hr);
-    void        CheckForUpdates(bool force = false);
-    void        ShowUpdateAvailable();
-    bool        IsVersionNewer(const std::wstring& sVer) const;
-    bool        CloneWindow();
+    bool         InitResultList();
+    void         FillResultList();
+    bool         AddFoundEntry(CSearchInfo* pInfo, bool bOnlyListControl = false);
+    void         ShowContextMenu(int x, int y);
+    void         DoListNotify(LPNMITEMACTIVATE lpNMItemActivate);
+    void         OpenFileAtListIndex(int listIndex);
+    void         UpdateInfoLabel();
+    bool         SaveSettings();
+    void         SaveWndPosition();
+    void         formatDate(wchar_t dateNative[], const FILETIME& fileTime, bool forceShortFmt) const;
+    int          CheckRegex();
+    bool         MatchPath(LPCTSTR pathBuf);
+    void         AutoSizeAllColumns();
+    int          GetSelectedListIndex(int index);
+    static bool  FailedShowMessage(HRESULT hr);
+    void         CheckForUpdates(bool force = false);
+    void         ShowUpdateAvailable();
+    bool         IsVersionNewer(const std::wstring& sVer) const;
+    bool         CloneWindow();
+    std::wstring ExpandString(const std::wstring& replaceString) const;
 
 private:
     static bool NameCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2);
@@ -194,6 +195,7 @@ private:
     int                               m_totalMatches;
     bool                              m_bAscending;
     std::wstring                      m_resultString;
+    std::wstring                      m_toolTipReplaceString;
 
     CDlgResizer m_resizer;
     int         m_themeCallbackId;
