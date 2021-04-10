@@ -29,7 +29,7 @@ class CSettingsDlg : public CDialog
 {
 public:
     CSettingsDlg(HWND hParent);
-    ~CSettingsDlg();
+    ~CSettingsDlg() override;
 
 protected:
     LRESULT CALLBACK DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) override;

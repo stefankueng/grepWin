@@ -58,7 +58,7 @@ class CSearchDlg : public CDialog
 {
 public:
     CSearchDlg(HWND hParent);
-    ~CSearchDlg();
+    ~CSearchDlg() override;
 
     DWORD SearchThread();
     void  SetSearchPath(const std::wstring& path);

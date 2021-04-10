@@ -26,7 +26,7 @@ class CAboutDlg : public CDialog
 {
 public:
     CAboutDlg(HWND hParent);
-    ~CAboutDlg();
+    ~CAboutDlg() override;
 
 protected:
     LRESULT CALLBACK DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) override;
