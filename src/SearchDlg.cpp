@@ -102,6 +102,8 @@ CSearchDlg::CSearchDlg(HWND hParent)
     , m_bCreateBackupC(false)
     , m_bCreateBackupInFolders(false)
     , m_bCreateBackupInFoldersC(false)
+    , m_bWholeWords(false)
+    , m_bWholeWordsC(false)
     , m_bUTF8(false)
     , m_bUTF8C(false)
     , m_bForceBinary(false)
@@ -143,6 +145,7 @@ CSearchDlg::CSearchDlg(HWND hParent)
     , m_regIncludeSubfolders(L"Software\\grepWin\\IncludeSubfolders", 1)
     , m_regIncludeBinary(L"Software\\grepWin\\IncludeBinary", 1)
     , m_regCreateBackup(L"Software\\grepWin\\CreateBackup")
+    , m_regWholeWords(L"Software\\grepWin\\WholeWords")
     , m_regUTF8(L"Software\\grepWin\\UTF8")
     , m_regBinary(L"Software\\grepWin\\Binary")
     , m_regCaseSensitive(L"Software\\grepWin\\CaseSensitive")
@@ -354,6 +357,8 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                 m_bDotMatchesNewline = bPortable ? !!_wtoi(g_iniFile.GetValue(L"global", L"DotMatchesNewline", L"0")) : !!static_cast<DWORD>(m_regDotMatchesNewline);
             if (!m_bCreateBackupC)
                 m_bCreateBackup = bPortable ? !!_wtoi(g_iniFile.GetValue(L"global", L"CreateBackup", L"0")) : !!static_cast<DWORD>(m_regCreateBackup);
+            if (!m_bWholeWordsC)
+                m_bWholeWords = bPortable ? !!_wtoi(g_iniFile.GetValue(L"global", L"WholeWords", L"0")) : !!static_cast<DWORD>(m_regWholeWords);
             if (!m_bUTF8C)
             {
                 m_bUTF8        = bPortable ? !!_wtoi(g_iniFile.GetValue(L"global", L"UTF8", L"0")) : !!static_cast<DWORD>(m_regUTF8);
@@ -390,7 +395,8 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             CheckRadioButton(hwndDlg, IDC_REGEXRADIO, IDC_TEXTRADIO, (bPortable ? _wtoi(g_iniFile.GetValue(L"global", L"UseRegex", L"0")) : static_cast<DWORD>(m_regUseRegex)) ? IDC_REGEXRADIO : IDC_TEXTRADIO);
             CheckRadioButton(hwndDlg, IDC_ALLSIZERADIO, IDC_SIZERADIO, m_bAllSize ? IDC_ALLSIZERADIO : IDC_SIZERADIO);
             CheckRadioButton(hwndDlg, IDC_FILEPATTERNREGEX, IDC_FILEPATTERNTEXT, m_bUseRegexForPaths ? IDC_FILEPATTERNREGEX : IDC_FILEPATTERNTEXT);
-
+            SendDlgItemMessage(hwndDlg, IDC_WHOLEWORDS, BM_SETCHECK, m_bWholeWords ? BST_CHECKED : BST_UNCHECKED, 0);
+            DialogEnableWindow(IDC_WHOLEWORDS, IsDlgButtonChecked(hwndDlg, IDC_TEXTRADIO));
             if (!m_searchString.empty())
                 CheckRadioButton(*this, IDC_REGEXRADIO, IDC_TEXTRADIO, m_bUseRegex ? IDC_REGEXRADIO : IDC_TEXTRADIO);
 
@@ -437,6 +443,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             m_resizer.AddControl(hwndDlg, IDC_GROUPSEARCHFOR, RESIZER_TOPLEFTRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_REGEXRADIO, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_TEXTRADIO, RESIZER_TOPLEFT);
+            m_resizer.AddControl(hwndDlg, IDC_WHOLEWORDS, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_SEARCHFORLABEL, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_SEARCHTEXT, RESIZER_TOPLEFTRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_EDITMULTILINE1, RESIZER_TOPRIGHT);
@@ -859,6 +866,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                 m_bCaseSensitive          = m_pBookmarksDlg->GetSelectedSearchCase();
                 m_bDotMatchesNewline      = m_pBookmarksDlg->GetSelectedDotMatchNewline();
                 m_bCreateBackup           = m_pBookmarksDlg->GetSelectedBackup();
+                m_bWholeWords             = m_pBookmarksDlg->GetSelectedWholeWords();
                 m_bUTF8                   = m_pBookmarksDlg->GetSelectedTreatAsUtf8();
                 m_bForceBinary            = m_pBookmarksDlg->GetSelectedTreatAsBinary();
                 m_bIncludeSystem          = m_pBookmarksDlg->GetSelectedIncludeSystem();
@@ -888,10 +896,12 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                 SendDlgItemMessage(*this, IDC_INCLUDEBINARY, BM_SETCHECK, m_bIncludeBinary ? BST_CHECKED : BST_UNCHECKED, 0);
                 SendDlgItemMessage(*this, IDC_CASE_SENSITIVE, BM_SETCHECK, m_bCaseSensitive ? BST_CHECKED : BST_UNCHECKED, 0);
                 SendDlgItemMessage(*this, IDC_DOTMATCHNEWLINE, BM_SETCHECK, m_bDotMatchesNewline ? BST_CHECKED : BST_UNCHECKED, 0);
+                SendDlgItemMessage(*this, IDC_WHOLEWORDS, BM_SETCHECK, m_bWholeWords ? BST_CHECKED : BST_UNCHECKED, 0);
 
                 CheckRadioButton(*this, IDC_FILEPATTERNREGEX, IDC_FILEPATTERNTEXT, m_bUseRegexForPaths ? IDC_FILEPATTERNREGEX : IDC_FILEPATTERNTEXT);
                 SetDlgItemText(*this, IDC_EXCLUDEDIRSPATTERN, m_excludeDirsPatternRegex.c_str());
                 SetDlgItemText(*this, IDC_PATTERN, m_patternRegex.c_str());
+                DialogEnableWindow(IDC_WHOLEWORDS, IsDlgButtonChecked(hwndDlg, IDC_TEXTRADIO));
             }
         }
         break;
@@ -1232,6 +1242,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
         {
             CheckRegex();
             DialogEnableWindow(IDC_TESTREGEX, !IsDlgButtonChecked(*this, IDC_TEXTRADIO));
+            DialogEnableWindow(IDC_WHOLEWORDS, IsDlgButtonChecked(*this, IDC_TEXTRADIO));
         }
         break;
         case IDC_ADDTOBOOKMARKS:
@@ -2526,6 +2537,7 @@ bool CSearchDlg::SaveSettings()
     m_bIncludeSubfolders = (IsDlgButtonChecked(*this, IDC_INCLUDESUBFOLDERS) == BST_CHECKED);
     m_bIncludeBinary     = (IsDlgButtonChecked(*this, IDC_INCLUDEBINARY) == BST_CHECKED);
     m_bCreateBackup      = (IsDlgButtonChecked(*this, IDC_CREATEBACKUP) == BST_CHECKED);
+    m_bWholeWords        = (IsDlgButtonChecked(*this, IDC_WHOLEWORDS) == BST_CHECKED);
     m_bUTF8              = (IsDlgButtonChecked(*this, IDC_UTF8) == BST_CHECKED);
     m_bForceBinary       = (IsDlgButtonChecked(*this, IDC_BINARY) == BST_CHECKED);
     m_bCaseSensitive     = (IsDlgButtonChecked(*this, IDC_CASE_SENSITIVE) == BST_CHECKED);
@@ -2588,6 +2600,7 @@ bool CSearchDlg::SaveSettings()
         g_iniFile.SetValue(L"global", L"IncludeSubfolders", m_bIncludeSubfolders ? L"1" : L"0");
         g_iniFile.SetValue(L"global", L"IncludeBinary", m_bIncludeBinary ? L"1" : L"0");
         g_iniFile.SetValue(L"global", L"CreateBackup", m_bCreateBackup ? L"1" : L"0");
+        g_iniFile.SetValue(L"global", L"WholeWords", m_bWholeWords ? L"1" : L"0");
         g_iniFile.SetValue(L"global", L"UTF8", m_bUTF8 ? L"1" : L"0");
         g_iniFile.SetValue(L"global", L"Binary", m_bForceBinary ? L"1" : L"0");
         g_iniFile.SetValue(L"global", L"CaseSensitive", m_bCaseSensitive ? L"1" : L"0");
@@ -2609,6 +2622,7 @@ bool CSearchDlg::SaveSettings()
         m_regIncludeSubfolders  = static_cast<DWORD>(m_bIncludeSubfolders);
         m_regIncludeBinary      = static_cast<DWORD>(m_bIncludeBinary);
         m_regCreateBackup       = static_cast<DWORD>(m_bCreateBackup);
+        m_regWholeWords         = static_cast<DWORD>(m_bWholeWords);
         m_regUTF8               = static_cast<DWORD>(m_bUTF8);
         m_regBinary             = static_cast<DWORD>(m_bForceBinary);
         m_regCaseSensitive      = static_cast<DWORD>(m_bCaseSensitive);
@@ -3032,6 +3046,7 @@ void CSearchDlg::SetPreset(const std::wstring& preset)
         m_bCaseSensitive          = bk.CaseSensitive;
         m_bDotMatchesNewline      = bk.DotMatchesNewline;
         m_bCreateBackup           = bk.Backup;
+        m_bWholeWords             = bk.WholeWords;
         m_bUTF8                   = bk.Utf8;
         m_bForceBinary            = bk.Binary;
         m_bIncludeSystem          = bk.IncludeSystem;
@@ -3050,6 +3065,7 @@ void CSearchDlg::SetPreset(const std::wstring& preset)
         m_bIncludeBinaryC         = true;
         m_bCreateBackupC          = true;
         m_bCreateBackupInFoldersC = true;
+        m_bWholeWordsC            = true;
         m_bUTF8C                  = true;
         m_bCaseSensitiveC         = true;
         m_bDotMatchesNewlineC     = true;
@@ -3085,6 +3101,12 @@ void CSearchDlg::SetCreateBackupsInFolders(bool bSet)
     m_bCreateBackupInFoldersC = true;
     m_bCreateBackupInFolders  = bSet;
     SetCreateBackups(bSet);
+}
+
+void CSearchDlg::SetWholeWords(bool bSet)
+{
+    m_bWholeWordsC = true;
+    m_bWholeWords  = bSet;
 }
 
 void CSearchDlg::SetUTF8(bool bSet)
@@ -3199,6 +3221,8 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
     {
         SearchReplace(localSearchString, L"\\E", L"\\\\E");
         localSearchString = L"\\Q" + localSearchString + L"\\E";
+        if (m_bWholeWords)
+            localSearchString = L"\\b" + localSearchString + L"\\b";
     }
 
     SearchReplace(localSearchString, L"${filepath}", sInfo.filePath);

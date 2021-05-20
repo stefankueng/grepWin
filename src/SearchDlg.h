@@ -72,6 +72,7 @@ public:
     void  SetMatchesNewline(bool bSet);
     void  SetCreateBackups(bool bSet);
     void  SetCreateBackupsInFolders(bool bSet);
+    void  SetWholeWords(bool bSet);
     void  SetUTF8(bool bSet);
     void  SetBinary(bool bSet);
     void  SetSize(uint64_t size, int cmp);
@@ -166,6 +167,8 @@ private:
     bool                              m_bCreateBackupC;
     bool                              m_bCreateBackupInFolders;
     bool                              m_bCreateBackupInFoldersC;
+    bool                              m_bWholeWords;
+    bool                              m_bWholeWordsC;
     bool                              m_bUTF8;
     bool                              m_bUTF8C;
     bool                              m_bForceBinary;
@@ -227,6 +230,7 @@ private:
     CRegStdDWORD  m_regIncludeSubfolders;
     CRegStdDWORD  m_regIncludeBinary;
     CRegStdDWORD  m_regCreateBackup;
+    CRegStdDWORD  m_regWholeWords;
     CRegStdDWORD  m_regUTF8;
     CRegStdDWORD  m_regBinary;
     CRegStdDWORD  m_regCaseSensitive;

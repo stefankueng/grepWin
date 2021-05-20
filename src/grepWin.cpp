@@ -324,6 +324,8 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
                     searchDlg.SetMatchesNewline(_wcsicmp(searchIni.GetValue(section.c_str(), L"n"), L"yes") == 0);
                 if (searchIni.GetValue(section.c_str(), L"k"))
                     searchDlg.SetCreateBackups(_wcsicmp(searchIni.GetValue(section.c_str(), L"k"), L"yes") == 0);
+                if (searchIni.GetValue(section.c_str(), L"wholewords"))
+                    searchDlg.SetWholeWords(_wcsicmp(searchIni.GetValue(section.c_str(), L"wholewords"), L"yes") == 0);
                 if (searchIni.GetValue(section.c_str(), L"utf8"))
                     searchDlg.SetUTF8(_wcsicmp(searchIni.GetValue(section.c_str(), L"utf8"), L"yes") == 0);
                 if (searchIni.GetValue(section.c_str(), L"binary"))
@@ -411,6 +413,10 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
                 searchDlg.SetMatchesNewline(_wcsicmp(parser.GetVal(L"n"), L"yes") == 0);
             if (parser.HasVal(L"k"))
                 searchDlg.SetCreateBackups(_wcsicmp(parser.GetVal(L"k"), L"yes") == 0);
+            if (parser.HasVal(L"wholewords"))
+                searchDlg.SetWholeWords(_wcsicmp(parser.GetVal(L"wholewords"), L"yes") == 0);
+            else if (parser.HasKey(L"wholewords"))
+                searchDlg.SetWholeWords(true);
             if (parser.HasVal(L"utf8"))
                 searchDlg.SetUTF8(_wcsicmp(parser.GetVal(L"utf8"), L"yes") == 0);
             if (parser.HasVal(L"binary"))
