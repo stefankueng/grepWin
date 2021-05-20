@@ -2067,7 +2067,7 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
                 std::wstring ssx = CStringUtils::Format(sx.c_str(), static_cast<int>(inf.matchLines.size() - 5));
                 matchString += ssx;
             }
-            lstrcpyn(pInfoTip->pszText, matchString.c_str(), pInfoTip->cchTextMax);
+            wcsncpy_s(pInfoTip->pszText, pInfoTip->cchTextMax, matchString.c_str(), pInfoTip->cchTextMax - 1LL);
         }
     }
     if (lpNMItemActivate->hdr.code == LVN_GETDISPINFO)
