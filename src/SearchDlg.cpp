@@ -58,7 +58,6 @@
 #include <fstream>
 #include <iterator>
 #include <algorithm>
-#include <iomanip>
 #include <Commdlg.h>
 
 #pragma warning(push)
@@ -2978,6 +2977,22 @@ DWORD CSearchDlg::SearchThread()
                                     case IDC_RADIO_DATE_BETWEEN:
                                         bSearch = CompareFileTime(&pFindData->ftLastWriteTime, &m_date1) >= 0;
                                         bSearch = bSearch && (CompareFileTime(&pFindData->ftLastWriteTime, &m_date2) <= 0);
+                                        break;
+                                }
+                            }
+                            if (!m_bAllSize && bSearch)
+                            {
+                                // assume a 'file'-size of zero for dirs
+                                switch (m_sizeCmp)
+                                {
+                                    case 0: // less than
+                                        bSearch = bSearch && (0 < m_lSize);
+                                        break;
+                                    case 1: // equal
+                                        bSearch = bSearch && (0 == m_lSize);
+                                        break;
+                                    case 2: // greater than
+                                        bSearch = bSearch && (0 > m_lSize);
                                         break;
                                 }
                             }
