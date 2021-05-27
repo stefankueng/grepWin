@@ -83,7 +83,7 @@ CSearchDlg::CSearchDlg(HWND hParent)
     : m_hParent(hParent)
     , m_dwThreadRunning(FALSE)
     , m_cancelled(FALSE)
-    , m_pBookmarksDlg(nullptr)
+    , m_bookmarksDlg(nullptr)
     , m_bUseRegex(false)
     , m_bUseRegexForPaths(false)
     , m_bAllSize(false)
@@ -172,8 +172,6 @@ CSearchDlg::~CSearchDlg()
 {
     if (m_pDropTarget)
         delete m_pDropTarget;
-    if (m_pBookmarksDlg)
-        delete m_pBookmarksDlg;
 }
 
 LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -866,28 +864,28 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
         break;
         case WM_BOOKMARK:
         {
-            if (m_pBookmarksDlg)
+            if (m_bookmarksDlg)
             {
-                m_searchString  = m_pBookmarksDlg->GetSelectedSearchString();
-                m_replaceString = m_pBookmarksDlg->GetSelectedReplaceString();
-                m_bUseRegex     = m_pBookmarksDlg->GetSelectedUseRegex();
+                m_searchString  = m_bookmarksDlg->GetSelectedSearchString();
+                m_replaceString = m_bookmarksDlg->GetSelectedReplaceString();
+                m_bUseRegex     = m_bookmarksDlg->GetSelectedUseRegex();
 
-                m_bCaseSensitive          = m_pBookmarksDlg->GetSelectedSearchCase();
-                m_bDotMatchesNewline      = m_pBookmarksDlg->GetSelectedDotMatchNewline();
-                m_bCreateBackup           = m_pBookmarksDlg->GetSelectedBackup();
-                m_bWholeWords             = m_pBookmarksDlg->GetSelectedWholeWords();
-                m_bUTF8                   = m_pBookmarksDlg->GetSelectedTreatAsUtf8();
-                m_bForceBinary            = m_pBookmarksDlg->GetSelectedTreatAsBinary();
-                m_bIncludeSystem          = m_pBookmarksDlg->GetSelectedIncludeSystem();
-                m_bIncludeSubfolders      = m_pBookmarksDlg->GetSelectedIncludeFolder();
-                m_bIncludeHidden          = m_pBookmarksDlg->GetSelectedIncludeHidden();
-                m_bIncludeBinary          = m_pBookmarksDlg->GetSelectedIncludeBinary();
-                m_excludeDirsPatternRegex = m_pBookmarksDlg->GetSelectedExcludeDirs();
-                m_patternRegex            = m_pBookmarksDlg->GetSelectedFileMatch();
-                m_bUseRegexForPaths       = m_pBookmarksDlg->GetSelectedFileMatchRegex();
-                if (!m_pBookmarksDlg->GetPath().empty())
+                m_bCaseSensitive          = m_bookmarksDlg->GetSelectedSearchCase();
+                m_bDotMatchesNewline      = m_bookmarksDlg->GetSelectedDotMatchNewline();
+                m_bCreateBackup           = m_bookmarksDlg->GetSelectedBackup();
+                m_bWholeWords             = m_bookmarksDlg->GetSelectedWholeWords();
+                m_bUTF8                   = m_bookmarksDlg->GetSelectedTreatAsUtf8();
+                m_bForceBinary            = m_bookmarksDlg->GetSelectedTreatAsBinary();
+                m_bIncludeSystem          = m_bookmarksDlg->GetSelectedIncludeSystem();
+                m_bIncludeSubfolders      = m_bookmarksDlg->GetSelectedIncludeFolder();
+                m_bIncludeHidden          = m_bookmarksDlg->GetSelectedIncludeHidden();
+                m_bIncludeBinary          = m_bookmarksDlg->GetSelectedIncludeBinary();
+                m_excludeDirsPatternRegex = m_bookmarksDlg->GetSelectedExcludeDirs();
+                m_patternRegex            = m_bookmarksDlg->GetSelectedFileMatch();
+                m_bUseRegexForPaths       = m_bookmarksDlg->GetSelectedFileMatchRegex();
+                if (!m_bookmarksDlg->GetPath().empty())
                 {
-                    m_searchPath = m_pBookmarksDlg->GetPath();
+                    m_searchPath = m_bookmarksDlg->GetPath();
                     SetDlgItemText(*this, IDC_SEARCHPATH, m_searchPath.c_str());
                 }
 
@@ -1296,11 +1294,11 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
         break;
         case IDC_BOOKMARKS:
         {
-            if (m_pBookmarksDlg == nullptr)
-                m_pBookmarksDlg = new CBookmarksDlg(*this);
+            if (!m_bookmarksDlg)
+                m_bookmarksDlg = std::make_unique<CBookmarksDlg>(*this);
             else
-                m_pBookmarksDlg->InitBookmarks();
-            m_pBookmarksDlg->ShowModeless(hResource, IDD_BOOKMARKS, *this);
+                m_bookmarksDlg->InitBookmarks();
+            m_bookmarksDlg->ShowModeless(hResource, IDD_BOOKMARKS, *this);
         }
         break;
         case IDC_RESULTFILES:

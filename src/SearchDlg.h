@@ -141,8 +141,8 @@ private:
     volatile LONG m_dwThreadRunning;
     volatile LONG m_cancelled;
 
-    CBookmarksDlg*        m_pBookmarksDlg;
-    ComPtr<ITaskbarList3> m_pTaskbarList;
+    std::unique_ptr<CBookmarksDlg> m_bookmarksDlg;
+    ComPtr<ITaskbarList3>          m_pTaskbarList;
 
     std::wstring                      m_searchPath;
     std::wstring                      m_searchString;
