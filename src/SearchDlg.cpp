@@ -418,7 +418,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             CheckRadioButton(*this, IDC_RESULTFILES, IDC_RESULTCONTENT, m_showContent ? IDC_RESULTCONTENT : IDC_RESULTFILES);
 
             CheckRadioButton(hwndDlg, IDC_RADIO_DATE_ALL, IDC_RADIO_DATE_BETWEEN, m_dateLimit + IDC_RADIO_DATE_ALL);
-            SYSTEMTIME sysTime;
+            SYSTEMTIME sysTime{};
             auto       hTime1 = GetDlgItem(hwndDlg, IDC_DATEPICK1);
             FileTimeToSystemTime(&m_date1, &sysTime);
             DateTime_SetSystemtime(hTime1, GDT_VALID, &sysTime);
@@ -647,6 +647,8 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 
                             return TRUE;
                         }
+                        default:
+                            break;
                     }
                     break;
                 case IDC_UPDATELINK:
@@ -663,6 +665,8 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                             }
                             break;
                         }
+                        default:
+                            break;
                     }
                     break;
                 case IDC_ABOUTLINK:
@@ -680,6 +684,8 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                             }
                             break;
                         }
+                        default:
+                            break;
                     }
                     break;
             }
@@ -781,6 +787,8 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                     CloneWindow();
                 }
                 break;
+                default:
+                    break;
             }
         }
         break;
@@ -845,6 +853,8 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                     SendDlgItemMessage(*this, IDC_SEARCHPATH, WM_KEYDOWN, VK_DOWN, 0);
                 }
                 break;
+                default:
+                    break;
             }
             return TRUE;
         }
@@ -1567,6 +1577,8 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 CheckDlgButton(*this, IDC_UTF8, BST_UNCHECKED);
         }
         break;
+        default:
+            break;
     }
     return 1;
 }
@@ -1899,6 +1911,8 @@ bool CSearchDlg::PreTranslateMessage(MSG* pMsg)
                 }
             }
             break;
+            default:
+                break;
         }
     }
     return false;
@@ -1994,6 +2008,8 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
                 else
                     std::ranges::sort(m_items, ModifiedTimeCompareDesc);
                 bDidSort = true;
+                break;
+            default:
                 break;
         }
         if (bDidSort)
@@ -2284,11 +2300,9 @@ void CSearchDlg::OpenFileAtListIndex(int listIndex)
 
         SearchReplace(cmd, L"%path%", inf.filePath.c_str());
 
-        STARTUPINFO         startupInfo;
-        PROCESS_INFORMATION processInfo;
-        SecureZeroMemory(&startupInfo, sizeof(startupInfo));
+        STARTUPINFO         startupInfo{};
+        PROCESS_INFORMATION processInfo{};
         startupInfo.cb = sizeof(STARTUPINFO);
-        SecureZeroMemory(&processInfo, sizeof(processInfo));
         CreateProcess(nullptr, const_cast<wchar_t*>(cmd.c_str()), nullptr, nullptr, FALSE, 0, nullptr, nullptr, &startupInfo, &processInfo);
         CloseHandle(processInfo.hThread);
         CloseHandle(processInfo.hProcess);
@@ -2425,12 +2439,9 @@ void CSearchDlg::OpenFileAtListIndex(int listIndex)
         application += lineNumberParam;
     }
 
-    STARTUPINFO         startupInfo;
-    PROCESS_INFORMATION processInfo;
-    SecureZeroMemory(&startupInfo, sizeof(startupInfo));
+    STARTUPINFO         startupInfo{};
+    PROCESS_INFORMATION processInfo{};
     startupInfo.cb = sizeof(STARTUPINFO);
-
-    SecureZeroMemory(&processInfo, sizeof(processInfo));
     CreateProcess(nullptr, const_cast<wchar_t*>(application.c_str()), nullptr, nullptr, FALSE, 0, nullptr, nullptr, &startupInfo, &processInfo);
     CloseHandle(processInfo.hThread);
     CloseHandle(processInfo.hProcess);
@@ -2890,6 +2901,8 @@ DWORD CSearchDlg::SearchThread()
                                 case 2: // greater than
                                     bSearch = bSearch && (fullFileSize > m_lSize);
                                     break;
+                                default:
+                                    break;
                             }
                         }
                         if (bSearch)
@@ -2993,6 +3006,8 @@ DWORD CSearchDlg::SearchThread()
                                         break;
                                     case 2: // greater than
                                         bSearch = bSearch && (0 > m_lSize);
+                                        break;
+                                    default:
                                         break;
                                 }
                             }
