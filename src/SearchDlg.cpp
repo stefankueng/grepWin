@@ -127,6 +127,7 @@ CSearchDlg::CSearchDlg(HWND hParent)
     , m_totalItems(0)
     , m_searchedItems(0)
     , m_totalMatches(0)
+    , m_selectedItems(0)
     , m_bAscending(true)
     , m_themeCallbackId(0)
     , m_pDropTarget(nullptr)
@@ -722,6 +723,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             m_totalItems    = 0;
             m_searchedItems = 0;
             m_totalMatches  = 0;
+            m_selectedItems = 0;
             UpdateInfoLabel();
             SetTimer(*this, LABELUPDATETIMER, 200, nullptr);
         }
@@ -1606,8 +1608,12 @@ void CSearchDlg::UpdateInfoLabel()
 {
     std::wstring sText;
     wchar_t      buf[1024] = {0};
-    swprintf_s(buf, _countof(buf), TranslatedString(hResource, IDS_INFOLABEL).c_str(),
-               m_searchedItems, m_totalItems - m_searchedItems, m_totalMatches, m_items.size());
+    if (m_selectedItems)
+        swprintf_s(buf, _countof(buf), TranslatedString(hResource, IDS_INFOLABELSEL).c_str(),
+                   m_searchedItems, m_totalItems - m_searchedItems, m_totalMatches, m_items.size(), m_selectedItems);
+    else
+        swprintf_s(buf, _countof(buf), TranslatedString(hResource, IDS_INFOLABEL).c_str(),
+                   m_searchedItems, m_totalItems - m_searchedItems, m_totalMatches, m_items.size());
     sText = buf;
 
     SetDlgItemText(*this, IDC_SEARCHINFOLABEL, sText.c_str());
@@ -1670,6 +1676,8 @@ bool CSearchDlg::InitResultList()
     ListView_SetColumnWidth(hListControl, 6, LVSCW_AUTOSIZE_USEHEADER);
 
     SendMessage(ListView_GetToolTips(hListControl), TTM_SETDELAYTIME, TTDT_AUTOPOP, SHRT_MAX);
+
+    m_selectedItems = 0;
 
     return true;
 }
@@ -1923,6 +1931,15 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
         if (lpNMItemActivate->iItem >= 0)
         {
             OpenFileAtListIndex(lpNMItemActivate->iItem);
+        }
+    }
+    if (lpNMItemActivate->hdr.code == LVN_ITEMCHANGED)
+    {
+        if ((lpNMItemActivate->uOldState & LVIS_SELECTED) || (lpNMItemActivate->uNewState & LVIS_SELECTED))
+        {
+            HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
+            m_selectedItems   = ListView_GetSelectedCount(hListControl);
+            UpdateInfoLabel();
         }
     }
     if (lpNMItemActivate->hdr.code == LVN_BEGINDRAG)
