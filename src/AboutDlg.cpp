@@ -79,6 +79,8 @@ LRESULT CAboutDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
                         }
                     }
                     break;
+                default:
+                    break;
             }
         }
         break;
@@ -96,6 +98,8 @@ LRESULT CAboutDlg::DoCommand(int id, int /*msg*/)
             // fall through
         case IDCANCEL:
             EndDialog(*this, id);
+            break;
+        default:
             break;
     }
     return 1;

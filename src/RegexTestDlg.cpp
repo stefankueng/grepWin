@@ -160,6 +160,8 @@ LRESULT CRegexTestDlg::DoCommand(int id, int msg)
             }
         }
         break;
+        default:
+            break;
     }
     return 1;
 }
