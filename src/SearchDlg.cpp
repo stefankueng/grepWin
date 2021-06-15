@@ -58,6 +58,7 @@
 #include <fstream>
 #include <iterator>
 #include <algorithm>
+#include <numeric>
 #include <Commdlg.h>
 
 #pragma warning(push)
@@ -3812,10 +3813,11 @@ int CSearchDlg::CheckRegex()
 
 void CSearchDlg::AutoSizeAllColumns()
 {
-    HWND    hListControl          = GetDlgItem(*this, IDC_RESULTLIST);
-    auto    headerCtrl            = ListView_GetHeader(hListControl);
-    int     nItemCount            = ListView_GetItemCount(hListControl);
-    wchar_t textBuf[MAX_PATH * 4] = {0};
+    HWND             hListControl          = GetDlgItem(*this, IDC_RESULTLIST);
+    auto             headerCtrl            = ListView_GetHeader(hListControl);
+    int              nItemCount            = ListView_GetItemCount(hListControl);
+    wchar_t          textBuf[MAX_PATH * 4] = {0};
+    std::vector<int> colWidths;
     if (headerCtrl)
     {
         int  maxCol   = Header_GetItemCount(headerCtrl) - 1;
@@ -3848,8 +3850,39 @@ void CSearchDlg::AutoSizeAllColumns()
                 if (cx < lineWidth)
                     cx = lineWidth;
             }
-            ListView_SetColumnWidth(hListControl, col, cx);
+            colWidths.push_back(cx);
         }
+    }
+    bool fileList = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
+    if (!fileList)
+    {
+        RECT rc{};
+        ListView_GetItemRect(hListControl, 0, &rc, LVIR_BOUNDS);
+        auto itemWidth = rc.right - rc.left;
+        ListView_GetItemRect(hListControl, 0, &rc, LVIR_ICON);
+        auto iconWidth = rc.right - rc.left;
+        itemWidth -= iconWidth;
+        itemWidth -= 2 * GetSystemMetrics(SM_CXBORDER);
+        auto totalWidth = std::accumulate(colWidths.begin(), colWidths.end(), 0);
+        totalWidth -= colWidths[colWidths.size() - 2];
+        auto textWidth = itemWidth - totalWidth;
+        if (textWidth > 0)
+            colWidths[colWidths.size() - 2] = textWidth;
+        else
+        {
+            colWidths[colWidths.size() - 1] = 100;
+            totalWidth                      = std::accumulate(colWidths.begin(), colWidths.end(), 0);
+            totalWidth -= colWidths[colWidths.size() - 2];
+            textWidth = itemWidth - totalWidth;
+            if (textWidth > 0)
+                colWidths[colWidths.size() - 2] = textWidth;
+        }
+    }
+    int col = 0;
+    for (const auto& colWidth : colWidths)
+    {
+        ListView_SetColumnWidth(hListControl, col, colWidth);
+        ++col;
     }
 }
 
