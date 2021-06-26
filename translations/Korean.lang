@@ -54,6 +54,10 @@ msgstr "바꾸기"
 msgid "&Search"
 msgstr "찾기"
 
+#. Resource IDs: (1003)
+msgid "&Whole word"
+msgstr ""
+
 #. Resource IDs: (1013)
 msgid "..."
 msgstr "..."
@@ -420,6 +424,11 @@ msgstr "검색 문자열"
 #, c-format
 msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files."
 msgstr "%ld 파일을 검사, %ld 파일을 건너뜀. %ld 파일 일치(%ld 파일들 중)."
+
+#. Resource IDs: (173)
+#, c-format
+msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files. %ld results selected."
+msgstr ""
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."
