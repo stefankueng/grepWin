@@ -428,7 +428,7 @@ msgstr "Wyszukano plików: %ld, pominięto plików: %ld. Znaleziono %ld dopasowa
 #. Resource IDs: (173)
 #, c-format
 msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files. %ld results selected."
-msgstr ""
+msgstr "Wyszukano plików: %ld, pominięto plików: %ld. Znaleziono %ld dopasowań w %ld plikach. %ld wyników wybranych."
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."
@@ -485,7 +485,7 @@ msgstr "Traktuj pliki jako binarne"
 #. Resource IDs: (172)
 #, c-format
 msgid "You have the option \"%s\" enabled.\r\nWhen replacing, this option can lead to corrupted files.\r\nDo you want to proceed anyway?"
-msgstr ""
+msgstr "Masz włączoną opcję \"%s\".\r\nPodczas zamiany ta opcja może prowadzić do uszkodzonych plików.\r\nCzy mimo to chcesz kontynuować?"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
