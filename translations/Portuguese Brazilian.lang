@@ -56,7 +56,7 @@ msgstr "&Procurar"
 
 #. Resource IDs: (1003)
 msgid "&Whole word"
-msgstr ""
+msgstr "Palavra &inteira"
 
 #. Resource IDs: (1013)
 msgid "..."
@@ -68,11 +68,11 @@ msgstr "/"
 
 #. Resource IDs: (1045)
 msgid "<a href=\"https://tools.stefankueng.com\">Visit our website</a>"
-msgstr ""
+msgstr "<a href=\"https://tools.stefankueng.com\">Visite o nosso site</a>"
 
 #. Resource IDs: (1052)
 msgid "<a>about grepWin</a>"
-msgstr ""
+msgstr "<a>sobre grepWin</a>"
 
 #. Resource IDs: (1086)
 msgid ">"
@@ -113,15 +113,15 @@ msgstr "Cancelar"
 
 #. Resource IDs: (169)
 msgid "Capture search"
-msgstr ""
+msgstr "Pesquisar capturado"
 
 #. Resource IDs: (1088)
 msgid "Check for updates"
-msgstr ""
+msgstr "Verificar por atualizações"
 
 #. Resource IDs: (1068)
 msgid "Command line to start an editor at a specific line:"
-msgstr "linha de comando para iniciar no editor em uma linha específica"
+msgstr "Linha de comando para iniciar no editor em uma linha específica"
 
 #. Resource IDs: (1060)
 msgid "Content"
@@ -161,7 +161,7 @@ msgstr "Criar arquivos de backup em uma pasta separada"
 
 #. Resource IDs: (1064)
 msgid "Dark mode"
-msgstr ""
+msgstr "Modo escuro"
 
 #. Resource IDs: (139)
 msgid "Date modified"
@@ -173,7 +173,7 @@ msgstr "Diálogo"
 
 #. Resource IDs: (1078)
 msgid "Don't warn when replacing without creating backups"
-msgstr ""
+msgstr "Não avisar ao substituir sem criar backups"
 
 #. Resource IDs: (1051)
 msgid "Dot matches newline"
@@ -209,11 +209,11 @@ msgstr "Excluir diretórios (Regex):"
 
 #. Resource IDs: (164)
 msgid "Export resultlist"
-msgstr ""
+msgstr "Exportar lista de resultados"
 
 #. Resource IDs: (163)
 msgid "Export results..."
-msgstr ""
+msgstr "Exportar resultados..."
 
 #. Resource IDs: (158)
 msgid "Ext"
@@ -233,7 +233,7 @@ msgstr ""
 
 #. Resource IDs: (156)
 msgid "If enabled, a backup folder is created inside the folder that's searched/replaced in, and the files are backed up into that folder"
-msgstr "Se ativado, uma pasta de backup é criada dentro da pasta que é pesquisada/substituída, e os bakups dos arquivos serão para essa pasta"
+msgstr "Se ativado, uma pasta de backup é criada dentro da pasta que é pesquisada/substituída, e os backups dos arquivos serão dentro dessa pasta"
 
 #. Resource IDs: (1050)
 msgid "Include binary files"
@@ -245,7 +245,7 @@ msgstr "Incluir itens ocultos"
 
 #. Resource IDs: (1062)
 msgid "Include search path"
-msgstr ""
+msgstr "Incluir caminho de pesquisa"
 
 #. Resource IDs: (1011)
 msgid "Include subfolders"
@@ -261,7 +261,7 @@ msgstr "Caminho inválido!"
 
 #. Resource IDs: (161)
 msgid "Inverse search (NOT searchstring)"
-msgstr ""
+msgstr "Pesquisa inversa (não pesquisar)"
 
 #. Resource IDs: (1019)
 msgid "KB"
@@ -306,7 +306,7 @@ msgstr "OK"
 
 #. Resource IDs: (1080)
 msgid "Older than"
-msgstr "Mais velho que"
+msgstr "Mais antigo que"
 
 #. Resource IDs: (1063)
 msgid "Only one instance"
@@ -330,7 +330,7 @@ msgstr "Caminho"
 
 #. Resource IDs: (160)
 msgid "Path does not exist or is not accessible!"
-msgstr ""
+msgstr "O caminho não existe ou não é acessível!"
 
 #. Resource IDs: (131)
 msgid "Preset name"
@@ -386,7 +386,7 @@ msgstr "Sequência substituída"
 
 #. Resource IDs: (1027)
 msgid "Replace with/\nCapture format:"
-msgstr ""
+msgstr "Substituir com/\nFormato de captura:"
 
 #. Resource IDs: (126)
 msgid "S&top"
@@ -410,7 +410,7 @@ msgstr "Procurar em"
 
 #. Resource IDs: (162)
 msgid "Search in found files"
-msgstr ""
+msgstr "Pesquisar em arquivos encontrados"
 
 #. Resource IDs: (1018)
 msgid "Search results"
@@ -423,7 +423,7 @@ msgstr "Sequência pesquisada"
 #. Resource IDs: (128)
 #, c-format
 msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files."
-msgstr "%ld arquivos procurados, %ld arquivos ignorados. %ld localizados, %ld encontrados."
+msgstr "%ld arquivos procurados, %ld arquivos ignorados. %ld localizados, %ld correspondentes."
 
 #. Resource IDs: (173)
 #, c-format
@@ -480,12 +480,12 @@ msgstr "Tratar arquivos como UTF8"
 
 #. Resource IDs: (1054)
 msgid "Treat files as binary"
-msgstr ""
+msgstr "Tratar arquivos como binário"
 
 #. Resource IDs: (172)
 #, c-format
 msgid "You have the option \"%s\" enabled.\r\nWhen replacing, this option can lead to corrupted files.\r\nDo you want to proceed anyway?"
-msgstr ""
+msgstr "Você tem a opção \"%s\" ativada.\r\nAo substituir, essa opção pode deixar os arquivos corrompidos.\r\nQuer continuar de qualquer maneira?"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
@@ -505,7 +505,7 @@ msgstr "Clique para editar texto como um texto de múltiplas linhas"
 
 #. Resource IDs: (159)
 msgid "dark mode requires at least Win10 1803, and it must be enabled in the Windows system settings."
-msgstr ""
+msgstr "Modo escuro requer pelo menos Win10 1803, e deve está ativado nas configurações do Windows."
 
 #. Resource IDs: (121)
 msgid "equal to"
@@ -522,7 +522,7 @@ msgstr "grepWin"
 #. Resource IDs: (168)
 #, c-format
 msgid "grepWin %s is available"
-msgstr ""
+msgstr "grepWin %s está disponível"
 
 #. Resource IDs: (138)
 msgid "grepWin Settings"
@@ -534,15 +534,15 @@ msgstr "Mantenha pressionada a tecla shift para encontrar arquivos que NÃO cont
 
 #. Resource IDs: (165)
 msgid "include file paths"
-msgstr ""
+msgstr "Incluir caminhos do arquivo"
 
 #. Resource IDs: (166)
 msgid "include match line numbers"
-msgstr ""
+msgstr "Incluir números da linha correspondentes"
 
 #. Resource IDs: (167)
 msgid "include match line text"
-msgstr ""
+msgstr "Incluir texto da linha correspondente"
 
 #. Resource IDs: (132)
 msgid "invalid regex!"
@@ -566,7 +566,7 @@ msgstr "nenhum texto para testar disponível"
 
 #. Resource IDs: (1074)
 msgid "number of NULL bytes per MB allowed for a file to still be considered text instead of binary"
-msgstr ""
+msgstr "número de bytes NULOS por MB permitido para um arquivo ainda ser considerado texto em vez de binário"
 
 #. Resource IDs: (112)
 msgid "only files that match this pattern are searched.\r\nUse \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
@@ -582,7 +582,7 @@ msgstr "Regex ok"
 
 #. Resource IDs: (117)
 msgid "reuse grepWin instances."
-msgstr "reutilizar instâncias grepWin"
+msgstr "reutilizar instâncias do grepWin"
 
 #. Resource IDs: (151)
 #, c-format
@@ -595,7 +595,7 @@ msgstr "Sequência de pesquisa está vazia"
 
 #. Resource IDs: (170, 171)
 msgid "start new grepWin window"
-msgstr ""
+msgstr "Iniciar nova janela do grepwin"
 
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"
