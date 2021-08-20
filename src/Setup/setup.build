@@ -22,6 +22,15 @@
       </filterchain>
     </loadfile>
     <echo file="VersionNumberInclude.wxi" message="${versionwixfile}" />
+    <property name="verstring" value="${environment::get-variable('MajorVersion')}.${environment::get-variable('MinorVersion')}.${environment::get-variable('MicroVersion')}.${environment::get-variable('WCREV')}" />
+    <loadfile file="AppXManifest.xml.in" property="appxmanifest64" encoding="utf-8">
+      <filterchain>
+        <replacetokens begintoken="$" endtoken="$">
+          <token key="Version" value="${verstring}" />
+        </replacetokens>
+      </filterchain>
+    </loadfile>
+    <echo file="x64\AppxManifest.xml" message="${appxmanifest64}" encoding="utf-8"/>
   </target>
 
   <target name="setup" depends="VersionInfo">
@@ -40,6 +49,24 @@
         <arg value="..\..\bin\release64\grepWin.exe" />
       </exec>
     </if>
+
+    <exec program="MakeAppX.exe">
+      <arg value="pack" />
+      <arg value="/o" />
+      <arg value="/d" />
+      <arg value="x64" />
+      <arg value="-p" />
+      <arg value="..\..\bin\release64\package.msix" />
+      <arg value="/nv" />
+    </exec>
+    <if test="${file::exists('..\..\signinfo.txt')}">
+      <exec program="${signtool}">
+        <arg value="sign" />
+        <arg value="${signinfo}" />
+        <arg value="..\..\bin\release64\package.msix" />
+      </exec>
+    </if>
+    
     <exec program="candle">
       <arg value="-nologo" />
       <arg value="-out" />
