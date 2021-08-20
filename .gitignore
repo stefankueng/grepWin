@@ -12,3 +12,5 @@
 /test
 /choco/package
 /_ReSharper.Caches
+/src/ExplorerCommandVerb/ExplorerCommandVerb.vcxproj.user
+/src/Setup/x64
