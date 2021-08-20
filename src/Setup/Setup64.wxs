@@ -51,6 +51,23 @@
     <SetDirectory Id="APPLICATIONFOLDER"
                   Value="[ProgramFiles64Folder][ApplicationFolderName]">APPLICATIONFOLDER=""</SetDirectory>
 
+    <!-- msiexec does not have a manifest, so it always reports the version of system dlls as
+         for Win7 (6.3.x.x). So we check for 6.3 but use the build number to actually check
+         for Win11 -->
+    <Property Id="WIN11FOUND" Secure="yes">
+      <DirectorySearch Id="searchSystem" Path="[System64Folder]" AssignToProperty="yes">
+        <FileSearch Id="searchFile" Name="shell32.dll" MinVersion="6.3.21999.0"/>
+      </DirectorySearch>
+    </Property>
+
+    <!-- properties for the custom actions to (un)register the sparse package -->
+    <Property Id="SPARSEPACKAGEFILE" Value="package.msix"  Secure="yes"/>
+    <Property Id="SPARSEPACKAGENAME" Value="7BE7C3C4-6740-4AB4-9C5B-DD64067515BF"  Secure="yes"/>
+
+    <Binary Id="CustomActions.dll"  SourceFile="../../bin/release/CustomActions.dll" />
+    <CustomAction Id="RegisterSparsePackage" BinaryKey="CustomActions.dll" DllEntry="RegisterSparsePackage"/>
+    <CustomAction Id="UnregisterSparsePackage" BinaryKey="CustomActions.dll" DllEntry="UnregisterSparsePackage"/>
+
     <!-- Fix for WixUI_Advanced to set properties correctly -->
     <Property Id='ALLUSERS' Value='2' />
     <Property Id='MSIINSTALLPERUSER' Value='1'/>
@@ -61,6 +78,8 @@
 
           <Component Id="MainEXE" Guid="6EB3126A-B40B-43D8-96A7-8C171591E01F" Win64="yes">
             <File Id="grepWin.EXE" Name="grepWin.exe" DiskId="1" Source="../../bin/release64/grepWin.exe" Vital="yes" />
+            <File Id="package.msix" Name="package.msix" DiskId="1" Source="../../bin/release64/package.msix" Vital="yes" />
+            <File Id="shelldll" Name="ExplorerCommandVerb.dll" DiskId="1" Source="../../bin/release64/ExplorerCommandVerb.dll" Vital="yes" />
             <File Id="German.lang" Name="German.lang" DiskId="1" Source="../../translations/German.lang" />
             <File Id="Chinese.lang" Name="Chinese.lang" DiskId="1" Source="../../translations/Chinese.lang" />
             <File Id="Japanese.lang" Name="Japanese.lang" DiskId="1" Source="../../translations/Japanese.lang" />
@@ -171,6 +190,8 @@
       <AppSearch Sequence="1"></AppSearch>
       <LaunchConditions After="AppSearch" />
       <RemoveExistingProducts After="InstallValidate"><![CDATA[PREVIOUSVERSIONSINSTALLED]]></RemoveExistingProducts>
+      <Custom Action="RegisterSparsePackage" After="InstallFinalize">NOT (REMOVE~="ALL") AND (NOT WIN11FOUND="")</Custom>
+      <Custom Action="UnregisterSparsePackage" Before="RemoveFiles">(REMOVE~="ALL") AND (NOT WIN11FOUND="")</Custom>
     </InstallExecuteSequence>
 
   </Product>

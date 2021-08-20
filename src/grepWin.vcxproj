@@ -317,13 +317,6 @@
     <None Include="Resources\infodlg.htm">
       <DeploymentContent>true</DeploymentContent>
     </None>
-    <None Include="Setup\setup.build">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Setup\Setup.wxs" />
-    <None Include="Setup\Setup64.wxs">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="Setup\VersionNumberInclude.in.wxi" />
     <None Include="version.in" />
   </ItemGroup>
