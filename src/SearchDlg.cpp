@@ -712,7 +712,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
         break;
         case WM_SETCURSOR:
         {
-            if (m_dwThreadRunning)
+            if (m_dwThreadRunning && LOWORD(lParam) == 1)
             {
                 SetCursor(LoadCursor(nullptr, IDC_APPSTARTING));
                 return TRUE;
