@@ -43,8 +43,8 @@ msgid "%path% is replaced with the path of the file, %line% with the line to jum
 msgstr "%path% wordt vervangen door het pad van het bestand, %line% door de juiste regel, %pattern% met de zoekreeks."
 
 #. Resource IDs: (119)
-msgid "&About grepWinNP3..."
-msgstr "&Over grepWinNP3..."
+msgid "&About grepWin..."
+msgstr "&Over grepWin..."
 
 #. Resource IDs: (1049)
 msgid "&Replace"
@@ -71,16 +71,16 @@ msgid "Visit Stefan Küng's website"
 msgstr "Bezoek de website van Stefan Küng"
 
 #. Resource IDs: (1052)
-msgid "<a>about grepWinNP3...</a>"
-msgstr "<a>over grepWinNP3...</a>"
+msgid "<a>about grepWin...</a>"
+msgstr "<a>over grepWin...</a>"
 
 #. Resource IDs: (1086)
 msgid ">>>"
 msgstr ">>>"
 
 #. Resource IDs: (135)
-msgid "About grepWinNP3"
-msgstr "Over grepWinNP3"
+msgid "About grepWin"
+msgstr "Over grepWin"
 
 #. Resource IDs: (1021)
 msgid "Add to Presets..."
@@ -200,8 +200,8 @@ msgid "Enter a name for the regex:"
 msgstr "Voer een naam in voor de Regex:"
 
 #. Resource IDs: (1062)
-msgid "Escape key closes grepWinNP3"
-msgstr "grepWinNP3 afsluiten met Esc"
+msgid "Escape key closes grepWin"
+msgstr "grepWin afsluiten met Esc"
 
 #. Resource IDs: (1041)
 msgid "Exclude dirs (Regex):"
@@ -228,8 +228,8 @@ msgid "Files"
 msgstr "Bestanden"
 
 #. Resource IDs: (109)
-msgid "GREPWINNP3"
-msgstr "GREPWINNP3"
+msgid "GREPWIN"
+msgstr "GREPWIN"
 
 #. Resource IDs: (156)
 msgid "If enabled, a backup folder is created inside the folder that's searched/replaced in, and the files are backed up into that folder"
@@ -520,17 +520,17 @@ msgid "greater than"
 msgstr "groter dan"
 
 #. Resource IDs: (103, 129)
-msgid "grepWinNP3"
-msgstr "grepWinNP3"
+msgid "grepWin"
+msgstr "grepWin"
 
 #. Resource IDs: (168)
 #, c-format
-msgid "grepWinNP3 %s is available"
-msgstr "grepWinNP3 %s is beschikbaar"
+msgid "grepWin %s is available"
+msgstr "grepWin %s is beschikbaar"
 
 #. Resource IDs: (138)
-msgid "grepWinNP3 Settings"
-msgstr "grepWinNP3 Instellingen"
+msgid "grepWin Settings"
+msgstr "grepWin Instellingen"
 
 #. Resource IDs: (157)
 msgid "hold down the shift key to find files that DO NOT contain the search string"
@@ -585,8 +585,8 @@ msgid "regex ok"
 msgstr "Regex ok"
 
 #. Resource IDs: (117)
-msgid "reuse grepWinNP3 instances."
-msgstr "grepWinNP3-instanties hergebruiken."
+msgid "reuse grepWin instances."
+msgstr "grepWin-instanties hergebruiken."
 
 #. Resource IDs: (151)
 #, c-format
@@ -598,8 +598,8 @@ msgid "search string is empty"
 msgstr "zoekreeks is leeg"
 
 #. Resource IDs: (170, 171)
-msgid "Start new grepWinNP3 window"
-msgstr "grepWinNP3 in nieuw venster starten"
+msgid "Start new grepWinN window"
+msgstr "grepWin in nieuw venster starten"
 
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\nSeparate paths with the '|' symbol.\nExample: c:\\temp|d:\\logs"
