@@ -64,7 +64,7 @@ public:
     void  SetSearchPath(const std::wstring& path);
     void  SetSearchString(const std::wstring& search) { m_searchString = search; }
     void  SetFileMask(const std::wstring& mask, bool reg);
-    void  SetDirExcludeRegexMask(const std::wstring& mask) { m_excludeDirsPatternRegex = mask; }
+    void  SetDirExcludeRegexMask(const std::wstring& mask);
     void  SetReplaceWith(const std::wstring& replace) { m_replaceString = replace; }
     void  SetUseRegex(bool reg) { m_bUseRegex = reg; }
     void  SetPreset(const std::wstring& preset);
@@ -149,7 +149,9 @@ private:
     std::wstring                      m_replaceString;
     std::vector<std::wstring>         m_patterns;
     std::wstring                      m_patternRegex;
+    bool                              m_patternRegexC;
     std::wstring                      m_excludeDirsPatternRegex;
+    bool                              m_excludeDirsPatternRegexC;
     bool                              m_bUseRegex;
     bool                              m_bUseRegexForPaths;
     bool                              m_bAllSize;

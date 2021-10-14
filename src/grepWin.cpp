@@ -386,24 +386,24 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
                     searchDlg.SetDateLimit(_wtoi(searchIni.GetValue(section.c_str(), L"datelimit")), date1, date2);
                 }
             }
-            if (parser.HasVal(L"searchpath"))
+            if (parser.HasKey(L"searchpath"))
             {
-                std::wstring sPath = parser.GetVal(L"searchpath");
+                std::wstring sPath = parser.HasVal(L"searchpath") ? parser.GetVal(L"searchpath") : L"";
                 sPath              = SanitizeSearchPaths(sPath);
                 searchDlg.SetSearchPath(sPath);
             }
-            if (parser.HasVal(L"searchfor"))
-                searchDlg.SetSearchString(parser.GetVal(L"searchfor"));
-            if (parser.HasVal(L"filemaskregex"))
-                searchDlg.SetFileMask(parser.GetVal(L"filemaskregex"), true);
-            if (parser.HasVal(L"filemask"))
-                searchDlg.SetFileMask(parser.GetVal(L"filemask"), false);
-            if (parser.HasVal(L"direxcluderegex"))
-                searchDlg.SetDirExcludeRegexMask(parser.GetVal(L"direxcluderegex"));
-            else if (parser.HasVal(L"filemaskexclude"))
-                searchDlg.SetDirExcludeRegexMask(parser.GetVal(L"filemaskexclude"));
-            if (parser.HasVal(L"replacewith"))
-                searchDlg.SetReplaceWith(parser.GetVal(L"replacewith"));
+            if (parser.HasKey(L"searchfor"))
+                searchDlg.SetSearchString(parser.GetVal(L"searchfor") ? parser.GetVal(L"searchfor") : L"");
+            if (parser.HasKey(L"filemaskregex"))
+                searchDlg.SetFileMask(parser.GetVal(L"filemaskregex") ? parser.GetVal(L"filemaskregex") : L"", true);
+            if (parser.HasKey(L"filemask"))
+                searchDlg.SetFileMask(parser.GetVal(L"filemask") ? parser.GetVal(L"filemask") : L"", false);
+            if (parser.HasKey(L"direxcluderegex"))
+                searchDlg.SetDirExcludeRegexMask(parser.GetVal(L"direxcluderegex") ? parser.GetVal(L"direxcluderegex") : L"");
+            else if (parser.HasKey(L"filemaskexclude"))
+                searchDlg.SetDirExcludeRegexMask(parser.GetVal(L"filemaskexclude") ? parser.GetVal(L"filemaskexclude") : L"");
+            if (parser.HasKey(L"replacewith"))
+                searchDlg.SetReplaceWith(parser.GetVal(L"replacewith") ? parser.GetVal(L"replacewith") : L"");
             if (parser.HasVal(L"preset"))
                 searchDlg.SetPreset(parser.GetVal(L"preset"));
 
@@ -477,7 +477,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
                 searchDlg.SetDateLimit(parser.GetLongVal(L"datelimit"), date1, date2);
             }
 
-            if (!parser.HasVal(L"searchpath"))
+            if (!parser.HasKey(L"searchpath"))
             {
                 auto cmdLineSize = wcslen(lpCmdLine);
                 auto cmdLinePath = std::make_unique<wchar_t[]>(cmdLineSize + 1);
