@@ -26,12 +26,14 @@
 #include "Registry.h"
 #include "EditDoubleClick.h"
 #include "StringUtils.h"
+#include "InfoRtfDialog.h"
 #include <string>
 #include <vector>
 #include <set>
 #include <thread>
 
 #include <wrl.h>
+
 using namespace Microsoft::WRL;
 
 #define SEARCH_FOUND         (WM_APP + 1)
@@ -202,6 +204,7 @@ private:
     bool                              m_bAscending;
     std::wstring                      m_resultString;
     std::wstring                      m_toolTipReplaceString;
+    std::unique_ptr<CInfoRtfDialog>   m_rtfDialog;
 
     CDlgResizer m_resizer;
     int         m_themeCallbackId;

@@ -227,6 +227,7 @@
     <ClCompile Include="..\sktoolslib\EditDoubleClick.cpp" />
     <ClCompile Include="..\sktoolslib\FileDropTarget.cpp" />
     <ClCompile Include="..\sktoolslib\Hash.cpp" />
+    <ClCompile Include="..\sktoolslib\InfoRtfDialog.cpp" />
     <ClCompile Include="..\sktoolslib\Language.cpp" />
     <ClCompile Include="..\sktoolslib\Monitor.cpp" />
     <ClCompile Include="..\sktoolslib\PathUtils.cpp" />
@@ -243,7 +244,6 @@
     <ClCompile Include="Bookmarks.cpp" />
     <ClCompile Include="BookmarksDlg.cpp" />
     <ClCompile Include="grepWin.cpp" />
-    <ClCompile Include="InfoDlg.cpp" />
     <ClCompile Include="MultiLineEditDlg.cpp" />
     <ClCompile Include="NameDlg.cpp" />
     <ClCompile Include="RegexReplaceFormatter.cpp" />
@@ -273,6 +273,7 @@
     <ClInclude Include="..\sktoolslib\EditDoubleClick.h" />
     <ClInclude Include="..\sktoolslib\FileDropTarget.h" />
     <ClInclude Include="..\sktoolslib\Hash.h" />
+    <ClInclude Include="..\sktoolslib\InfoRtfDialog.h" />
     <ClInclude Include="..\sktoolslib\Language.h" />
     <ClInclude Include="..\sktoolslib\maxpath.h" />
     <ClInclude Include="..\sktoolslib\Monitor.h" />
@@ -292,7 +293,6 @@
     <ClInclude Include="Bookmarks.h" />
     <ClInclude Include="BookmarksDlg.h" />
     <ClInclude Include="COMPtrs.h" />
-    <ClInclude Include="InfoDlg.h" />
     <ClInclude Include="LineData.h" />
     <ClInclude Include="MultiLineEditDlg.h" />
     <ClInclude Include="NameDlg.h" />
@@ -314,9 +314,7 @@
     <None Include="..\versioninfo.build" />
     <None Include="packages.config" />
     <None Include="Resources\grepWin.ico" />
-    <None Include="Resources\infodlg.htm">
-      <DeploymentContent>true</DeploymentContent>
-    </None>
+    <None Include="Resources\infodlg.rtf" />
     <None Include="Setup\VersionNumberInclude.in.wxi" />
     <None Include="version.in" />
   </ItemGroup>

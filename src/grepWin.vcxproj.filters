@@ -33,9 +33,6 @@
     <ClCompile Include="grepWin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="InfoDlg.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="NameDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -147,6 +144,9 @@
     <ClCompile Include="..\sktoolslib\Hash.cpp">
       <Filter>sktoolslib</Filter>
     </ClCompile>
+    <ClCompile Include="..\sktoolslib\InfoRtfDialog.cpp">
+      <Filter>sktoolslib</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AboutDlg.h">
@@ -156,9 +156,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="BookmarksDlg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="InfoDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="NameDlg.h">
@@ -290,6 +287,9 @@
     <ClInclude Include="..\sktoolslib\Hash.h">
       <Filter>sktoolslib</Filter>
     </ClInclude>
+    <ClInclude Include="..\sktoolslib\InfoRtfDialog.h">
+      <Filter>sktoolslib</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\grepWin.ico">
@@ -304,9 +304,6 @@
     <None Include="..\versioninfo.build">
       <Filter>Scripts</Filter>
     </None>
-    <None Include="Resources\infodlg.htm">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="Setup\VersionNumberInclude.in.wxi">
       <Filter>Scripts</Filter>
     </None>
@@ -314,6 +311,9 @@
       <Filter>Header Files</Filter>
     </None>
     <None Include="packages.config" />
+    <None Include="Resources\infodlg.rtf">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resources\grepWin.rc">
