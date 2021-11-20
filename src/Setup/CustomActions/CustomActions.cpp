@@ -51,7 +51,7 @@ UINT __stdcall MsgBox(MSIHANDLE /*hModule*/)
 
 UINT __stdcall RegisterSparsePackage(MSIHANDLE hModule)
 {
-    DWORD len = 0;
+    DWORD   len = 0;
     wchar_t emptyString[1]{};
     MsiGetPropertyW(hModule, L"APPLICATIONFOLDER", emptyString, &len);
     auto sparseExtPath = std::make_unique<wchar_t[]>(len + 1LL);
@@ -74,58 +74,71 @@ UINT __stdcall RegisterSparsePackage(MSIHANDLE hModule)
     Uri               packageUri(sSparsePackagePath.c_str());
     options.ExternalLocationUri(externalUri);
     auto deploymentOperation = manager.AddPackageByUriAsync(packageUri, options);
-    auto deployResult = deploymentOperation.get();
+
+    auto deployResult        = deploymentOperation.get();
 
     if (!SUCCEEDED(deployResult.ExtendedErrorCode()))
     {
         // Deployment failed
-        std::wstring text = sparseExtPath.get();
-        text += L"\r\n";
-        text += sparsePackageFile.get();
-        text += L"\r\n";
-        text += deployResult.ErrorText();
-        return deployResult.ExtendedErrorCode();
+        PMSIHANDLE   hRecord = MsiCreateRecord(0);
+        std::wstring error   = L"AddPackageByUriAsync failed (Errorcode: ";
+        error += std::to_wstring(deployResult.ExtendedErrorCode());
+        error += L"):\n";
+        error += deployResult.ErrorText();
+        MsiRecordSetStringW(hRecord, 0, error.c_str());
+        MsiProcessMessage(hModule, INSTALLMESSAGE_ERROR, hRecord);
+        MsiCloseHandle(hRecord);
     }
-    std::wstring text = sparseExtPath.get();
-    text += L"\r\n";
-    text += sparsePackageFile.get();
     return ERROR_SUCCESS;
 }
 
 UINT __stdcall UnregisterSparsePackage(MSIHANDLE hModule)
 {
-    DWORD len = 0;
+    DWORD   len = 0;
     wchar_t emptyString[1]{};
     MsiGetPropertyW(hModule, L"SPARSEPACKAGENAME", emptyString, &len);
     auto sparsePackageName = std::make_unique<wchar_t[]>(len + 1LL);
     len += 1;
     MsiGetPropertyW(hModule, L"SPARSEPACKAGENAME", sparsePackageName.get(), &len);
 
-    PackageManager packageManager;
-
-    auto           packages = packageManager.FindPackages();
-    winrt::hstring fullName = sparsePackageName.get();
-    std::wstring   s1, s2, s3;
-    for (const auto& package : packages)
+    PackageManager                                                    packageManager;
+    Collections::IIterable<winrt::Windows::ApplicationModel::Package> packages;
+    try
     {
-        s1 += L"\r\n";
-        s1 += package.Id().Publisher();
-        s2 += L"\r\n";
-        s2 += package.Id().PublisherId();
-        s3 += L"\r\n";
-        s3 += package.Id().Name();
-        if (package.Id().Name() == sparsePackageName.get())
-            fullName = package.Id().FullName();
+        packages = packageManager.FindPackagesForUser(L"");
+    }
+    catch (winrt::hresult_error const& ex)
+    {
+        PMSIHANDLE   hRecord = MsiCreateRecord(0);
+        std::wstring error   = L"FindPackagesForUser failed (Errorcode: ";
+        error += std::to_wstring(ex.code().value);
+        error += L"):\n";
+        error += ex.message();
+        MsiRecordSetStringW(hRecord, 0, error.c_str());
+        MsiProcessMessage(hModule, INSTALLMESSAGE_ERROR, hRecord);
+        MsiCloseHandle(hRecord);
     }
 
-    auto deploymentOperation = packageManager.RemovePackageAsync(fullName, RemovalOptions::None);
-    auto deployResult        = deploymentOperation.get();
-    if (!SUCCEEDED(deployResult.ExtendedErrorCode()))
+    for (const auto& package : packages)
     {
-        // Deployment failed
-        std::wstring text = L"unregistered failed\r\n";
-        text += deployResult.ErrorText();
-        return deployResult.ExtendedErrorCode();
+        if (package.Id().Name() != sparsePackageName.get())
+            continue;
+
+        winrt::hstring fullName            = package.Id().FullName();
+        auto           deploymentOperation = packageManager.RemovePackageAsync(fullName, RemovalOptions::None);
+        auto           deployResult        = deploymentOperation.get();
+        if (SUCCEEDED(deployResult.ExtendedErrorCode()))
+            break;
+
+        // Undeployment failed
+        PMSIHANDLE   hRecord = MsiCreateRecord(0);
+        std::wstring error   = L"RemovePackageAsync failed (Errorcode: ";
+        error += std::to_wstring(deployResult.ExtendedErrorCode());
+        error += L"):\n";
+        error += deployResult.ErrorText();
+        MsiRecordSetStringW(hRecord, 0, error.c_str());
+        MsiProcessMessage(hModule, INSTALLMESSAGE_ERROR, hRecord);
+        MsiCloseHandle(hRecord);
     }
 
     return ERROR_SUCCESS;
