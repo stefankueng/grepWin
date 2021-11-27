@@ -45,6 +45,11 @@ jobs:
         fetch-depth: 2
         submodules: recursive
 
+    - name: add msbuild to PATH
+      uses: microsoft/setup-msbuild@v1.1
+      with:
+        vs-version: '[17.0,'
+
     - name: nuget-restore
       uses: nuget/setup-nuget@v1
       with:
@@ -74,9 +79,6 @@ jobs:
     # ✏️ If the Autobuild fails above, remove it and uncomment the following three lines
     #    and modify them (or add more) to build your code if your project
     #    uses a compiled language
-
-    - name: setup-msbuild
-      uses: microsoft/setup-msbuild@v1.0.2
       
     - name: Build Solution
       run: MSBuild.exe grepWin.sln /p:Configuration=Debug /p:Platform=x64 -nologo
