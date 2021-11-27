@@ -34,9 +34,9 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 
 // These variables are not exposed as any path name handling probably
 // should be a function in here rather than be manipulating strings directly / inline.
-const wchar_t thisOsPathSeparator  = L'\\';
-const wchar_t otherOsPathSeparator = L'/';
-const wchar_t DeviceSeparator      = L':';
+constexpr wchar_t thisOsPathSeparator  = L'\\';
+constexpr wchar_t otherOsPathSeparator = L'/';
+constexpr wchar_t DeviceSeparator      = L':';
 
 // Check if the character given is either type of folder separator.
 // if we want to remove support for "other"separators we can just
