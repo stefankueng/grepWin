@@ -20,6 +20,7 @@
 #include "registry.h"
 #include <unordered_map>
 #include <functional>
+#include <optional>
 
 using ThemeChangeCallback = std::function<void()>;
 
@@ -35,39 +36,43 @@ private:
     ~CTheme();
 
 public:
-    static CTheme& Instance();
+    static CTheme&          Instance();
 
     /// call this on every WM_SYSCOLORCHANGED message
-    void OnSysColorChanged();
+    void                    OnSysColorChanged();
     /// returns true if dark mode is even allowed. We only allow dark mode on Win10 1809 or later.
-    bool IsDarkModeAllowed();
+    bool                    IsDarkModeAllowed();
     /// sets the theme and calls all registered callbacks.
     /// if \force is true, all Callback functions are called whether the mode changed or not
-    void SetDarkTheme(bool b = true, bool force = false);
+    void                    SetDarkTheme(bool b = true, bool force = false);
     /// returns true if dark theme is enabled. If false, then the normal theme is active.
-    bool IsDarkTheme() const;
+    bool                    IsDarkTheme() const;
     /// returns true if high contrast mode is on
-    bool IsHighContrastMode() const;
+    bool                    IsHighContrastMode() const;
     /// returns true if high contrast mode is on, and the color scheme is dark
-    bool IsHighContrastModeDark() const;
+    bool                    IsHighContrastModeDark() const;
     /// converts a color to the theme color. For normal theme the \b clr is returned unchanged.
     /// for dark theme, the color is adjusted in brightness.
-    COLORREF GetThemeColor(COLORREF clr, bool fixed = false) const;
+    COLORREF                GetThemeColor(COLORREF clr, bool fixed = false) const;
     /// registers a callback function that's called for every theme change.
     /// returns an id that can be used to unregister the callback function.
-    int RegisterThemeChangeCallback(ThemeChangeCallback&& cb);
+    int                     RegisterThemeChangeCallback(ThemeChangeCallback&& cb);
     /// unregisters a callback function.
-    bool RemoveRegisteredCallback(int id);
+    bool                    RemoveRegisteredCallback(int id);
 
     /// sets the theme for a whole dialog. For dark mode, the
     /// windows are subclassed if necessary. For normal mode,
     /// subclassing is removed to ensure the behavior is
     /// identical to the original.
-    bool SetThemeForDialog(HWND hWnd, bool bDark);
+    bool                    SetThemeForDialog(HWND hWnd, bool bDark);
 
-    static void     RGBToHSB(COLORREF rgb, BYTE& hue, BYTE& saturation, BYTE& brightness);
-    static void     RGBtoHSL(COLORREF color, float& h, float& s, float& l);
-    static COLORREF HSLtoRGB(float h, float s, float l);
+    void                    SetControlColor(HWND hControl, COLORREF color);
+    void                    ResetControlColor(HWND hControl);
+    std::optional<COLORREF> GetControlColor(HWND hControl);
+
+    static void             RGBToHSB(COLORREF rgb, BYTE& hue, BYTE& saturation, BYTE& brightness);
+    static void             RGBtoHSL(COLORREF color, float& h, float& s, float& l);
+    static COLORREF         HSLtoRGB(float h, float s, float l);
 
 private:
     void                    Load();
@@ -88,4 +93,5 @@ private:
     int                                          m_lastThemeChangeCallbackId;
     CRegStdDWORD                                 m_regDarkTheme;
     static HBRUSH                                m_sBackBrush;
+    std::map<HWND, COLORREF>                     m_controlColors;
 };
