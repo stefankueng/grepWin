@@ -37,17 +37,17 @@ constexpr COLORREF darkBkColor           = 0x202020;
 constexpr COLORREF darkTextColor         = 0xDDDDDD;
 constexpr COLORREF darkDisabledTextColor = 0x808080;
 
-constexpr auto     SubclassID            = 1234;
+constexpr auto SubclassID = 1234;
 
-static int         GetStateFromBtnState(LONG_PTR dwStyle, BOOL bHot, BOOL bFocus, LRESULT dwCheckState, int iPartId, BOOL bHasMouseCapture);
-static void        GetRoundRectPath(Gdiplus::GraphicsPath* pPath, const Gdiplus::Rect& r, int dia);
-static void        DrawRect(LPRECT prc, HDC hdcPaint, Gdiplus::DashStyle dashStyle, Gdiplus::Color clr, Gdiplus::REAL width);
-static void        DrawFocusRect(LPRECT prcFocus, HDC hdcPaint);
-static void        PaintControl(HWND hWnd, HDC hdc, RECT* prc, bool bDrawBorder);
-static BOOL        DetermineGlowSize(int* piSize, LPCWSTR pszClassIdList = nullptr);
-static BOOL        GetEditBorderColor(HWND hWnd, COLORREF* pClr);
+static int  GetStateFromBtnState(LONG_PTR dwStyle, BOOL bHot, BOOL bFocus, LRESULT dwCheckState, int iPartId, BOOL bHasMouseCapture);
+static void GetRoundRectPath(Gdiplus::GraphicsPath* pPath, const Gdiplus::Rect& r, int dia);
+static void DrawRect(LPRECT prc, HDC hdcPaint, Gdiplus::DashStyle dashStyle, Gdiplus::Color clr, Gdiplus::REAL width);
+static void DrawFocusRect(LPRECT prcFocus, HDC hdcPaint);
+static void PaintControl(HWND hWnd, HDC hdc, RECT* prc, bool bDrawBorder);
+static BOOL DetermineGlowSize(int* piSize, LPCWSTR pszClassIdList = nullptr);
+static BOOL GetEditBorderColor(HWND hWnd, COLORREF* pClr);
 
-HBRUSH             CTheme::m_sBackBrush = nullptr;
+HBRUSH CTheme::m_sBackBrush = nullptr;
 
 CTheme::CTheme()
     : m_bLoaded(false)
@@ -139,30 +139,20 @@ bool CTheme::SetThemeForDialog(HWND hWnd, bool bDark)
     if (IsDarkModeAllowed())
     {
         DarkModeHelper::Instance().AllowDarkModeForWindow(hWnd, bDark);
-        SetWindowSubclass(hWnd, MainSubclassProc, SubclassID, reinterpret_cast<DWORD_PTR>(&m_sBackBrush));
+        if (bDark)
+        {
+            SetWindowSubclass(hWnd, MainSubclassProc, SubclassID, reinterpret_cast<DWORD_PTR>(&m_sBackBrush));
+        }
+        else
+        {
+            RemoveWindowSubclass(hWnd, MainSubclassProc, SubclassID);
+        }
         EnumChildWindows(hWnd, AdjustThemeForChildrenProc, bDark ? TRUE : FALSE);
         EnumThreadWindows(GetCurrentThreadId(), AdjustThemeForChildrenProc, bDark ? TRUE : FALSE);
         ::RedrawWindow(hWnd, nullptr, nullptr, RDW_FRAME | RDW_INVALIDATE | RDW_ERASE | RDW_INTERNALPAINT | RDW_ALLCHILDREN | RDW_UPDATENOW);
     }
     DarkModeHelper::Instance().RefreshTitleBarThemeColor(hWnd, bDark);
     return true;
-}
-
-void CTheme::SetControlColor(HWND hControl, COLORREF color)
-{
-    m_controlColors[hControl] = color;
-}
-
-void CTheme::ResetControlColor(HWND hControl)
-{
-    m_controlColors.erase(hControl);
-}
-
-std::optional<COLORREF> CTheme::GetControlColor(HWND hControl)
-{
-    if (auto ctrlClr = m_controlColors.find(hControl); ctrlClr != m_controlColors.end())
-        return ctrlClr->second;
-    return {};
 }
 
 BOOL CTheme::AdjustThemeForChildrenProc(HWND hwnd, LPARAM lParam)
@@ -495,28 +485,14 @@ LRESULT CTheme::MainSubclassProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPa
         case WM_CTLCOLORBTN:
         case WM_CTLCOLORSCROLLBAR:
         {
-            if (CTheme::Instance().IsDarkTheme())
-            {
-                auto hbrBkgnd = reinterpret_cast<HBRUSH*>(dwRefData);
-                HDC  hdc      = reinterpret_cast<HDC>(wParam);
-                SetBkMode(hdc, TRANSPARENT);
-                SetTextColor(hdc, darkTextColor);
-                SetBkColor(hdc, darkBkColor);
-                if (!*hbrBkgnd)
-                    *hbrBkgnd = CreateSolidBrush(darkBkColor);
-                auto ctrlClr = CTheme::Instance().GetControlColor(reinterpret_cast<HWND>(lParam));
-                if (ctrlClr)
-                    SetTextColor(hdc, CTheme::Instance().GetThemeColor(ctrlClr.value(), true));
-                return reinterpret_cast<LRESULT>(*hbrBkgnd);
-            }
-            else
-            {
-                auto brush = DefSubclassProc(hWnd, uMsg, wParam, lParam);
-                auto ctrlClr = CTheme::Instance().GetControlColor(reinterpret_cast<HWND>(lParam));
-                if (ctrlClr)
-                    SetTextColor(reinterpret_cast<HDC>(wParam), ctrlClr.value());
-                return brush;
-            }
+            auto hbrBkgnd = reinterpret_cast<HBRUSH*>(dwRefData);
+            HDC  hdc      = reinterpret_cast<HDC>(wParam);
+            SetBkMode(hdc, TRANSPARENT);
+            SetTextColor(hdc, darkTextColor);
+            SetBkColor(hdc, darkBkColor);
+            if (!*hbrBkgnd)
+                *hbrBkgnd = CreateSolidBrush(darkBkColor);
+            return reinterpret_cast<LRESULT>(*hbrBkgnd);
         }
         case WM_DESTROY:
         case WM_NCDESTROY:
@@ -598,13 +574,13 @@ LRESULT CTheme::ButtonSubclassProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
                         BP_PAINTPARAMS params = {sizeof(BP_PAINTPARAMS)};
                         params.dwFlags        = BPPF_ERASE;
 
-                        RECT rcExclusion      = rcClient;
-                        params.prcExclude     = &rcExclusion;
+                        RECT rcExclusion  = rcClient;
+                        params.prcExclude = &rcExclusion;
 
                         // We have to calculate the exclusion rect and therefore
                         // calculate the font height. We select the control's font
                         // into the DC and fake a drawing operation:
-                        HFONT hFontOld        = reinterpret_cast<HFONT>(SendMessage(hWnd, WM_GETFONT, 0L, NULL));
+                        HFONT hFontOld = reinterpret_cast<HFONT>(SendMessage(hWnd, WM_GETFONT, 0L, NULL));
                         if (hFontOld)
                             hFontOld = static_cast<HFONT>(SelectObject(hdc, hFontOld));
 
@@ -726,22 +702,22 @@ LRESULT CTheme::ButtonSubclassProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
                             RECT    rc;
                             GetWindowRect(hWnd, &rc);
                             GetCursorPos(&pt);
-                            BOOL bHot    = PtInRect(&rc, pt);
-                            BOOL bFocus  = GetFocus() == hWnd;
+                            BOOL bHot   = PtInRect(&rc, pt);
+                            BOOL bFocus = GetFocus() == hWnd;
 
-                            int  iPartId = BP_CHECKBOX;
+                            int iPartId = BP_CHECKBOX;
                             if (dwButtonType == BS_RADIOBUTTON || dwButtonType == BS_AUTORADIOBUTTON)
                                 iPartId = BP_RADIOBUTTON;
 
-                            int  iState      = GetStateFromBtnState(dwStyle, bHot, bFocus, dwCheckState, iPartId, FALSE);
+                            int iState = GetStateFromBtnState(dwStyle, bHot, bFocus, dwCheckState, iPartId, FALSE);
 
-                            int  bmWidth     = static_cast<int>(ceil(13.0 * CDPIAware::Instance().GetDPI(hWnd) / 96.0));
+                            int bmWidth = static_cast<int>(ceil(13.0 * CDPIAware::Instance().GetDPI(hWnd) / 96.0));
 
                             UINT uiHalfWidth = (RECTWIDTH(rcClient) - bmWidth) / 2;
 
                             // we have to use the whole client area, otherwise we get only partially
                             // drawn areas:
-                            RECT rcPaint     = rcClient;
+                            RECT rcPaint = rcClient;
 
                             if (dwButtonStyle & BS_LEFTTEXT)
                             {
@@ -1036,7 +1012,7 @@ void CTheme::RGBtoHSL(COLORREF color, float& h, float& s, float& l)
     const float gPercent = static_cast<float>(GetGValue(color)) / 255;
     const float bPercent = static_cast<float>(GetBValue(color)) / 255;
 
-    float       maxColor = 0;
+    float maxColor = 0;
     if ((rPercent >= gPercent) && (rPercent >= bPercent))
         maxColor = rPercent;
     else if ((gPercent >= rPercent) && (gPercent >= bPercent))
