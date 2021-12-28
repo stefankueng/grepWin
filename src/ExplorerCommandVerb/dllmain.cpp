@@ -14,7 +14,7 @@
 
 using namespace Microsoft::WRL;
 
-HMODULE hDll = nullptr;
+HMODULE       hDll = nullptr;
 
 BOOL APIENTRY DllMain(HMODULE hModule,
                       DWORD   ulReasonForCall,
@@ -42,7 +42,7 @@ constexpr wchar_t DeviceSeparator      = L':';
 // if we want to remove support for "other"separators we can just
 // change this function and force callers to use NormalizeFolderSeparators on
 // filenames first at first point of entry into a program.
-inline bool IsFolderSeparator(wchar_t c)
+inline bool       IsFolderSeparator(wchar_t c)
 {
     return (c == thisOsPathSeparator || c == otherOsPathSeparator);
 }
@@ -131,7 +131,7 @@ public:
     virtual EXPCMDSTATE    State(_In_opt_ IShellItemArray* selection) { return ECS_ENABLED; }
 
     // IExplorerCommand
-    IFACEMETHODIMP GetTitle(_In_opt_ IShellItemArray* items, _Outptr_result_nullonfailure_ PWSTR* name) override
+    IFACEMETHODIMP         GetTitle(_In_opt_ IShellItemArray* items, _Outptr_result_nullonfailure_ PWSTR* name) override
     {
         *name      = nullptr;
         auto title = wil::make_cotaskmem_string_nothrow(Title(items));
@@ -220,7 +220,7 @@ public:
         return L"search with grepWin";
     }
 
-    EXPCMDSTATE State(_In_opt_ IShellItemArray* ) override
+    EXPCMDSTATE State(_In_opt_ IShellItemArray*) override
     {
         if (m_site)
         {
@@ -228,9 +228,19 @@ public:
             m_site.As(&oleWindow);
             if (oleWindow)
             {
-                // in Win11, the "main" context menu does not provide an IOleWindow,
-                // so this is for the old context menu, and there we don't show this menu
-                return ECS_HIDDEN;
+                // We don't want to show the menu on the classic context menu.
+                // The classic menu provides an IOleWindow, but the main context
+                // menu of the left treeview in explorer does too.
+                // So we check the window class name: if it's "NamespaceTreeControl",
+                // then we're dealing with the main context menu of the tree view.
+                // If it's not, then we're dealing with the classic context menu
+                // and there we hide this menu entry.
+                HWND hWnd = nullptr;
+                oleWindow->GetWindow(&hWnd);
+                wchar_t szWndClassName[MAX_PATH] = {0};
+                GetClassName(hWnd, szWndClassName, _countof(szWndClassName));
+                if (wcscmp(szWndClassName, L"NamespaceTreeControl"))
+                    return ECS_HIDDEN;
             }
         }
         return ECS_ENABLED;
@@ -277,16 +287,15 @@ public:
                     }
                 }
 
-                path = L"/searchpath:\"" + path + L"\"";
-
+                path                        = L"/searchpath:\"" + path + L"\"";
 
                 SHELLEXECUTEINFO shExecInfo = {sizeof(SHELLEXECUTEINFO)};
 
-                shExecInfo.hwnd         = nullptr;
-                shExecInfo.lpVerb       = L"open";
-                shExecInfo.lpFile       = gwPath.c_str();
-                shExecInfo.lpParameters = path.c_str();
-                shExecInfo.nShow        = SW_NORMAL;
+                shExecInfo.hwnd             = nullptr;
+                shExecInfo.lpVerb           = L"open";
+                shExecInfo.lpFile           = gwPath.c_str();
+                shExecInfo.lpParameters     = path.c_str();
+                shExecInfo.nShow            = SW_NORMAL;
                 ShellExecuteEx(&shExecInfo);
             }
 
