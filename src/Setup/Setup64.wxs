@@ -102,27 +102,27 @@
             <File Id="Spanish_Mexican.lang" Name="Spanish Mexican.lang" DiskId="1" Source="../../translations/Spanish Mexican.lang" />
             <File Id="Hindi.lang" Name="Hindi.lang" DiskId="1" Source="../../translations/Hindi.lang" />
             <RegistryKey Root="HKMU" Key="Software\Classes\Directory\shell\grepWin" />
-            <RegistryValue Root="HKMU" Key="Software\Classes\Directory\shell\grepWin" Value="search with grepWin" Type="string" />
+            <RegistryValue Root="HKMU" Key="Software\Classes\Directory\shell\grepWin" Value="Search with grepWin" Type="string" />
             <RegistryValue Root="HKMU" Key="Software\Classes\Directory\shell\grepWin\command" Value='"[APPLICATIONFOLDER]grepWin.exe" /searchpath:"%1"' Type="string" />
             <RegistryValue Root="HKMU" Key="Software\Classes\Directory\shell\grepWin" Name="Icon" Value='[APPLICATIONFOLDER]grepWin.exe,-107' Type="string" />
             <RegistryKey Root="HKMU" Key="Software\Classes\Directory\Background\shell\grepWin" />
-            <RegistryValue Root="HKMU" Key="Software\Classes\Directory\Background\shell\grepWin" Value="search with grepWin" Type="string" />
+            <RegistryValue Root="HKMU" Key="Software\Classes\Directory\Background\shell\grepWin" Value="Search with grepWin" Type="string" />
             <RegistryValue Root="HKMU" Key="Software\Classes\Directory\Background\shell\grepWin" Name="Icon" Value='[APPLICATIONFOLDER]grepWin.exe,-107' Type="string" />
             <RegistryValue Root="HKMU" Key="Software\Classes\Directory\Background\shell\grepWin\command" Value='"[APPLICATIONFOLDER]grepWin.exe" /searchpath:"%V"' Type="string" />
             <RegistryKey Root="HKMU" Key="Software\Classes\LibraryFolder\background\shell\grepWin" />
-            <RegistryValue Root="HKMU" Key="Software\Classes\LibraryFolder\background\shell\grepWin" Value="search with grepWin" Type="string" />
+            <RegistryValue Root="HKMU" Key="Software\Classes\LibraryFolder\background\shell\grepWin" Value="Search with grepWin" Type="string" />
             <RegistryValue Root="HKMU" Key="Software\Classes\LibraryFolder\background\shell\grepWin" Name="Icon" Value='[APPLICATIONFOLDER]grepWin.exe,-107' Type="string" />
             <RegistryValue Root="HKMU" Key="Software\Classes\LibraryFolder\background\shell\grepWin\command" Value='"[APPLICATIONFOLDER]grepWin.exe" /searchpath:"%V"' Type="string" />
             <RegistryKey Root="HKMU" Key="Software\Classes\Folder\shell\grepWin" />
-            <RegistryValue Root="HKMU" Key="Software\Classes\Folder\shell\grepWin" Value="search with grepWin" Type="string" />
+            <RegistryValue Root="HKMU" Key="Software\Classes\Folder\shell\grepWin" Value="Search with grepWin" Type="string" />
             <RegistryValue Root="HKMU" Key="Software\Classes\Folder\shell\grepWin" Name="Icon" Value='[APPLICATIONFOLDER]grepWin.exe,-107' Type="string" />
             <RegistryValue Root="HKMU" Key="Software\Classes\Folder\shell\grepWin\command" Value='"[APPLICATIONFOLDER]grepWin.exe" /searchpath:"%1"' Type="string" />
             <RegistryKey Root="HKMU" Key="Software\Classes\Drive\shell\grepWin" />
-            <RegistryValue Root="HKMU" Key="Software\Classes\Drive\shell\grepWin" Value="search with grepWin" Type="string" />
+            <RegistryValue Root="HKMU" Key="Software\Classes\Drive\shell\grepWin" Value="Search with grepWin" Type="string" />
             <RegistryValue Root="HKMU" Key="Software\Classes\Drive\shell\grepWin" Name="Icon" Value='[APPLICATIONFOLDER]grepWin.exe,-107' Type="string" />
             <RegistryValue Root="HKMU" Key="Software\Classes\Drive\shell\grepWin\command" Value='"[APPLICATIONFOLDER]grepWin.exe" /searchpath:"%1"' Type="string" />
             <RegistryKey Root="HKMU" Key="Software\Classes\*\shell\grepWin" />
-            <RegistryValue Root="HKMU" Key="Software\Classes\*\shell\grepWin" Value="search with grepWin" Type="string" />
+            <RegistryValue Root="HKMU" Key="Software\Classes\*\shell\grepWin" Value="Search with grepWin" Type="string" />
             <RegistryValue Root="HKMU" Key="Software\Classes\*\shell\grepWin" Name="Icon" Value='[APPLICATIONFOLDER]grepWin.exe,-107' Type="string" />
             <RegistryValue Root="HKMU" Key="Software\Classes\*\shell\grepWin\command" Value='"[APPLICATIONFOLDER]grepWin.exe" /searchpath:"%1"' Type="string" />
             <RegistryValue Root="HKMU" Key="Software\Classes\*\shell\grepWin" Name="MultiSelectModel" Value='Player' Type="string" />
