@@ -44,7 +44,7 @@ msgstr ""
 
 #. Resource IDs: (119)
 msgid "&About grepWin..."
-msgstr ""
+msgstr "grepWin névjegye..."
 
 #. Resource IDs: (1049)
 msgid "&Replace"
@@ -72,7 +72,7 @@ msgstr ""
 
 #. Resource IDs: (1052)
 msgid "<a>about grepWin</a>"
-msgstr ""
+msgstr "<a>grepWin névjegye</a>"
 
 #. Resource IDs: (1086)
 msgid ">"
@@ -80,7 +80,7 @@ msgstr ""
 
 #. Resource IDs: (135)
 msgid "About grepWin"
-msgstr ""
+msgstr "grepWin névjegye"
 
 #. Resource IDs: (1021)
 msgid "Add to Presets"
@@ -117,7 +117,7 @@ msgstr ""
 
 #. Resource IDs: (1088)
 msgid "Check for updates"
-msgstr ""
+msgstr "Frissítés ellenőrzése"
 
 #. Resource IDs: (1068)
 msgid "Command line to start an editor at a specific line:"
@@ -201,7 +201,7 @@ msgstr "Adjon nevet a regex-nek:"
 
 #. Resource IDs: (1062)
 msgid "Escape key closes grepWin"
-msgstr ""
+msgstr "grepWin bezárása az Esc billentyűvel"
 
 #. Resource IDs: (1041)
 msgid "Exclude dirs (Regex):"
@@ -229,7 +229,7 @@ msgstr "Fájlok"
 
 #. Resource IDs: (109)
 msgid "GREPWIN"
-msgstr ""
+msgstr "GREPWIN"
 
 #. Resource IDs: (156)
 msgid "If enabled, a backup folder is created inside the folder that's searched/replaced in, and the files are backed up into that folder"
@@ -378,7 +378,7 @@ msgstr "Relatív útvonal nem megengedett. Kérem, adjon meg abszolút útvonala
 
 #. Resource IDs: (32771 - Menu)
 msgid "Remo&ve Preset"
-msgstr "Sablo &törlése"
+msgstr "Sablon &törlése"
 
 #. Resource IDs: (106)
 msgid "Replace string"
@@ -414,7 +414,7 @@ msgstr ""
 
 #. Resource IDs: (1018)
 msgid "Search results"
-msgstr "KEresési eredmények"
+msgstr "Keresési eredmények"
 
 #. Resource IDs: (105)
 msgid "Search string"
@@ -517,7 +517,7 @@ msgstr "nagyobb, mint"
 
 #. Resource IDs: (103, 129)
 msgid "grepWin"
-msgstr ""
+msgstr "grepWin"
 
 #. Resource IDs: (168)
 #, c-format
@@ -526,7 +526,7 @@ msgstr ""
 
 #. Resource IDs: (138)
 msgid "grepWin Settings"
-msgstr ""
+msgstr "grepWin beállítások"
 
 #. Resource IDs: (157)
 msgid "hold down the shift key to find files that DO NOT contain the search string"
