@@ -1,16 +1,20 @@
 ﻿// dllmain.cpp : Defines the entry point for the DLL application.
 #include "pch.h"
+
 #include <wrl/module.h>
 #include <wrl/implements.h>
 #include <wrl/client.h>
 #include <shobjidl_core.h>
 #include <wil\resource.h>
+#include <comutil.h>
 #include <shellapi.h>
+#include <Shlobj.h>
 #include <string>
 #include <vector>
 #include <sstream>
 
 #pragma comment(lib, "Shell32.lib")
+#pragma comment(lib, "comsupp.lib")
 
 using namespace Microsoft::WRL;
 
@@ -289,14 +293,62 @@ public:
 
                 path                        = L"/searchpath:\"" + path + L"\"";
 
-                SHELLEXECUTEINFO shExecInfo = {sizeof(SHELLEXECUTEINFO)};
+                                        // try to launch the exe with the explorer instance:
+                // this avoids that the exe is started with the identity of this dll,
+                // starting it as if it was started the normal way.
+                bool                     execSucceeded = false;
+                ComPtr<IServiceProvider> serviceProvider;
+                if (SUCCEEDED(m_site.As(&serviceProvider)))
+                {
+                    ComPtr<IShellBrowser> shellBrowser;
+                    if (SUCCEEDED(serviceProvider->QueryService(SID_SShellBrowser, IID_IShellBrowser, &shellBrowser)))
+                    {
+                        ComPtr<IShellView> shellView;
+                        if (SUCCEEDED(shellBrowser->QueryActiveShellView(&shellView)))
+                        {
+                            ComPtr<IDispatch> spdispView;
+                            if (SUCCEEDED(shellView->GetItemObject(SVGIO_BACKGROUND, IID_PPV_ARGS(&spdispView))))
+                            {
+                                ComPtr<IShellFolderViewDual> spFolderView;
+                                if (SUCCEEDED(spdispView.As(&spFolderView)))
+                                {
+                                    ComPtr<IDispatch> spdispShell;
+                                    if (SUCCEEDED(spFolderView->get_Application(&spdispShell)))
+                                    {
+                                        ComPtr<IShellDispatch2> spdispShell2;
+                                        if (SUCCEEDED(spdispShell.As(&spdispShell2)))
+                                        {
+                                            // without this, the launched app is not moved to the foreground
+                                            AllowSetForegroundWindow(ASFW_ANY);
 
-                shExecInfo.hwnd             = nullptr;
-                shExecInfo.lpVerb           = L"open";
-                shExecInfo.lpFile           = gwPath.c_str();
-                shExecInfo.lpParameters     = path.c_str();
-                shExecInfo.nShow            = SW_NORMAL;
-                ShellExecuteEx(&shExecInfo);
+                                            if (SUCCEEDED(spdispShell2->ShellExecute(_bstr_t{gwPath.c_str()},
+                                                                                     _variant_t{path.c_str()},
+                                                                                     _variant_t{L""},
+                                                                                     _variant_t{L"open"},
+                                                                                     _variant_t{SW_NORMAL})))
+                                            {
+                                                execSucceeded = true;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (!execSucceeded)
+                {
+                    // just in case the shell execute with explorer failed
+                    SHELLEXECUTEINFO shExecInfo = {sizeof(SHELLEXECUTEINFO)};
+
+                    shExecInfo.hwnd             = nullptr;
+                    shExecInfo.lpVerb           = L"open";
+                    shExecInfo.lpFile           = gwPath.c_str();
+                    shExecInfo.lpParameters     = path.c_str();
+                    shExecInfo.nShow            = SW_NORMAL;
+                    ShellExecuteEx(&shExecInfo);
+                }
             }
 
             return S_OK;
