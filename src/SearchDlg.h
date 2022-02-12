@@ -92,6 +92,7 @@ public:
         m_showContent    = true;
         m_showContentSet = true;
     }
+    bool isRegexValid() const;
 
 protected:
     LRESULT CALLBACK DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) override;
@@ -206,6 +207,7 @@ private:
     std::wstring                      m_resultString;
     std::wstring                      m_toolTipReplaceString;
     std::unique_ptr<CInfoRtfDialog>   m_rtfDialog;
+    bool                              m_isRegexValid;
 
     CDlgResizer m_resizer;
     int         m_themeCallbackId;
