@@ -40,11 +40,11 @@ msgstr "%ld további találat"
 
 #. Resource IDs: (1069)
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to"
-msgstr ""
+msgstr "%path% helyébe a fájl elérési útvonala, %line% helyébe az a sor lép, amelyre ugrani kell"
 
 #. Resource IDs: (119)
 msgid "&About grepWin..."
-msgstr "grepWin névjegye..."
+msgstr "&A grepWin névjegye"
 
 #. Resource IDs: (1049)
 msgid "&Replace"
@@ -56,7 +56,7 @@ msgstr "&Keresés"
 
 #. Resource IDs: (1003)
 msgid "&Whole word"
-msgstr ""
+msgstr "&Teljes szó"
 
 #. Resource IDs: (1013)
 msgid "..."
@@ -68,19 +68,19 @@ msgstr "/"
 
 #. Resource IDs: (1045)
 msgid "<a href=\"https://tools.stefankueng.com\">Visit our website</a>"
-msgstr ""
+msgstr "<a href=\"https://tools.stefankueng.com\">Látogasson el weboldalunkra</a>"
 
 #. Resource IDs: (1052)
 msgid "<a>about grepWin</a>"
-msgstr "<a>grepWin névjegye</a>"
+msgstr "<a>A grepWin névjegye</a>"
 
 #. Resource IDs: (1086)
 msgid ">"
-msgstr ""
+msgstr ">"
 
 #. Resource IDs: (135)
 msgid "About grepWin"
-msgstr "grepWin névjegye"
+msgstr "A grepWin névjegye"
 
 #. Resource IDs: (1021)
 msgid "Add to Presets"
@@ -113,11 +113,11 @@ msgstr "Mégsem"
 
 #. Resource IDs: (169)
 msgid "Capture search"
-msgstr ""
+msgstr "Keresés rögzítése"
 
 #. Resource IDs: (1088)
 msgid "Check for updates"
-msgstr "Frissítés ellenőrzése"
+msgstr "Frissítések ellenőrzése"
 
 #. Resource IDs: (1068)
 msgid "Command line to start an editor at a specific line:"
@@ -173,7 +173,7 @@ msgstr "Párbeszédablak"
 
 #. Resource IDs: (1078)
 msgid "Don't warn when replacing without creating backups"
-msgstr ""
+msgstr "Ne figyelmeztessen a biztonsági mentés létrehozása nélküli cserénél"
 
 #. Resource IDs: (1051)
 msgid "Dot matches newline"
@@ -201,7 +201,7 @@ msgstr "Adjon nevet a regex-nek:"
 
 #. Resource IDs: (1062)
 msgid "Escape key closes grepWin"
-msgstr "grepWin bezárása az Esc billentyűvel"
+msgstr "Az Esc billentyű bezárja a grepWin-t"
 
 #. Resource IDs: (1041)
 msgid "Exclude dirs (Regex):"
@@ -209,11 +209,11 @@ msgstr "Kihagyandó könyvtárak (Regex):"
 
 #. Resource IDs: (164)
 msgid "Export resultlist"
-msgstr ""
+msgstr "Eredménylista exportálása"
 
 #. Resource IDs: (163)
 msgid "Export results..."
-msgstr ""
+msgstr "Eredmények exportálása..."
 
 #. Resource IDs: (158)
 msgid "Ext"
@@ -233,7 +233,7 @@ msgstr "GREPWIN"
 
 #. Resource IDs: (156)
 msgid "If enabled, a backup folder is created inside the folder that's searched/replaced in, and the files are backed up into that folder"
-msgstr "Ha ez be van kapcsolva, akkor egy mentési könyvtár kerül létrehozásra a keresési/csere mappa alá, s a mentés ide kerül"
+msgstr "Ha ez be van kapcsolva, akkor egy mentési könyvtár kerül létrehozásra a keresési/csere mappa alá, és a mentés ide kerül"
 
 #. Resource IDs: (1050)
 msgid "Include binary files"
@@ -245,7 +245,7 @@ msgstr "Rejtett elemek is"
 
 #. Resource IDs: (1062)
 msgid "Include search path"
-msgstr ""
+msgstr "Beleértve a keresési útvonalat"
 
 #. Resource IDs: (1011)
 msgid "Include subfolders"
@@ -261,7 +261,7 @@ msgstr "Érvénytelen útvonal!"
 
 #. Resource IDs: (161)
 msgid "Inverse search (NOT searchstring)"
-msgstr ""
+msgstr "Fordított keresés (NEM keresési karakterlánc)"
 
 #. Resource IDs: (1019)
 msgid "KB"
@@ -273,7 +273,7 @@ msgstr "Nyelv:"
 
 #. Resource IDs: (1017)
 msgid "Limit search"
-msgstr ""
+msgstr "Keresés korlátozása"
 
 #. Resource IDs: (134)
 msgid "Line"
@@ -282,7 +282,7 @@ msgstr "Sor"
 #. Resource IDs: (150)
 #, c-format
 msgid "Line %5ld : %30s\n"
-msgstr "%5ld : %30s sorok\n"
+msgstr "%5ld : %30s sor\n"
 
 #. Resource IDs: (135)
 msgid "Matches"
@@ -330,7 +330,7 @@ msgstr "Útvonal"
 
 #. Resource IDs: (160)
 msgid "Path does not exist or is not accessible!"
-msgstr ""
+msgstr "Az útvonal nem létezik vagy nem elérhető!"
 
 #. Resource IDs: (131)
 msgid "Preset name"
@@ -386,7 +386,7 @@ msgstr "Szöveg cseréje"
 
 #. Resource IDs: (1027)
 msgid "Replace with/\nCapture format:"
-msgstr ""
+msgstr "Cserélje ki a/\nRögzítési formátum:"
 
 #. Resource IDs: (126)
 msgid "S&top"
@@ -410,7 +410,7 @@ msgstr "Keresés ebben"
 
 #. Resource IDs: (162)
 msgid "Search in found files"
-msgstr ""
+msgstr "Keresés a talált fájlokban"
 
 #. Resource IDs: (1018)
 msgid "Search results"
@@ -428,7 +428,7 @@ msgstr "Keresés %ld fájlban, kihagyva %ld fájl. Lett %ld találat %ld fájlba
 #. Resource IDs: (173)
 #, c-format
 msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files. %ld results selected."
-msgstr ""
+msgstr "Keresés %ld fájlban, kihagyva %ld fájl. %ld egyezést talált %ld fájlban. %ld eredmény kiválasztva."
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."
@@ -476,20 +476,20 @@ msgstr "Az eredmény szöveg csere után:"
 
 #. Resource IDs: (1053)
 msgid "Treat files as UTF8"
-msgstr ""
+msgstr "Fájlok kezelése UTF8-ként"
 
 #. Resource IDs: (1054)
 msgid "Treat files as binary"
-msgstr ""
+msgstr "Fájlok kezelése binárisként"
 
 #. Resource IDs: (172)
 #, c-format
 msgid "You have the option \"%s\" enabled.\r\nWhen replacing, this option can lead to corrupted files.\r\nDo you want to proceed anyway?"
-msgstr ""
+msgstr "Engedélyezte \"%s\" opciót.\r\nA csere során ez az opció sérült fájlokat eredményezhet.\r\nMindenképpen folytatni szeretné?"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
-msgstr "Egy reguláris kifejezés volt használva a keresésnél. További információért nyomja meg az F1-et."
+msgstr "egy reguláris kifejezés volt használva a keresésnél. További információért nyomja meg az F1-et."
 
 #. Resource IDs: (125)
 msgid "an empty string"
@@ -505,7 +505,7 @@ msgstr "kattintson a szöveg többsorosként való szerkesztéséhez"
 
 #. Resource IDs: (159)
 msgid "dark mode requires at least Win10 1803, and it must be enabled in the Windows system settings."
-msgstr ""
+msgstr "A sötét módhoz legalább Windows 10 build 1803 szükséges, és engedélyezni kell a Windows rendszerbeállításaiban."
 
 #. Resource IDs: (121)
 msgid "equal to"
@@ -522,7 +522,7 @@ msgstr "grepWin"
 #. Resource IDs: (168)
 #, c-format
 msgid "grepWin %s is available"
-msgstr ""
+msgstr "grepWin %s elérhető"
 
 #. Resource IDs: (138)
 msgid "grepWin Settings"
@@ -534,15 +534,15 @@ msgstr "tartsa lenyomva a Shift-et azon fájlok kereséséhez, ami NEM tartalmaz
 
 #. Resource IDs: (165)
 msgid "include file paths"
-msgstr ""
+msgstr "tartalmazza a  fájl elérési útvonalakat"
 
 #. Resource IDs: (166)
 msgid "include match line numbers"
-msgstr ""
+msgstr "tartalmazza az egyező sorszámokat"
 
 #. Resource IDs: (167)
 msgid "include match line text"
-msgstr ""
+msgstr "tartalmazza az egyező sor szövegeket"
 
 #. Resource IDs: (132)
 msgid "invalid regex!"
@@ -566,11 +566,11 @@ msgstr "nincs mivel tesztelni"
 
 #. Resource IDs: (1074)
 msgid "number of NULL bytes per MB allowed for a file to still be considered text instead of binary"
-msgstr ""
+msgstr "a NULL bájtok MB-onként megengedett száma, hogy egy fájl még mindig szövegnek és nem binárisnak minősüljön"
 
 #. Resource IDs: (112)
 msgid "only files that match this pattern are searched.\r\nUse \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
-msgstr ""
+msgstr "csak a mintának megfelelő fájlokat keresi a rendszer.\r\n\"|\" jelet használja elválasztójelként.\r\nPélda: *.cpp|*.h"
 
 #. Resource IDs: (129)
 msgid "read error"
@@ -582,7 +582,7 @@ msgstr "regex ok"
 
 #. Resource IDs: (117)
 msgid "reuse grepWin instances."
-msgstr ""
+msgstr "grepWin példányok újra felhasználása"
 
 #. Resource IDs: (151)
 #, c-format
@@ -595,17 +595,16 @@ msgstr "a keresett szöveg üres"
 
 #. Resource IDs: (170, 171)
 msgid "start new grepWin window"
-msgstr ""
+msgstr "új grepWin ablak indítása"
 
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"
-msgstr ""
+msgstr "a rekurzívan keresett elérési útvonal(ak).\r\nElkülöníti az elérési utakat a | szimbólummal.\r\nPélda: c:\\\temp|d:\\\logs"
 
 #. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
-msgstr ""
+msgstr "kizárhat könyvtárakat, például a CVS-t és a képeket.\r\Példa: ^(CVS|images)$\r\nMegjegyzés: Az '.svn' mappák Windowson 'rejtett' mappák, ezért általában nem kerülnek átvizsgálásra."
 
 #. Resource IDs: (1024)
 msgid "⑂"
 msgstr "⑂"
-
