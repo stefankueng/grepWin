@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2021 - Stefan Kueng
+// Copyright (C) 2007-2022 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -87,6 +87,7 @@ CSearchDlg::CSearchDlg(HWND hParent)
     , m_patternRegexC(false)
     , m_excludeDirsPatternRegexC(false)
     , m_bUseRegex(false)
+    , m_bUseRegexC(false)
     , m_bUseRegexForPaths(false)
     , m_bAllSize(false)
     , m_lSize(0)
@@ -397,7 +398,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             CheckRadioButton(hwndDlg, IDC_FILEPATTERNREGEX, IDC_FILEPATTERNTEXT, m_bUseRegexForPaths ? IDC_FILEPATTERNREGEX : IDC_FILEPATTERNTEXT);
             SendDlgItemMessage(hwndDlg, IDC_WHOLEWORDS, BM_SETCHECK, m_bWholeWords ? BST_CHECKED : BST_UNCHECKED, 0);
             DialogEnableWindow(IDC_WHOLEWORDS, IsDlgButtonChecked(hwndDlg, IDC_TEXTRADIO));
-            if (!m_searchString.empty())
+            if (!m_searchString.empty() || m_bUseRegexC)
                 CheckRadioButton(*this, IDC_REGEXRADIO, IDC_TEXTRADIO, m_bUseRegex ? IDC_REGEXRADIO : IDC_TEXTRADIO);
 
             DialogEnableWindow(IDC_TESTREGEX, !IsDlgButtonChecked(*this, IDC_TEXTRADIO));
@@ -3088,6 +3089,12 @@ void CSearchDlg::SetDirExcludeRegexMask(const std::wstring& mask)
 {
     m_excludeDirsPatternRegex  = mask;
     m_excludeDirsPatternRegexC = true;
+}
+
+void CSearchDlg::SetUseRegex(bool reg)
+{
+    m_bUseRegex  = reg;
+    m_bUseRegexC = true;
 }
 
 void CSearchDlg::SetPreset(const std::wstring& preset)
