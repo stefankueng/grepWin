@@ -1002,7 +1002,9 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 {
                     if (!PathFileExists(sp.c_str()))
                     {
-                        ShowEditBalloon(IDC_SEARCHPATH, TranslatedString(hResource, IDS_ERR_INVALID_PATH).c_str(), TranslatedString(hResource, IDS_ERR_PATHNOTEXIST).c_str());
+                        auto sErr = TranslatedString(hResource, IDS_ERR_PATHNOTEXIST);
+                        sErr      = CStringUtils::Format(sErr.c_str(), sp.c_str());
+                        ShowEditBalloon(IDC_SEARCHPATH, TranslatedString(hResource, IDS_ERR_INVALID_PATH).c_str(), sErr.c_str());
                         break;
                     }
                 }
