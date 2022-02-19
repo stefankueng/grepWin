@@ -81,7 +81,7 @@ std::map<size_t, DWORD> linePositions;
 extern ULONGLONG        g_startTime;
 extern HANDLE           hInitProtection;
 
-LRESULT                 SearchEditWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR /*uIdSubclass*/, DWORD_PTR dwRefData)
+LRESULT CALLBACK        SearchEditWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR /*uIdSubclass*/, DWORD_PTR dwRefData)
 {
     switch (uMsg)
     {
