@@ -481,6 +481,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             m_resizer.AddControl(hwndDlg, IDC_PATHMRU, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_SEARCHPATH, RESIZER_TOPLEFTRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_NEWINSTANCE, RESIZER_TOPRIGHT);
+            m_resizer.AddControl(hwndDlg, IDC_SEARCHPATHMULTILINEEDIT, RESIZER_TOPRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_SEARCHPATHBROWSE, RESIZER_TOPRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_GROUPSEARCHFOR, RESIZER_TOPLEFTRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_REGEXRADIO, RESIZER_TOPLEFT);
@@ -1187,6 +1188,23 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
         case IDC_NEWINSTANCE:
             CloneWindow();
             break;
+        case IDC_SEARCHPATHMULTILINEEDIT:
+        {
+            auto paths = std::wstring(GetDlgItemText(IDC_SEARCHPATH).get());
+
+            SearchReplace(paths, L"|", L"\r\n");
+            CMultiLineEditDlg editDlg(*this);
+            editDlg.SetString(paths);
+
+            if (editDlg.DoModal(hResource, IDD_MULTILINEEDIT, *this) == IDOK)
+            {
+                std::wstring text = editDlg.GetSearchString();
+                SearchReplace(text, L"\r\n", L"|");
+                SetDlgItemText(*this, IDC_SEARCHPATH, text.c_str());
+            }
+            ::SetFocus(GetDlgItem(*this, IDC_SEARCHPATH));
+        }
+        break;
         case IDC_SEARCHPATHBROWSE:
         {
             CBrowseFolder browse;
