@@ -328,10 +328,6 @@ msgstr "Επικολήστε κείμενο δοκιμής του regex:"
 msgid "Path"
 msgstr "Διαδρομή"
 
-#. Resource IDs: (160)
-msgid "Path does not exist or is not accessible!"
-msgstr ""
-
 #. Resource IDs: (131)
 msgid "Preset name"
 msgstr "Προκαθορισμένο όνομα"
@@ -466,6 +462,11 @@ msgstr "Text match"
 msgid "Text search"
 msgstr "Εύρεση κειμένου"
 
+#. Resource IDs: (160)
+#, c-format
+msgid "The path \"%s\" does not exist or is not accessible!"
+msgstr ""
+
 #. Resource IDs: (65535)
 msgid "The regex search string matches:"
 msgstr "Η regex συμβολοσειρά αναζήτησης ταιριάζει:"
@@ -485,6 +486,10 @@ msgstr ""
 #. Resource IDs: (172)
 #, c-format
 msgid "You have the option \"%s\" enabled.\r\nWhen replacing, this option can lead to corrupted files.\r\nDo you want to proceed anyway?"
+msgstr ""
+
+#. Resource IDs: (1025)
+msgid "\\"
 msgstr ""
 
 #. Resource IDs: (116)

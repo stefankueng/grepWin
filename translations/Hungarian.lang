@@ -328,10 +328,6 @@ msgstr "Illesszen be valami szöveget, amivel a regex-et teszteli:"
 msgid "Path"
 msgstr "Útvonal"
 
-#. Resource IDs: (160)
-msgid "Path does not exist or is not accessible!"
-msgstr "Az útvonal nem létezik vagy nem elérhető!"
-
 #. Resource IDs: (131)
 msgid "Preset name"
 msgstr "Sablon neve"
@@ -466,6 +462,11 @@ msgstr "Szövegilleszkedés"
 msgid "Text search"
 msgstr "Szövegkeresés"
 
+#. Resource IDs: (160)
+#, c-format
+msgid "The path \"%s\" does not exist or is not accessible!"
+msgstr ""
+
 #. Resource IDs: (65535)
 msgid "The regex search string matches:"
 msgstr "A regex keresési szöveg illeszkedik:"
@@ -486,6 +487,10 @@ msgstr "Fájlok kezelése binárisként"
 #, c-format
 msgid "You have the option \"%s\" enabled.\r\nWhen replacing, this option can lead to corrupted files.\r\nDo you want to proceed anyway?"
 msgstr "Engedélyezte \"%s\" opciót.\r\nA csere során ez az opció sérült fájlokat eredményezhet.\r\nMindenképpen folytatni szeretné?"
+
+#. Resource IDs: (1025)
+msgid "\\"
+msgstr ""
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
@@ -608,3 +613,4 @@ msgstr "kizárhat könyvtárakat, például a CVS-t és a képeket.\r\Példa: ^(
 #. Resource IDs: (1024)
 msgid "⑂"
 msgstr "⑂"
+

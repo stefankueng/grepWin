@@ -328,10 +328,6 @@ msgstr "粘贴文本以测试正则:"
 msgid "Path"
 msgstr "路径"
 
-#. Resource IDs: (160)
-msgid "Path does not exist or is not accessible!"
-msgstr ""
-
 #. Resource IDs: (131)
 msgid "Preset name"
 msgstr "预置名称"
@@ -466,6 +462,11 @@ msgstr "文本匹配"
 msgid "Text search"
 msgstr "文本搜索"
 
+#. Resource IDs: (160)
+#, c-format
+msgid "The path \"%s\" does not exist or is not accessible!"
+msgstr ""
+
 #. Resource IDs: (65535)
 msgid "The regex search string matches:"
 msgstr "正则搜索字符串匹配:"
@@ -485,6 +486,10 @@ msgstr ""
 #. Resource IDs: (172)
 #, c-format
 msgid "You have the option \"%s\" enabled.\r\nWhen replacing, this option can lead to corrupted files.\r\nDo you want to proceed anyway?"
+msgstr ""
+
+#. Resource IDs: (1025)
+msgid "\\"
 msgstr ""
 
 #. Resource IDs: (116)
