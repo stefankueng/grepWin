@@ -43,5 +43,5 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
           name: grepWin-x64
-          path: bin/Release64/bin/grepWin.exe
+          path: bin/Release64/grepWin.exe
           target: latest
