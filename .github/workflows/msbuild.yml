@@ -44,4 +44,3 @@ jobs:
       with:
           name: grepWin-x64
           path: bin/Release64/grepWin.exe
-          target: latest
