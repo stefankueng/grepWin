@@ -84,7 +84,7 @@ msgstr "A grepWin névjegye"
 
 #. Resource IDs: (1021)
 msgid "Add to Presets"
-msgstr "Hozzáadás a sablonokhoz"
+msgstr "Hozzáadás sablonokhoz"
 
 #. Resource IDs: (155)
 msgid "All Files"
@@ -153,7 +153,7 @@ msgstr "Eredmények vágólapra másolása"
 
 #. Resource IDs: (1029)
 msgid "Create backup files"
-msgstr "Biztonsági mentés készítése"
+msgstr "Biztonsági mentés készítés"
 
 #. Resource IDs: (1077)
 msgid "Create backup files in a separate folder"
@@ -302,7 +302,7 @@ msgstr "Új sorra a '.' illeszkedik"
 
 #. Resource IDs: (1)
 msgid "OK"
-msgstr "Ok"
+msgstr "OK"
 
 #. Resource IDs: (1080)
 msgid "Older than"
@@ -465,7 +465,7 @@ msgstr "Szövegkeresés"
 #. Resource IDs: (160)
 #, c-format
 msgid "The path \"%s\" does not exist or is not accessible!"
-msgstr ""
+msgstr "Az útvonal \"%s\", nem létezik vagy nem elérhető!"
 
 #. Resource IDs: (65535)
 msgid "The regex search string matches:"
@@ -490,7 +490,7 @@ msgstr "Engedélyezte \"%s\" opciót.\r\nA csere során ez az opció sérült f�
 
 #. Resource IDs: (1025)
 msgid "\\"
-msgstr ""
+msgstr "\\"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
@@ -613,4 +613,3 @@ msgstr "kizárhat könyvtárakat, például a CVS-t és a képeket.\r\Példa: ^(
 #. Resource IDs: (1024)
 msgid "⑂"
 msgstr "⑂"
-
