@@ -555,11 +555,11 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                 if (!sPos.empty())
                 {
                     auto read  = swscanf_s(sPos.c_str(), L"%d;%d;%d;%d;%d;%d;%d;%d;%d;%d",
-                                          &wpl.flags, &wpl.showCmd,
-                                          &wpl.ptMinPosition.x, &wpl.ptMinPosition.y,
-                                          &wpl.ptMaxPosition.x, &wpl.ptMaxPosition.y,
-                                          &wpl.rcNormalPosition.left, &wpl.rcNormalPosition.top,
-                                          &wpl.rcNormalPosition.right, &wpl.rcNormalPosition.bottom);
+                                           &wpl.flags, &wpl.showCmd,
+                                           &wpl.ptMinPosition.x, &wpl.ptMinPosition.y,
+                                           &wpl.ptMaxPosition.x, &wpl.ptMaxPosition.y,
+                                           &wpl.rcNormalPosition.left, &wpl.rcNormalPosition.top,
+                                           &wpl.rcNormalPosition.right, &wpl.rcNormalPosition.bottom);
                     wpl.length = sizeof(wpl);
                     if (read == 10)
                         SetWindowPlacement(*this, &wpl);
@@ -608,6 +608,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                 default:
                     break;
             }
+            std::locale::global(std::locale(""));
         }
             return FALSE;
         case WM_CLOSE:
@@ -1070,7 +1071,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 {
                     auto utf8OptionText = GetDlgItemText(IDC_UTF8);
                     auto msgText        = CStringUtils::Format(TranslatedString(hResource, IDS_REPLACEUTF8).c_str(),
-                                                        utf8OptionText.get());
+                                                               utf8OptionText.get());
                     if (::MessageBox(*this, msgText.c_str(), L"grepWin", MB_ICONWARNING | MB_YESNO | MB_DEFBUTTON2) != IDYES)
                     {
                         break;
@@ -1110,11 +1111,11 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 // now start the thread which does the searching
                 DWORD  dwThreadId = 0;
                 HANDLE hThread    = CreateThread(nullptr, // no security attribute
-                                              0,       // default stack size
-                                              SearchThreadEntry,
-                                              static_cast<LPVOID>(this), // thread parameter
-                                              0,                         // not suspended
-                                              &dwThreadId);              // returns thread ID
+                                                 0,       // default stack size
+                                                 SearchThreadEntry,
+                                                 static_cast<LPVOID>(this), // thread parameter
+                                                 0,                         // not suspended
+                                                 &dwThreadId);              // returns thread ID
                 if (hThread != nullptr)
                 {
                     // Closing the handle of a running thread just decreases
@@ -3040,7 +3041,7 @@ DWORD CSearchDlg::SearchThread()
                                 SearchFile(sInfo, searchRoot, bAlwaysSearch, m_bIncludeBinary, m_bUseRegex, m_bCaseSensitive, m_bDotMatchesNewline, m_searchString, searchStringutf16, &m_cancelled);
                             };
                             tp.enqueueWait(searchFn);
-                            //SearchFile(std::move(sinfo), searchRoot, bAlwaysSearch, m_bIncludeBinary, m_bUseRegex, m_bCaseSensitive, m_bDotMatchesNewline, m_searchString, SearchStringutf16, &m_Cancelled);
+                            // SearchFile(std::move(sinfo), searchRoot, bAlwaysSearch, m_bIncludeBinary, m_bUseRegex, m_bCaseSensitive, m_bDotMatchesNewline, m_searchString, SearchStringutf16, &m_Cancelled);
                         }
                     }
                     else
