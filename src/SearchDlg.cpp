@@ -993,6 +993,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                     break;
 
                 CStringUtils::rtrim(m_searchPath, L"\\/");
+                SearchReplace(m_searchPath, L"/", L"\\");
 
                 if (PathIsRelative(m_searchPath.c_str()))
                 {
