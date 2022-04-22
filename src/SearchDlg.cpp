@@ -1411,7 +1411,9 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
             try
             {
                 int                                                ft         = boost::regex::normal;
-                boost::wregex                                      expression = boost::wregex(L"\\(\\?:\\\\n\\|\\\\r\\\\n\\|\\\\n\\\\r\\)", ft);
+                boost::wregex                                      expression = (id == IDC_EDITMULTILINE1
+                                                                                     ? boost::wregex(L"\\(\\?:\\\\n\\|\\\\r\\\\n\\|\\\\n\\\\r\\)", ft)
+                                                                                     : boost::wregex(L"\\\\r\\\\n", ft));
                 boost::match_results<std::wstring::const_iterator> whatC;
                 boost::match_flag_type                             rFlags = boost::match_default | boost::format_all;
                 ctrlText                                                  = regex_replace(ctrlText, expression, L"\\r\\n", rFlags);
@@ -1432,7 +1434,10 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                     boost::wregex                                      expression = boost::wregex(L"\\r\\n", ft);
                     boost::match_results<std::wstring::const_iterator> whatC;
                     boost::match_flag_type                             rFlags = boost::match_default | boost::format_all;
-                    text                                                      = regex_replace(text, expression, L"\\(\\?:\\\\n|\\\\r\\\\n|\\\\n\\\\r\\)", rFlags);
+                    if (id == IDC_EDITMULTILINE1)
+                        text = regex_replace(text, expression, L"\\(\\?:\\\\n|\\\\r\\\\n|\\\\n\\\\r\\)", rFlags);
+                    else
+                        text = regex_replace(text, expression, L"\\\\r\\\\n", rFlags);
                 }
                 catch (const std::exception&)
                 {
@@ -3359,7 +3364,7 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
     // files bigger than 30MB are considered binary. Binary files are searched
     // as if they're ANSI text files.
     std::wstring localSearchString = searchString;
-    
+
     SearchReplace(localSearchString, L"${filepath}", sInfo.filePath);
     std::wstring fileNameFull = sInfo.filePath.substr(sInfo.filePath.find_last_of('\\') + 1);
     auto         dotPos       = fileNameFull.find_last_of('.');
