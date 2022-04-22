@@ -1410,13 +1410,12 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
             // replace all \r\n strings with real CRLFs
             try
             {
-                int                                                ft         = boost::regex::normal;
-                boost::wregex                                      expression = (id == IDC_EDITMULTILINE1
-                                                                                     ? boost::wregex(L"\\(\\?:\\\\n\\|\\\\r\\\\n\\|\\\\n\\\\r\\)", ft)
-                                                                                     : boost::wregex(L"\\\\r\\\\n", ft));
-                boost::match_results<std::wstring::const_iterator> whatC;
-                boost::match_flag_type                             rFlags = boost::match_default | boost::format_all;
-                ctrlText                                                  = regex_replace(ctrlText, expression, L"\\r\\n", rFlags);
+                int                    ft         = boost::regex::normal;
+                boost::wregex          expression = (id == IDC_EDITMULTILINE1
+                                                         ? boost::wregex(L"\\(\\?:\\\\n\\|\\\\r\\\\n\\|\\\\n\\\\r\\)", ft)
+                                                         : boost::wregex(L"\\\\r\\\\n", ft));
+                boost::match_flag_type rFlags     = boost::match_default | boost::format_all;
+                ctrlText                          = regex_replace(ctrlText, expression, L"\\r\\n", rFlags);
             }
             catch (const std::exception&)
             {
@@ -1430,10 +1429,9 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 // replace all CRLFs with \r\n strings (literal)
                 try
                 {
-                    int                                                ft         = boost::regex::normal;
-                    boost::wregex                                      expression = boost::wregex(L"\\r\\n", ft);
-                    boost::match_results<std::wstring::const_iterator> whatC;
-                    boost::match_flag_type                             rFlags = boost::match_default | boost::format_all;
+                    int                    ft         = boost::regex::normal;
+                    boost::wregex          expression = boost::wregex(L"\\r\\n", ft);
+                    boost::match_flag_type rFlags     = boost::match_default | boost::format_all;
                     if (id == IDC_EDITMULTILINE1)
                         text = regex_replace(text, expression, L"\\(\\?:\\\\n|\\\\r\\\\n|\\\\n\\\\r\\)", rFlags);
                     else
