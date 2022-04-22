@@ -1411,7 +1411,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
             try
             {
                 int                                                ft         = boost::regex::normal;
-                boost::wregex                                      expression = boost::wregex(L"\\\\r\\\\n", ft);
+                boost::wregex                                      expression = boost::wregex(L"\\(\\?:\\\\n\\|\\\\r\\\\n\\|\\\\n\\\\r\\)", ft);
                 boost::match_results<std::wstring::const_iterator> whatC;
                 boost::match_flag_type                             rFlags = boost::match_default | boost::format_all;
                 ctrlText                                                  = regex_replace(ctrlText, expression, L"\\r\\n", rFlags);
@@ -1432,7 +1432,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                     boost::wregex                                      expression = boost::wregex(L"\\r\\n", ft);
                     boost::match_results<std::wstring::const_iterator> whatC;
                     boost::match_flag_type                             rFlags = boost::match_default | boost::format_all;
-                    text                                                      = regex_replace(text, expression, L"\\\\r\\\\n", rFlags);
+                    text                                                      = regex_replace(text, expression, L"\\(\\?:\\\\n|\\\\r\\\\n|\\\\n\\\\r\\)", rFlags);
                 }
                 catch (const std::exception&)
                 {
