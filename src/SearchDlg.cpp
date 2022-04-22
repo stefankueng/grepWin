@@ -3359,15 +3359,7 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
     // files bigger than 30MB are considered binary. Binary files are searched
     // as if they're ANSI text files.
     std::wstring localSearchString = searchString;
-
-    if (!bUseRegex)
-    {
-        SearchReplace(localSearchString, L"\\E", L"\\\\E");
-        localSearchString = L"\\Q" + localSearchString + L"\\E";
-        if (m_bWholeWords)
-            localSearchString = L"\\b" + localSearchString + L"\\b";
-    }
-
+    
     SearchReplace(localSearchString, L"${filepath}", sInfo.filePath);
     std::wstring fileNameFull = sInfo.filePath.substr(sInfo.filePath.find_last_of('\\') + 1);
     auto         dotPos       = fileNameFull.find_last_of('.');
@@ -3380,6 +3372,16 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
             std::wstring fileExt = fileNameFull.substr(dotPos + 1);
             SearchReplace(localSearchString, L"${fileext}", fileExt);
         }
+    }
+    if (!bUseRegex)
+    {
+        using namespace std::string_literals;
+        for (const auto& c : {L"\\"s, L"^"s, L"$"s, L"."s, L"|"s, L"?"s, L"*"s, L"+"s, L"("s, L")"s, L"["s, L"{"s})
+        {
+            SearchReplace(localSearchString, c, L"\\" + c);
+        }
+        if (m_bWholeWords)
+            localSearchString = L"\\b" + localSearchString + L"\\b";
     }
 
     CTextFile              textFile;
