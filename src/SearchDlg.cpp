@@ -3374,7 +3374,7 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
     if (dotPos != std::string::npos)
     {
         std::wstring filename = fileNameFull.substr(0, dotPos);
-        SearchReplace(localSearchString, L"${filepath}", filename);
+        SearchReplace(localSearchString, L"${filename}", filename);
         if (fileNameFull.size() > dotPos)
         {
             std::wstring fileExt = fileNameFull.substr(dotPos + 1);
