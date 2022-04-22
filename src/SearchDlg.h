@@ -42,8 +42,8 @@ using namespace Microsoft::WRL;
 #define SEARCH_END           (WM_APP + 4)
 #define WM_GREPWIN_THREADEND (WM_APP + 5)
 
-#define ID_ABOUTBOX 0x0010
-#define ID_CLONE    0x0011
+#define ID_ABOUTBOX          0x0010
+#define ID_CLONE             0x0011
 
 enum class ExecuteAction
 {
@@ -85,9 +85,9 @@ public:
     void  SetDateLimit(int dateLimit, FILETIME t1, FILETIME t2);
     void  SetNoSaveSettings(bool noSave) { m_bNoSaveSettings = noSave; }
 
-    void SetExecute(ExecuteAction execute) { m_executeImmediately = execute; }
-    void SetEndDialog() { m_endDialog = true; }
-    void SetShowContent()
+    void  SetExecute(ExecuteAction execute) { m_executeImmediately = execute; }
+    void  SetEndDialog() { m_endDialog = true; }
+    void  SetShowContent()
     {
         m_showContent    = true;
         m_showContentSet = true;
@@ -99,28 +99,28 @@ protected:
     LRESULT          DoCommand(int id, int msg);
     bool             PreTranslateMessage(MSG* pMsg) override;
 
-    void SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, bool bSearchAlways, bool bIncludeBinary, bool bUseRegex, bool bCaseSensitive, bool bDotMatchesNewline, const std::wstring& searchString, const std::wstring& searchStringUtf16Le, volatile LONG* bCancelled);
+    void             SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, bool bSearchAlways, bool bIncludeBinary, bool bUseRegex, bool bCaseSensitive, bool bDotMatchesNewline, const std::wstring& searchString, const std::wstring& searchStringUtf16Le, std::atomic_bool& bCancelled);
 
-    bool         InitResultList();
-    void         FillResultList();
-    bool         AddFoundEntry(CSearchInfo* pInfo, bool bOnlyListControl = false);
-    void         ShowContextMenu(int x, int y);
-    void         DoListNotify(LPNMITEMACTIVATE lpNMItemActivate);
-    void         OpenFileAtListIndex(int listIndex);
-    void         UpdateInfoLabel();
-    bool         SaveSettings();
-    void         SaveWndPosition();
-    void         formatDate(wchar_t dateNative[], const FILETIME& fileTime, bool forceShortFmt) const;
-    int          CheckRegex();
-    bool         MatchPath(LPCTSTR pathBuf);
-    void         AutoSizeAllColumns();
-    int          GetSelectedListIndex(int index);
-    static bool  FailedShowMessage(HRESULT hr);
-    void         CheckForUpdates(bool force = false);
-    void         ShowUpdateAvailable();
-    bool         IsVersionNewer(const std::wstring& sVer) const;
-    bool         CloneWindow();
-    std::wstring ExpandString(const std::wstring& replaceString) const;
+    bool             InitResultList();
+    void             FillResultList();
+    bool             AddFoundEntry(CSearchInfo* pInfo, bool bOnlyListControl = false);
+    void             ShowContextMenu(int x, int y);
+    void             DoListNotify(LPNMITEMACTIVATE lpNMItemActivate);
+    void             OpenFileAtListIndex(int listIndex);
+    void             UpdateInfoLabel();
+    bool             SaveSettings();
+    void             SaveWndPosition();
+    void             formatDate(wchar_t dateNative[], const FILETIME& fileTime, bool forceShortFmt) const;
+    int              CheckRegex();
+    bool             MatchPath(LPCTSTR pathBuf);
+    void             AutoSizeAllColumns();
+    int              GetSelectedListIndex(int index);
+    static bool      FailedShowMessage(HRESULT hr);
+    void             CheckForUpdates(bool force = false);
+    void             ShowUpdateAvailable();
+    bool             IsVersionNewer(const std::wstring& sVer) const;
+    bool             CloneWindow();
+    std::wstring     ExpandString(const std::wstring& replaceString) const;
 
 private:
     static bool NameCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2);
@@ -140,12 +140,12 @@ private:
     static bool ExtCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2);
 
 private:
-    HWND          m_hParent;
-    volatile LONG m_dwThreadRunning;
-    volatile LONG m_cancelled;
+    HWND                              m_hParent;
+    std::atomic_bool                  m_dwThreadRunning;
+    std::atomic_bool                  m_cancelled;
 
-    std::unique_ptr<CBookmarksDlg> m_bookmarksDlg;
-    ComPtr<ITaskbarList3>          m_pTaskbarList;
+    std::unique_ptr<CBookmarksDlg>    m_bookmarksDlg;
+    ComPtr<ITaskbarList3>             m_pTaskbarList;
 
     std::wstring                      m_searchPath;
     std::wstring                      m_searchString;
@@ -209,51 +209,51 @@ private:
     std::unique_ptr<CInfoRtfDialog>   m_rtfDialog;
     bool                              m_isRegexValid;
 
-    CDlgResizer m_resizer;
-    int         m_themeCallbackId;
+    CDlgResizer                       m_resizer;
+    int                               m_themeCallbackId;
 
-    CFileDropTarget* m_pDropTarget;
+    CFileDropTarget*                  m_pDropTarget;
 
-    static UINT m_grepwinStartupmsg;
+    static UINT                       m_grepwinStartupmsg;
 
-    std::thread m_updateCheckThread;
+    std::thread                       m_updateCheckThread;
 
-    CAutoComplete m_autoCompleteFilePatterns;
-    CAutoComplete m_autoCompleteExcludeDirsPatterns;
-    CAutoComplete m_autoCompleteSearchPatterns;
-    CAutoComplete m_autoCompleteReplacePatterns;
-    CAutoComplete m_autoCompleteSearchPaths;
+    CAutoComplete                     m_autoCompleteFilePatterns;
+    CAutoComplete                     m_autoCompleteExcludeDirsPatterns;
+    CAutoComplete                     m_autoCompleteSearchPatterns;
+    CAutoComplete                     m_autoCompleteReplacePatterns;
+    CAutoComplete                     m_autoCompleteSearchPaths;
 
-    CEditDoubleClick m_editFilePatterns;
-    CEditDoubleClick m_editExcludeDirsPatterns;
-    CEditDoubleClick m_editSearchPatterns;
-    CEditDoubleClick m_editReplacePatterns;
-    CEditDoubleClick m_editSearchPaths;
+    CEditDoubleClick                  m_editFilePatterns;
+    CEditDoubleClick                  m_editExcludeDirsPatterns;
+    CEditDoubleClick                  m_editSearchPatterns;
+    CEditDoubleClick                  m_editReplacePatterns;
+    CEditDoubleClick                  m_editSearchPaths;
 
-    CRegStdDWORD  m_regUseRegex;
-    CRegStdDWORD  m_regAllSize;
-    CRegStdString m_regSize;
-    CRegStdDWORD  m_regSizeCombo;
-    CRegStdDWORD  m_regIncludeSystem;
-    CRegStdDWORD  m_regIncludeHidden;
-    CRegStdDWORD  m_regIncludeSubfolders;
-    CRegStdDWORD  m_regIncludeBinary;
-    CRegStdDWORD  m_regCreateBackup;
-    CRegStdDWORD  m_regWholeWords;
-    CRegStdDWORD  m_regUTF8;
-    CRegStdDWORD  m_regBinary;
-    CRegStdDWORD  m_regCaseSensitive;
-    CRegStdDWORD  m_regDotMatchesNewline;
-    CRegStdDWORD  m_regUseRegexForPaths;
-    CRegStdString m_regPattern;
-    CRegStdString m_regExcludeDirsPattern;
-    CRegStdString m_regSearchPath;
-    CRegStdString m_regEditorCmd;
-    CRegStdDWORD  m_regBackupInFolder;
-    CRegStdDWORD  m_regDateLimit;
-    CRegStdDWORD  m_regDate1Low;
-    CRegStdDWORD  m_regDate1High;
-    CRegStdDWORD  m_regDate2Low;
-    CRegStdDWORD  m_regDate2High;
-    CRegStdDWORD  m_regShowContent;
+    CRegStdDWORD                      m_regUseRegex;
+    CRegStdDWORD                      m_regAllSize;
+    CRegStdString                     m_regSize;
+    CRegStdDWORD                      m_regSizeCombo;
+    CRegStdDWORD                      m_regIncludeSystem;
+    CRegStdDWORD                      m_regIncludeHidden;
+    CRegStdDWORD                      m_regIncludeSubfolders;
+    CRegStdDWORD                      m_regIncludeBinary;
+    CRegStdDWORD                      m_regCreateBackup;
+    CRegStdDWORD                      m_regWholeWords;
+    CRegStdDWORD                      m_regUTF8;
+    CRegStdDWORD                      m_regBinary;
+    CRegStdDWORD                      m_regCaseSensitive;
+    CRegStdDWORD                      m_regDotMatchesNewline;
+    CRegStdDWORD                      m_regUseRegexForPaths;
+    CRegStdString                     m_regPattern;
+    CRegStdString                     m_regExcludeDirsPattern;
+    CRegStdString                     m_regSearchPath;
+    CRegStdString                     m_regEditorCmd;
+    CRegStdDWORD                      m_regBackupInFolder;
+    CRegStdDWORD                      m_regDateLimit;
+    CRegStdDWORD                      m_regDate1Low;
+    CRegStdDWORD                      m_regDate1High;
+    CRegStdDWORD                      m_regDate2Low;
+    CRegStdDWORD                      m_regDate2High;
+    CRegStdDWORD                      m_regShowContent;
 };

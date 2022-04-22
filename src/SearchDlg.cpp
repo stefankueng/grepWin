@@ -616,7 +616,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             if (m_updateCheckThread.joinable())
                 m_updateCheckThread.join();
             if (m_dwThreadRunning)
-                InterlockedExchange(&m_cancelled, TRUE);
+                m_cancelled = true;
             else
             {
                 SaveSettings();
@@ -984,7 +984,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
         {
             if (m_dwThreadRunning)
             {
-                InterlockedExchange(&m_cancelled, TRUE);
+                m_cancelled = true;
             }
             else
             {
@@ -1102,8 +1102,8 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                     InitResultList();
                 }
 
-                InterlockedExchange(&m_dwThreadRunning, TRUE);
-                InterlockedExchange(&m_cancelled, FALSE);
+                m_dwThreadRunning = true;
+                m_cancelled       = false;
                 SetDlgItemText(*this, IDOK, TranslatedString(hResource, IDS_STOP).c_str());
                 ShowWindow(GetDlgItem(*this, IDC_PROGRESS), SW_SHOW);
                 SendDlgItemMessage(*this, IDC_PROGRESS, PBM_SETMARQUEE, 1, 0);
@@ -1140,7 +1140,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
             if (escClose)
             {
                 if (m_dwThreadRunning)
-                    InterlockedExchange(&m_cancelled, TRUE);
+                    m_cancelled = true;
                 else
                 {
                     SaveSettings();
@@ -3039,7 +3039,7 @@ DWORD CSearchDlg::SearchThread()
                         else
                         {
                             auto searchFn = [=]() {
-                                SearchFile(sInfo, searchRoot, bAlwaysSearch, m_bIncludeBinary, m_bUseRegex, m_bCaseSensitive, m_bDotMatchesNewline, m_searchString, searchStringutf16, &m_cancelled);
+                                SearchFile(sInfo, searchRoot, bAlwaysSearch, m_bIncludeBinary, m_bUseRegex, m_bCaseSensitive, m_bDotMatchesNewline, m_searchString, searchStringutf16, m_cancelled);
                             };
                             tp.enqueueWait(searchFn);
                             // SearchFile(std::move(sinfo), searchRoot, bAlwaysSearch, m_bIncludeBinary, m_bUseRegex, m_bCaseSensitive, m_bDotMatchesNewline, m_searchString, SearchStringutf16, &m_Cancelled);
@@ -3125,7 +3125,7 @@ DWORD CSearchDlg::SearchThread()
     }
     tp.waitFinished();
     SendMessage(*this, SEARCH_END, 0, 0);
-    InterlockedExchange(&m_dwThreadRunning, FALSE);
+    m_dwThreadRunning = false;
 
     // refresh cursor
     POINT pt;
@@ -3352,7 +3352,7 @@ bool CSearchDlg::MatchPath(LPCTSTR pathBuf)
     return bPattern;
 }
 
-void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, bool bSearchAlways, bool bIncludeBinary, bool bUseRegex, bool bCaseSensitive, bool bDotMatchesNewline, const std::wstring& searchString, const std::wstring& searchStringUtf16Le, volatile LONG* bCancelled)
+void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, bool bSearchAlways, bool bIncludeBinary, bool bUseRegex, bool bCaseSensitive, bool bDotMatchesNewline, const std::wstring& searchString, const std::wstring& searchStringUtf16Le, std::atomic_bool& bCancelled)
 {
     int          nFound            = 0;
     // we keep it simple:
@@ -3421,7 +3421,7 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
                 flags |= boost::match_not_dot_newline;
             long prevLineStart = 0;
             long prevLineEnd   = 0;
-            while (!(InterlockedExchangeAdd(bCancelled, 0)) && regex_search(start, end, whatC, expression, flags))
+            while (!bCancelled && regex_search(start, end, whatC, expression, flags))
             {
                 if (whatC[0].matched)
                 {
@@ -3466,7 +3466,7 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
             {
                 boost::wregex expressionUtf16 = boost::wregex(searchStringUtf16Le, ft);
 
-                while (!(InterlockedExchangeAdd(bCancelled, 0)) && regex_search(start, end, whatC, expressionUtf16, flags))
+                while (!bCancelled && regex_search(start, end, whatC, expressionUtf16, flags))
                 {
                     if (whatC[0].matched)
                     {
@@ -3627,7 +3627,7 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
                     boost::spirit::classic::file_iterator<>                       fBeg = start;
                     boost::spirit::classic::file_iterator<>                       end  = start.make_end();
                     boost::match_results<boost::spirit::classic::file_iterator<>> whatC;
-                    while (boost::regex_search(start, end, whatC, expression, flags) && !(InterlockedExchangeAdd(bCancelled, 0)))
+                    while (boost::regex_search(start, end, whatC, expression, flags) && !bCancelled)
                     {
                         nFound++;
                         if (m_bNotSearch)
@@ -3640,7 +3640,7 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
                         flags |= boost::match_prev_avail;
                         flags |= boost::match_not_bob;
                         bFound = true;
-                        if ((InterlockedExchangeAdd(bCancelled, 0)))
+                        if (bCancelled)
                             break;
                     }
                 }
@@ -3664,12 +3664,12 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
                         flags |= boost::match_prev_avail;
                         flags |= boost::match_not_bob;
                         bFound = true;
-                        if ((InterlockedExchangeAdd(bCancelled, 0)))
+                        if (bCancelled)
                             break;
                     }
                 }
 
-                if (bFound && !(InterlockedExchangeAdd(bCancelled, 0)))
+                if (bFound && !bCancelled)
                 {
                     if (!bLoadResult && (type != CTextFile::Binary) && !m_bNotSearch)
                     {
