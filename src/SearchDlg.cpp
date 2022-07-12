@@ -2372,7 +2372,7 @@ void CSearchDlg::OpenFileAtListIndex(int listIndex)
     std::wstring  cmd = regEditorCmd;
     if (bPortable)
         cmd = g_iniFile.GetValue(L"global", L"editorcmd", L"");
-    if (!cmd.empty())
+    if (!cmd.empty() && !inf.readError && inf.encoding != CTextFile::UnicodeType::Binary)
     {
         bool fileList = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
         if (!fileList)
@@ -2387,6 +2387,8 @@ void CSearchDlg::OpenFileAtListIndex(int listIndex)
             lv.cchTextMax                 = _countof(textLineBuf);
             if (ListView_GetItem(hListControl, &lv))
             {
+                if (_wtol(textLineBuf) == 0)
+                    wcscpy_s(textLineBuf, L"0");
                 SearchReplace(cmd, L"%line%", textLineBuf);
             }
         }
