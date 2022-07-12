@@ -51,6 +51,7 @@
 #include "TempFile.h"
 #include "Monitor.h"
 #include "version.h"
+#include "DPIAware.h"
 
 #include <string>
 #include <map>
@@ -3937,7 +3938,7 @@ void CSearchDlg::AutoSizeAllColumns()
         {
             IMAGEINFO imgInfo;
             ImageList_GetImageInfo(hImgList, 0, &imgInfo);
-            imgWidth = (imgInfo.rcImage.right - imgInfo.rcImage.left) + 3; // 3 pixels between icon and text
+            imgWidth = (imgInfo.rcImage.right - imgInfo.rcImage.left) + CDPIAware::Instance().Scale(*this, 3); // 3 pixels between icon and text
         }
         for (int col = 0; col <= maxCol; col++)
         {
@@ -3953,7 +3954,7 @@ void CSearchDlg::AutoSizeAllColumns()
             {
                 // get the width of the string and add 14 pixels for the column separator and margins
                 ListView_GetItemText(hListControl, index, col, textBuf, _countof(textBuf));
-                int lineWidth = ListView_GetStringWidth(hListControl, textBuf) + 14;
+                int lineWidth = ListView_GetStringWidth(hListControl, textBuf) + CDPIAware::Instance().Scale(*this, 14);
                 // add the image size
                 if (col == 0)
                     lineWidth += imgWidth;
@@ -3970,9 +3971,6 @@ void CSearchDlg::AutoSizeAllColumns()
         ListView_GetItemRect(hListControl, 0, &rc, LVIR_BOUNDS);
         auto itemWidth = rc.right - rc.left;
         ListView_GetItemRect(hListControl, 0, &rc, LVIR_ICON);
-        auto iconWidth = rc.right - rc.left;
-        itemWidth -= iconWidth;
-        itemWidth -= 2 * GetSystemMetrics(SM_CXBORDER);
         auto totalWidth = std::accumulate(colWidths.begin(), colWidths.end(), 0);
         totalWidth -= colWidths[colWidths.size() - 2];
         auto textWidth = itemWidth - totalWidth;

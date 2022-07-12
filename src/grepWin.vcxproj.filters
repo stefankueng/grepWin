@@ -290,6 +290,9 @@
     <ClInclude Include="..\sktoolslib\InfoRtfDialog.h">
       <Filter>sktoolslib</Filter>
     </ClInclude>
+    <ClInclude Include="..\sktoolslib\DPIAware.h">
+      <Filter>sktoolslib</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\grepWin.ico">
