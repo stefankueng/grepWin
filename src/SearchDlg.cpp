@@ -774,6 +774,19 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             m_totalMatches  = 0;
             m_selectedItems = 0;
             UpdateInfoLabel();
+            // reset the sort indicator
+            HDITEM hd    = {0};
+            hd.mask      = HDI_FORMAT;
+            HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
+            HWND hHeader      = ListView_GetHeader(hListControl);
+            int  iCount  = Header_GetItemCount(hHeader);
+            for (int i = 0; i < iCount; ++i)
+            {
+                Header_GetItem(hHeader, i, &hd);
+                hd.fmt &= ~(HDF_SORTDOWN | HDF_SORTUP);
+                Header_SetItem(hHeader, i, &hd);
+            }
+
             SetTimer(*this, LABELUPDATETIMER, 200, nullptr);
         }
         break;
