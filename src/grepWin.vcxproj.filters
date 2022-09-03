@@ -313,10 +313,10 @@
     <None Include="version.in">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="packages.config" />
     <None Include="Resources\infodlg.rtf">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resources\grepWin.rc">
