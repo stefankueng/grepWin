@@ -475,6 +475,12 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 
             SetFocus(GetDlgItem(hwndDlg, IDC_SEARCHTEXT));
 
+            AdjustControlSize(IDC_BINARY);
+            AdjustControlSize(IDC_FILEPATTERNTEXT);
+            AdjustControlSize(IDC_ALLSIZERADIO);
+            AdjustControlSize(IDC_RADIO_DATE_ALL);
+            AdjustControlSize(IDC_WHOLEWORDS);
+
             m_resizer.Init(hwndDlg);
             m_resizer.UseSizeGrip(!CTheme::Instance().IsDarkTheme());
             m_resizer.AddControl(hwndDlg, IDC_HELPLABEL, RESIZER_TOPLEFT);
@@ -775,11 +781,11 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             m_selectedItems = 0;
             UpdateInfoLabel();
             // reset the sort indicator
-            HDITEM hd    = {0};
-            hd.mask      = HDI_FORMAT;
+            HDITEM hd         = {0};
+            hd.mask           = HDI_FORMAT;
             HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
             HWND hHeader      = ListView_GetHeader(hListControl);
-            int  iCount  = Header_GetItemCount(hHeader);
+            int  iCount       = Header_GetItemCount(hHeader);
             for (int i = 0; i < iCount; ++i)
             {
                 Header_GetItem(hHeader, i, &hd);
@@ -2926,7 +2932,7 @@ DWORD CSearchDlg::SearchThread()
             switch (c)
             {
                 case '$':
-                //case '\\':
+                // case '\\':
                 case '(':
                 case ')':
                 case '?':
