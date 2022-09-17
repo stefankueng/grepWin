@@ -2926,7 +2926,7 @@ DWORD CSearchDlg::SearchThread()
             switch (c)
             {
                 case '$':
-                case '\\':
+                //case '\\':
                 case '(':
                 case ')':
                 case '?':
