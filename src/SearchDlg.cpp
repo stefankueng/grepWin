@@ -1074,7 +1074,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 
                 m_bReplace = id == IDC_REPLACE;
 
-                if (m_bReplace && !m_bCreateBackup && m_bConfirmationOnReplace)
+                if (m_bReplace && !m_bCreateBackup && (m_bConfirmationOnReplace || m_replaceString.empty()))
                 {
                     auto noWarnIfNoBackup = bPortable ? !!_wtoi(g_iniFile.GetValue(L"settings", L"nowarnifnobackup", L"0")) : static_cast<DWORD>(CRegStdDWORD(L"Software\\grepWin\\nowarnifnobackup", FALSE));
                     if (!noWarnIfNoBackup)
