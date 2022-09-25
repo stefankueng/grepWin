@@ -6,17 +6,16 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: grepWin 2.0.10\n"
-"Report-Msgid-Bugs-To: tortoisesvn@gmail.com\n"
-"POT-Creation-Date: 2018-03-15 12:37+0100\n"
-"PO-Revision-Date: 2022-02-26 14:56+0200\n"
-"Last-Translator: Stefano Gibellini <daneel@hotmail.it>\n"
-"Language-Team: Stefano Gibellini <daneel@hotmail.it>\n"
-"Language: it\n"
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 1900-01-01 00:00+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
 
 # msgid/msgstr fields for Accelerator keys
 # Format is: "ID:xxxxxx:VACS+X" where:
@@ -30,6 +29,9 @@ msgstr ""
 
 # ONLY Accelerator Keys with corresponding alphanumeric characters can be
 # updated i.e. function keys (F2), special keys (Delete, HoMe) etc. will not.
+
+# ONLY change the msgstr field. Do NOT change any other.
+# If you do not want to change an Accelerator Key, copy msgid to msgstr
 
 # ONLY change the msgstr field. Do NOT change any other.
 # If you do not want to change an Accelerator Key, copy msgid to msgstr
