@@ -3609,7 +3609,7 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
                         CopyFile(sInfo.filePath.c_str(), backupFile.c_str(), FALSE);
                         m_backupAndTempFiles.insert(backupFile);
                     }
-                    if (!textFile.Save(sInfo.filePath.c_str()))
+                    if (!textFile.Save(sInfo.filePath.c_str(), m_bKeepFileDate))
                     {
                         // saving the file failed. Find out why...
                         DWORD err = GetLastError();
@@ -3620,12 +3620,43 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
                             // those are not situations where we should fail, so
                             // we reset those flags and restore them
                             // again after saving the file
+                            FILETIME creationTime{};
+                            FILETIME lastAccessTime{};
+                            FILETIME lastWriteTime{};
+                            if (m_bKeepFileDate)
+                            {
+                                CAutoFile hFile = CreateFile(sInfo.filePath.c_str(), GENERIC_READ, FILE_SHARE_DELETE | FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING, 0, nullptr);
+                                if (hFile)
+                                {
+                                    GetFileTime(hFile, &creationTime, &lastAccessTime, &lastWriteTime);
+                                }
+                            }
+
                             DWORD origAttributes = GetFileAttributes(sInfo.filePath.c_str());
                             DWORD newAttributes  = origAttributes & (~(FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_READONLY | FILE_ATTRIBUTE_SYSTEM));
                             SetFileAttributes(sInfo.filePath.c_str(), newAttributes);
-                            bool bRet = textFile.Save(sInfo.filePath.c_str());
+                            bool bRet = textFile.Save(sInfo.filePath.c_str(), false);
                             // restore the attributes
                             SetFileAttributes(sInfo.filePath.c_str(), origAttributes);
+                            if (m_bKeepFileDate)
+                            {
+                                bool success = false;
+                                int  retries = 5;
+                                while (!success && retries >= 0)
+                                {
+                                    {
+                                        CAutoFile hFile = CreateFile(sInfo.filePath.c_str(), GENERIC_WRITE, FILE_SHARE_DELETE | FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING, 0, nullptr);
+                                        if (hFile)
+                                        {
+                                            success = !!SetFileTime(hFile, &creationTime, &lastAccessTime, &lastWriteTime);
+                                        }
+                                    }
+                                    --retries;
+                                    if (!success)
+                                        Sleep(50);
+                                }
+                                assert(success);
+                            }
                             if (!bRet)
                             {
                                 SendMessage(*this, SEARCH_PROGRESS, 0, 0);
@@ -3830,6 +3861,21 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
                                 replaceFmt.SetReplacePair("${fileext}", fileExt);
                             }
                         }
+
+                        FILETIME    creationTime{};
+                        FILETIME    lastAccessTime{};
+                        FILETIME    lastWriteTime{};
+                        if (m_bKeepFileDate)
+                        {
+                            CAutoFile hFile = CreateFile(sInfo.filePath.c_str(), GENERIC_READ, FILE_SHARE_DELETE | FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING, 0, nullptr);
+                            if (hFile)
+                            {
+                                GetFileTime(hFile, &creationTime, &lastAccessTime, &lastWriteTime);
+                            }
+                            else
+                                assert(false);
+                        }
+
                         std::string filePathOut = m_bCreateBackup ? filePath : filePath + ".grepwinreplaced";
                         if (!m_bCreateBackup)
                             m_backupAndTempFiles.insert(sInfo.filePath + L".grepwinreplaced");
@@ -3841,6 +3887,25 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
                         replaceInFile.close();
                         if (!m_bCreateBackup)
                             MoveFileExA(filePathOut.c_str(), filePath.c_str(), MOVEFILE_REPLACE_EXISTING);
+                        if (m_bKeepFileDate)
+                        {
+                            bool success = false;
+                            int  retries = 5;
+                            while (!success && retries >= 0)
+                            {
+                                {
+                                    CAutoFile hFile = CreateFile(sInfo.filePath.c_str(), GENERIC_WRITE, FILE_SHARE_DELETE | FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING, 0, nullptr);
+                                    if (hFile)
+                                    {
+                                        success = !!SetFileTime(hFile, &creationTime, &lastAccessTime, &lastWriteTime);
+                                    }
+                                }
+                                --retries;
+                                if (!success)
+                                    Sleep(50);
+                            }
+                            assert(success);
+                        }
                     }
                 }
             }
