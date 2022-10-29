@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008, 2010-2021 - Stefan Kueng
+// Copyright (C) 2007-2008, 2010-2022 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -324,6 +324,8 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
                     searchDlg.SetMatchesNewline(_wcsicmp(searchIni.GetValue(section.c_str(), L"n"), L"yes") == 0);
                 if (searchIni.GetValue(section.c_str(), L"k"))
                     searchDlg.SetCreateBackups(_wcsicmp(searchIni.GetValue(section.c_str(), L"k"), L"yes") == 0);
+                if (searchIni.GetValue(section.c_str(), L"keepfiledate"))
+                    searchDlg.SetKeepFileDate(_wcsicmp(searchIni.GetValue(section.c_str(), L"keepfiledate"), L"yes") == 0);
                 if (searchIni.GetValue(section.c_str(), L"wholewords"))
                     searchDlg.SetWholeWords(_wcsicmp(searchIni.GetValue(section.c_str(), L"wholewords"), L"yes") == 0);
                 if (searchIni.GetValue(section.c_str(), L"utf8"))
@@ -413,6 +415,8 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
                 searchDlg.SetMatchesNewline(_wcsicmp(parser.GetVal(L"n"), L"yes") == 0);
             if (parser.HasVal(L"k"))
                 searchDlg.SetCreateBackups(_wcsicmp(parser.GetVal(L"k"), L"yes") == 0);
+            if (parser.HasVal(L"keepfiledate"))
+                searchDlg.SetKeepFileDate(_wcsicmp(parser.GetVal(L"keepfiledate"), L"yes") == 0);
             if (parser.HasVal(L"wholewords"))
                 searchDlg.SetWholeWords(_wcsicmp(parser.GetVal(L"wholewords"), L"yes") == 0);
             else if (parser.HasKey(L"wholewords"))

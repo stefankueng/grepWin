@@ -138,6 +138,8 @@ CSearchDlg::CSearchDlg(HWND hParent)
     , m_bCreateBackupC(false)
     , m_bCreateBackupInFolders(false)
     , m_bCreateBackupInFoldersC(false)
+    , m_bKeepFileDateC(false)
+    , m_bKeepFileDate(false)
     , m_bWholeWords(false)
     , m_bWholeWordsC(false)
     , m_bUTF8(false)
@@ -183,6 +185,7 @@ CSearchDlg::CSearchDlg(HWND hParent)
     , m_regIncludeSubfolders(L"Software\\grepWin\\IncludeSubfolders", 1)
     , m_regIncludeBinary(L"Software\\grepWin\\IncludeBinary", 1)
     , m_regCreateBackup(L"Software\\grepWin\\CreateBackup")
+    , m_regKeepFileDate(L"Software\\grepWin\\KeepFileDate")
     , m_regWholeWords(L"Software\\grepWin\\WholeWords")
     , m_regUTF8(L"Software\\grepWin\\UTF8")
     , m_regBinary(L"Software\\grepWin\\Binary")
@@ -401,6 +404,8 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                 m_bDotMatchesNewline = bPortable ? !!_wtoi(g_iniFile.GetValue(L"global", L"DotMatchesNewline", L"0")) : !!static_cast<DWORD>(m_regDotMatchesNewline);
             if (!m_bCreateBackupC)
                 m_bCreateBackup = bPortable ? !!_wtoi(g_iniFile.GetValue(L"global", L"CreateBackup", L"0")) : !!static_cast<DWORD>(m_regCreateBackup);
+            if (!m_bKeepFileDateC)
+                m_bKeepFileDate = bPortable ? !!_wtoi(g_iniFile.GetValue(L"global", L"KeepFileDate", L"0")) : !!static_cast<DWORD>(m_regKeepFileDate);
             if (!m_bWholeWordsC)
                 m_bWholeWords = bPortable ? !!_wtoi(g_iniFile.GetValue(L"global", L"WholeWords", L"0")) : !!static_cast<DWORD>(m_regWholeWords);
             if (!m_bUTF8C)
@@ -428,6 +433,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 
             SendDlgItemMessage(hwndDlg, IDC_INCLUDESUBFOLDERS, BM_SETCHECK, m_bIncludeSubfolders ? BST_CHECKED : BST_UNCHECKED, 0);
             SendDlgItemMessage(hwndDlg, IDC_CREATEBACKUP, BM_SETCHECK, m_bCreateBackup ? BST_CHECKED : BST_UNCHECKED, 0);
+            SendDlgItemMessage(hwndDlg, IDC_KEEPFILEDATECHECK, BM_SETCHECK, m_bKeepFileDate ? BST_CHECKED : BST_UNCHECKED, 0);
             SendDlgItemMessage(hwndDlg, IDC_UTF8, BM_SETCHECK, m_bUTF8 ? BST_CHECKED : BST_UNCHECKED, 0);
             SendDlgItemMessage(hwndDlg, IDC_BINARY, BM_SETCHECK, m_bForceBinary ? BST_CHECKED : BST_UNCHECKED, 0);
             SendDlgItemMessage(hwndDlg, IDC_INCLUDESYSTEM, BM_SETCHECK, m_bIncludeSystem ? BST_CHECKED : BST_UNCHECKED, 0);
@@ -505,6 +511,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             m_resizer.AddControl(hwndDlg, IDC_DOTMATCHNEWLINE, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_REGEXOKLABEL, RESIZER_TOPRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_CREATEBACKUP, RESIZER_TOPLEFT);
+            m_resizer.AddControl(hwndDlg, IDC_KEEPFILEDATECHECK, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_UTF8, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_BINARY, RESIZER_TOPLEFTRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_TESTREGEX, RESIZER_TOPLEFT);
@@ -947,6 +954,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                 m_bCaseSensitive          = m_bookmarksDlg->GetSelectedSearchCase();
                 m_bDotMatchesNewline      = m_bookmarksDlg->GetSelectedDotMatchNewline();
                 m_bCreateBackup           = m_bookmarksDlg->GetSelectedBackup();
+                m_bKeepFileDate           = m_bookmarksDlg->GetSelectedKeepFileDate();
                 m_bWholeWords             = m_bookmarksDlg->GetSelectedWholeWords();
                 m_bUTF8                   = m_bookmarksDlg->GetSelectedTreatAsUtf8();
                 m_bForceBinary            = m_bookmarksDlg->GetSelectedTreatAsBinary();
@@ -970,6 +978,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 
                 SendDlgItemMessage(*this, IDC_INCLUDESUBFOLDERS, BM_SETCHECK, m_bIncludeSubfolders ? BST_CHECKED : BST_UNCHECKED, 0);
                 SendDlgItemMessage(*this, IDC_CREATEBACKUP, BM_SETCHECK, m_bCreateBackup ? BST_CHECKED : BST_UNCHECKED, 0);
+                SendDlgItemMessage(*this, IDC_KEEPFILEDATECHECK, BM_SETCHECK, m_bKeepFileDate ? BST_CHECKED : BST_UNCHECKED, 0);
                 SendDlgItemMessage(*this, IDC_UTF8, BM_SETCHECK, m_bUTF8 ? BST_CHECKED : BST_UNCHECKED, 0);
                 SendDlgItemMessage(*this, IDC_BINARY, BM_SETCHECK, m_bForceBinary ? BST_CHECKED : BST_UNCHECKED, 0);
                 SendDlgItemMessage(*this, IDC_INCLUDESYSTEM, BM_SETCHECK, m_bIncludeSystem ? BST_CHECKED : BST_UNCHECKED, 0);
@@ -1383,6 +1392,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 bk.CaseSensitive     = (IsDlgButtonChecked(*this, IDC_CASE_SENSITIVE) == BST_CHECKED);
                 bk.DotMatchesNewline = (IsDlgButtonChecked(*this, IDC_DOTMATCHNEWLINE) == BST_CHECKED);
                 bk.Backup            = (IsDlgButtonChecked(*this, IDC_CREATEBACKUP) == BST_CHECKED);
+                bk.KeepFileDate      = (IsDlgButtonChecked(*this, IDC_KEEPFILEDATECHECK) == BST_CHECKED);
                 bk.Utf8              = (IsDlgButtonChecked(*this, IDC_UTF8) == BST_CHECKED);
                 bk.IncludeSystem     = (IsDlgButtonChecked(*this, IDC_INCLUDESYSTEM) == BST_CHECKED);
                 bk.IncludeFolder     = (IsDlgButtonChecked(*this, IDC_INCLUDESUBFOLDERS) == BST_CHECKED);
@@ -2682,6 +2692,7 @@ bool CSearchDlg::SaveSettings()
     m_bIncludeSubfolders = (IsDlgButtonChecked(*this, IDC_INCLUDESUBFOLDERS) == BST_CHECKED);
     m_bIncludeBinary     = (IsDlgButtonChecked(*this, IDC_INCLUDEBINARY) == BST_CHECKED);
     m_bCreateBackup      = (IsDlgButtonChecked(*this, IDC_CREATEBACKUP) == BST_CHECKED);
+    m_bKeepFileDate      = (IsDlgButtonChecked(*this, IDC_KEEPFILEDATECHECK) == BST_CHECKED);
     m_bWholeWords        = (IsDlgButtonChecked(*this, IDC_WHOLEWORDS) == BST_CHECKED);
     m_bUTF8              = (IsDlgButtonChecked(*this, IDC_UTF8) == BST_CHECKED);
     m_bForceBinary       = (IsDlgButtonChecked(*this, IDC_BINARY) == BST_CHECKED);
@@ -2745,6 +2756,7 @@ bool CSearchDlg::SaveSettings()
         g_iniFile.SetValue(L"global", L"IncludeSubfolders", m_bIncludeSubfolders ? L"1" : L"0");
         g_iniFile.SetValue(L"global", L"IncludeBinary", m_bIncludeBinary ? L"1" : L"0");
         g_iniFile.SetValue(L"global", L"CreateBackup", m_bCreateBackup ? L"1" : L"0");
+        g_iniFile.SetValue(L"global", L"KeepFileDate", m_bKeepFileDate ? L"1" : L"0");
         g_iniFile.SetValue(L"global", L"WholeWords", m_bWholeWords ? L"1" : L"0");
         g_iniFile.SetValue(L"global", L"UTF8", m_bUTF8 ? L"1" : L"0");
         g_iniFile.SetValue(L"global", L"Binary", m_bForceBinary ? L"1" : L"0");
@@ -2767,6 +2779,7 @@ bool CSearchDlg::SaveSettings()
         m_regIncludeSubfolders  = static_cast<DWORD>(m_bIncludeSubfolders);
         m_regIncludeBinary      = static_cast<DWORD>(m_bIncludeBinary);
         m_regCreateBackup       = static_cast<DWORD>(m_bCreateBackup);
+        m_regKeepFileDate       = static_cast<DWORD>(m_bKeepFileDate);
         m_regWholeWords         = static_cast<DWORD>(m_bWholeWords);
         m_regUTF8               = static_cast<DWORD>(m_bUTF8);
         m_regBinary             = static_cast<DWORD>(m_bForceBinary);
@@ -3224,6 +3237,7 @@ void CSearchDlg::SetPreset(const std::wstring& preset)
         m_bCaseSensitive          = bk.CaseSensitive;
         m_bDotMatchesNewline      = bk.DotMatchesNewline;
         m_bCreateBackup           = bk.Backup;
+        m_bKeepFileDate           = bk.KeepFileDate;
         m_bWholeWords             = bk.WholeWords;
         m_bUTF8                   = bk.Utf8;
         m_bForceBinary            = bk.Binary;
@@ -3243,6 +3257,7 @@ void CSearchDlg::SetPreset(const std::wstring& preset)
         m_bIncludeBinaryC          = true;
         m_bCreateBackupC           = true;
         m_bCreateBackupInFoldersC  = true;
+        m_bKeepFileDateC            = true;
         m_bWholeWordsC             = true;
         m_bUTF8C                   = true;
         m_bCaseSensitiveC          = true;
@@ -3281,6 +3296,12 @@ void CSearchDlg::SetCreateBackupsInFolders(bool bSet)
     m_bCreateBackupInFoldersC = true;
     m_bCreateBackupInFolders  = bSet;
     SetCreateBackups(bSet);
+}
+
+void CSearchDlg::SetKeepFileDate(bool bSet)
+{
+    m_bKeepFileDateC          = true;
+    m_bKeepFileDate          = bSet;
 }
 
 void CSearchDlg::SetWholeWords(bool bSet)
