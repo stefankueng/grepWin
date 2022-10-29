@@ -33,6 +33,11 @@ msgstr ""
 # ONLY change the msgstr field. Do NOT change any other.
 # If you do not want to change an Accelerator Key, copy msgid to msgstr
 
+#. Resource IDs: (175)
+#, c-format
+msgid "%ld files, skipped %ld files. %ld results selected."
+msgstr ""
+
 #. Resource IDs: (149)
 #, c-format
 msgid "%ld more matches"
@@ -226,6 +231,11 @@ msgstr "ファイル名が一致(&D):\n「|」で複数の文字列一致パタ�
 #. Resource IDs: (1059)
 msgid "Files"
 msgstr "ファイル"
+
+#. Resource IDs: (174)
+#, c-format
+msgid "Found %ld files, skipped %ld files."
+msgstr ""
 
 #. Resource IDs: (109)
 msgid "GREPWIN"

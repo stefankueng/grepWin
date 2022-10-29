@@ -33,6 +33,11 @@ msgstr ""
 # ONLY change the msgstr field. Do NOT change any other.
 # If you do not want to change an Accelerator Key, copy msgid to msgstr
 
+#. Resource IDs: (175)
+#, c-format
+msgid "%ld files, skipped %ld files. %ld results selected."
+msgstr "Gefunden %ld Dateien, übersprungen %ld Dateien. %ld Ergebnisse ausgewählt"
+
 #. Resource IDs: (149)
 #, c-format
 msgid "%ld more matches"
@@ -226,6 +231,11 @@ msgstr "Datei-Suchmaske:\n'|' zum Trennen mehfacher Suchmasken, zum Ausschließe
 #. Resource IDs: (1059)
 msgid "Files"
 msgstr "Dateien"
+
+#. Resource IDs: (174)
+#, c-format
+msgid "Found %ld files, skipped %ld files."
+msgstr "Gefunden %ld Dateien, übersprungen %ld Dateien."
 
 #. Resource IDs: (109)
 msgid "GREPWIN"

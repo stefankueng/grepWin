@@ -33,6 +33,11 @@ msgstr ""
 # ONLY change the msgstr field. Do NOT change any other.
 # If you do not want to change an Accelerator Key, copy msgid to msgstr
 
+#. Resource IDs: (175)
+#, c-format
+msgid "%ld files, skipped %ld files. %ld results selected."
+msgstr ""
+
 # ONLY change the msgstr field. Do NOT change any other.
 # If you do not want to change an Accelerator Key, copy msgid to msgstr
 #. Resource IDs: (149)
@@ -228,6 +233,11 @@ msgstr "Limita Nomi di File:\nusa '|' per separare più modelli di corrispondenz
 #. Resource IDs: (1059)
 msgid "Files"
 msgstr "File"
+
+#. Resource IDs: (174)
+#, c-format
+msgid "Found %ld files, skipped %ld files."
+msgstr ""
 
 #. Resource IDs: (109)
 msgid "GREPWIN"
