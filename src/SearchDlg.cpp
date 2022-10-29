@@ -1714,12 +1714,24 @@ void CSearchDlg::UpdateInfoLabel()
 {
     std::wstring sText;
     wchar_t      buf[1024] = {0};
-    if (m_selectedItems)
-        swprintf_s(buf, _countof(buf), TranslatedString(hResource, IDS_INFOLABELSEL).c_str(),
-                   m_searchedItems, m_totalItems - m_searchedItems, m_totalMatches, m_items.size(), m_selectedItems);
+    if (m_searchString.empty())
+    {
+        if (m_selectedItems)
+            swprintf_s(buf, _countof(buf), TranslatedString(hResource, IDS_INFOLABELSELEMPTY).c_str(),
+                       m_items.size(), m_totalItems - m_searchedItems, m_selectedItems);
+        else
+            swprintf_s(buf, _countof(buf), TranslatedString(hResource, IDS_INFOLABELEMPTY).c_str(),
+                       m_items.size(), m_totalItems - m_searchedItems);
+    }
     else
-        swprintf_s(buf, _countof(buf), TranslatedString(hResource, IDS_INFOLABEL).c_str(),
-                   m_searchedItems, m_totalItems - m_searchedItems, m_totalMatches, m_items.size());
+    {
+        if (m_selectedItems)
+            swprintf_s(buf, _countof(buf), TranslatedString(hResource, IDS_INFOLABELSEL).c_str(),
+                       m_searchedItems, m_totalItems - m_searchedItems, m_totalMatches, m_items.size(), m_selectedItems);
+        else
+            swprintf_s(buf, _countof(buf), TranslatedString(hResource, IDS_INFOLABEL).c_str(),
+                       m_searchedItems, m_totalItems - m_searchedItems, m_totalMatches, m_items.size());
+    }
     sText = buf;
 
     SetDlgItemText(*this, IDC_SEARCHINFOLABEL, sText.c_str());
