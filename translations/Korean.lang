@@ -277,6 +277,10 @@ msgstr "역방향 검색 (검색 문자열이 아님)"
 msgid "KB"
 msgstr "KB"
 
+#. Resource IDs: (1062)
+msgid "Keep file date when replacing"
+msgstr ""
+
 #. Resource IDs: (1075)
 msgid "Language:"
 msgstr "언어:"

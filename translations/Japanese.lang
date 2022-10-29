@@ -277,6 +277,10 @@ msgstr "検索結果を反転 (検索語句ではなく)"
 msgid "KB"
 msgstr "KB"
 
+#. Resource IDs: (1062)
+msgid "Keep file date when replacing"
+msgstr ""
+
 #. Resource IDs: (1075)
 msgid "Language:"
 msgstr "表示言語:"

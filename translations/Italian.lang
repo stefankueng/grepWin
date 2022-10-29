@@ -279,6 +279,10 @@ msgstr "Ricerca inversa (NON stringa di ricerca)"
 msgid "KB"
 msgstr "KB"
 
+#. Resource IDs: (1062)
+msgid "Keep file date when replacing"
+msgstr ""
+
 #. Resource IDs: (1075)
 msgid "Language:"
 msgstr "Lingua:"

@@ -277,6 +277,10 @@ msgstr "Inverse खोज (NOT searchstring)"
 msgid "KB"
 msgstr "KB"
 
+#. Resource IDs: (1062)
+msgid "Keep file date when replacing"
+msgstr ""
+
 #. Resource IDs: (1075)
 msgid "Language:"
 msgstr "भाषा:"

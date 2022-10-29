@@ -277,6 +277,10 @@ msgstr "Umgekehrt suchen (NOT suchtext)"
 msgid "KB"
 msgstr "KB"
 
+#. Resource IDs: (1062)
+msgid "Keep file date when replacing"
+msgstr "Datei-Datum beibehalten"
+
 #. Resource IDs: (1075)
 msgid "Language:"
 msgstr "Sprache:"
