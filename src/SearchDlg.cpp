@@ -2099,18 +2099,18 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
         {
             case 0:
                 if (m_bAscending)
-                    std::ranges::sort(m_items, NameCompareAsc);
+                    std::ranges::sort(m_items, CSearchInfo::NameCompareAsc);
                 else
-                    std::ranges::sort(m_items, NameCompareDesc);
+                    std::ranges::sort(m_items, CSearchInfo::NameCompareDesc);
                 bDidSort = true;
                 break;
             case 1:
                 if (fileList)
                 {
                     if (m_bAscending)
-                        std::ranges::sort(m_items, SizeCompareAsc);
+                        std::ranges::sort(m_items, CSearchInfo::SizeCompareAsc);
                     else
-                        std::ranges::sort(m_items, SizeCompareDesc);
+                        std::ranges::sort(m_items, CSearchInfo::SizeCompareDesc);
                     bDidSort = true;
                 }
                 break;
@@ -2118,38 +2118,38 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
                 if (fileList)
                 {
                     if (m_bAscending)
-                        std::ranges::sort(m_items, MatchesCompareAsc);
+                        std::ranges::sort(m_items, CSearchInfo::MatchesCompareAsc);
                     else
-                        std::ranges::sort(m_items, MatchesCompareDesc);
+                        std::ranges::sort(m_items, CSearchInfo::MatchesCompareDesc);
                     bDidSort = true;
                 }
                 break;
             case 3:
                 if (m_bAscending)
-                    std::ranges::sort(m_items, PathCompareAsc);
+                    std::ranges::sort(m_items, CSearchInfo::PathCompareAsc);
                 else
-                    std::ranges::sort(m_items, PathCompareDesc);
+                    std::ranges::sort(m_items, CSearchInfo::PathCompareDesc);
                 bDidSort = true;
                 break;
             case 4:
                 if (m_bAscending)
-                    std::ranges::sort(m_items, ExtCompareAsc);
+                    std::ranges::sort(m_items, CSearchInfo::ExtCompareAsc);
                 else
-                    std::ranges::sort(m_items, ExtCompareDesc);
+                    std::ranges::sort(m_items, CSearchInfo::ExtCompareDesc);
                 bDidSort = true;
                 break;
             case 5:
                 if (m_bAscending)
-                    std::ranges::sort(m_items, EncodingCompareAsc);
+                    std::ranges::sort(m_items, CSearchInfo::EncodingCompareAsc);
                 else
-                    std::ranges::sort(m_items, EncodingCompareDesc);
+                    std::ranges::sort(m_items, CSearchInfo::EncodingCompareDesc);
                 bDidSort = true;
                 break;
             case 6:
                 if (m_bAscending)
-                    std::ranges::sort(m_items, ModifiedTimeCompareAsc);
+                    std::ranges::sort(m_items, CSearchInfo::ModifiedTimeCompareAsc);
                 else
-                    std::ranges::sort(m_items, ModifiedTimeCompareDesc);
+                    std::ranges::sort(m_items, CSearchInfo::ModifiedTimeCompareDesc);
                 bDidSort = true;
                 break;
             default:
@@ -2799,102 +2799,6 @@ bool CSearchDlg::SaveSettings()
     SaveWndPosition();
 
     return true;
-}
-
-bool CSearchDlg::NameCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2)
-{
-    std::wstring name1 = entry1.filePath.substr(entry1.filePath.find_last_of('\\') + 1);
-    std::wstring name2 = entry2.filePath.substr(entry2.filePath.find_last_of('\\') + 1);
-    return StrCmpLogicalW(name1.c_str(), name2.c_str()) < 0;
-}
-
-bool CSearchDlg::SizeCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2)
-{
-    return entry1.fileSize < entry2.fileSize;
-}
-
-bool CSearchDlg::MatchesCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2)
-{
-    return entry1.matchCount < entry2.matchCount;
-}
-
-bool CSearchDlg::PathCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2)
-{
-    std::wstring name1 = entry1.filePath.substr(entry1.filePath.find_last_of('\\') + 1);
-    std::wstring name2 = entry2.filePath.substr(entry2.filePath.find_last_of('\\') + 1);
-    std::wstring path1 = entry1.filePath.substr(0, entry1.filePath.size() - name1.size() - 1);
-    std::wstring path2 = entry2.filePath.substr(0, entry2.filePath.size() - name2.size() - 1);
-    int          cmp   = path1.compare(path2);
-    if (cmp != 0)
-        return cmp < 0;
-    return StrCmpLogicalW(name1.c_str(), name2.c_str()) < 0;
-}
-
-bool CSearchDlg::EncodingCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2)
-{
-    return entry1.encoding < entry2.encoding;
-}
-
-bool CSearchDlg::ModifiedTimeCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2)
-{
-    return CompareFileTime(&entry1.modifiedTime, &entry2.modifiedTime) < 0;
-}
-
-bool CSearchDlg::ExtCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2)
-{
-    auto         dotPos1 = entry1.filePath.find_last_of('.');
-    auto         dotPos2 = entry2.filePath.find_last_of('.');
-    std::wstring ext1    = dotPos1 != std::wstring::npos ? entry1.filePath.substr(dotPos1 + 1) : L"";
-    std::wstring ext2    = dotPos2 != std::wstring::npos ? entry2.filePath.substr(dotPos2 + 1) : L"";
-    return StrCmpLogicalW(ext1.c_str(), ext2.c_str()) < 0;
-}
-
-bool CSearchDlg::NameCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2)
-{
-    std::wstring name1 = entry1.filePath.substr(entry1.filePath.find_last_of('\\') + 1);
-    std::wstring name2 = entry2.filePath.substr(entry2.filePath.find_last_of('\\') + 1);
-    return StrCmpLogicalW(name1.c_str(), name2.c_str()) > 0;
-}
-
-bool CSearchDlg::SizeCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2)
-{
-    return entry1.fileSize > entry2.fileSize;
-}
-
-bool CSearchDlg::MatchesCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2)
-{
-    return entry1.matchCount > entry2.matchCount;
-}
-
-bool CSearchDlg::PathCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2)
-{
-    std::wstring name1 = entry1.filePath.substr(entry1.filePath.find_last_of('\\') + 1);
-    std::wstring name2 = entry2.filePath.substr(entry2.filePath.find_last_of('\\') + 1);
-    std::wstring path1 = entry1.filePath.substr(0, entry1.filePath.size() - name1.size() - 1);
-    std::wstring path2 = entry2.filePath.substr(0, entry2.filePath.size() - name2.size() - 1);
-    int          cmp   = path1.compare(path2);
-    if (cmp != 0)
-        return cmp > 0;
-    return StrCmpLogicalW(name1.c_str(), name2.c_str()) > 0;
-}
-
-bool CSearchDlg::EncodingCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2)
-{
-    return entry1.encoding > entry2.encoding;
-}
-
-bool CSearchDlg::ModifiedTimeCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2)
-{
-    return CompareFileTime(&entry1.modifiedTime, &entry2.modifiedTime) > 0;
-}
-
-bool CSearchDlg::ExtCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2)
-{
-    auto         dotPos1 = entry1.filePath.find_last_of('.');
-    auto         dotPos2 = entry2.filePath.find_last_of('.');
-    std::wstring ext1    = dotPos1 != std::wstring::npos ? entry1.filePath.substr(dotPos1 + 1) : L"";
-    std::wstring ext2    = dotPos2 != std::wstring::npos ? entry2.filePath.substr(dotPos2 + 1) : L"";
-    return StrCmpLogicalW(ext1.c_str(), ext2.c_str()) > 0;
 }
 
 bool grepWinMatchI(const std::wstring& theRegex, const wchar_t* pText)
