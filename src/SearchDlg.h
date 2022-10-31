@@ -113,7 +113,7 @@ protected:
     void             SaveWndPosition();
     void             formatDate(wchar_t dateNative[], const FILETIME& fileTime, bool forceShortFmt) const;
     int              CheckRegex();
-    bool             MatchPath(LPCTSTR pathBuf);
+    bool             MatchPath(LPCTSTR pathBuf) const;
     void             AutoSizeAllColumns();
     int              GetSelectedListIndex(int index);
     static bool      FailedShowMessage(HRESULT hr);

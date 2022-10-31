@@ -17,55 +17,55 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 #include "stdafx.h"
-#include "resource.h"
 #include "SearchDlg.h"
-#include "Registry.h"
-#include "DirFileEnum.h"
-#include "TextFile.h"
-#include "SearchInfo.h"
-#include "UnicodeUtils.h"
-#include "StringUtils.h"
-#include "BrowseFolder.h"
-#include "SysImageList.h"
-#include "ShellContextMenu.h"
-#include "RegexTestDlg.h"
-#include "NameDlg.h"
-#include "BookmarksDlg.h"
-#include "MultiLineEditDlg.h"
 #include "AboutDlg.h"
-#include "DropFiles.h"
-#include "RegexReplaceFormatter.h"
-#include "LineData.h"
-#include "Settings.h"
-#include "ResString.h"
-#include "Language.h"
-#include "SmartHandle.h"
-#include "PathUtils.h"
-#include "DebugOutput.h"
-#include "Theme.h"
-#include "DarkModeHelper.h"
-#include "ThreadPool.h"
-#include "OnOutOfScope.h"
+#include "BookmarksDlg.h"
+#include "BrowseFolder.h"
 #include "COMPtrs.h"
-#include "PreserveChdir.h"
-#include "TempFile.h"
-#include "Monitor.h"
-#include "version.h"
+#include "DarkModeHelper.h"
+#include "DebugOutput.h"
+#include "DirFileEnum.h"
 #include "DPIAware.h"
+#include "DropFiles.h"
+#include "Language.h"
+#include "LineData.h"
+#include "Monitor.h"
+#include "MultiLineEditDlg.h"
+#include "NameDlg.h"
+#include "OnOutOfScope.h"
+#include "PathUtils.h"
+#include "PreserveChdir.h"
+#include "RegexReplaceFormatter.h"
+#include "RegexTestDlg.h"
+#include "Registry.h"
+#include "resource.h"
+#include "ResString.h"
+#include "SearchInfo.h"
+#include "Settings.h"
+#include "ShellContextMenu.h"
+#include "SmartHandle.h"
+#include "StringUtils.h"
+#include "SysImageList.h"
+#include "TempFile.h"
+#include "TextFile.h"
+#include "Theme.h"
+#include "ThreadPool.h"
+#include "UnicodeUtils.h"
+#include "version.h"
 
-#include <string>
-#include <map>
+#include <algorithm>
+#include <Commdlg.h>
 #include <fstream>
 #include <iterator>
-#include <algorithm>
+#include <map>
 #include <numeric>
-#include <Commdlg.h>
+#include <string>
 
 #pragma warning(push)
 #pragma warning(disable : 4996) // warning STL4010: Various members of std::allocator are deprecated in C++17
 #include <boost/regex.hpp>
-#include <boost/spirit/include/classic_file_iterator.hpp>
 #include <boost/iostreams/device/mapped_file.hpp>
+#include <boost/spirit/include/classic_file_iterator.hpp>
 #pragma warning(pop)
 
 #define GREPWIN_DATEBUFFER 100
@@ -138,8 +138,8 @@ CSearchDlg::CSearchDlg(HWND hParent)
     , m_bCreateBackupC(false)
     , m_bCreateBackupInFolders(false)
     , m_bCreateBackupInFoldersC(false)
-    , m_bKeepFileDateC(false)
     , m_bKeepFileDate(false)
+    , m_bKeepFileDateC(false)
     , m_bWholeWords(false)
     , m_bWholeWordsC(false)
     , m_bUTF8(false)
@@ -2891,9 +2891,9 @@ DWORD CSearchDlg::SearchThread()
     // the UI thread and this one.
     ThreadPool tp(max(std::thread::hardware_concurrency() - 2, 1));
 
-    for (auto it = pathVector.begin(); it != pathVector.end(); ++it)
+    for (const auto& cSearchPath : pathVector)
     {
-        std::wstring searchPath = *it;
+        std::wstring searchPath = cSearchPath;
         size_t       endPos     = searchPath.find_last_not_of(L" \\");
         if (std::wstring::npos != endPos)
         {
@@ -2918,7 +2918,7 @@ DWORD CSearchDlg::SearchThread()
             {
                 if (bAlwaysSearch && _wcsicmp(searchPath.c_str(), sPath.c_str()))
                     bAlwaysSearch = false;
-                if (m_backupAndTempFiles.find(sPath) != m_backupAndTempFiles.end())
+                if (m_backupAndTempFiles.contains(sPath))
                     continue;
                 wcscpy_s(pathBuf.get(), MAX_PATH_NEW, sPath.c_str());
                 if (!bIsDirectory)
@@ -3268,7 +3268,7 @@ void CSearchDlg::SetDateLimit(int dateLimit, FILETIME t1, FILETIME t2)
     m_date2       = t2;
 }
 
-bool CSearchDlg::MatchPath(LPCTSTR pathBuf)
+bool CSearchDlg::MatchPath(LPCTSTR pathBuf) const
 {
     bool        bPattern = false;
     // find start of pathname
@@ -3300,12 +3300,12 @@ bool CSearchDlg::MatchPath(LPCTSTR pathBuf)
             std::wstring fName = pName;
             std::ranges::transform(fName, fName.begin(), ::towlower);
 
-            for (auto it = m_patterns.begin(); it != m_patterns.end(); ++it)
+            for (const auto& pattern : m_patterns)
             {
-                if (!it->empty() && it->at(0) == '-')
-                    bPattern = bPattern && !wcswildcmp(&(*it)[1], fName.c_str());
+                if (!pattern.empty() && pattern.at(0) == '-')
+                    bPattern = bPattern && !wcswildcmp(&(pattern)[1], fName.c_str());
                 else
-                    bPattern = bPattern || wcswildcmp(it->c_str(), fName.c_str());
+                    bPattern = bPattern || wcswildcmp(pattern.c_str(), fName.c_str());
             }
         }
         else
