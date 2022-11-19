@@ -482,10 +482,31 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             SetFocus(GetDlgItem(hwndDlg, IDC_SEARCHTEXT));
 
             AdjustControlSize(IDC_BINARY);
-            AdjustControlSize(IDC_FILEPATTERNTEXT);
+            AdjustControlSize(IDC_UTF8);
+
+            AdjustControlSize(IDC_REGEXRADIO);
+            AdjustControlSize(IDC_TEXTRADIO);
+            AdjustControlSize(IDC_WHOLEWORDS);
+            AdjustControlSize(IDC_CASE_SENSITIVE);
+            AdjustControlSize(IDC_DOTMATCHNEWLINE);
+            AdjustControlSize(IDC_CREATEBACKUP);
+            AdjustControlSize(IDC_UTF8);
+            AdjustControlSize(IDC_BINARY);
+            AdjustControlSize(IDC_KEEPFILEDATECHECK);
             AdjustControlSize(IDC_ALLSIZERADIO);
             AdjustControlSize(IDC_RADIO_DATE_ALL);
-            AdjustControlSize(IDC_WHOLEWORDS);
+            AdjustControlSize(IDC_SIZERADIO);
+            AdjustControlSize(IDC_RADIO_DATE_NEWER);
+            AdjustControlSize(IDC_INCLUDESYSTEM);
+            AdjustControlSize(IDC_INCLUDEHIDDEN);
+            AdjustControlSize(IDC_RADIO_DATE_OLDER);
+            AdjustControlSize(IDC_INCLUDESUBFOLDERS);
+            AdjustControlSize(IDC_INCLUDEBINARY);
+            AdjustControlSize(IDC_RADIO_DATE_BETWEEN);
+            AdjustControlSize(IDC_FILEPATTERNREGEX);
+            AdjustControlSize(IDC_FILEPATTERNTEXT);
+            AdjustControlSize(IDC_RESULTFILES);
+            AdjustControlSize(IDC_RESULTCONTENT);
 
             m_resizer.Init(hwndDlg);
             m_resizer.UseSizeGrip(!CTheme::Instance().IsDarkTheme());
@@ -760,8 +781,8 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
         case WM_GETMINMAXINFO:
         {
             MINMAXINFO* mmi       = reinterpret_cast<MINMAXINFO*>(lParam);
-            mmi->ptMinTrackSize.x = m_resizer.GetDlgRect()->right;
-            mmi->ptMinTrackSize.y = m_resizer.GetDlgRect()->bottom;
+            mmi->ptMinTrackSize.x = m_resizer.GetDlgRectScreen()->right;
+            mmi->ptMinTrackSize.y = m_resizer.GetDlgRectScreen()->bottom;
             return 0;
         }
         case WM_DPICHANGED:
@@ -3161,7 +3182,7 @@ void CSearchDlg::SetPreset(const std::wstring& preset)
         m_bIncludeBinaryC          = true;
         m_bCreateBackupC           = true;
         m_bCreateBackupInFoldersC  = true;
-        m_bKeepFileDateC            = true;
+        m_bKeepFileDateC           = true;
         m_bWholeWordsC             = true;
         m_bUTF8C                   = true;
         m_bCaseSensitiveC          = true;
@@ -3204,8 +3225,8 @@ void CSearchDlg::SetCreateBackupsInFolders(bool bSet)
 
 void CSearchDlg::SetKeepFileDate(bool bSet)
 {
-    m_bKeepFileDateC          = true;
-    m_bKeepFileDate          = bSet;
+    m_bKeepFileDateC = true;
+    m_bKeepFileDate  = bSet;
 }
 
 void CSearchDlg::SetWholeWords(bool bSet)
@@ -3766,9 +3787,9 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
                             }
                         }
 
-                        FILETIME    creationTime{};
-                        FILETIME    lastAccessTime{};
-                        FILETIME    lastWriteTime{};
+                        FILETIME creationTime{};
+                        FILETIME lastAccessTime{};
+                        FILETIME lastWriteTime{};
                         if (m_bKeepFileDate)
                         {
                             CAutoFile hFile = CreateFile(sInfo.filePath.c_str(), GENERIC_READ, FILE_SHARE_DELETE | FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING, 0, nullptr);
