@@ -127,7 +127,7 @@ std::wstring GetModuleDir(HMODULE hMod /*= nullptr*/)
     return GetParentDirectory(GetModulePath(hMod));
 }
 
-class ExplorerCommandBase : public RuntimeClass<RuntimeClassFlags<ClassicCom>, IExplorerCommand, IObjectWithSite>
+class ExplorerCommandBase : public RuntimeClass<RuntimeClassFlags<WinRtClassicComMix | InhibitRoOriginateError>, IExplorerCommand, IObjectWithSite>
 {
 public:
     virtual const wchar_t* Title(IShellItemArray* items) = 0;
