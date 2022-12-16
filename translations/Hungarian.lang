@@ -36,7 +36,7 @@ msgstr ""
 #. Resource IDs: (175)
 #, c-format
 msgid "%ld files, skipped %ld files. %ld results selected."
-msgstr ""
+msgstr "%ld fájlban, kihagyva %ld fájl. %ld eredmény kiválasztva."
 
 #. Resource IDs: (149)
 #, c-format
@@ -235,7 +235,7 @@ msgstr "Fájlok"
 #. Resource IDs: (174)
 #, c-format
 msgid "Found %ld files, skipped %ld files."
-msgstr ""
+msgstr "Found %ld fájlban, kihagyva %ld fájl."
 
 #. Resource IDs: (109)
 msgid "GREPWIN"

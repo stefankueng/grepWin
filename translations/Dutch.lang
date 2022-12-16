@@ -36,7 +36,7 @@ msgstr ""
 #. Resource IDs: (175)
 #, c-format
 msgid "%ld files, skipped %ld files. %ld results selected."
-msgstr ""
+msgstr "%ld bestanden, %ld bestanden overgeslagen. %ld resultaten geselecteerd."
 
 #. Resource IDs: (149)
 #, c-format
@@ -235,7 +235,7 @@ msgstr "Bestanden"
 #. Resource IDs: (174)
 #, c-format
 msgid "Found %ld files, skipped %ld files."
-msgstr ""
+msgstr "%ld bestanden gevonden, %ld bestanden overgeslagen."
 
 #. Resource IDs: (109)
 msgid "GREPWIN"

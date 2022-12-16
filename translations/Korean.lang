@@ -36,7 +36,7 @@ msgstr ""
 #. Resource IDs: (175)
 #, c-format
 msgid "%ld files, skipped %ld files. %ld results selected."
-msgstr ""
+msgstr "%ld 파일을 %ld 파일을 건너뜁니다. %ld 결과가 선택되었습니다."
 
 #. Resource IDs: (149)
 #, c-format
@@ -235,7 +235,7 @@ msgstr "파일"
 #. Resource IDs: (174)
 #, c-format
 msgid "Found %ld files, skipped %ld files."
-msgstr ""
+msgstr "%ld 파일을 찾았습니다 %ld 파일을 건너뜁니다."
 
 #. Resource IDs: (109)
 msgid "GREPWIN"
