@@ -507,6 +507,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             AdjustControlSize(IDC_INCLUDEHIDDEN);
             AdjustControlSize(IDC_RADIO_DATE_OLDER);
             AdjustControlSize(IDC_INCLUDESUBFOLDERS);
+            AdjustControlSize(IDC_INCLUDESYMLINK);
             AdjustControlSize(IDC_INCLUDEBINARY);
             AdjustControlSize(IDC_RADIO_DATE_BETWEEN);
             AdjustControlSize(IDC_FILEPATTERNREGEX);
@@ -560,6 +561,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             m_resizer.AddControl(hwndDlg, IDC_INCLUDESYSTEM, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_INCLUDEHIDDEN, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_INCLUDESUBFOLDERS, RESIZER_TOPLEFT);
+            m_resizer.AddControl(hwndDlg, IDC_INCLUDESYMLINK, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_INCLUDEBINARY, RESIZER_TOPLEFT);
 
             m_resizer.AddControl(hwndDlg, IDC_PATTERNLABEL, RESIZER_TOPLEFT);
@@ -1324,6 +1326,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 DialogEnableWindow(IDC_INCLUDESYSTEM, bIsDir);
                 DialogEnableWindow(IDC_INCLUDEHIDDEN, bIsDir);
                 DialogEnableWindow(IDC_INCLUDESUBFOLDERS, bIsDir);
+                DialogEnableWindow(IDC_INCLUDESYMLINK, bIsDir);
                 DialogEnableWindow(IDC_INCLUDEBINARY, bIsDir && len > 0);
                 DialogEnableWindow(IDC_PATTERN, bIsDir);
                 DialogEnableWindow(IDC_EXCLUDEDIRSPATTERN, bIsDir || bIncludeSubfolders);
@@ -1425,6 +1428,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 bk.Utf8              = (IsDlgButtonChecked(*this, IDC_UTF8) == BST_CHECKED);
                 bk.IncludeSystem     = (IsDlgButtonChecked(*this, IDC_INCLUDESYSTEM) == BST_CHECKED);
                 bk.IncludeFolder     = (IsDlgButtonChecked(*this, IDC_INCLUDESUBFOLDERS) == BST_CHECKED);
+                bk.IncludeSymLinks   = (IsDlgButtonChecked(*this, IDC_INCLUDESYMLINK) == BST_CHECKED);
                 bk.IncludeHidden     = (IsDlgButtonChecked(*this, IDC_INCLUDEHIDDEN) == BST_CHECKED);
                 bk.IncludeBinary     = (IsDlgButtonChecked(*this, IDC_INCLUDEBINARY) == BST_CHECKED);
                 bk.ExcludeDirs       = m_excludeDirsPatternRegex;
