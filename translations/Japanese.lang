@@ -36,7 +36,7 @@ msgstr ""
 #. Resource IDs: (175)
 #, c-format
 msgid "%ld files, skipped %ld files. %ld results selected."
-msgstr "発見 %ld ファイル, 飛ばした %ld ファイル. 結果の%ld項目を選択"
+msgstr "%ld ファイル, 飛ばした %ld ファイル. 結果の%ld項目を選択"
 
 #. Resource IDs: (149)
 #, c-format
@@ -263,7 +263,7 @@ msgstr "サブフォルダを含める"
 
 #. Resource IDs: (1092)
 msgid "Include symbolic links"
-msgstr ""
+msgstr "シンボリックリンクを含める"
 
 #. Resource IDs: (1009)
 msgid "Include system items"
