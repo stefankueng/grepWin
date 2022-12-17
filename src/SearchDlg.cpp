@@ -433,6 +433,16 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                 m_date2.dwLowDateTime  = bPortable ? wcstoul(g_iniFile.GetValue(L"global", L"Date2Low", L"0"), nullptr, 10) : static_cast<DWORD>(m_regDate2Low);
                 m_date2.dwHighDateTime = bPortable ? wcstoul(g_iniFile.GetValue(L"global", L"Date2High", L"0"), nullptr, 10) : static_cast<DWORD>(m_regDate2High);
             }
+            else
+            {
+                // use the current date as default
+                SYSTEMTIME st{};
+                FILETIME   ft{};
+                GetSystemTime(&st);
+                SystemTimeToFileTime(&st, &ft);
+                m_date1 = ft;
+                m_date2 = ft;
+            }
 
             SendDlgItemMessage(hwndDlg, IDC_SIZECOMBO, CB_SETCURSEL, m_sizeCmp, 0);
 
