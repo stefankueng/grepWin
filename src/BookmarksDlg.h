@@ -48,6 +48,7 @@ public:
     bool         GetSelectedTreatAsBinary() const { return m_bForceBinary; }
     bool         GetSelectedIncludeSystem() const { return m_bIncludeSystem; }
     bool         GetSelectedIncludeFolder() const { return m_bIncludeFolder; }
+    bool         GetSelectedIncludeSymLinks() const { return m_bIncludeSymLinks; }
     bool         GetSelectedIncludeHidden() const { return m_bIncludeHidden; }
     bool         GetSelectedIncludeBinary() const { return m_bIncludeBinary; }
     std::wstring GetSelectedExcludeDirs() const { return m_sExcludeDirs; }
@@ -78,6 +79,7 @@ private:
     bool         m_bForceBinary;
     bool         m_bIncludeSystem;
     bool         m_bIncludeFolder;
+    bool         m_bIncludeSymLinks;
     bool         m_bIncludeHidden;
     bool         m_bIncludeBinary;
     std::wstring m_sExcludeDirs;

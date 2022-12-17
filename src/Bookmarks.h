@@ -35,6 +35,7 @@ public:
         , Binary(false)
         , IncludeSystem(false)
         , IncludeFolder(false)
+        , IncludeSymLinks(false)
         , IncludeHidden(false)
         , IncludeBinary(false)
         , FileMatchRegex(false)
@@ -57,6 +58,7 @@ public:
     bool         Binary;
     bool         IncludeSystem;
     bool         IncludeFolder;
+    bool         IncludeSymLinks;
     bool         IncludeHidden;
     bool         IncludeBinary;
     std::wstring ExcludeDirs;

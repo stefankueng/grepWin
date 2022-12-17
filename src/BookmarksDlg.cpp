@@ -42,6 +42,7 @@ CBookmarksDlg::CBookmarksDlg(HWND hParent)
     , m_bForceBinary(false)
     , m_bIncludeSystem(false)
     , m_bIncludeFolder(false)
+    , m_bIncludeSymLinks(false)
     , m_bIncludeHidden(false)
     , m_bIncludeBinary(false)
     , m_bFileMatchRegex(false)
@@ -241,11 +242,11 @@ void CBookmarksDlg::InitBookmarks()
     std::wstring sSearchString  = TranslatedString(hResource, IDS_SEARCHSTRING);
     std::wstring sReplaceString = TranslatedString(hResource, IDS_REPLACESTRING);
 
-    LVCOLUMN lvc = {0};
-    lvc.mask     = LVCF_TEXT;
-    lvc.fmt      = LVCFMT_LEFT;
-    lvc.cx       = -1;
-    lvc.pszText  = const_cast<LPWSTR>(static_cast<LPCWSTR>(sName.c_str()));
+    LVCOLUMN     lvc            = {0};
+    lvc.mask                    = LVCF_TEXT;
+    lvc.fmt                     = LVCFMT_LEFT;
+    lvc.cx                      = -1;
+    lvc.pszText                 = const_cast<LPWSTR>(static_cast<LPCWSTR>(sName.c_str()));
     ListView_InsertColumn(hListControl, 0, &lvc);
     lvc.pszText = const_cast<LPWSTR>(static_cast<LPCWSTR>(sSearchString.c_str()));
     ListView_InsertColumn(hListControl, 1, &lvc);
@@ -336,6 +337,7 @@ void CBookmarksDlg::PrepareSelected()
         m_bForceBinary       = wcscmp(m_bookmarks.GetValue(buf.get(), L"binary", L"false"), L"true") == 0;
         m_bIncludeSystem     = wcscmp(m_bookmarks.GetValue(buf.get(), L"includesystem", L"false"), L"true") == 0;
         m_bIncludeFolder     = wcscmp(m_bookmarks.GetValue(buf.get(), L"includefolder", L"false"), L"true") == 0;
+        m_bIncludeSymLinks   = wcscmp(m_bookmarks.GetValue(buf.get(), L"includesymlink", L"false"), L"true") == 0;
         m_bIncludeHidden     = wcscmp(m_bookmarks.GetValue(buf.get(), L"includehidden", L"false"), L"true") == 0;
         m_bIncludeBinary     = wcscmp(m_bookmarks.GetValue(buf.get(), L"includebinary", L"false"), L"true") == 0;
         m_bFileMatchRegex    = wcscmp(m_bookmarks.GetValue(buf.get(), L"filematchregex", L"false"), L"true") == 0;

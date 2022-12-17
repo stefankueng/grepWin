@@ -132,6 +132,8 @@ CSearchDlg::CSearchDlg(HWND hParent)
     , m_bIncludeHiddenC(false)
     , m_bIncludeSubfolders(false)
     , m_bIncludeSubfoldersC(false)
+    , m_bIncludeSymLinks(false)
+    , m_bIncludeSymLinksC(false)
     , m_bIncludeBinary(false)
     , m_bIncludeBinaryC(false)
     , m_bCreateBackup(false)
@@ -183,6 +185,7 @@ CSearchDlg::CSearchDlg(HWND hParent)
     , m_regIncludeSystem(L"Software\\grepWin\\IncludeSystem")
     , m_regIncludeHidden(L"Software\\grepWin\\IncludeHidden")
     , m_regIncludeSubfolders(L"Software\\grepWin\\IncludeSubfolders", 1)
+    , m_regIncludeSymLinks(L"Software\\grepWin\\IncludeSymLinks", 0)
     , m_regIncludeBinary(L"Software\\grepWin\\IncludeBinary", 1)
     , m_regCreateBackup(L"Software\\grepWin\\CreateBackup")
     , m_regKeepFileDate(L"Software\\grepWin\\KeepFileDate")
@@ -392,6 +395,8 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             SendDlgItemMessage(hwndDlg, IDC_SIZECOMBO, CB_INSERTSTRING, static_cast<WPARAM>(-1), reinterpret_cast<LPARAM>(static_cast<LPCWSTR>(TranslatedString(hResource, IDS_GREATERTHAN).c_str())));
             if (!m_bIncludeSubfoldersC)
                 m_bIncludeSubfolders = bPortable ? !!_wtoi(g_iniFile.GetValue(L"global", L"IncludeSubfolders", L"1")) : !!static_cast<DWORD>(m_regIncludeSubfolders);
+            if (!m_bIncludeSymLinksC)
+                m_bIncludeSymLinks = bPortable ? !!_wtoi(g_iniFile.GetValue(L"global", L"IncludeSymLinks", L"0")) : !!static_cast<DWORD>(m_regIncludeSymLinks);
             if (!m_bIncludeSystemC)
                 m_bIncludeSystem = bPortable ? !!_wtoi(g_iniFile.GetValue(L"global", L"IncludeSystem", L"1")) : !!static_cast<DWORD>(m_regIncludeSystem);
             if (!m_bIncludeHiddenC)
@@ -432,6 +437,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             SendDlgItemMessage(hwndDlg, IDC_SIZECOMBO, CB_SETCURSEL, m_sizeCmp, 0);
 
             SendDlgItemMessage(hwndDlg, IDC_INCLUDESUBFOLDERS, BM_SETCHECK, m_bIncludeSubfolders ? BST_CHECKED : BST_UNCHECKED, 0);
+            SendDlgItemMessage(hwndDlg, IDC_INCLUDESYMLINK, BM_SETCHECK, m_bIncludeSymLinks ? BST_CHECKED : BST_UNCHECKED, 0);
             SendDlgItemMessage(hwndDlg, IDC_CREATEBACKUP, BM_SETCHECK, m_bCreateBackup ? BST_CHECKED : BST_UNCHECKED, 0);
             SendDlgItemMessage(hwndDlg, IDC_KEEPFILEDATECHECK, BM_SETCHECK, m_bKeepFileDate ? BST_CHECKED : BST_UNCHECKED, 0);
             SendDlgItemMessage(hwndDlg, IDC_UTF8, BM_SETCHECK, m_bUTF8 ? BST_CHECKED : BST_UNCHECKED, 0);
@@ -981,6 +987,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                 m_bForceBinary            = m_bookmarksDlg->GetSelectedTreatAsBinary();
                 m_bIncludeSystem          = m_bookmarksDlg->GetSelectedIncludeSystem();
                 m_bIncludeSubfolders      = m_bookmarksDlg->GetSelectedIncludeFolder();
+                m_bIncludeSymLinks        = m_bookmarksDlg->GetSelectedIncludeSymLinks();
                 m_bIncludeHidden          = m_bookmarksDlg->GetSelectedIncludeHidden();
                 m_bIncludeBinary          = m_bookmarksDlg->GetSelectedIncludeBinary();
                 m_excludeDirsPatternRegex = m_bookmarksDlg->GetSelectedExcludeDirs();
@@ -998,6 +1005,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                 DialogEnableWindow(IDC_TESTREGEX, !IsDlgButtonChecked(*this, IDC_TEXTRADIO));
 
                 SendDlgItemMessage(*this, IDC_INCLUDESUBFOLDERS, BM_SETCHECK, m_bIncludeSubfolders ? BST_CHECKED : BST_UNCHECKED, 0);
+                SendDlgItemMessage(*this, IDC_INCLUDESYMLINK, BM_SETCHECK, m_bIncludeSymLinks ? BST_CHECKED : BST_UNCHECKED, 0);
                 SendDlgItemMessage(*this, IDC_CREATEBACKUP, BM_SETCHECK, m_bCreateBackup ? BST_CHECKED : BST_UNCHECKED, 0);
                 SendDlgItemMessage(*this, IDC_KEEPFILEDATECHECK, BM_SETCHECK, m_bKeepFileDate ? BST_CHECKED : BST_UNCHECKED, 0);
                 SendDlgItemMessage(*this, IDC_UTF8, BM_SETCHECK, m_bUTF8 ? BST_CHECKED : BST_UNCHECKED, 0);
@@ -2711,6 +2719,7 @@ bool CSearchDlg::SaveSettings()
     m_bIncludeSystem     = (IsDlgButtonChecked(*this, IDC_INCLUDESYSTEM) == BST_CHECKED);
     m_bIncludeHidden     = (IsDlgButtonChecked(*this, IDC_INCLUDEHIDDEN) == BST_CHECKED);
     m_bIncludeSubfolders = (IsDlgButtonChecked(*this, IDC_INCLUDESUBFOLDERS) == BST_CHECKED);
+    m_bIncludeSymLinks   = (IsDlgButtonChecked(*this, IDC_INCLUDESYMLINK) == BST_CHECKED);
     m_bIncludeBinary     = (IsDlgButtonChecked(*this, IDC_INCLUDEBINARY) == BST_CHECKED);
     m_bCreateBackup      = (IsDlgButtonChecked(*this, IDC_CREATEBACKUP) == BST_CHECKED);
     m_bKeepFileDate      = (IsDlgButtonChecked(*this, IDC_KEEPFILEDATECHECK) == BST_CHECKED);
@@ -2775,6 +2784,7 @@ bool CSearchDlg::SaveSettings()
         g_iniFile.SetValue(L"global", L"IncludeSystem", m_bIncludeSystem ? L"1" : L"0");
         g_iniFile.SetValue(L"global", L"IncludeHidden", m_bIncludeHidden ? L"1" : L"0");
         g_iniFile.SetValue(L"global", L"IncludeSubfolders", m_bIncludeSubfolders ? L"1" : L"0");
+        g_iniFile.SetValue(L"global", L"IncludeSymLinks", m_bIncludeSymLinks ? L"1" : L"0");
         g_iniFile.SetValue(L"global", L"IncludeBinary", m_bIncludeBinary ? L"1" : L"0");
         g_iniFile.SetValue(L"global", L"CreateBackup", m_bCreateBackup ? L"1" : L"0");
         g_iniFile.SetValue(L"global", L"KeepFileDate", m_bKeepFileDate ? L"1" : L"0");
@@ -2798,6 +2808,7 @@ bool CSearchDlg::SaveSettings()
         m_regIncludeSystem      = static_cast<DWORD>(m_bIncludeSystem);
         m_regIncludeHidden      = static_cast<DWORD>(m_bIncludeHidden);
         m_regIncludeSubfolders  = static_cast<DWORD>(m_bIncludeSubfolders);
+        m_regIncludeSymLinks    = static_cast<DWORD>(m_bIncludeSymLinks);
         m_regIncludeBinary      = static_cast<DWORD>(m_bIncludeBinary);
         m_regCreateBackup       = static_cast<DWORD>(m_bCreateBackup);
         m_regKeepFileDate       = static_cast<DWORD>(m_bKeepFileDate);
@@ -2933,6 +2944,8 @@ DWORD CSearchDlg::SearchThread()
             }
             bool         bIsDirectory = false;
             CDirFileEnum fileEnumerator(searchPath.c_str());
+            if (!m_bIncludeSymLinks)
+                fileEnumerator.SetAttributesToIgnore(FILE_ATTRIBUTE_REPARSE_POINT | IO_REPARSE_TAG_MOUNT_POINT);
             bool         bRecurse = m_bIncludeSubfolders;
             std::wstring sPath;
             while ((fileEnumerator.NextFile(sPath, &bIsDirectory, bRecurse)) && ((!m_cancelled) || (bAlwaysSearch)))
@@ -3168,6 +3181,7 @@ void CSearchDlg::SetPreset(const std::wstring& preset)
         m_bForceBinary            = bk.Binary;
         m_bIncludeSystem          = bk.IncludeSystem;
         m_bIncludeSubfolders      = bk.IncludeFolder;
+        m_bIncludeSymLinks        = bk.IncludeSymLinks;
         m_bIncludeHidden          = bk.IncludeHidden;
         m_bIncludeBinary          = bk.IncludeBinary;
         m_excludeDirsPatternRegex = bk.ExcludeDirs;
@@ -3179,6 +3193,7 @@ void CSearchDlg::SetPreset(const std::wstring& preset)
         m_bIncludeSystemC          = true;
         m_bIncludeHiddenC          = true;
         m_bIncludeSubfoldersC      = true;
+        m_bIncludeSymLinksC        = true;
         m_bIncludeBinaryC          = true;
         m_bCreateBackupC           = true;
         m_bCreateBackupInFoldersC  = true;
@@ -3273,6 +3288,12 @@ void CSearchDlg::SetIncludeSubfolders(bool bSet)
 {
     m_bIncludeSubfoldersC = true;
     m_bIncludeSubfolders  = bSet;
+}
+
+void CSearchDlg::SetIncludeSymLinks(bool bSet)
+{
+    m_bIncludeSymLinksC = true;
+    m_bIncludeSymLinks  = bSet;
 }
 
 void CSearchDlg::SetIncludeBinary(bool bSet)

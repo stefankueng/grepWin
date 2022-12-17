@@ -95,6 +95,7 @@ void CBookmarks::AddBookmark(const Bookmark& bm)
     SetValue(bm.Name.c_str(), L"utf8", bm.Utf8 ? L"true" : L"false");
     SetValue(bm.Name.c_str(), L"includesystem", bm.IncludeSystem ? L"true" : L"false");
     SetValue(bm.Name.c_str(), L"includefolder", bm.IncludeFolder ? L"true" : L"false");
+    SetValue(bm.Name.c_str(), L"includesymlinks", bm.IncludeSymLinks ? L"true" : L"false");
     SetValue(bm.Name.c_str(), L"includehidden", bm.IncludeHidden ? L"true" : L"false");
     SetValue(bm.Name.c_str(), L"includebinary", bm.IncludeBinary ? L"true" : L"false");
     val = L"\"";
@@ -122,6 +123,7 @@ void CBookmarks::RemoveBookmark(const std::wstring& name)
     Delete(name.c_str(), L"utf8", true);
     Delete(name.c_str(), L"includesystem", true);
     Delete(name.c_str(), L"includefolder", true);
+    Delete(name.c_str(), L"includesymlinks", true);
     Delete(name.c_str(), L"includehidden", true);
     Delete(name.c_str(), L"includebinary", true);
     Delete(name.c_str(), L"excludedirs", true);
@@ -147,6 +149,7 @@ Bookmark CBookmarks::GetBookmark(const std::wstring& name) const
         bk.Utf8              = wcscmp(GetValue(name.c_str(), L"utf8", L"false"), L"true") == 0;
         bk.IncludeSystem     = wcscmp(GetValue(name.c_str(), L"includesystem", L"false"), L"true") == 0;
         bk.IncludeFolder     = wcscmp(GetValue(name.c_str(), L"includefolder", L"false"), L"true") == 0;
+        bk.IncludeSymLinks   = wcscmp(GetValue(name.c_str(), L"includesymlinks", L"false"), L"true") == 0;
         bk.IncludeHidden     = wcscmp(GetValue(name.c_str(), L"includehidden", L"false"), L"true") == 0;
         bk.IncludeBinary     = wcscmp(GetValue(name.c_str(), L"includebinary", L"false"), L"true") == 0;
         bk.ExcludeDirs       = GetValue(name.c_str(), L"excludedirs", L"");

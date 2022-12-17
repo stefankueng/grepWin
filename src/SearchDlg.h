@@ -82,6 +82,7 @@ public:
     void  SetIncludeSystem(bool bSet);
     void  SetIncludeHidden(bool bSet);
     void  SetIncludeSubfolders(bool bSet);
+    void  SetIncludeSymLinks(bool bSet);
     void  SetIncludeBinary(bool bSet);
     void  SetDateLimit(int dateLimit, FILETIME t1, FILETIME t2);
     void  SetNoSaveSettings(bool noSave) { m_bNoSaveSettings = noSave; }
@@ -152,6 +153,8 @@ private:
     bool                              m_bIncludeHiddenC;
     bool                              m_bIncludeSubfolders;
     bool                              m_bIncludeSubfoldersC;
+    bool                              m_bIncludeSymLinks;
+    bool                              m_bIncludeSymLinksC;
     bool                              m_bIncludeBinary;
     bool                              m_bIncludeBinaryC;
     bool                              m_bCreateBackup;
@@ -224,6 +227,7 @@ private:
     CRegStdDWORD                      m_regIncludeSystem;
     CRegStdDWORD                      m_regIncludeHidden;
     CRegStdDWORD                      m_regIncludeSubfolders;
+    CRegStdDWORD                      m_regIncludeSymLinks;
     CRegStdDWORD                      m_regIncludeBinary;
     CRegStdDWORD                      m_regCreateBackup;
     CRegStdDWORD                      m_regKeepFileDate;
