@@ -261,6 +261,10 @@ msgstr "Suchpfad mit speichern"
 msgid "Include subfolders"
 msgstr "Unterordner"
 
+#. Resource IDs: (1092)
+msgid "Include symbolic links"
+msgstr "SymLinks"
+
 #. Resource IDs: (1009)
 msgid "Include system items"
 msgstr "System-Dateien"

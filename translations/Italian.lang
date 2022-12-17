@@ -263,6 +263,10 @@ msgstr "Includi percorso di ricerca"
 msgid "Include subfolders"
 msgstr "Includi sottocartelle"
 
+#. Resource IDs: (1092)
+msgid "Include symbolic links"
+msgstr ""
+
 #. Resource IDs: (1009)
 msgid "Include system items"
 msgstr "Includi oggetti di sistema"

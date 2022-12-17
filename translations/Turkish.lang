@@ -261,6 +261,10 @@ msgstr ""
 msgid "Include subfolders"
 msgstr "Alt Klasörleri Dahil Et"
 
+#. Resource IDs: (1092)
+msgid "Include symbolic links"
+msgstr ""
+
 #. Resource IDs: (1009)
 msgid "Include system items"
 msgstr "Sistem Öğelerini Dahil Et"

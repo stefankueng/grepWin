@@ -261,6 +261,10 @@ msgstr "Включая путь поиска"
 msgid "Include subfolders"
 msgstr "Включать подпапки"
 
+#. Resource IDs: (1092)
+msgid "Include symbolic links"
+msgstr ""
+
 #. Resource IDs: (1009)
 msgid "Include system items"
 msgstr "Включать системные"
