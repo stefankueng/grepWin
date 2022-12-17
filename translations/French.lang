@@ -36,7 +36,7 @@ msgstr ""
 #. Resource IDs: (175)
 #, c-format
 msgid "%ld files, skipped %ld files. %ld results selected."
-msgstr ""
+msgstr "%ld fichier(s). Ignoré %ld fichier(s). %ld results selected."
 
 #. Resource IDs: (149)
 #, c-format
@@ -235,7 +235,7 @@ msgstr "fichiers"
 #. Resource IDs: (174)
 #, c-format
 msgid "Found %ld files, skipped %ld files."
-msgstr ""
+msgstr "Trouvé %ld fichier(s). Ignoré %ld fichier(s)."
 
 #. Resource IDs: (109)
 msgid "GREPWIN"
@@ -433,12 +433,12 @@ msgstr "Motif de recherche"
 #. Resource IDs: (128)
 #, c-format
 msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files."
-msgstr "Cherché dans %ld fichier(s). Ignoré %ld fichier(s). Trouvé %ld correspondance(s) dans %ld fichier(s)."   "
+msgstr "Cherché dans %ld fichier(s). Ignoré %ld fichier(s). Trouvé %ld correspondance(s) dans %ld fichier(s)."
 
 #. Resource IDs: (173)
 #, c-format
 msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files. %ld results selected."
-msgstr ""
+msgstr "Cherché dans %ld fichier(s). Ignoré %ld fichier(s). Trouvé %ld correspondance(s) dans %ld fichier(s). %ld results selected."
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."

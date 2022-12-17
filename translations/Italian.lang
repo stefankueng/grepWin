@@ -36,7 +36,7 @@ msgstr ""
 #. Resource IDs: (175)
 #, c-format
 msgid "%ld files, skipped %ld files. %ld results selected."
-msgstr ""
+msgstr "%ld file, saltati %ld file. %ld risultati selezionati."
 
 # ONLY change the msgstr field. Do NOT change any other.
 # If you do not want to change an Accelerator Key, copy msgid to msgstr
@@ -237,7 +237,7 @@ msgstr "File"
 #. Resource IDs: (174)
 #, c-format
 msgid "Found %ld files, skipped %ld files."
-msgstr ""
+msgstr "Trovate %ld file, saltati %ld file."
 
 #. Resource IDs: (109)
 msgid "GREPWIN"

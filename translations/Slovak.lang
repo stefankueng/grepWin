@@ -36,7 +36,7 @@ msgstr ""
 #. Resource IDs: (175)
 #, c-format
 msgid "%ld files, skipped %ld files. %ld results selected."
-msgstr ""
+msgstr "%ld súborov, vynechané %ld súborov. %ld results selected."
 
 #. Resource IDs: (149)
 #, c-format
@@ -235,7 +235,7 @@ msgstr "Súbory"
 #. Resource IDs: (174)
 #, c-format
 msgid "Found %ld files, skipped %ld files."
-msgstr ""
+msgstr "Našlo %ld súborov, vynechané %ld súborov."
 
 #. Resource IDs: (109)
 msgid "GREPWIN"
@@ -438,7 +438,7 @@ msgstr "Prehľadané %ld súborov, vynechané %ld súborov. Našlo sa %ld výsky
 #. Resource IDs: (173)
 #, c-format
 msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files. %ld results selected."
-msgstr ""
+msgstr "Prehľadané %ld súborov, vynechané %ld súborov. Našlo sa %ld výskytov v %ld súboroch. %ld results selected."
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."

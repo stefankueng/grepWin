@@ -36,7 +36,7 @@ msgstr ""
 #. Resource IDs: (175)
 #, c-format
 msgid "%ld files, skipped %ld files. %ld results selected."
-msgstr ""
+msgstr "%ld 个文件, 已跳过 %ld 个文件. %ld results selected."
 
 #. Resource IDs: (149)
 #, c-format
@@ -138,7 +138,7 @@ msgstr "复制文件名称到剪贴板"
 
 #. Resource IDs: (146)
 msgid "Copy filenames to clipboard"
-msgstr ""复制文件名称到剪贴"
+msgstr "复制文件名称到剪贴"
 
 #. Resource IDs: (143)
 msgid "Copy path to clipboard"
@@ -235,7 +235,7 @@ msgstr "文件"
 #. Resource IDs: (174)
 #, c-format
 msgid "Found %ld files, skipped %ld files."
-msgstr ""
+msgstr "已找到 %ld 个文件, 已跳过 %ld 个文件."
 
 #. Resource IDs: (109)
 msgid "GREPWIN"
@@ -438,7 +438,7 @@ msgstr "已搜索 %ld 个文件, 已跳过 %ld 个文件. 已找到 %ld 个匹�
 #. Resource IDs: (173)
 #, c-format
 msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files. %ld results selected."
-msgstr ""
+msgstr "已搜索 %ld 个文件, 已跳过 %ld 个文件. 已找到 %ld 个匹配于 %ld 个文件中. %ld results selected."
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."
