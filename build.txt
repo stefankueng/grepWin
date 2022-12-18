@@ -3,7 +3,7 @@ as well!
 
 Then you need to install the compiler package.
 
-- You need VS2017.
+- You need VS2022.
   If you want to build the msi make sure the "Tools for Redistributing
   Applications" are installed.
 
@@ -52,4 +52,4 @@ Building packages
   After the script finished, the packages can be found in .\bin.
 
 Once grepWin has been built with the NAnt script, you can build it again
-with VS2017 alone and get the correct version info in the resources.
+with VS2022 alone and get the correct version info in the resources.
