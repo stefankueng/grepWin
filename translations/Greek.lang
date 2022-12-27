@@ -67,7 +67,7 @@ msgstr ""
 msgid "..."
 msgstr "..."
 
-#. Resource IDs: (1061, 1063, 1064, 1066, 1067)
+#. Resource IDs: (1061, 1063)
 msgid "/"
 msgstr "/"
 
@@ -595,6 +595,10 @@ msgstr ""
 msgid "only files that match this pattern are searched.\r\nUse \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
 msgstr "αναζητούνται μόνο αρχεία που ταιριάζουν με αυτό το μοτίβο.\nΧρήση του \"|\" ως διαχωριστικό.\r\nΠαράδειγμα: *.cpp|*.h"
 
+#. Resource IDs: (176)
+msgid "open list with recent entries"
+msgstr ""
+
 #. Resource IDs: (129)
 msgid "read error"
 msgstr "σφάλμα ανάγνωσης"
@@ -627,6 +631,10 @@ msgstr "διαδρομές που αναζητούνται διαδοχικά. \
 #. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "μπορείτε να εξαιρέσετε καταλόγους, π.χ. CVS και εικόνες.\r\nΠαράδειγμα: ^(CVS|images)$\r\nΣημείωση, οι φάκελοι '.svn' είναι 'κρυφοί' στα Windows, επομένως συνήθως δεν σαρώνονται."
+
+#. Resource IDs: (1064, 1066, 1067)
+msgid "|"
+msgstr ""
 
 #. Resource IDs: (1024)
 msgid "⑂"

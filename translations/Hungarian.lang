@@ -67,7 +67,7 @@ msgstr "&Teljes szó"
 msgid "..."
 msgstr "..."
 
-#. Resource IDs: (1061, 1063, 1064, 1066, 1067)
+#. Resource IDs: (1061, 1063)
 msgid "/"
 msgstr "/"
 
@@ -595,6 +595,10 @@ msgstr "a NULL bájtok MB-onként megengedett száma, hogy egy fájl még mindig
 msgid "only files that match this pattern are searched.\r\nUse \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
 msgstr "csak a mintának megfelelő fájlokat keresi a rendszer.\r\n\"|\" jelet használja elválasztójelként.\r\nPélda: *.cpp|*.h"
 
+#. Resource IDs: (176)
+msgid "open list with recent entries"
+msgstr ""
+
 #. Resource IDs: (129)
 msgid "read error"
 msgstr "olvasási hiba"
@@ -627,6 +631,10 @@ msgstr "a rekurzívan keresett elérési útvonal(ak).\r\nElkülöníti az elér
 #. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "kizárhat könyvtárakat, például a CVS-t és a képeket.\r\Példa: ^(CVS|images)$\r\nMegjegyzés: Az '.svn' mappák Windowson 'rejtett' mappák, ezért általában nem kerülnek átvizsgálásra."
+
+#. Resource IDs: (1064, 1066, 1067)
+msgid "|"
+msgstr ""
 
 #. Resource IDs: (1024)
 msgid "⑂"

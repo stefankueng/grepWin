@@ -67,7 +67,7 @@ msgstr "単語全体(&W)"
 msgid "..."
 msgstr "..."
 
-#. Resource IDs: (1061, 1063, 1064, 1066, 1067)
+#. Resource IDs: (1061, 1063)
 msgid "/"
 msgstr "/"
 
@@ -595,6 +595,10 @@ msgstr "ファイルをバイナリでなくテキストと認識するための
 msgid "only files that match this pattern are searched.\r\nUse \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
 msgstr "このパターンに一致するファイルから検索されます。\r\n区切りに「|」が使えます。\r\n指定例: *.cpp|*.h"
 
+#. Resource IDs: (176)
+msgid "open list with recent entries"
+msgstr ""
+
 #. Resource IDs: (129)
 msgid "read error"
 msgstr "読み取りエラー"
@@ -627,6 +631,10 @@ msgstr "パスは再帰的に検索されます。\r\nパスを「|」で区切�
 #. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "フォルダを除外できます。CVS と images を除外する例です。\r\n指定例: ^(CVS|images)$\r\n注: Windows では「.svn」フォルダは隠されているため、通常はスキャンされません。"
+
+#. Resource IDs: (1064, 1066, 1067)
+msgid "|"
+msgstr ""
 
 #. Resource IDs: (1024)
 msgid "⑂"

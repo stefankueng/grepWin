@@ -67,7 +67,7 @@ msgstr "Palavra &inteira"
 msgid "..."
 msgstr "..."
 
-#. Resource IDs: (1061, 1063, 1064, 1066, 1067)
+#. Resource IDs: (1061, 1063)
 msgid "/"
 msgstr "/"
 
@@ -595,6 +595,10 @@ msgstr "número de bytes NULOS por MB permitido para um arquivo ainda ser consid
 msgid "only files that match this pattern are searched.\r\nUse \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
 msgstr "Somente os arquivos correspondentes a esse padrão serão procurados.\r\nUse \"|\" como delimitador.\r\nExemplo: *.cpp|*.h"
 
+#. Resource IDs: (176)
+msgid "open list with recent entries"
+msgstr ""
+
 #. Resource IDs: (129)
 msgid "read error"
 msgstr "erro de leitura"
@@ -627,6 +631,10 @@ msgstr "O caminhos serão pesquisados recursivamente.\r\nSepare os caminhos com 
 #. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "Você pode excluir diretórios, ex. CVS e images.\r\nExemplo: ^(CVS|images)$\r\nNote, '.svn' pastas 'ocultas' no Windows, geralmente não são escaneadas."
+
+#. Resource IDs: (1064, 1066, 1067)
+msgid "|"
+msgstr ""
 
 #. Resource IDs: (1024)
 msgid "⑂"
