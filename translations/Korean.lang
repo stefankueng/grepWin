@@ -9,9 +9,9 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 1900-01-01 00:00+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"PO-Revision-Date: 2022-12-28 19:52+0900\n"
+"Last-Translator: VenusGirl <venusgirl@outlook.com>\n"
+"Language-Team: VenusGirl! <https://venusgirls.tistory.com/>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -36,7 +36,7 @@ msgstr ""
 #. Resource IDs: (175)
 #, c-format
 msgid "%ld files, skipped %ld files. %ld results selected."
-msgstr "%ld 파일을 %ld 파일을 건너뜁니다. %ld 결과가 선택되었습니다."
+msgstr "%ld개 파일, %ld개 파일을 건너뜁니다. %ld개 결과가 선택되었습니다."
 
 #. Resource IDs: (149)
 #, c-format
@@ -206,7 +206,7 @@ msgstr "정규식 이름 입력:"
 
 #. Resource IDs: (1062)
 msgid "Escape key closes grepWin"
-msgstr "Esc키로 grepWinNP3 닫기"
+msgstr "Esc키로 grepWin 닫기"
 
 #. Resource IDs: (1041)
 msgid "Exclude dirs (Regex):"
@@ -263,7 +263,7 @@ msgstr "하위 폴더 포함"
 
 #. Resource IDs: (1092)
 msgid "Include symbolic links"
-msgstr ""
+msgstr "심볼릭 링크 포함"
 
 #. Resource IDs: (1009)
 msgid "Include system items"
@@ -271,7 +271,7 @@ msgstr "시스템 항목 포함"
 
 #. Resource IDs: (153)
 msgid "Invalid path!"
-msgstr "잘못된 경로입니다!"
+msgstr "잘못된 경로!"
 
 #. Resource IDs: (161)
 msgid "Inverse search (NOT searchstring)"
@@ -283,7 +283,7 @@ msgstr "KB"
 
 #. Resource IDs: (1062)
 msgid "Keep file date when replacing"
-msgstr ""
+msgstr "교체 시 파일 날짜 유지"
 
 #. Resource IDs: (1075)
 msgid "Language:"
@@ -532,11 +532,11 @@ msgstr "어두운 모드에는 Win10 v1803 이상이 필요하며 Windows 시스
 
 #. Resource IDs: (121)
 msgid "equal to"
-msgstr "다음과 같"
+msgstr "다음과 같은"
 
 #. Resource IDs: (122)
 msgid "greater than"
-msgstr "다음보다"
+msgstr "다음보다 큰"
 
 #. Resource IDs: (103, 129)
 msgid "grepWin"
@@ -569,7 +569,7 @@ msgstr "일치하는 줄 텍스트 포함"
 
 #. Resource IDs: (132)
 msgid "invalid regex!"
-msgstr "잘못된 정규식입니다!"
+msgstr "잘못된 정규식!"
 
 #. Resource IDs: (120)
 msgid "less than"
@@ -597,15 +597,15 @@ msgstr "이 패턴과 일치하는 파일들만 검색됩니다.\n구분 기호�
 
 #. Resource IDs: (176)
 msgid "open list with recent entries"
-msgstr ""
+msgstr "최근 항목이 있는 열린 목록"
 
 #. Resource IDs: (129)
 msgid "read error"
-msgstr "오류"
+msgstr "읽기 오류"
 
 #. Resource IDs: (131)
 msgid "regex ok"
-msgstr "정규식 정상"
+msgstr "정규식 확인"
 
 #. Resource IDs: (117)
 msgid "reuse grepWin instances."
