@@ -6,16 +6,17 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 1900-01-01 00:00+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"Project-Id-Version: grepWin 2.0.12\n"
+"Report-Msgid-Bugs-To: tortoisesvn@gmail.com\n"
+"POT-Creation-Date: 2018-03-15 12:37+0100\n"
+"PO-Revision-Date: 2023-01-12 16:53+0100\n"
+"Last-Translator: Stefano Gibellini <daneel@hotmail.it>\n"
+"Language-Team: Stefano Gibellini <daneel@hotmail.it>\n"
+"Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 # msgid/msgstr fields for Accelerator keys
 # Format is: "ID:xxxxxx:VACS+X" where:
@@ -265,7 +266,7 @@ msgstr "Includi sottocartelle"
 
 #. Resource IDs: (1092)
 msgid "Include symbolic links"
-msgstr ""
+msgstr "Includi link simbolici"
 
 #. Resource IDs: (1009)
 msgid "Include system items"
@@ -285,7 +286,7 @@ msgstr "KB"
 
 #. Resource IDs: (1062)
 msgid "Keep file date when replacing"
-msgstr ""
+msgstr "Non cambiare la data del file variato"
 
 #. Resource IDs: (1075)
 msgid "Language:"
@@ -599,7 +600,7 @@ msgstr "vengono cercati solo i file che corrispondono a questo modello.\nUsa \"|
 
 #. Resource IDs: (176)
 msgid "open list with recent entries"
-msgstr ""
+msgstr "apri elenco con voci recenti"
 
 #. Resource IDs: (129)
 msgid "read error"
@@ -636,7 +637,7 @@ msgstr "puoi escludere le cartelle, ad es. CVS e immagini.\nEsempio: ^(CVS|immag
 
 #. Resource IDs: (1064, 1066, 1067)
 msgid "|"
-msgstr ""
+msgstr "|"
 
 #. Resource IDs: (1024)
 msgid "⑂"
