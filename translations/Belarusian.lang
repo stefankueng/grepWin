@@ -156,6 +156,10 @@ msgstr "Капіяваць тэкст выніка"
 msgid "Copy text results to clipboard"
 msgstr "Капіяваць тэкст вынікаў"
 
+#. Resource IDs: (177)
+msgid "Copy whole column"
+msgstr ""
+
 #. Resource IDs: (1029)
 msgid "Create backup files"
 msgstr "Ствараць бэкапы"

@@ -697,10 +697,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             return DoCommand(LOWORD(wParam), HIWORD(wParam));
         case WM_CONTEXTMENU:
         {
-            if (reinterpret_cast<HWND>(wParam) == GetDlgItem(*this, IDC_RESULTLIST))
-            {
-                ShowContextMenu(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
-            }
+            ShowContextMenu(reinterpret_cast<HWND>(wParam), GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
         }
         break;
         case WM_NOTIFY:
@@ -1906,16 +1903,184 @@ void CSearchDlg::FillResultList()
     RedrawWindow(hListControl, nullptr, nullptr, RDW_ERASE | RDW_FRAME | RDW_INVALIDATE | RDW_ALLCHILDREN);
 }
 
-void CSearchDlg::ShowContextMenu(int x, int y)
+void CSearchDlg::ShowContextMenu(HWND hWnd, int x, int y)
 {
     HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
-    int  nCount       = ListView_GetItemCount(hListControl);
+    if (hWnd != GetDlgItem(*this, IDC_RESULTLIST))
+        return;
+    bool  fileList = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
+    // check if clicked on a header
+    POINT pt       = {x, y};
+    auto  hHeader  = ListView_GetHeader(hListControl);
+    RECT  headerRc{};
+    GetWindowRect(hHeader, &headerRc);
+    if (PtInRect(&headerRc, pt))
+    {
+        int colCount   = Header_GetItemCount(hHeader);
+        int clickedCol = -1;
+        for (int i = 0; i < colCount; ++i)
+        {
+            RECT iRc{};
+            Header_GetItemRect(hHeader, i, &iRc);
+            MapWindowPoints(hHeader, nullptr, reinterpret_cast<LPPOINT>(&iRc), 2);
+            if (PtInRect(&iRc, pt))
+            {
+                clickedCol = i;
+                break;
+            }
+        }
+        if (clickedCol >= 0)
+        {
+            HMENU hMenu = CreatePopupMenu();
+            if (hMenu)
+            {
+                OnOutOfScope(DestroyMenu(hMenu));
+                auto sCopyColumn = TranslatedString(hResource, IDS_COPY_COLUMN);
+                AppendMenu(hMenu, MF_STRING, 1, sCopyColumn.c_str());
+                // Display the menu.
+                auto cmdId = TrackPopupMenu(hMenu, TPM_RETURNCMD, pt.x, pt.y, 0, *this, nullptr);
+                if (cmdId == 1)
+                {
+                    int          iItem = -1;
+                    std::wstring copyText;
+                    while ((iItem = ListView_GetNextItem(hListControl, iItem, LVNI_ALL)) != (-1))
+                    {
+                        int selIndex = GetSelectedListIndex(fileList, iItem);
+                        if ((selIndex < 0) || (selIndex >= static_cast<int>(m_items.size())))
+                            continue;
+                        if (!copyText.empty())
+                            copyText += L"\r\n";
+                        if (fileList)
+                        {
+                            const auto* pInfo = &m_items[selIndex];
+                            switch (clickedCol)
+                            {
+                                case 0: // name of the file
+                                    copyText += pInfo->filePath.substr(pInfo->filePath.find_last_of('\\') + 1);
+                                    break;
+                                case 1: // file size
+                                    if (!pInfo->folder)
+                                    {
+                                        wchar_t buf[1024]{};
+                                        StrFormatByteSizeW(pInfo->fileSize, buf, _countof(buf));
+                                        copyText += buf;
+                                    }
+                                    break;
+                                case 2: // match count or read error
+                                    if (pInfo->readError)
+                                        copyText += TranslatedString(hResource, IDS_READERROR).c_str();
+                                    else
+                                        copyText += std::to_wstring(pInfo->matchCount);
+                                    break;
+                                case 3: // path
+                                    if (m_searchPath.find('|') != std::wstring::npos)
+                                        copyText += pInfo->filePath.substr(0, pInfo->filePath.size() - pInfo->filePath.substr(pInfo->filePath.find_last_of('\\')).size());
+                                    else
+                                    {
+                                        auto filePart = pInfo->filePath.substr(pInfo->filePath.find_last_of('\\'));
+                                        auto len      = pInfo->filePath.size() - m_searchPath.size() - filePart.size();
+                                        if (len > 0)
+                                            --len;
+                                        if (m_searchPath.size() < pInfo->filePath.size())
+                                        {
+                                            auto text = pInfo->filePath.substr(m_searchPath.size() + 1, len);
+                                            if (text.empty())
+                                                text = L"\\.";
+                                            copyText += text;
+                                        }
+                                        else
+                                            copyText += pInfo->filePath.c_str();
+                                    }
+                                    break;
+                                case 4: // extension of the file
+                                {
+                                    if (!pInfo->folder)
+                                    {
+                                        auto dotPos = pInfo->filePath.find_last_of('.');
+                                        if (dotPos != std::wstring::npos)
+                                        {
+                                            if (pInfo->filePath.find('\\', dotPos) == std::wstring::npos)
+                                                copyText += pInfo->filePath.substr(dotPos + 1);
+                                        }
+                                    }
+                                }
+                                break;
+                                case 5: // encoding
+                                    switch (pInfo->encoding)
+                                    {
+                                        case CTextFile::Ansi:
+                                            copyText += L"ANSI";
+                                            break;
+                                        case CTextFile::Unicode_Le:
+                                            copyText += L"UTF-16-LE";
+                                            break;
+                                        case CTextFile::Unicode_Be:
+                                            copyText += L"UTF-16-BE";
+                                            break;
+                                        case CTextFile::UTF8:
+                                            copyText += L"UTF8";
+                                            break;
+                                        case CTextFile::Binary:
+                                            copyText += L"BINARY";
+                                            break;
+                                        default:
+                                            break;
+                                    }
+                                    break;
+                                case 6: // modification date
+                                {
+                                    wchar_t buf[1024]{};
+                                    formatDate(buf, pInfo->modifiedTime, true);
+                                    copyText += buf;
+                                }
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            auto        tup      = m_listItems[iItem];
+                            auto        index    = std::get<0>(tup);
+                            auto        subIndex = std::get<1>(tup);
+                            const auto& item     = m_items[index];
+                            const auto& pInfo = &item;
+                            switch (clickedCol)
+                            {
+                                case 0: // name of the file
+                                    copyText += pInfo->filePath.substr(pInfo->filePath.find_last_of('\\') + 1);
+                                    break;
+                                case 1: // line number
+                                    copyText += std::to_wstring(pInfo->matchLinesNumbers[subIndex]);
+                                    break;
+                                case 2: // line
+                                {
+                                    std::wstring line;
+                                    if (pInfo->matchLines.size() > static_cast<size_t>(subIndex))
+                                    {
+                                        line = pInfo->matchLines[subIndex];
+                                        std::ranges::replace(line, '\n', ' ');
+                                        std::ranges::replace(line, '\r', ' ');
+                                    }
+                                    copyText += line;
+                                }
+                                break;
+                                case 3: // path
+                                    copyText += pInfo->filePath.substr(0, pInfo->filePath.size() - pInfo->filePath.substr(pInfo->filePath.find_last_of('\\') + 1).size() - 1);
+                                    break;
+                            }
+                        }
+                    }
+                    WriteAsciiStringToClipboard(copyText.c_str(), *this);
+                }
+            }
+        }
+    }
+
+    int nCount = ListView_GetItemCount(hListControl);
     if (nCount == 0)
         return;
     CShellContextMenu                        shellMenu;
     int                                      iItem = -1;
     std::unordered_map<size_t, std::wstring> pathMap;
-    bool                                     fileList = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
 
     while ((iItem = ListView_GetNextItem(hListControl, iItem, LVNI_SELECTED)) != (-1))
     {
@@ -1953,7 +2118,6 @@ void CSearchDlg::ShowContextMenu(int x, int y)
     }
     shellMenu.SetObjects(vPaths, lines);
 
-    POINT pt = {x, y};
     if ((x == -1) && (y == -1))
     {
         RECT rc;

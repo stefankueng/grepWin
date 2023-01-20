@@ -156,6 +156,10 @@ msgstr "Eredmény szöveg vágólapra másolása"
 msgid "Copy text results to clipboard"
 msgstr "Eredmények vágólapra másolása"
 
+#. Resource IDs: (177)
+msgid "Copy whole column"
+msgstr ""
+
 #. Resource IDs: (1029)
 msgid "Create backup files"
 msgstr "Biztonsági mentés készítés"

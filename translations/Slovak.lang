@@ -156,6 +156,10 @@ msgstr "Kopírovať výsledok do schránky"
 msgid "Copy text results to clipboard"
 msgstr "Kopírovať výsledky do schránky"
 
+#. Resource IDs: (177)
+msgid "Copy whole column"
+msgstr ""
+
 #. Resource IDs: (1029)
 msgid "Create backup files"
 msgstr "Vytvoriť záložné súbory"

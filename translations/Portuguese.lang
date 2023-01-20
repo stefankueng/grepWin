@@ -156,6 +156,10 @@ msgstr "Copiar resultado do texto para a área de transferência"
 msgid "Copy text results to clipboard"
 msgstr "Copiar resultados dos textos para a área de transferência"
 
+#. Resource IDs: (177)
+msgid "Copy whole column"
+msgstr ""
+
 #. Resource IDs: (1029)
 msgid "Create backup files"
 msgstr "Criar seguranças dos ficheiros"

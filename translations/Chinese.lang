@@ -156,6 +156,10 @@ msgstr "复制文本结果到剪贴板"
 msgid "Copy text results to clipboard"
 msgstr "复制文本结果到剪贴板"
 
+#. Resource IDs: (177)
+msgid "Copy whole column"
+msgstr ""
+
 #. Resource IDs: (1029)
 msgid "Create backup files"
 msgstr "创建备份文件"

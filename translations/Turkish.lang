@@ -156,6 +156,10 @@ msgstr "Metin Sonucunu Panoya Kopyala"
 msgid "Copy text results to clipboard"
 msgstr "Metin Sonuçlarını Panoya Kopyala"
 
+#. Resource IDs: (177)
+msgid "Copy whole column"
+msgstr ""
+
 #. Resource IDs: (1029)
 msgid "Create backup files"
 msgstr "Yedek Dosyaları Oluştur"

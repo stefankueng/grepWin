@@ -156,6 +156,10 @@ msgstr "Kopiera textresultat till urklipp"
 msgid "Copy text results to clipboard"
 msgstr "Kopiera textresultat till urklipp"
 
+#. Resource IDs: (177)
+msgid "Copy whole column"
+msgstr ""
+
 #. Resource IDs: (1029)
 msgid "Create backup files"
 msgstr "Kopiera säkerhetskopior"

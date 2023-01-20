@@ -156,6 +156,10 @@ msgstr "Копировать результат в буфер обмена"
 msgid "Copy text results to clipboard"
 msgstr "Копировать результаты в буфер обмена"
 
+#. Resource IDs: (177)
+msgid "Copy whole column"
+msgstr ""
+
 #. Resource IDs: (1029)
 msgid "Create backup files"
 msgstr "Создавать резервные копии"

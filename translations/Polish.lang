@@ -156,6 +156,10 @@ msgstr "Kopiuj wynik tekstowy do schowka"
 msgid "Copy text results to clipboard"
 msgstr "Kopiuj wyniki tekstowe do schowka"
 
+#. Resource IDs: (177)
+msgid "Copy whole column"
+msgstr ""
+
 #. Resource IDs: (1029)
 msgid "Create backup files"
 msgstr "Utwórz kopię plików"

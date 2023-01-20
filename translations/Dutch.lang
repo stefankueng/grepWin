@@ -156,6 +156,10 @@ msgstr "Tekstresultaat naar klembord kopiëren"
 msgid "Copy text results to clipboard"
 msgstr "Tekstresultaten naar klembord kopiëren"
 
+#. Resource IDs: (177)
+msgid "Copy whole column"
+msgstr ""
+
 #. Resource IDs: (1029)
 msgid "Create backup files"
 msgstr "Back-upbestanden aanmaken"

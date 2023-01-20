@@ -156,6 +156,10 @@ msgstr "結果のテキストをクリップボードにコピー"
 msgid "Copy text results to clipboard"
 msgstr "結果のテキストをクリップボードにコピー"
 
+#. Resource IDs: (177)
+msgid "Copy whole column"
+msgstr ""
+
 #. Resource IDs: (1029)
 msgid "Create backup files"
 msgstr "バックアップを作成"
