@@ -1943,6 +1943,7 @@ void CSearchDlg::ShowContextMenu(HWND hWnd, int x, int y)
                 {
                     int          iItem = -1;
                     std::wstring copyText;
+                    auto         sReadError = TranslatedString(hResource, IDS_READERROR);
                     while ((iItem = ListView_GetNextItem(hListControl, iItem, LVNI_ALL)) != (-1))
                     {
                         int selIndex = GetSelectedListIndex(fileList, iItem);
@@ -1968,7 +1969,7 @@ void CSearchDlg::ShowContextMenu(HWND hWnd, int x, int y)
                                     break;
                                 case 2: // match count or read error
                                     if (pInfo->readError)
-                                        copyText += TranslatedString(hResource, IDS_READERROR).c_str();
+                                        copyText += sReadError.c_str();
                                     else
                                         copyText += std::to_wstring(pInfo->matchCount);
                                     break;
@@ -2006,26 +2007,7 @@ void CSearchDlg::ShowContextMenu(HWND hWnd, int x, int y)
                                 }
                                 break;
                                 case 5: // encoding
-                                    switch (pInfo->encoding)
-                                    {
-                                        case CTextFile::Ansi:
-                                            copyText += L"ANSI";
-                                            break;
-                                        case CTextFile::Unicode_Le:
-                                            copyText += L"UTF-16-LE";
-                                            break;
-                                        case CTextFile::Unicode_Be:
-                                            copyText += L"UTF-16-BE";
-                                            break;
-                                        case CTextFile::UTF8:
-                                            copyText += L"UTF8";
-                                            break;
-                                        case CTextFile::Binary:
-                                            copyText += L"BINARY";
-                                            break;
-                                        default:
-                                            break;
-                                    }
+                                    copyText += CTextFile::GetEncodingString(pInfo->encoding);
                                     break;
                                 case 6: // modification date
                                 {
@@ -2042,7 +2024,7 @@ void CSearchDlg::ShowContextMenu(HWND hWnd, int x, int y)
                             auto        index    = std::get<0>(tup);
                             auto        subIndex = std::get<1>(tup);
                             const auto& item     = m_items[index];
-                            const auto& pInfo = &item;
+                            const auto& pInfo    = &item;
                             switch (clickedCol)
                             {
                                 case 0: // name of the file
@@ -2507,27 +2489,7 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
                     }
                     break;
                     case 5: // encoding
-                        switch (pInfo->encoding)
-                        {
-                            case CTextFile::Ansi:
-                                wcsncpy_s(pItem->pszText, pItem->cchTextMax, L"ANSI", pItem->cchTextMax - 1LL);
-                                break;
-                            case CTextFile::Unicode_Le:
-                                wcsncpy_s(pItem->pszText, pItem->cchTextMax, L"UTF-16-LE", pItem->cchTextMax - 1LL);
-                                break;
-                            case CTextFile::Unicode_Be:
-                                wcsncpy_s(pItem->pszText, pItem->cchTextMax, L"UTF-16-BE", pItem->cchTextMax - 1LL);
-                                break;
-                            case CTextFile::UTF8:
-                                wcsncpy_s(pItem->pszText, pItem->cchTextMax, L"UTF8", pItem->cchTextMax - 1LL);
-                                break;
-                            case CTextFile::Binary:
-                                wcsncpy_s(pItem->pszText, pItem->cchTextMax, L"BINARY", pItem->cchTextMax - 1LL);
-                                break;
-                            default:
-                                wcsncpy_s(pItem->pszText, pItem->cchTextMax, L"", pItem->cchTextMax - 1LL);
-                                break;
-                        }
+                        wcsncpy_s(pItem->pszText, pItem->cchTextMax, CTextFile::GetEncodingString(pInfo->encoding).c_str(), pItem->cchTextMax - 1LL);
                         break;
                     case 6: // modification date
                         formatDate(pItem->pszText, pInfo->modifiedTime, true);
