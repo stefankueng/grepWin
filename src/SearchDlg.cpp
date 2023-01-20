@@ -117,6 +117,7 @@ CSearchDlg::CSearchDlg(HWND hParent)
     : m_hParent(hParent)
     , m_dwThreadRunning(FALSE)
     , m_cancelled(FALSE)
+    , m_bBlockUpdate(false)
     , m_bookmarksDlg(nullptr)
     , m_patternRegexC(false)
     , m_excludeDirsPatternRegexC(false)
@@ -2003,11 +2004,17 @@ bool CSearchDlg::PreTranslateMessage(MSG* pMsg)
                 if ((GetFocus() == hListControl) && bCtrl && !bShift && !bAlt)
                 {
                     // select all entries
+                    m_bBlockUpdate = true;
+                    SendMessage(hListControl, WM_SETREDRAW, FALSE, 0);
                     int nCount = ListView_GetItemCount(hListControl);
                     for (int i = 0; i < nCount; ++i)
                     {
                         ListView_SetItemState(hListControl, i, LVIS_SELECTED, LVIS_SELECTED);
                     }
+                    SendMessage(hListControl, WM_SETREDRAW, TRUE, 0);
+                    m_bBlockUpdate  = false;
+                    m_selectedItems = ListView_GetSelectedCount(hListControl);
+                    UpdateInfoLabel();
                     return true;
                 }
             }
@@ -2113,9 +2120,12 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
     {
         if ((lpNMItemActivate->uOldState & LVIS_SELECTED) || (lpNMItemActivate->uNewState & LVIS_SELECTED))
         {
-            HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
-            m_selectedItems   = ListView_GetSelectedCount(hListControl);
-            UpdateInfoLabel();
+            if (!m_bBlockUpdate)
+            {
+                HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
+                m_selectedItems   = ListView_GetSelectedCount(hListControl);
+                UpdateInfoLabel();
+            }
         }
     }
     if (lpNMItemActivate->hdr.code == LVN_BEGINDRAG)

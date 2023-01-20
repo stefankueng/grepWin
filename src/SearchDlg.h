@@ -129,6 +129,7 @@ private:
     HWND                              m_hParent;
     std::atomic_bool                  m_dwThreadRunning;
     std::atomic_bool                  m_cancelled;
+    bool                              m_bBlockUpdate;
 
     std::unique_ptr<CBookmarksDlg>    m_bookmarksDlg;
     ComPtr<ITaskbarList3>             m_pTaskbarList;
