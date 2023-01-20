@@ -1913,9 +1913,11 @@ void CSearchDlg::ShowContextMenu(int x, int y)
     CShellContextMenu        shellMenu;
     int                      iItem = -1;
     std::vector<CSearchInfo> paths;
+    bool                     fileList = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
+
     while ((iItem = ListView_GetNextItem(hListControl, iItem, LVNI_SELECTED)) != (-1))
     {
-        int selIndex = GetSelectedListIndex(iItem);
+        int selIndex = GetSelectedListIndex(fileList, iItem);
         if ((selIndex < 0) || (selIndex >= static_cast<int>(m_items.size())))
             continue;
         paths.push_back(m_items[selIndex]);
@@ -1925,7 +1927,6 @@ void CSearchDlg::ShowContextMenu(int x, int y)
         return;
 
     std::vector<LineData> lines;
-    bool                  fileList = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
     if (!fileList)
     {
         WCHAR numBuf[40] = {0};
@@ -1936,7 +1937,7 @@ void CSearchDlg::ShowContextMenu(int x, int y)
             if (line)
             {
                 LineData          data;
-                const CSearchInfo info       = m_items[GetSelectedListIndex(iItem)];
+                const CSearchInfo info       = m_items[GetSelectedListIndex(fileList, iItem)];
                 data.path                    = info.filePath;
                 const auto matchLinesNumbers = info.matchLinesNumbers;
                 size_t     lineIndex         = 0;
@@ -2080,10 +2081,11 @@ bool CSearchDlg::PreTranslateMessage(MSG* pMsg)
             {
                 if (bCtrl && !bShift && !bAlt)
                 {
-                    int iItem = -1;
+                    int  iItem    = -1;
+                    bool fileList = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
                     while ((iItem = ListView_GetNextItem(hListControl, iItem, LVNI_SELECTED)) != (-1))
                     {
-                        int selIndex = GetSelectedListIndex(iItem);
+                        int selIndex = GetSelectedListIndex(fileList, iItem);
                         if ((selIndex < 0) || (selIndex >= static_cast<int>(m_items.size())))
                             continue;
                         OpenFileAtListIndex(selIndex);
@@ -2125,10 +2127,11 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
         if (nCount == 0)
             return;
 
-        int iItem = -1;
+        int  iItem    = -1;
+        bool fileList = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
         while ((iItem = ListView_GetNextItem(hListControl, iItem, LVNI_SELECTED)) != (-1))
         {
-            dropFiles.AddFile(m_items[GetSelectedListIndex(iItem)].filePath);
+            dropFiles.AddFile(m_items[GetSelectedListIndex(fileList, iItem)].filePath);
         }
 
         if (dropFiles.GetCount() > 0)
@@ -4077,6 +4080,11 @@ void CSearchDlg::AutoSizeAllColumns()
 int CSearchDlg::GetSelectedListIndex(int index)
 {
     bool fileList = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
+    return GetSelectedListIndex(fileList, index);
+}
+
+int CSearchDlg::GetSelectedListIndex(bool fileList, int index) const
+{
     if (fileList)
         return index;
     auto tup = m_listItems[index];

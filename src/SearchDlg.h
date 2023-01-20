@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2022 - Stefan Kueng
+// Copyright (C) 2007-2023 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -25,7 +25,6 @@
 #include "AutoComplete.h"
 #include "Registry.h"
 #include "EditDoubleClick.h"
-#include "StringUtils.h"
 #include "InfoRtfDialog.h"
 #include <string>
 #include <vector>
@@ -103,26 +102,27 @@ protected:
 
     void             SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, bool bSearchAlways, bool bIncludeBinary, bool bUseRegex, bool bCaseSensitive, bool bDotMatchesNewline, const std::wstring& searchString, const std::wstring& searchStringUtf16Le, std::atomic_bool& bCancelled);
 
-    bool             InitResultList();
-    void             FillResultList();
-    bool             AddFoundEntry(CSearchInfo* pInfo, bool bOnlyListControl = false);
-    void             ShowContextMenu(int x, int y);
-    void             DoListNotify(LPNMITEMACTIVATE lpNMItemActivate);
-    void             OpenFileAtListIndex(int listIndex);
-    void             UpdateInfoLabel();
-    bool             SaveSettings();
-    void             SaveWndPosition();
-    void             formatDate(wchar_t dateNative[], const FILETIME& fileTime, bool forceShortFmt) const;
-    int              CheckRegex();
-    bool             MatchPath(LPCTSTR pathBuf) const;
-    void             AutoSizeAllColumns();
-    int              GetSelectedListIndex(int index);
-    static bool      FailedShowMessage(HRESULT hr);
-    void             CheckForUpdates(bool force = false);
-    void             ShowUpdateAvailable();
-    bool             IsVersionNewer(const std::wstring& sVer) const;
-    bool             CloneWindow();
-    std::wstring     ExpandString(const std::wstring& replaceString) const;
+    bool         InitResultList();
+    void         FillResultList();
+    bool         AddFoundEntry(CSearchInfo* pInfo, bool bOnlyListControl = false);
+    void         ShowContextMenu(int x, int y);
+    void         DoListNotify(LPNMITEMACTIVATE lpNMItemActivate);
+    void         OpenFileAtListIndex(int listIndex);
+    void         UpdateInfoLabel();
+    bool         SaveSettings();
+    void         SaveWndPosition();
+    void         formatDate(wchar_t dateNative[], const FILETIME& fileTime, bool forceShortFmt) const;
+    int          CheckRegex();
+    bool         MatchPath(LPCTSTR pathBuf) const;
+    void         AutoSizeAllColumns();
+    int          GetSelectedListIndex(int index);
+    int          GetSelectedListIndex(bool fileList, int index) const;
+    static bool  FailedShowMessage(HRESULT hr);
+    void         CheckForUpdates(bool force = false);
+    void         ShowUpdateAvailable();
+    bool         IsVersionNewer(const std::wstring& sVer) const;
+    bool         CloneWindow();
+    std::wstring ExpandString(const std::wstring& replaceString) const;
 
 
 private:
