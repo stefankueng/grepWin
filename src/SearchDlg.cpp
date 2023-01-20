@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2022 - Stefan Kueng
+// Copyright (C) 2007-2023 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -2962,7 +2962,7 @@ DWORD CSearchDlg::SearchThread()
             bool         bIsDirectory = false;
             CDirFileEnum fileEnumerator(searchPath.c_str());
             if (!m_bIncludeSymLinks)
-                fileEnumerator.SetAttributesToIgnore(FILE_ATTRIBUTE_REPARSE_POINT | IO_REPARSE_TAG_MOUNT_POINT);
+                fileEnumerator.SetAttributesToIgnore(FILE_ATTRIBUTE_REPARSE_POINT);
             bool         bRecurse = m_bIncludeSubfolders;
             std::wstring sPath;
             while ((fileEnumerator.NextFile(sPath, &bIsDirectory, bRecurse)) && ((!m_cancelled) || (bAlwaysSearch)))
