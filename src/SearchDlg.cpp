@@ -59,6 +59,7 @@
 #include <iterator>
 #include <map>
 #include <numeric>
+#include <ranges>
 #include <string>
 
 #pragma warning(push)
@@ -1911,55 +1912,46 @@ void CSearchDlg::ShowContextMenu(int x, int y)
     int  nCount       = ListView_GetItemCount(hListControl);
     if (nCount == 0)
         return;
-    CShellContextMenu        shellMenu;
-    int                      iItem = -1;
-    std::vector<CSearchInfo> paths;
-    bool                     fileList = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
+    CShellContextMenu                        shellMenu;
+    int                                      iItem = -1;
+    std::unordered_map<size_t, std::wstring> pathMap;
+    bool                                     fileList = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
 
     while ((iItem = ListView_GetNextItem(hListControl, iItem, LVNI_SELECTED)) != (-1))
     {
         int selIndex = GetSelectedListIndex(fileList, iItem);
         if ((selIndex < 0) || (selIndex >= static_cast<int>(m_items.size())))
             continue;
-        paths.push_back(m_items[selIndex]);
+        pathMap[selIndex] = m_items[selIndex].filePath;
     }
 
-    if (paths.empty())
+    if (pathMap.empty())
         return;
 
     std::vector<LineData> lines;
     if (!fileList)
     {
-        WCHAR numBuf[40] = {0};
-        while ((iItem = ListView_GetNextItem(hListControl, iItem, LVNI_SELECTED)) != (-1))
+        for (const auto& idx : pathMap | std::views::keys)
         {
-            ListView_GetItemText(hListControl, iItem, 1, numBuf, 40);
-            DWORD line = _wtoi(numBuf);
-            if (line)
+            LineData    data;
+            const auto& info = m_items[idx];
+            data.lines.reserve(info.matchLinesNumbers.size());
+            for (size_t i = 0; i < info.matchLinesNumbers.size(); ++i)
             {
-                LineData          data;
-                const CSearchInfo info       = m_items[GetSelectedListIndex(fileList, iItem)];
-                data.path                    = info.filePath;
-                const auto matchLinesNumbers = info.matchLinesNumbers;
-                size_t     lineIndex         = 0;
-                for (auto it = matchLinesNumbers.cbegin(); it != matchLinesNumbers.cend(); ++it)
-                {
-                    if (*it == line)
-                    {
-                        LineDataLine dataLine;
-                        dataLine.number = info.matchLinesNumbers[lineIndex];
-                        if (info.matchLines.size() > lineIndex)
-                            dataLine.text = info.matchLines[lineIndex];
-                        data.lines.push_back(dataLine);
-                    }
-                    ++lineIndex;
-                }
-                lines.push_back(data);
+                LineDataLine dataLine;
+                dataLine.number = info.matchLinesNumbers[i];
+                dataLine.text   = info.matchLines[i];
+                data.lines.push_back(dataLine);
             }
+            lines.push_back(data);
         }
     }
-
-    shellMenu.SetObjects(paths, lines);
+    std::vector<CSearchInfo> vPaths;
+    for (const auto& idx : pathMap | std::views::keys)
+    {
+        vPaths.push_back(m_items[idx]);
+    }
+    shellMenu.SetObjects(vPaths, lines);
 
     POINT pt = {x, y};
     if ((x == -1) && (y == -1))
