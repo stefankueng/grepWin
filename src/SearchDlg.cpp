@@ -2086,8 +2086,10 @@ void CSearchDlg::ShowContextMenu(HWND hWnd, int x, int y)
             for (size_t i = 0; i < info.matchLinesNumbers.size(); ++i)
             {
                 LineDataLine dataLine;
-                dataLine.number = info.matchLinesNumbers[i];
-                dataLine.text   = info.matchLines[i];
+                if (info.matchLinesNumbers.size() > i)
+                    dataLine.number = info.matchLinesNumbers[i];
+                if (info.matchLines.size() > i)
+                    dataLine.text = info.matchLines[i];
                 data.lines.push_back(dataLine);
             }
             lines.push_back(data);
@@ -3059,10 +3061,17 @@ DWORD CSearchDlg::SearchThread()
     SendMessage(*this, SEARCH_START, 0, 0);
 
     std::wstring searchStringutf16;
+
     for (auto c : m_searchString)
     {
         searchStringutf16 += c;
-        searchStringutf16 += L"\\x00";
+        if (std::iswalpha(c) && ((c & 0xFF00) == 0))
+            searchStringutf16 += L"\\x00";
+        else
+        {
+            searchStringutf16 = m_searchString;
+            break;
+        }
     }
 
     // use a thread pool:
