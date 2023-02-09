@@ -158,7 +158,7 @@ msgstr "Copiar resultados dos textos para área de transferência"
 
 #. Resource IDs: (177)
 msgid "Copy whole column"
-msgstr ""
+msgstr "Copiar coluna inteira"
 
 #. Resource IDs: (1029)
 msgid "Create backup files"
@@ -267,7 +267,7 @@ msgstr "Incluir subpastas"
 
 #. Resource IDs: (1092)
 msgid "Include symbolic links"
-msgstr ""
+msgstr "Incluir links simbólicos"
 
 #. Resource IDs: (1009)
 msgid "Include system items"
@@ -287,7 +287,7 @@ msgstr "KB"
 
 #. Resource IDs: (1062)
 msgid "Keep file date when replacing"
-msgstr ""
+msgstr "Manter data do arquivo ao substituir"
 
 #. Resource IDs: (1075)
 msgid "Language:"
@@ -482,12 +482,12 @@ msgstr "Texto corresp."
 
 #. Resource IDs: (1002)
 msgid "Text search"
-msgstr "Pesquisar texto"
+msgstr "Pesquisa de texto"
 
 #. Resource IDs: (160)
 #, c-format
 msgid "The path \"%s\" does not exist or is not accessible!"
-msgstr ""
+msgstr "O caminho \"%s\" não existe ou não está acessível!"
 
 #. Resource IDs: (65535)
 msgid "The regex search string matches:"
@@ -503,7 +503,7 @@ msgstr "Tratar arquivos como UTF8"
 
 #. Resource IDs: (1054)
 msgid "Treat files as binary"
-msgstr "Tratar arquivos como binário"
+msgstr "Tratar arquivos como binários"
 
 #. Resource IDs: (172)
 #, c-format
@@ -601,7 +601,7 @@ msgstr "Somente os arquivos correspondentes a esse padrão serão procurados.\r\
 
 #. Resource IDs: (176)
 msgid "open list with recent entries"
-msgstr ""
+msgstr "lista aberta com entradas recentes"
 
 #. Resource IDs: (129)
 msgid "read error"
