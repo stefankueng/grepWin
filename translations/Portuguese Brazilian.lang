@@ -36,7 +36,7 @@ msgstr ""
 #. Resource IDs: (175)
 #, c-format
 msgid "%ld files, skipped %ld files. %ld results selected."
-msgstr "%ld arquivos, %ld arquivos ignorados."
+msgstr "%ld arquivos, %ld arquivos ignorados. %ld resultados selecionados."
 
 #. Resource IDs: (149)
 #, c-format
@@ -45,7 +45,7 @@ msgstr "%ld mais encontrados"
 
 #. Resource IDs: (1069)
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to"
-msgstr "%path% é substituído com o caminho do arquivo, %line% a linha para saltar"
+msgstr "%path% é substituído com o caminho do arquivo, %line% a linha para pular"
 
 #. Resource IDs: (119)
 msgid "&About grepWin..."
@@ -126,7 +126,7 @@ msgstr "Verificar por atualizações"
 
 #. Resource IDs: (1068)
 msgid "Command line to start an editor at a specific line:"
-msgstr "Linha de comando para iniciar no editor em uma linha específica"
+msgstr "Linha de comando para iniciar o editor em uma linha específica:"
 
 #. Resource IDs: (1060)
 msgid "Content"
@@ -142,7 +142,7 @@ msgstr "Copiar nome dos arquivos para área de transferência"
 
 #. Resource IDs: (143)
 msgid "Copy path to clipboard"
-msgstr "Copiar caminho para a área de transferência"
+msgstr "Copiar caminho para área de transferência"
 
 #. Resource IDs: (144)
 msgid "Copy paths to clipboard"
@@ -247,7 +247,7 @@ msgstr ""
 
 #. Resource IDs: (156)
 msgid "If enabled, a backup folder is created inside the folder that's searched/replaced in, and the files are backed up into that folder"
-msgstr "Se ativado, uma pasta de backup é criada dentro da pasta que é pesquisada/substituída, e os backups dos arquivos serão dentro dessa pasta"
+msgstr "Se ativado, uma pasta de backup será criada dentro da pasta que será pesquisada/substituída e os arquivos seram copiados para essa pasta"
 
 #. Resource IDs: (1050)
 msgid "Include binary files"
@@ -528,7 +528,7 @@ msgstr "binário"
 
 #. Resource IDs: (118)
 msgid "click to edit the text as a multiline text"
-msgstr "Clique para editar texto como um texto de múltiplas linhas"
+msgstr "Clique para editar o texto como um texto multilinha"
 
 #. Resource IDs: (159)
 msgid "dark mode requires at least Win10 1803, and it must be enabled in the Windows system settings."
@@ -589,7 +589,7 @@ msgstr "sem texto para substituir com"
 
 #. Resource IDs: (107)
 msgid "no text to test with available"
-msgstr "nenhum texto para testar disponível"
+msgstr "nenhum texto disponível para testar"
 
 #. Resource IDs: (1074)
 msgid "number of NULL bytes per MB allowed for a file to still be considered text instead of binary"
@@ -597,11 +597,11 @@ msgstr "número de bytes NULOS por MB permitido para um arquivo ainda ser consid
 
 #. Resource IDs: (112)
 msgid "only files that match this pattern are searched.\r\nUse \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
-msgstr "Somente os arquivos correspondentes a esse padrão serão procurados.\r\nUse \"|\" como delimitador.\r\nExemplo: *.cpp|*.h"
+msgstr "Somente os arquivos correspondentes a esse padrão serão pesquisados.\r\nUse \"|\" como delimitador.\r\nExemplo: *.cpp|*.h"
 
 #. Resource IDs: (176)
 msgid "open list with recent entries"
-msgstr "lista aberta com entradas recentes"
+msgstr "Abrir lista com entradas recentes"
 
 #. Resource IDs: (129)
 msgid "read error"
@@ -613,12 +613,12 @@ msgstr "Regex ok"
 
 #. Resource IDs: (117)
 msgid "reuse grepWin instances."
-msgstr "reutilizar instâncias do grepWin"
+msgstr "Reutilizar instâncias do grepWin"
 
 #. Resource IDs: (151)
 #, c-format
 msgid "scanning file '%s'"
-msgstr "pesquisando arquivos '%s'"
+msgstr "verificando arquivos '%s'"
 
 #. Resource IDs: (108)
 msgid "search string is empty"
@@ -626,15 +626,15 @@ msgstr "Sequência de pesquisa está vazia"
 
 #. Resource IDs: (170, 171)
 msgid "start new grepWin window"
-msgstr "Iniciar nova janela do grepwin"
+msgstr "Iniciar uma nova janela do grepwin"
 
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"
-msgstr "O caminhos serão pesquisados recursivamente.\r\nSepare os caminhos com o símbolo |.\r\nExemplo: c:\\temp|d:\\logs"
+msgstr "Os caminhos serão pesquisados recursivamente.\r\nSepare os caminhos com o símbolo |.\r\nExemplo: c:\\temp|d:\\logs"
 
 #. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
-msgstr "Você pode excluir diretórios, ex. CVS e images.\r\nExemplo: ^(CVS|images)$\r\nNote, '.svn' pastas 'ocultas' no Windows, geralmente não são escaneadas."
+msgstr "Você pode excluir diretórios, ex. CVS e imagens.\r\nExemplo: ^(CVS|imagens)$\r\nNote, as pastas '.svn' estão 'ocultas' no Windows, geralmente não são verificadas."
 
 #. Resource IDs: (1064, 1066, 1067)
 msgid "|"
