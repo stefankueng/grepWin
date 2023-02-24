@@ -3628,6 +3628,8 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
             if (type == CTextFile::Binary)
             {
                 boost::wregex expressionUtf16 = boost::wregex(searchStringUtf16Le, ft);
+                start                         = textFile.GetFileString().begin();
+                end                           = textFile.GetFileString().end();
 
                 while (!bCancelled && regex_search(start, end, whatC, expressionUtf16, flags))
                 {
@@ -3840,11 +3842,11 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
                 }
                 if (type == CTextFile::Binary && !m_bReplace)
                 {
-                    boost::wregex                                                 expressionUtf16Le = boost::wregex(searchStringUtf16Le, ft);
-                    boost::spirit::classic::file_iterator<>                       start(filePath.c_str());
-                    boost::spirit::classic::file_iterator<>                       fBeg = start;
-                    boost::spirit::classic::file_iterator<>                       end  = start.make_end();
-                    boost::match_results<boost::spirit::classic::file_iterator<>> whatC;
+                    boost::wregex                                                        expressionUtf16Le = boost::wregex(searchString, ft);
+                    boost::spirit::classic::file_iterator<wchar_t>                       start(filePath.c_str());
+                    boost::spirit::classic::file_iterator<wchar_t>                       fBeg = start;
+                    boost::spirit::classic::file_iterator<wchar_t>                       end  = start.make_end();
+                    boost::match_results<boost::spirit::classic::file_iterator<wchar_t>> whatC;
                     while (boost::regex_search(start, end, whatC, expressionUtf16Le, flags))
                     {
                         nFound++;
