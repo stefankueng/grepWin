@@ -1936,15 +1936,18 @@ void CSearchDlg::ShowContextMenu(HWND hWnd, int x, int y)
             {
                 OnOutOfScope(DestroyMenu(hMenu));
                 auto sCopyColumn = TranslatedString(hResource, IDS_COPY_COLUMN);
+                auto sCopyColumnSel = TranslatedString(hResource, IDS_COPY_COLUMN_SEL);
                 AppendMenu(hMenu, MF_STRING, 1, sCopyColumn.c_str());
+                if (ListView_GetSelectedCount(hListControl) > 0)
+                    AppendMenu(hMenu, MF_STRING, 2, sCopyColumnSel.c_str());
                 // Display the menu.
                 auto cmdId = TrackPopupMenu(hMenu, TPM_RETURNCMD, pt.x, pt.y, 0, *this, nullptr);
-                if (cmdId == 1)
+                if (cmdId == 1 || cmdId == 2)
                 {
                     int          iItem = -1;
                     std::wstring copyText;
                     auto         sReadError = TranslatedString(hResource, IDS_READERROR);
-                    while ((iItem = ListView_GetNextItem(hListControl, iItem, LVNI_ALL)) != (-1))
+                    while ((iItem = ListView_GetNextItem(hListControl, iItem, cmdId == 1 ? LVNI_ALL : LVNI_SELECTED)) != (-1))
                     {
                         int selIndex = GetSelectedListIndex(fileList, iItem);
                         if ((selIndex < 0) || (selIndex >= static_cast<int>(m_items.size())))
@@ -2054,6 +2057,7 @@ void CSearchDlg::ShowContextMenu(HWND hWnd, int x, int y)
                     WriteAsciiStringToClipboard(copyText.c_str(), *this);
                 }
             }
+            return;
         }
     }
 
