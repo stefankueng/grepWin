@@ -9,9 +9,9 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 1900-01-01 00:00+0000\n"
-"PO-Revision-Date: 2023-01-20 22:52+0900\n"
-"Last-Translator: VenusGirl <venusgirl@outlook.com>\n"
-"Language-Team: VenusGirl! <https://venusgirls.tistory.com/>\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -132,6 +132,14 @@ msgstr "특정 줄에서 편집기를 시작하는 명령줄:"
 msgid "Content"
 msgstr "내용"
 
+#. Resource IDs: (177)
+msgid "Copy column for all items"
+msgstr ""
+
+#. Resource IDs: (178)
+msgid "Copy column for selected items"
+msgstr ""
+
 #. Resource IDs: (145)
 msgid "Copy filename to clipboard"
 msgstr "클립보드에 파일 이름 복사"
@@ -155,10 +163,6 @@ msgstr "클립보드에 텍스트 결과 복사"
 #. Resource IDs: (148)
 msgid "Copy text results to clipboard"
 msgstr "클립보드에 텍스트 결과 복사"
-
-#. Resource IDs: (177)
-msgid "Copy whole column"
-msgstr "전체 열 복사"
 
 #. Resource IDs: (1029)
 msgid "Create backup files"

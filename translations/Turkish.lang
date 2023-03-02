@@ -132,6 +132,14 @@ msgstr "Belirli bir satırda bir editör başlatmak için komut satırı:"
 msgid "Content"
 msgstr "İçerik"
 
+#. Resource IDs: (177)
+msgid "Copy column for all items"
+msgstr ""
+
+#. Resource IDs: (178)
+msgid "Copy column for selected items"
+msgstr ""
+
 #. Resource IDs: (145)
 msgid "Copy filename to clipboard"
 msgstr "Dosya Adını Panoya Kopyala"
@@ -155,10 +163,6 @@ msgstr "Metin Sonucunu Panoya Kopyala"
 #. Resource IDs: (148)
 msgid "Copy text results to clipboard"
 msgstr "Metin Sonuçlarını Panoya Kopyala"
-
-#. Resource IDs: (177)
-msgid "Copy whole column"
-msgstr ""
 
 #. Resource IDs: (1029)
 msgid "Create backup files"

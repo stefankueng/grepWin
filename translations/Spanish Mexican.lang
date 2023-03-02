@@ -132,6 +132,14 @@ msgstr "Línea de comandos para iniciar un editor en la línea especificada:"
 msgid "Content"
 msgstr "Contenido"
 
+#. Resource IDs: (177)
+msgid "Copy column for all items"
+msgstr ""
+
+#. Resource IDs: (178)
+msgid "Copy column for selected items"
+msgstr ""
+
 #. Resource IDs: (145)
 msgid "Copy filename to clipboard"
 msgstr "Copiar el nombre de archivo al portapapeles"
@@ -155,10 +163,6 @@ msgstr "Copiar el texto resultante al portapapeles"
 #. Resource IDs: (148)
 msgid "Copy text results to clipboard"
 msgstr "Copiar los textos resultantes al portapapeles"
-
-#. Resource IDs: (177)
-msgid "Copy whole column"
-msgstr ""
 
 #. Resource IDs: (1029)
 msgid "Create backup files"

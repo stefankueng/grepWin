@@ -132,6 +132,14 @@ msgstr "指定行をエディタで開くためのコマンドライン:"
 msgid "Content"
 msgstr "内容"
 
+#. Resource IDs: (177)
+msgid "Copy column for all items"
+msgstr ""
+
+#. Resource IDs: (178)
+msgid "Copy column for selected items"
+msgstr ""
+
 #. Resource IDs: (145)
 msgid "Copy filename to clipboard"
 msgstr "ファイル名をクリップボードにコピー"
@@ -155,10 +163,6 @@ msgstr "結果のテキストをクリップボードにコピー"
 #. Resource IDs: (148)
 msgid "Copy text results to clipboard"
 msgstr "結果のテキストをクリップボードにコピー"
-
-#. Resource IDs: (177)
-msgid "Copy whole column"
-msgstr "すべての列をコピー"
 
 #. Resource IDs: (1029)
 msgid "Create backup files"

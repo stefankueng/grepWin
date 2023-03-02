@@ -132,6 +132,14 @@ msgstr "Príkazový riadok na spustenie editora na konkrétnom riadku:"
 msgid "Content"
 msgstr "Obsah"
 
+#. Resource IDs: (177)
+msgid "Copy column for all items"
+msgstr ""
+
+#. Resource IDs: (178)
+msgid "Copy column for selected items"
+msgstr ""
+
 #. Resource IDs: (145)
 msgid "Copy filename to clipboard"
 msgstr "Kopírovať názov súboru do schránky"
@@ -155,10 +163,6 @@ msgstr "Kopírovať výsledok do schránky"
 #. Resource IDs: (148)
 msgid "Copy text results to clipboard"
 msgstr "Kopírovať výsledky do schránky"
-
-#. Resource IDs: (177)
-msgid "Copy whole column"
-msgstr ""
 
 #. Resource IDs: (1029)
 msgid "Create backup files"

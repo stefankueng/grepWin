@@ -132,6 +132,14 @@ msgstr "Opdrachtregel om een Editor op een specifieke regel te openen"
 msgid "Content"
 msgstr "Inhoud"
 
+#. Resource IDs: (177)
+msgid "Copy column for all items"
+msgstr ""
+
+#. Resource IDs: (178)
+msgid "Copy column for selected items"
+msgstr ""
+
 #. Resource IDs: (145)
 msgid "Copy filename to clipboard"
 msgstr "Bestandsnaam naar klembord kopiëren"
@@ -155,10 +163,6 @@ msgstr "Tekstresultaat naar klembord kopiëren"
 #. Resource IDs: (148)
 msgid "Copy text results to clipboard"
 msgstr "Tekstresultaten naar klembord kopiëren"
-
-#. Resource IDs: (177)
-msgid "Copy whole column"
-msgstr ""
 
 #. Resource IDs: (1029)
 msgid "Create backup files"

@@ -132,6 +132,14 @@ msgstr "Parancs, ami a szerkesztőt egy bizonyos sornál nyitja meg:"
 msgid "Content"
 msgstr "Tartalom"
 
+#. Resource IDs: (177)
+msgid "Copy column for all items"
+msgstr ""
+
+#. Resource IDs: (178)
+msgid "Copy column for selected items"
+msgstr ""
+
 #. Resource IDs: (145)
 msgid "Copy filename to clipboard"
 msgstr "Fájlnév vágólapra másolása"
@@ -155,10 +163,6 @@ msgstr "Eredmény szöveg vágólapra másolása"
 #. Resource IDs: (148)
 msgid "Copy text results to clipboard"
 msgstr "Eredmények vágólapra másolása"
-
-#. Resource IDs: (177)
-msgid "Copy whole column"
-msgstr "Teljes oszlop másolása"
 
 #. Resource IDs: (1029)
 msgid "Create backup files"

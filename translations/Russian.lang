@@ -132,6 +132,14 @@ msgstr "Команда для открытия выбранной строки �
 msgid "Content"
 msgstr "Содержимое"
 
+#. Resource IDs: (177)
+msgid "Copy column for all items"
+msgstr ""
+
+#. Resource IDs: (178)
+msgid "Copy column for selected items"
+msgstr ""
+
 #. Resource IDs: (145)
 msgid "Copy filename to clipboard"
 msgstr "Копировать имя файла в буфер обмена"
@@ -155,10 +163,6 @@ msgstr "Копировать результат в буфер обмена"
 #. Resource IDs: (148)
 msgid "Copy text results to clipboard"
 msgstr "Копировать результаты в буфер обмена"
-
-#. Resource IDs: (177)
-msgid "Copy whole column"
-msgstr ""
 
 #. Resource IDs: (1029)
 msgid "Create backup files"

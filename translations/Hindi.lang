@@ -132,6 +132,14 @@ msgstr "एक निश्चित रेखा पर संपादक क�
 msgid "Content"
 msgstr "विषयसूची"
 
+#. Resource IDs: (177)
+msgid "Copy column for all items"
+msgstr ""
+
+#. Resource IDs: (178)
+msgid "Copy column for selected items"
+msgstr ""
+
 #. Resource IDs: (145)
 msgid "Copy filename to clipboard"
 msgstr "फ़ाइलनाम क्लिपबोर्ड में कॉपी करें"
@@ -155,10 +163,6 @@ msgstr "टेक्स्ट नतीजा क्लिपबोर्ड म
 #. Resource IDs: (148)
 msgid "Copy text results to clipboard"
 msgstr "कई टेक्स्ट नतीजे क्लिपबोर्ड में कॉपी करें"
-
-#. Resource IDs: (177)
-msgid "Copy whole column"
-msgstr ""
 
 #. Resource IDs: (1029)
 msgid "Create backup files"
