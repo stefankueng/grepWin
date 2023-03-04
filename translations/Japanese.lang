@@ -134,11 +134,11 @@ msgstr "内容"
 
 #. Resource IDs: (177)
 msgid "Copy column for all items"
-msgstr ""
+msgstr "列のすべての項目をコピー"
 
 #. Resource IDs: (178)
 msgid "Copy column for selected items"
-msgstr ""
+msgstr "列の選択した項目をコピー"
 
 #. Resource IDs: (145)
 msgid "Copy filename to clipboard"
