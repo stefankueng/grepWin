@@ -5,7 +5,7 @@
 #
 #, fuzzy
 msgid ""
-msgstr ""
+msgstr "grepWin Team"
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 1900-01-01 00:00+0000\n"
@@ -36,7 +36,7 @@ msgstr ""
 #. Resource IDs: (175)
 #, c-format
 msgid "%ld files, skipped %ld files. %ld results selected."
-msgstr "%ld 个文件, 已跳过 %ld 个文件. %ld results selected."
+msgstr "%ld 个文件, 已跳过 %ld 个文件. 已选择 %ld 个结果."
 
 #. Resource IDs: (149)
 #, c-format
@@ -61,7 +61,7 @@ msgstr "搜索(&S)"
 
 #. Resource IDs: (1003)
 msgid "&Whole word"
-msgstr ""
+msgstr "全字"
 
 #. Resource IDs: (1013)
 msgid "..."
@@ -73,15 +73,15 @@ msgstr "/"
 
 #. Resource IDs: (1045)
 msgid "<a href=\"https://tools.stefankueng.com\">Visit our website</a>"
-msgstr ""
+msgstr "<a href=\"https://tools.stefankueng.com\">访问我们的网站</a>"
 
 #. Resource IDs: (1052)
 msgid "<a>about grepWin</a>"
-msgstr ""
+msgstr "<a>关于 grepWin</a>"
 
 #. Resource IDs: (1086)
 msgid ">"
-msgstr ""
+msgstr ">"
 
 #. Resource IDs: (135)
 msgid "About grepWin"
@@ -118,11 +118,11 @@ msgstr "取消"
 
 #. Resource IDs: (169)
 msgid "Capture search"
-msgstr ""
+msgstr "输入替换搜索"
 
 #. Resource IDs: (1088)
 msgid "Check for updates"
-msgstr ""
+msgstr "检查更新"
 
 #. Resource IDs: (1068)
 msgid "Command line to start an editor at a specific line:"
@@ -131,14 +131,6 @@ msgstr "用于在指定的行来启动编辑器的命令行:"
 #. Resource IDs: (1060)
 msgid "Content"
 msgstr "内容"
-
-#. Resource IDs: (177)
-msgid "Copy column for all items"
-msgstr ""
-
-#. Resource IDs: (178)
-msgid "Copy column for selected items"
-msgstr ""
 
 #. Resource IDs: (145)
 msgid "Copy filename to clipboard"
@@ -164,6 +156,10 @@ msgstr "复制文本结果到剪贴板"
 msgid "Copy text results to clipboard"
 msgstr "复制文本结果到剪贴板"
 
+#. Resource IDs: (177)
+msgid "Copy whole column"
+msgstr "复制整列"
+
 #. Resource IDs: (1029)
 msgid "Create backup files"
 msgstr "创建备份文件"
@@ -174,7 +170,7 @@ msgstr "在单独的目录创建备份文件"
 
 #. Resource IDs: (1064)
 msgid "Dark mode"
-msgstr ""
+msgstr "暗黑模式"
 
 #. Resource IDs: (139)
 msgid "Date modified"
@@ -186,7 +182,7 @@ msgstr "对话框"
 
 #. Resource IDs: (1078)
 msgid "Don't warn when replacing without creating backups"
-msgstr ""
+msgstr "在不创建备份的情况下替换时不发出警告"
 
 #. Resource IDs: (1051)
 msgid "Dot matches newline"
@@ -198,7 +194,7 @@ msgstr "双击选择一个预置"
 
 #. Resource IDs: (65535 - PopupMenu)
 msgid "Dummy"
-msgstr ""
+msgstr "虚拟"
 
 #. Resource IDs: (1067)
 msgid "Editor"
@@ -222,15 +218,15 @@ msgstr "排除目录(正则):"
 
 #. Resource IDs: (164)
 msgid "Export resultlist"
-msgstr ""
+msgstr "导出结果列表"
 
 #. Resource IDs: (163)
 msgid "Export results..."
-msgstr ""
+msgstr "导出结果..."
 
 #. Resource IDs: (158)
 msgid "Ext"
-msgstr ""
+msgstr "文件扩展名"
 
 #. Resource IDs: (1039)
 msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
@@ -263,7 +259,7 @@ msgstr "包含隐藏项目"
 
 #. Resource IDs: (1062)
 msgid "Include search path"
-msgstr ""
+msgstr "包括搜索路径"
 
 #. Resource IDs: (1011)
 msgid "Include subfolders"
@@ -271,7 +267,7 @@ msgstr "包含子文件夹"
 
 #. Resource IDs: (1092)
 msgid "Include symbolic links"
-msgstr ""
+msgstr "包括符号链接"
 
 #. Resource IDs: (1009)
 msgid "Include system items"
@@ -283,7 +279,7 @@ msgstr "无效路径!"
 
 #. Resource IDs: (161)
 msgid "Inverse search (NOT searchstring)"
-msgstr ""
+msgstr "反向搜索（不是搜索字符串）"
 
 #. Resource IDs: (1019)
 msgid "KB"
@@ -291,7 +287,7 @@ msgstr "KB"
 
 #. Resource IDs: (1062)
 msgid "Keep file date when replacing"
-msgstr ""
+msgstr "替换时保留文件日期"
 
 #. Resource IDs: (1075)
 msgid "Language:"
@@ -299,7 +295,7 @@ msgstr "语言"
 
 #. Resource IDs: (1017)
 msgid "Limit search"
-msgstr "限定搜索"
+msgstr "限制检索"
 
 #. Resource IDs: (134)
 msgid "Line"
@@ -408,7 +404,7 @@ msgstr "替换字符串"
 
 #. Resource IDs: (1027)
 msgid "Replace with/\nCapture format:"
-msgstr ""
+msgstr "替换为 /\n 输入替换格式:"
 
 #. Resource IDs: (126)
 msgid "S&top"
@@ -432,7 +428,7 @@ msgstr "搜索于"
 
 #. Resource IDs: (162)
 msgid "Search in found files"
-msgstr ""
+msgstr "在找到的文件中搜索"
 
 #. Resource IDs: (1018)
 msgid "Search results"
@@ -450,7 +446,7 @@ msgstr "已搜索 %ld 个文件, 已跳过 %ld 个文件. 已找到 %ld 个匹�
 #. Resource IDs: (173)
 #, c-format
 msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files. %ld results selected."
-msgstr "已搜索 %ld 个文件, 已跳过 %ld 个文件. 已找到 %ld 个匹配于 %ld 个文件中. %ld results selected."
+msgstr "已搜索 %ld 个文件, 已跳过 %ld 个文件. 已找到 %ld 个匹配于 %ld 个文件中. 已选择 %ld 个结果."
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."
@@ -491,7 +487,7 @@ msgstr "文本搜索"
 #. Resource IDs: (160)
 #, c-format
 msgid "The path \"%s\" does not exist or is not accessible!"
-msgstr ""
+msgstr "路径 \"%s\" 不存在或不可访问"
 
 #. Resource IDs: (65535)
 msgid "The regex search string matches:"
@@ -507,16 +503,16 @@ msgstr "将文件视为 UTF8"
 
 #. Resource IDs: (1054)
 msgid "Treat files as binary"
-msgstr ""
+msgstr "将文件视为二进制文件"
 
 #. Resource IDs: (172)
 #, c-format
 msgid "You have the option \"%s\" enabled.\r\nWhen replacing, this option can lead to corrupted files.\r\nDo you want to proceed anyway?"
-msgstr ""
+msgstr "您已启用选项 \"%s\".\r\n 替换时，此选项可能会导致文件损坏。\r\n 您是否仍要继续？"
 
 #. Resource IDs: (1025)
 msgid "\\"
-msgstr ""
+msgstr "\\"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
@@ -536,7 +532,7 @@ msgstr "点击这里将该文本作为多行文本来编辑"
 
 #. Resource IDs: (159)
 msgid "dark mode requires at least Win10 1803, and it must be enabled in the Windows system settings."
-msgstr ""
+msgstr "暗黑模式至少需要 Windows10 1803 版本，并且必须在 Windows 系统设置中启用它。"
 
 #. Resource IDs: (121)
 msgid "equal to"
@@ -553,7 +549,7 @@ msgstr "grepWin"
 #. Resource IDs: (168)
 #, c-format
 msgid "grepWin %s is available"
-msgstr ""
+msgstr "grepWin 的 %s 版本可用"
 
 #. Resource IDs: (138)
 msgid "grepWin Settings"
@@ -565,15 +561,15 @@ msgstr "按住 SHIFT 键来查找不包含搜索字符串的文件"
 
 #. Resource IDs: (165)
 msgid "include file paths"
-msgstr ""
+msgstr "包含文件路径"
 
 #. Resource IDs: (166)
 msgid "include match line numbers"
-msgstr ""
+msgstr "包括匹配行号"
 
 #. Resource IDs: (167)
 msgid "include match line text"
-msgstr ""
+msgstr "包括匹配行文本"
 
 #. Resource IDs: (132)
 msgid "invalid regex!"
@@ -597,15 +593,15 @@ msgstr "没有要测试的文本"
 
 #. Resource IDs: (1074)
 msgid "number of NULL bytes per MB allowed for a file to still be considered text instead of binary"
-msgstr ""
+msgstr "允许将文件仍视为文本而不是二进制文件的每 MB 空字节数"
 
 #. Resource IDs: (112)
 msgid "only files that match this pattern are searched.\r\nUse \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
-msgstr "仅匹配此样式的文件被搜索.\r\n使用 \"|\" 作为分隔符.\r\n例如: *.cpp|*.h"
+msgstr "仅匹配此样式的文件被搜索.\r\n 使用 \"|\" 作为分隔符.\r\n 例如: *.cpp|*.h"
 
 #. Resource IDs: (176)
 msgid "open list with recent entries"
-msgstr ""
+msgstr "打开包含最近条目的列表"
 
 #. Resource IDs: (129)
 msgid "read error"
@@ -630,19 +626,19 @@ msgstr "搜索字符串为空"
 
 #. Resource IDs: (170, 171)
 msgid "start new grepWin window"
-msgstr ""
+msgstr "启动新的 grepWin 窗口"
 
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"
-msgstr "将被递归搜索的路径.\r\n使用 \"|\" 符号来分隔路径.\r\n比如:  c:\\temp|d:\\logs"
+msgstr "将被递归搜索的路径.\r\n 使用 \"|\" 符号来分隔路径.\r\n 比如:  c:\\temp|d:\\logs"
 
 #. Resource IDs: (113)
 msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
-msgstr "你可以排除目录, 比如: CVS 和 images.\r\n例如: ^(CVS|images)$\r\n注意, \".svn\" 目录在Windows中是隐藏的, 所以通常不扫描它们."
+msgstr "你可以排除目录, 比如: CVS 和 images.\r\n 例如: ^(CVS|images)$\r\n 注意, \".svn\" 目录在 Windows 中是隐藏的, 所以通常不扫描它们."
 
 #. Resource IDs: (1064, 1066, 1067)
 msgid "|"
-msgstr ""
+msgstr "|"
 
 #. Resource IDs: (1024)
 msgid "⑂"
