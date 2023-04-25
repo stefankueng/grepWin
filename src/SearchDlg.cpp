@@ -2260,13 +2260,22 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
             OpenFileAtListIndex(lpNMItemActivate->iItem);
         }
     }
+    if (lpNMItemActivate->hdr.code == LVN_ODSTATECHANGED)
+    {
+        if (!m_bBlockUpdate)
+        {
+            HWND hListControl = lpNMItemActivate->hdr.hwndFrom;
+            m_selectedItems   = ListView_GetSelectedCount(hListControl);
+            UpdateInfoLabel();
+        }
+    }
     if (lpNMItemActivate->hdr.code == LVN_ITEMCHANGED)
     {
         if ((lpNMItemActivate->uOldState & LVIS_SELECTED) || (lpNMItemActivate->uNewState & LVIS_SELECTED))
         {
             if (!m_bBlockUpdate)
             {
-                HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
+                HWND hListControl = lpNMItemActivate->hdr.hwndFrom;
                 m_selectedItems   = ListView_GetSelectedCount(hListControl);
                 UpdateInfoLabel();
             }
