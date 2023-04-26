@@ -3040,7 +3040,7 @@ DWORD CSearchDlg::SearchThread()
                 }
                 found = s.find_first_of('\\', found + 1);
             }
-            CStringUtils::rtrim(s, L"\\/");
+            CStringUtils::rtrim(s, L"\\/ ");
             pathVector.push_back(s);
         }
         pBufSearchPath += pos;
