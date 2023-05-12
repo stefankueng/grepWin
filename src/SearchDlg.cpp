@@ -2066,41 +2066,66 @@ void CSearchDlg::ShowContextMenu(HWND hWnd, int x, int y)
         return;
     CShellContextMenu                        shellMenu;
     int                                      iItem = -1;
-    std::unordered_map<size_t, std::wstring> pathMap;
+    std::unordered_map<size_t, CSearchInfo>  mapSelectedItem;
 
     while ((iItem = ListView_GetNextItem(hListControl, iItem, LVNI_SELECTED)) != (-1))
     {
         int selIndex = GetSelectedListIndex(fileList, iItem);
         if ((selIndex < 0) || (selIndex >= static_cast<int>(m_items.size())))
             continue;
-        pathMap[selIndex] = m_items[selIndex].filePath;
+
+        mapSelectedItem[selIndex].filePath = m_items[selIndex].filePath;
+
+        // remeber the line number of every selected item in the list view (subitem#1) if list view is in content mode
+        wchar_t sz[MAX_PATH]               = {0};
+        ListView_GetItemText(hListControl, iItem, 1, sz, MAX_PATH - 1);
+        WCHAR* p          = nullptr;
+        DWORD  dwLine = wcstoul(sz, &p, 10);
+        if (nullptr != p && L'\0' == *p)
+        {
+            // list view is in content mode, get and keep line number from subitem#1
+            mapSelectedItem[selIndex].matchLinesNumbers.reserve(m_items[selIndex].matchLinesNumbers.size());
+            mapSelectedItem[selIndex].matchLinesNumbers.push_back(dwLine);
+        }
     }
 
-    if (pathMap.empty())
+    if (mapSelectedItem.empty())
         return;
 
     std::vector<LineData> lines;
     if (!fileList)
     {
-        for (const auto& idx : pathMap | std::views::keys)
+        for (const auto& idx : mapSelectedItem | std::views::keys)
         {
             LineData    data;
             const auto& info = m_items[idx];
+            data.path        = info.filePath;
             data.lines.reserve(info.matchLinesNumbers.size());
             for (size_t i = 0; i < info.matchLinesNumbers.size(); ++i)
             {
                 LineDataLine dataLine;
                 if (info.matchLinesNumbers.size() > i)
-                    dataLine.number = info.matchLinesNumbers[i];
-                if (info.matchLines.size() > i)
-                    dataLine.text = info.matchLines[i];
-                data.lines.push_back(dataLine);
+                {
+                    for (auto it = mapSelectedItem[idx].matchLinesNumbers.begin(); it != mapSelectedItem[idx].matchLinesNumbers.end(); it++)
+                    {
+                        // add line number of every selected item
+                        if (*it == info.matchLinesNumbers[i])
+                        {
+                            dataLine.number = info.matchLinesNumbers[i];
+
+                           if (info.matchLines.size() > i)
+                                dataLine.text = info.matchLines[i];
+
+                            data.lines.push_back(dataLine);
+                        }
+                    }
+                }
             }
             lines.push_back(data);
         }
     }
     std::vector<CSearchInfo> vPaths;
-    for (const auto& idx : pathMap | std::views::keys)
+    for (const auto& idx : mapSelectedItem | std::views::keys)
     {
         vPaths.push_back(m_items[idx]);
     }
