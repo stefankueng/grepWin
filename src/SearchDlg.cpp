@@ -1935,7 +1935,7 @@ void CSearchDlg::ShowContextMenu(HWND hWnd, int x, int y)
             if (hMenu)
             {
                 OnOutOfScope(DestroyMenu(hMenu));
-                auto sCopyColumn = TranslatedString(hResource, IDS_COPY_COLUMN);
+                auto sCopyColumn    = TranslatedString(hResource, IDS_COPY_COLUMN);
                 auto sCopyColumnSel = TranslatedString(hResource, IDS_COPY_COLUMN_SEL);
                 AppendMenu(hMenu, MF_STRING, 1, sCopyColumn.c_str());
                 if (ListView_GetSelectedCount(hListControl) > 0)
@@ -2067,38 +2067,34 @@ void CSearchDlg::ShowContextMenu(HWND hWnd, int x, int y)
     CShellContextMenu                        shellMenu;
     int                                      iItem = -1;
     std::unordered_map<size_t, std::wstring> pathMap;
+    std::vector<LineData>                    lines;
 
     while ((iItem = ListView_GetNextItem(hListControl, iItem, LVNI_SELECTED)) != (-1))
     {
         int selIndex = GetSelectedListIndex(fileList, iItem);
         if ((selIndex < 0) || (selIndex >= static_cast<int>(m_items.size())))
             continue;
-        pathMap[selIndex] = m_items[selIndex].filePath;
+        const auto& info  = m_items[selIndex];
+        pathMap[selIndex] = info.filePath;
+        if (!fileList)
+        {
+            LineData data;
+            auto     tup    = m_listItems[iItem];
+            auto     subIdx = std::get<1>(tup);
+            data.path       = info.filePath;
+            LineDataLine dataLine;
+            if (info.matchLinesNumbers.size() > subIdx)
+                dataLine.number = info.matchLinesNumbers[subIdx];
+            if (info.matchLines.size() > subIdx)
+                dataLine.text = info.matchLines[subIdx];
+            data.lines.push_back(dataLine);
+            lines.push_back(data);
+        }
     }
 
     if (pathMap.empty())
         return;
 
-    std::vector<LineData> lines;
-    if (!fileList)
-    {
-        for (const auto& idx : pathMap | std::views::keys)
-        {
-            LineData    data;
-            const auto& info = m_items[idx];
-            data.lines.reserve(info.matchLinesNumbers.size());
-            for (size_t i = 0; i < info.matchLinesNumbers.size(); ++i)
-            {
-                LineDataLine dataLine;
-                if (info.matchLinesNumbers.size() > i)
-                    dataLine.number = info.matchLinesNumbers[i];
-                if (info.matchLines.size() > i)
-                    dataLine.text = info.matchLines[i];
-                data.lines.push_back(dataLine);
-            }
-            lines.push_back(data);
-        }
-    }
     std::vector<CSearchInfo> vPaths;
     for (const auto& idx : pathMap | std::views::keys)
     {
