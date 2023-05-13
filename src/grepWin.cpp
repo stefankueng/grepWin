@@ -229,6 +229,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
     if (parser.HasVal(L"inipath"))
         g_iniPath = parser.GetVal(L"inipath");
 
+    auto origCwd = CPathUtils::GetCWD();
     // attempt to change the working directory to the installation directory
     //
     // This is a helper when launching grepWin using context menus. When
@@ -251,7 +252,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
         bool bOnlyOne = !!static_cast<DWORD>(CRegStdDWORD(L"Software\\grepWin\\onlyone", 0));
         if (bPortable)
             bOnlyOne = !!_wtoi(g_iniFile.GetValue(L"global", L"onlyone", L"0"));
-        auto sPath = parser.GetVal(L"searchpath") ? parser.GetVal(L"searchpath") : CPathUtils::GetCWD();
+        auto sPath = parser.GetVal(L"searchpath") ? parser.GetVal(L"searchpath") : origCwd;
         sPath      = SanitizeSearchPaths(sPath);
         SearchReplace(sPath, L"/", L"\\");
         sPath = SanitizeSearchPaths(sPath);
@@ -514,7 +515,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
                 }
                 else
                 {
-                    auto sPath = CPathUtils::GetCWD();
+                    auto sPath = origCwd;
                     sPath      = SanitizeSearchPaths(sPath);
                     searchDlg.SetSearchPath(sPath);
                 }
