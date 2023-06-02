@@ -5,7 +5,7 @@
 #
 #, fuzzy
 msgid ""
-msgstr "grepWin Team"
+msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 1900-01-01 00:00+0000\n"
@@ -132,6 +132,14 @@ msgstr "用于在指定的行来启动编辑器的命令行:"
 msgid "Content"
 msgstr "内容"
 
+#. Resource IDs: (177)
+msgid "Copy column for all items"
+msgstr ""
+
+#. Resource IDs: (178)
+msgid "Copy column for selected items"
+msgstr ""
+
 #. Resource IDs: (145)
 msgid "Copy filename to clipboard"
 msgstr "复制文件名称到剪贴板"
@@ -155,10 +163,6 @@ msgstr "复制文本结果到剪贴板"
 #. Resource IDs: (148)
 msgid "Copy text results to clipboard"
 msgstr "复制文本结果到剪贴板"
-
-#. Resource IDs: (177)
-msgid "Copy whole column"
-msgstr "复制整列"
 
 #. Resource IDs: (1029)
 msgid "Create backup files"
