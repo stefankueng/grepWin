@@ -228,7 +228,30 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
     if (parser.HasVal(L"inipath"))
         g_iniPath = parser.GetVal(L"inipath");
 
-    auto origCwd = CPathUtils::GetCWD();
+    // extract the current working directory (before it can be changed
+    // below) as a fallback directory for the target search path (if
+    // a path is not explicitly provided in the arguments)
+    std::wstring targetCwd = CPathUtils::GetCWD();
+
+    // ignore a system directory fallback path
+    //
+    // grepWin will fallback onto the working directory if not path
+    // argument is provided from the command line. This can lead to
+    // search path being unexpectedly configured to the Window's
+    // System32 path when a "pinned" (or start-menu-invoked) grepWin
+    // is launch (since Explorer's working directory is the system
+    // path). In these cases, having the search path fall back to
+    // the last directory saved (in the registry) can be preferred;
+    // so if a Windows system path is detected, ignore it.
+    WCHAR systemDirectory[MAX_PATH + 1] = {0};
+    if (GetSystemDirectoryW(systemDirectory, MAX_PATH) > 0)
+    {
+        if (!targetCwd.compare(systemDirectory))
+        {
+            targetCwd = L"";
+        }
+    }
+
     // attempt to change the working directory to the installation directory
     //
     // This is a helper when launching grepWin using context menus. When
@@ -251,7 +274,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
         bool bOnlyOne = !!static_cast<DWORD>(CRegStdDWORD(L"Software\\grepWin\\onlyone", 0));
         if (bPortable)
             bOnlyOne = !!_wtoi(g_iniFile.GetValue(L"global", L"onlyone", L"0"));
-        auto sPath = parser.GetVal(L"searchpath") ? parser.GetVal(L"searchpath") : origCwd;
+        auto sPath = parser.GetVal(L"searchpath") ? parser.GetVal(L"searchpath") : targetCwd;
         sPath      = SanitizeSearchPaths(sPath);
         SearchReplace(sPath, L"/", L"\\");
         sPath = SanitizeSearchPaths(sPath);
@@ -514,7 +537,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
                 }
                 else
                 {
-                    auto sPath = origCwd;
+                    auto sPath = targetCwd;
                     sPath      = SanitizeSearchPaths(sPath);
                     searchDlg.SetSearchPath(sPath);
                 }
