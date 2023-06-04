@@ -219,12 +219,11 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
         } while ((hWnd == nullptr) && alreadyRunning && timeout);
     }
 
-    auto modulePath = CPathUtils::GetModuleDir(nullptr);
-
-    auto moduleName = CPathUtils::GetFileName(modulePath);
+    auto moduleName = CPathUtils::GetFileName(CPathUtils::GetModulePath(nullptr));
     bPortable       = ((wcsstr(moduleName.c_str(), L"portable")) || (parser.HasKey(L"portable")));
 
-    g_iniPath       = modulePath;
+    auto moduleDir  = CPathUtils::GetModuleDir(nullptr);
+    g_iniPath       = moduleDir;
     g_iniPath += L"\\grepwin.ini";
     if (parser.HasVal(L"inipath"))
         g_iniPath = parser.GetVal(L"inipath");
@@ -239,7 +238,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
     // (e.g. move/delete) will fail due to an "in use" error. To allow users
     // to freely manipulate their file systems (without having to close
     // grepWin), change the working directory to the install path of grepWin.
-    _wchdir(modulePath.c_str());
+    _wchdir(moduleDir.c_str());
 
     if (bPortable)
     {
