@@ -394,6 +394,10 @@ msgstr "Expression régulière"
 msgid "Regex search string:"
 msgstr "Motif regex de recherche :"
 
+#. Resource IDs: (179)
+msgid "Regex stack error"
+msgstr ""
+
 #. Resource IDs: (152)
 msgid "Relative paths are not allowed. Please enter an absolute path!"
 msgstr "Les chemins relatifs ne sont pas autorisés. Entrer un chemin absolu."

@@ -394,6 +394,10 @@ msgstr "Regex खोज"
 msgid "Regex search string:"
 msgstr "Regex खोज स्ट्रिंग:"
 
+#. Resource IDs: (179)
+msgid "Regex stack error"
+msgstr ""
+
 #. Resource IDs: (152)
 msgid "Relative paths are not allowed. Please enter an absolute path!"
 msgstr "सापेक्ष पथ की अनुमति नहीं है। कृपया पूर्ण पथ डालें!"

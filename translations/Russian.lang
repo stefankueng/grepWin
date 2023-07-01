@@ -9,9 +9,9 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 1900-01-01 00:00+0000\n"
-"PO-Revision-Date: 2023-06-02 00:00\n"
-"Last-Translator: wvxwxvw\n"
-"Language-Team: Russian\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -28,7 +28,7 @@ msgstr ""
 # e.g. "V CS+Q" == Ctrl + Shift + 'Q'
 
 # ONLY Accelerator Keys with corresponding alphanumeric characters can be
-# updated i.e. function keys (F2), special keys (Delete, Home) etc. will not.
+# updated i.e. function keys (F2), special keys (Delete, HoMe) etc. will not.
 
 # ONLY change the msgstr field. Do NOT change any other.
 # If you do not want to change an Accelerator Key, copy msgid to msgstr
@@ -393,6 +393,10 @@ msgstr "Regex поиска"
 #. Resource IDs: (65535)
 msgid "Regex search string:"
 msgstr "Regex строки поиска:"
+
+#. Resource IDs: (179)
+msgid "Regex stack error"
+msgstr ""
 
 #. Resource IDs: (152)
 msgid "Relative paths are not allowed. Please enter an absolute path!"

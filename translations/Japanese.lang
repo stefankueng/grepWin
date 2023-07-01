@@ -394,6 +394,10 @@ msgstr "正規表現で検索"
 msgid "Regex search string:"
 msgstr "正規表現の検索文字列:"
 
+#. Resource IDs: (179)
+msgid "Regex stack error"
+msgstr ""
+
 #. Resource IDs: (152)
 msgid "Relative paths are not allowed. Please enter an absolute path!"
 msgstr "相対パスは使用できません。絶対パスを入力してください"

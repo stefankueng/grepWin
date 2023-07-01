@@ -394,6 +394,10 @@ msgstr "Regex soek"
 msgid "Regex search string:"
 msgstr "Regex soek string"
 
+#. Resource IDs: (179)
+msgid "Regex stack error"
+msgstr ""
+
 #. Resource IDs: (152)
 msgid "Relative paths are not allowed. Please enter an absolute path!"
 msgstr "Relatiewe paaie word nie toegelaat nie. Voer 'n absolute pad in!"

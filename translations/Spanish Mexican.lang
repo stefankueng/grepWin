@@ -394,6 +394,10 @@ msgstr "Búsqueda regex"
 msgid "Regex search string:"
 msgstr "Cadena de búsqueda Regex:"
 
+#. Resource IDs: (179)
+msgid "Regex stack error"
+msgstr ""
+
 #. Resource IDs: (152)
 msgid "Relative paths are not allowed. Please enter an absolute path!"
 msgstr "Las rutas relativas no son permitidas. ¡Por favor ingrese una ruta absoluta!"

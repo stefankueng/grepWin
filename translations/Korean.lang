@@ -394,6 +394,10 @@ msgstr "정규식 검색"
 msgid "Regex search string:"
 msgstr "정규식 검색 문자열:"
 
+#. Resource IDs: (179)
+msgid "Regex stack error"
+msgstr ""
+
 #. Resource IDs: (152)
 msgid "Relative paths are not allowed. Please enter an absolute path!"
 msgstr "상대 경로는 허용되지 않습니다. 절대 경로를 입력하세요!"

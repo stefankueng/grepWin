@@ -394,6 +394,10 @@ msgstr "Εύρεση Regex"
 msgid "Regex search string:"
 msgstr "Regex συμβολοσειρά αναζήτησης:"
 
+#. Resource IDs: (179)
+msgid "Regex stack error"
+msgstr ""
+
 #. Resource IDs: (152)
 msgid "Relative paths are not allowed. Please enter an absolute path!"
 msgstr "Δεν επιτρέπονται σχετικές διαδρομές. Εισαγάγετε μια απόλυτη διαδρομή!"

@@ -394,6 +394,10 @@ msgstr "Pesquisa regex"
 msgid "Regex search string:"
 msgstr "Cadeia regex a procurar:"
 
+#. Resource IDs: (179)
+msgid "Regex stack error"
+msgstr ""
+
 #. Resource IDs: (152)
 msgid "Relative paths are not allowed. Please enter an absolute path!"
 msgstr "Não são permitidos caminhos relativos. Por favor, insira um caminho absoluto!"

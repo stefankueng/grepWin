@@ -394,6 +394,10 @@ msgstr "Regex Ara"
 msgid "Regex search string:"
 msgstr "Regex Dizesinde Ara:"
 
+#. Resource IDs: (179)
+msgid "Regex stack error"
+msgstr ""
+
 #. Resource IDs: (152)
 msgid "Relative paths are not allowed. Please enter an absolute path!"
 msgstr "Göreceli yollara izin verilmez. Lütfen mutlak bir yol girin!"
