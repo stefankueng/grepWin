@@ -845,12 +845,15 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
         }
         break;
         case SEARCH_FOUND:
-            m_totalMatches += static_cast<int>(reinterpret_cast<CSearchInfo*>(lParam)->matchCount);
-            if ((wParam != 0) || (m_searchString.empty()) || reinterpret_cast<CSearchInfo*>(lParam)->readError || m_bNotSearch)
+        {
+            auto searchInfo = reinterpret_cast<CSearchInfo*>(lParam);
+            m_totalMatches += static_cast<int>(searchInfo->matchCount);
+            if ((wParam != 0) || (m_searchString.empty()) || searchInfo->readError || !searchInfo->exception.empty() || m_bNotSearch)
             {
-                AddFoundEntry(reinterpret_cast<CSearchInfo*>(lParam));
+                AddFoundEntry(searchInfo);
             }
-            break;
+        }
+        break;
         case SEARCH_PROGRESS:
         {
             if (wParam)
@@ -1973,6 +1976,8 @@ void CSearchDlg::ShowContextMenu(HWND hWnd, int x, int y)
                                 case 2: // match count or read error
                                     if (pInfo->readError)
                                         copyText += sReadError.c_str();
+                                    else if (!pInfo->exception.empty())
+                                        copyText += pInfo->exception.c_str();
                                     else
                                         copyText += std::to_wstring(pInfo->matchCount);
                                     break;
@@ -2420,7 +2425,12 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
             CSearchInfo  inf         = m_items[iItem];
 
             std::wstring matchString = inf.filePath + L"\n";
-            std::wstring sFormat     = TranslatedString(hResource, IDS_CONTEXTLINE);
+            if (!inf.exception.empty())
+            {
+                matchString += inf.exception;
+                matchString += L"\n";
+            }
+            std::wstring sFormat = TranslatedString(hResource, IDS_CONTEXTLINE);
             for (size_t i = 0; i < min(inf.matchLines.size(), 5); ++i)
             {
                 std::wstring matchText = inf.matchLines[i];
@@ -2438,13 +2448,15 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
     }
     if (lpNMItemActivate->hdr.code == LVN_GETDISPINFO)
     {
-        static const std::wstring sBinary   = TranslatedString(hResource, IDS_BINARY);
+        static const std::wstring sBinary         = TranslatedString(hResource, IDS_BINARY);
+        static const std::wstring sReadError      = TranslatedString(hResource, IDS_READERROR);
+        static const std::wstring sRegexException = TranslatedString(hResource, IDS_REGEXEXCEPTION);
 
-        NMLVDISPINFO*             pDispInfo = reinterpret_cast<NMLVDISPINFO*>(lpNMItemActivate);
-        LV_ITEM*                  pItem     = &(pDispInfo)->item;
+        NMLVDISPINFO*             pDispInfo       = reinterpret_cast<NMLVDISPINFO*>(lpNMItemActivate);
+        LV_ITEM*                  pItem           = &(pDispInfo)->item;
 
-        int                       iItem     = pItem->iItem;
-        bool                      fileList  = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
+        int                       iItem           = pItem->iItem;
+        bool                      fileList        = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
 
         if (fileList)
         {
@@ -2462,7 +2474,9 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
                         break;
                     case 2: // match count or read error
                         if (pInfo->readError)
-                            wcsncpy_s(pItem->pszText, pItem->cchTextMax, TranslatedString(hResource, IDS_READERROR).c_str(), pItem->cchTextMax - 1LL);
+                            wcsncpy_s(pItem->pszText, pItem->cchTextMax, sReadError.c_str(), pItem->cchTextMax - 1LL);
+                        else if (!pInfo->exception.empty())
+                            wcsncpy_s(pItem->pszText, pItem->cchTextMax, sRegexException.c_str(), pItem->cchTextMax - 1LL);
                         else
                             swprintf_s(pItem->pszText, pItem->cchTextMax, L"%lld", pInfo->matchCount);
                         break;
@@ -3781,10 +3795,11 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
                 }
             }
         }
-        catch (const std::exception&)
+        catch (const std::exception& ex)
         {
-            SendMessage(*this, SEARCH_PROGRESS, 0, 0);
-            return;
+            sInfo.exception = CUnicodeUtils::StdGetUnicode(ex.what());
+            SendMessage(*this, SEARCH_FOUND, 0, reinterpret_cast<LPARAM>(&sInfo));
+            SendMessage(*this, SEARCH_PROGRESS, 1, 0);
         }
     }
     else
@@ -4023,10 +4038,11 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
                     }
                 }
             }
-            catch (const std::exception&)
+            catch (const std::exception& ex)
             {
-                SendMessage(*this, SEARCH_PROGRESS, 0, 0);
-                return;
+                sInfo.exception = CUnicodeUtils::StdGetUnicode(ex.what());
+                SendMessage(*this, SEARCH_FOUND, 0, reinterpret_cast<LPARAM>(&sInfo));
+                SendMessage(*this, SEARCH_PROGRESS, 1, 0);
             }
             catch (...)
             {
