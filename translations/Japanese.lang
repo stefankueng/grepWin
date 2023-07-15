@@ -396,7 +396,7 @@ msgstr "正規表現の検索文字列:"
 
 #. Resource IDs: (179)
 msgid "Regex stack error"
-msgstr ""
+msgstr "正規表現のスタックエラー"
 
 #. Resource IDs: (152)
 msgid "Relative paths are not allowed. Please enter an absolute path!"
