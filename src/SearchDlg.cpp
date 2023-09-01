@@ -893,6 +893,17 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                 m_rtfDialog = std::make_unique<CInfoRtfDialog>();
             }
             m_rtfDialog->ShowModeless(g_hInst, *this, "grepWin help", IDR_INFODLG, L"RTF", IDI_GREPWIN, 400, 600);
+            // ensure that the dialog is not too big and always visible on the screen
+            RECT dlgRect{};
+            GetWindowRect(*this, &dlgRect);
+            WINDOWPLACEMENT placement{};
+            placement.length           = sizeof(WINDOWPLACEMENT);
+            placement.showCmd          = SW_SHOW;
+            placement.rcNormalPosition = dlgRect;
+            auto quarterWidth          = (dlgRect.right - dlgRect.left) / 4;
+            placement.rcNormalPosition.left += quarterWidth;
+            placement.rcNormalPosition.right -= quarterWidth;
+            SetWindowPlacement(*m_rtfDialog, &placement);
         }
         break;
         case WM_SYSCOMMAND:
