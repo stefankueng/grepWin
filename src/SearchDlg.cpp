@@ -83,7 +83,24 @@ std::map<size_t, DWORD> linePositions;
 extern ULONGLONG        g_startTime;
 extern HANDLE           hInitProtection;
 
-LRESULT CALLBACK        SearchEditWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR /*uIdSubclass*/, DWORD_PTR dwRefData)
+void                    drawRedEditBox(HWND hWnd, WPARAM wParam)
+{
+    // make the border of the edit control red in case
+    // the regex is invalid
+    HDC hdc = nullptr;
+    if (wParam == NULLREGION)
+        hdc = GetDC(hWnd);
+    else
+        hdc = GetDCEx(hWnd, reinterpret_cast<HRGN>(wParam), DCX_WINDOW | DCX_INTERSECTRGN);
+    RECT rc = {0};
+    GetWindowRect(hWnd, &rc);
+    MapWindowPoints(nullptr, hWnd, reinterpret_cast<LPPOINT>(&rc), 2);
+    ::SetBkColor(hdc, RGB(255, 0, 0));
+    ::ExtTextOut(hdc, 0, 0, ETO_OPAQUE, &rc, nullptr, 0, nullptr);
+    ReleaseDC(hWnd, hdc);
+}
+
+LRESULT CALLBACK SearchEditWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR /*uIdSubclass*/, DWORD_PTR dwRefData)
 {
     switch (uMsg)
     {
@@ -92,19 +109,7 @@ LRESULT CALLBACK        SearchEditWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
             auto searchDlg = reinterpret_cast<CSearchDlg*>(dwRefData);
             if (!searchDlg->isRegexValid())
             {
-                // make the border of the edit control red in case
-                // the regex is invalid
-                HDC hdc = nullptr;
-                if (wParam == NULLREGION)
-                    hdc = GetDC(hWnd);
-                else
-                    hdc = GetDCEx(hWnd, reinterpret_cast<HRGN>(wParam), DCX_WINDOW | DCX_INTERSECTRGN);
-                RECT rc = {0};
-                GetWindowRect(hWnd, &rc);
-                MapWindowPoints(nullptr, hWnd, reinterpret_cast<LPPOINT>(&rc), 2);
-                ::SetBkColor(hdc, RGB(255, 0, 0));
-                ::ExtTextOut(hdc, 0, 0, ETO_OPAQUE, &rc, nullptr, 0, nullptr);
-                ReleaseDC(hWnd, hdc);
+                drawRedEditBox(hWnd, wParam);
                 return 0;
             }
         }
@@ -114,6 +119,47 @@ LRESULT CALLBACK        SearchEditWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 
     return DefSubclassProc(hWnd, uMsg, wParam, lParam);
 }
+
+LRESULT CALLBACK ExcludeDirEditWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR /*uIdSubclass*/, DWORD_PTR dwRefData)
+{
+    switch (uMsg)
+    {
+        case WM_NCPAINT:
+        {
+            auto searchDlg = reinterpret_cast<CSearchDlg*>(dwRefData);
+            if (!searchDlg->isExcludeDirsRegexValid())
+            {
+                drawRedEditBox(hWnd, wParam);
+                return 0;
+            }
+        }
+        default:
+            break;
+    }
+
+    return DefSubclassProc(hWnd, uMsg, wParam, lParam);
+}
+
+LRESULT CALLBACK FileNameMatchEditWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR /*uIdSubclass*/, DWORD_PTR dwRefData)
+{
+    switch (uMsg)
+    {
+        case WM_NCPAINT:
+        {
+            auto searchDlg = reinterpret_cast<CSearchDlg*>(dwRefData);
+            if (!searchDlg->isFileNameMatchRegexValid())
+            {
+                drawRedEditBox(hWnd, wParam);
+                return 0;
+            }
+        }
+        default:
+            break;
+    }
+
+    return DefSubclassProc(hWnd, uMsg, wParam, lParam);
+}
+
 CSearchDlg::CSearchDlg(HWND hParent)
     : m_hParent(hParent)
     , m_dwThreadRunning(FALSE)
@@ -173,6 +219,8 @@ CSearchDlg::CSearchDlg(HWND hParent)
     , m_selectedItems(0)
     , m_bAscending(true)
     , m_isRegexValid(true)
+    , m_isExcludeDirsRegexValid(true)
+    , m_isFileNameMatchingRegexValid(true)
     , m_themeCallbackId(0)
     , m_pDropTarget(nullptr)
     , m_autoCompleteFilePatterns(bPortable ? &g_iniFile : nullptr)
@@ -224,6 +272,16 @@ CSearchDlg::~CSearchDlg()
 bool CSearchDlg::isRegexValid() const
 {
     return m_isRegexValid;
+}
+
+bool CSearchDlg::isExcludeDirsRegexValid() const
+{
+    return m_isExcludeDirsRegexValid;
+}
+
+bool CSearchDlg::isFileNameMatchRegexValid() const
+{
+    return m_isFileNameMatchingRegexValid;
 }
 
 LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -292,6 +350,8 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             AddToolTip(IDC_REPLACETEXT, LPSTR_TEXTCALLBACK);
 
             SetWindowSubclass(GetDlgItem(*this, IDC_SEARCHTEXT), SearchEditWndProc, SearchEditSubclassID, reinterpret_cast<DWORD_PTR>(this));
+            SetWindowSubclass(GetDlgItem(*this, IDC_EXCLUDEDIRSPATTERN), ExcludeDirEditWndProc, SearchEditSubclassID, reinterpret_cast<DWORD_PTR>(this));
+            SetWindowSubclass(GetDlgItem(*this, IDC_PATTERN), FileNameMatchEditWndProc, SearchEditSubclassID, reinterpret_cast<DWORD_PTR>(this));
 
             if (m_searchPath.empty())
             {
@@ -1049,6 +1109,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                 SetDlgItemText(*this, IDC_EXCLUDEDIRSPATTERN, m_excludeDirsPatternRegex.c_str());
                 SetDlgItemText(*this, IDC_PATTERN, m_patternRegex.c_str());
                 DialogEnableWindow(IDC_WHOLEWORDS, IsDlgButtonChecked(hwndDlg, IDC_TEXTRADIO));
+                CheckRegex();
             }
         }
         break;
@@ -1418,6 +1479,8 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
         break;
         case IDC_REGEXRADIO:
         case IDC_TEXTRADIO:
+        case IDC_FILEPATTERNREGEX:
+        case IDC_FILEPATTERNTEXT:
         {
             CheckRegex();
             DialogEnableWindow(IDC_TESTREGEX, !IsDlgButtonChecked(*this, IDC_TEXTRADIO));
@@ -1562,6 +1625,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
             {
                 if (m_autoCompleteFilePatterns.GetOptions() & ACO_NOPREFIXFILTERING)
                     m_autoCompleteFilePatterns.SetOptions(ACO_UPDOWNKEYDROPSLIST | ACO_AUTOSUGGEST);
+                CheckRegex();
             }
         }
         break;
@@ -1571,6 +1635,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
             {
                 if (m_autoCompleteExcludeDirsPatterns.GetOptions() & ACO_NOPREFIXFILTERING)
                     m_autoCompleteExcludeDirsPatterns.SetOptions(ACO_UPDOWNKEYDROPSLIST | ACO_AUTOSUGGEST);
+                CheckRegex();
             }
         }
         break;
@@ -4116,9 +4181,12 @@ void CSearchDlg::formatDate(wchar_t dateNative[], const FILETIME& fileTime, bool
 
 int CSearchDlg::CheckRegex()
 {
-    m_isRegexValid = true;
-    auto buf       = GetDlgItemText(IDC_SEARCHTEXT);
-    int  len       = static_cast<int>(wcslen(buf.get()));
+    m_isRegexValid                 = true;
+    m_isExcludeDirsRegexValid      = true;
+    m_isFileNameMatchingRegexValid = true;
+
+    auto buf                       = GetDlgItemText(IDC_SEARCHTEXT);
+    int  len                       = static_cast<int>(wcslen(buf.get()));
     if (IsDlgButtonChecked(*this, IDC_REGEXRADIO) == BST_CHECKED)
     {
         // check if the regex is valid
@@ -4176,6 +4244,42 @@ int CSearchDlg::CheckRegex()
         DialogEnableWindow(IDC_CREATEBACKUP, len > 0);
         RedrawWindow(GetDlgItem(*this, IDC_SEARCHTEXT), nullptr, nullptr, RDW_FRAME | RDW_INVALIDATE);
     }
+
+    {
+        buf = GetDlgItemText(IDC_EXCLUDEDIRSPATTERN);
+        len = static_cast<int>(wcslen(buf.get()));
+        if (len)
+        {
+            try
+            {
+                std::wstring  sRegex     = buf.get();
+                boost::wregex expression = boost::wregex(sRegex);
+            }
+            catch (const std::exception&)
+            {
+                m_isExcludeDirsRegexValid = false;
+            }
+        }
+        RedrawWindow(GetDlgItem(*this, IDC_EXCLUDEDIRSPATTERN), nullptr, nullptr, RDW_FRAME | RDW_INVALIDATE);
+    }
+    if (IsDlgButtonChecked(*this, IDC_FILEPATTERNREGEX) == BST_CHECKED)
+    {
+        buf = GetDlgItemText(IDC_PATTERN);
+        len = static_cast<int>(wcslen(buf.get()));
+        if (len)
+        {
+            try
+            {
+                std::wstring  sRegex     = buf.get();
+                boost::wregex expression = boost::wregex(sRegex);
+            }
+            catch (const std::exception&)
+            {
+                m_isFileNameMatchingRegexValid = false;
+            }
+        }
+    }
+    RedrawWindow(GetDlgItem(*this, IDC_PATTERN), nullptr, nullptr, RDW_FRAME | RDW_INVALIDATE);
 
     return len;
 }
