@@ -810,8 +810,14 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             switch (wParam)
             {
                 case IDC_RESULTLIST:
+                {
+                    if (reinterpret_cast<LPNMHDR>(lParam)->code == NM_CUSTOMDRAW)
+                    {
+                        return ColorizeMatchResultProc((LPNMLVCUSTOMDRAW)lParam);
+                    }
                     DoListNotify(reinterpret_cast<LPNMITEMACTIVATE>(lParam));
                     break;
+                }
                 case IDOK:
                     switch (reinterpret_cast<LPNMHDR>(lParam)->code)
                     {
@@ -1983,6 +1989,7 @@ bool CSearchDlg::InitResultList()
     std::wstring sName         = TranslatedString(hResource, IDS_NAME);
     std::wstring sSize         = TranslatedString(hResource, IDS_SIZE);
     std::wstring sLine         = TranslatedString(hResource, IDS_LINE);
+    std::wstring sMove         = TranslatedString(hResource, IDS_MOVE);
     std::wstring sMatches      = TranslatedString(hResource, IDS_MATCHES);
     std::wstring sText         = TranslatedString(hResource, IDS_TEXT);
     std::wstring sPath         = TranslatedString(hResource, IDS_PATH);
@@ -1996,22 +2003,33 @@ bool CSearchDlg::InitResultList()
     lvc.cx                     = -1;
     lvc.pszText                = const_cast<LPWSTR>(static_cast<LPCWSTR>(sName.c_str()));
     ListView_InsertColumn(hListControl, 0, &lvc);
-    lvc.pszText = filelist ? const_cast<LPWSTR>(static_cast<LPCWSTR>(sSize.c_str())) : const_cast<LPWSTR>(static_cast<LPCWSTR>(sLine.c_str()));
-    lvc.fmt     = filelist ? LVCFMT_RIGHT : LVCFMT_LEFT;
-    ListView_InsertColumn(hListControl, 1, &lvc);
-    lvc.fmt     = LVCFMT_LEFT;
-    lvc.pszText = filelist ? const_cast<LPWSTR>(static_cast<LPCWSTR>(sMatches.c_str())) : const_cast<LPWSTR>(static_cast<LPCWSTR>(sText.c_str()));
-    ListView_InsertColumn(hListControl, 2, &lvc);
-    lvc.pszText = const_cast<LPWSTR>(static_cast<LPCWSTR>(sPath.c_str()));
-    ListView_InsertColumn(hListControl, 3, &lvc);
     if (filelist)
     {
+        lvc.fmt     = LVCFMT_RIGHT;
+        lvc.pszText = const_cast<LPWSTR>(static_cast<LPCWSTR>(sSize.c_str()));
+        ListView_InsertColumn(hListControl, 1, &lvc);
+        lvc.fmt     = LVCFMT_LEFT;
+        lvc.pszText = const_cast<LPWSTR>(static_cast<LPCWSTR>(sMatches.c_str()));
+        ListView_InsertColumn(hListControl, 2, &lvc);
+        lvc.pszText = const_cast<LPWSTR>(static_cast<LPCWSTR>(sPath.c_str()));
+        ListView_InsertColumn(hListControl, 3, &lvc);
         lvc.pszText = const_cast<LPWSTR>(static_cast<LPCWSTR>(sExtension.c_str()));
         ListView_InsertColumn(hListControl, 4, &lvc);
         lvc.pszText = const_cast<LPWSTR>(static_cast<LPCWSTR>(sEncoding.c_str()));
         ListView_InsertColumn(hListControl, 5, &lvc);
         lvc.pszText = const_cast<LPWSTR>(static_cast<LPCWSTR>(sDateModified.c_str()));
         ListView_InsertColumn(hListControl, 6, &lvc);
+    }
+    else
+    {
+        lvc.pszText = const_cast<LPWSTR>(static_cast<LPCWSTR>(sLine.c_str()));
+        ListView_InsertColumn(hListControl, 1, &lvc);
+        lvc.pszText = const_cast<LPWSTR>(static_cast<LPCWSTR>(sMove.c_str()));
+        ListView_InsertColumn(hListControl, 2, &lvc);
+        lvc.pszText = const_cast<LPWSTR>(static_cast<LPCWSTR>(sText.c_str()));
+        ListView_InsertColumn(hListControl, 3, &lvc);
+        lvc.pszText = const_cast<LPWSTR>(static_cast<LPCWSTR>(sPath.c_str()));
+        ListView_InsertColumn(hListControl, 4, &lvc);
     }
 
     ListView_SetColumnWidth(hListControl, 0, 300);
@@ -2423,6 +2441,93 @@ bool CSearchDlg::PreTranslateMessage(MSG* pMsg)
     return false;
 }
 
+LRESULT CSearchDlg::ColorizeMatchResultProc(LPNMLVCUSTOMDRAW lpLVCD)
+{
+    switch (lpLVCD->nmcd.dwDrawStage)
+    {
+        case CDDS_PREPAINT:                      // theme hooks this stage
+            return CDRF_NOTIFYITEMDRAW;
+        case CDDS_ITEMPREPAINT:
+            return CDRF_NOTIFYSUBITEMDRAW;
+        case  CDDS_ITEMPREPAINT | CDDS_SUBITEM:
+            return CDRF_NOTIFYPOSTPAINT | CDRF_NEWFONT;
+        case CDDS_ITEMPOSTPAINT | CDDS_SUBITEM: // use the theme color
+        {
+            if (IsDlgButtonChecked(*this, IDC_RESULTFILES) != BST_CHECKED && lpLVCD->iSubItem == 3)
+            {
+                HDC     hdc             = lpLVCD->nmcd.hdc;
+                RECT    rc              = lpLVCD->nmcd.rc;  // lpLVCD->rcText does not work
+                if (rc.top == 0)
+                {
+                    // hover on items
+                    break;
+                }
+
+                int             iRow                    = (int)(lpLVCD->nmcd.dwItemSpec);
+                auto            tup                     = m_listItems[iRow];
+                int             index                   = std::get<0>(tup);
+                CSearchInfo*    pInfo                   = &m_items[index];
+                if (pInfo->encoding == CTextFile::Binary)
+                {
+                    break;
+                }
+
+                int             subIndex                = std::get<1>(tup);
+                int             lenText                 = static_cast<int>(pInfo->matchLines[subIndex].length());
+
+                HWND            hListControl            = GetDlgItem(*this, IDC_RESULTLIST);
+                WCHAR           textBuf[MAX_PATH * 4]   = {0}; // align to AutoSizeAllColumns()
+                LVITEM          lv                      = {0};
+                lv.iItem                                = iRow;
+                lv.iSubItem                             = 3;
+                lv.mask                                 = LVIF_TEXT;
+                lv.pszText                              = textBuf;
+                if (lenText + 1 > _countof(textBuf))
+                {
+                    lv.cchTextMax = _countof(textBuf);
+                }
+                else
+                {
+                    lv.cchTextMax = lenText + 1;
+                }
+                if (ListView_GetItem(hListControl, &lv))
+                {
+                    auto        colMatch    = pInfo->matchMovesNumbers[subIndex];
+                    LPWSTR      pMatch      = lv.pszText + colMatch - 1;
+                    SIZE        textSize    = {0, 0};
+
+                    rc.left += 6;
+
+                    // Not precise sometimes.
+                    // We keep the text and draw a transparent rectangle only. So, will not break the text.
+                    GetTextExtentPoint32(hdc, lv.pszText, colMatch - 1, &textSize);
+                    rc.left += textSize.cx;
+                    GetTextExtentPoint32(hdc, pMatch, pInfo->matchLengths[subIndex], &textSize);
+                    rc.right = rc.left + textSize.cx;
+
+                    LONG            height  = rc.bottom - rc.top;
+                    HDC             hcdc    = CreateCompatibleDC(hdc);
+                    BITMAPINFO      bmi     = { {sizeof(BITMAPINFOHEADER), textSize.cx, height, 1, 32, BI_RGB, textSize.cx * height * 4u, 0, 0, 0, 0}, {{0, 0, 0, 0}} };
+                    BLENDFUNCTION   blend   = {AC_SRC_OVER, 0, 92, 0};  // 36%
+                    HBITMAP         hBitmap = CreateDIBSection(hcdc, &bmi, DIB_RGB_COLORS, NULL, NULL, 0x0);
+                    RECT            rc2     = {0, 0, textSize.cx, height};
+                    SelectObject(hcdc, hBitmap);
+                    FillRect(hcdc, &rc2, CreateSolidBrush(RGB(255, 255, 0)));
+                    AlphaBlend(hdc, rc.left, rc.top, textSize.cx, height, hcdc, 0, 0, textSize.cx, height, blend);
+                    DeleteObject(hBitmap);
+                    DeleteDC(hcdc);
+
+                    return CDRF_DODEFAULT;
+                }
+            }
+        }
+        default:
+            break;
+    }
+
+    return CDRF_DODEFAULT;
+}
+
 void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
 {
     if (lpNMItemActivate->hdr.code == NM_DBLCLK)
@@ -2509,11 +2614,14 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
                 }
                 break;
             case 3:
-                if (m_bAscending)
-                    std::ranges::sort(m_items, CSearchInfo::PathCompareAsc);
-                else
-                    std::ranges::sort(m_items, CSearchInfo::PathCompareDesc);
-                bDidSort = true;
+                if (fileList)
+                {
+                    if (m_bAscending)
+                        std::ranges::sort(m_items, CSearchInfo::PathCompareAsc);
+                    else
+                        std::ranges::sort(m_items, CSearchInfo::PathCompareDesc);
+                    bDidSort = true;
+                }
                 break;
             case 4:
                 if (m_bAscending)
@@ -2720,7 +2828,7 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
                         case 1: // binary
                             wcsncpy_s(pItem->pszText, pItem->cchTextMax, sBinary.c_str(), pItem->cchTextMax);
                             break;
-                        case 3: // path
+                        case 4: // path
                             wcsncpy_s(pItem->pszText, pItem->cchTextMax, pInfo->filePath.substr(0, pInfo->filePath.size() - pInfo->filePath.substr(pInfo->filePath.find_last_of('\\') + 1).size() - 1).c_str(), pItem->cchTextMax - 1LL);
                             break;
                         default:
@@ -2745,7 +2853,10 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
                         case 1: // line number
                             swprintf_s(pItem->pszText, pItem->cchTextMax, L"%ld", pInfo->matchLinesNumbers[subIndex]);
                             break;
-                        case 2: // line
+                        case 2: // move number
+                            swprintf_s(pItem->pszText, pItem->cchTextMax, L"%ld", pInfo->matchMovesNumbers[subIndex]);
+                            break;
+                        case 3: // line
                         {
                             std::wstring line;
                             if (pInfo->matchLines.size() > static_cast<size_t>(subIndex))
@@ -2756,7 +2867,7 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
                             wcsncpy_s(pItem->pszText, pItem->cchTextMax, line.c_str(), pItem->cchTextMax - 1LL);
                         }
                         break;
-                        case 3: // path
+                        case 4: // path
                             wcsncpy_s(pItem->pszText, pItem->cchTextMax, pInfo->filePath.substr(0, pInfo->filePath.size() - pInfo->filePath.substr(pInfo->filePath.find_last_of('\\') + 1).size() - 1).c_str(), pItem->cchTextMax - 1LL);
                             break;
                         default:
@@ -2806,14 +2917,27 @@ void CSearchDlg::OpenFileAtListIndex(int listIndex)
                     wcscpy_s(textLineBuf, L"0");
                 SearchReplace(cmd, L"%line%", textLineBuf);
             }
+            lv.iSubItem                   = 2; // move number
+            if (ListView_GetItem(hListControl, &lv))
+            {
+                if (_wtol(textLineBuf) == 0)
+                    wcscpy_s(textLineBuf, L"0");
+                SearchReplace(cmd, L"%move%", textLineBuf);
+            }
         }
         else
         {
             // use the first matching line in this file
             if (!inf.matchLinesNumbers.empty())
+            {
                 SearchReplace(cmd, L"%line%", CStringUtils::Format(L"%lu", inf.matchLinesNumbers[0]));
+                SearchReplace(cmd, L"%move%", CStringUtils::Format(L"%lu", inf.matchMovesNumbers[0]));
+            }
             else
+            {
                 SearchReplace(cmd, L"%line%", L"0");
+                SearchReplace(cmd, L"%move%", L"0");
+            }
         }
 
         SearchReplace(cmd, L"%path%", inf.filePath.c_str());
@@ -3707,6 +3831,30 @@ bool CSearchDlg::MatchPath(LPCTSTR pathBuf) const
     return bPattern;
 }
 
+static long columnFromPosition(const std::wstring& textContent, long pos, long* lenLineEncodingPre)
+{
+    *lenLineEncodingPre = 0;
+    if (pos == 0)
+    {
+        return 1;
+    }
+
+    long i = pos;
+    while (i > 0 && textContent[i] != L'\n' && textContent[i] != L'\r')
+    {
+        --i;
+    }
+    if (i >= 2 && textContent[i] == L'\n' && textContent[i - 1] == L'\r')
+    {
+        *lenLineEncodingPre = 2;
+    }
+    else if (i > 0)
+    {
+        *lenLineEncodingPre = 1;
+    }
+    return pos - i;
+}
+
 void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, bool bSearchAlways, bool bIncludeBinary, bool bUseRegex, bool bCaseSensitive, bool bDotMatchesNewline, const std::wstring& searchString, const std::wstring& searchStringUtf16Le, std::atomic_bool& bCancelled)
 {
     int          nFound            = 0;
@@ -3788,21 +3936,40 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
                     nFound++;
                     if (m_bNotSearch)
                         break;
-                    long lineStart = textFile.LineFromPosition(static_cast<long>(whatC[0].first - textFile.GetFileString().begin()));
+                    long posMatch = static_cast<long>(whatC[0].first - textFile.GetFileString().begin());
+                    long lineStart = textFile.LineFromPosition(posMatch);
                     long lineEnd   = textFile.LineFromPosition(static_cast<long>(whatC[0].second - textFile.GetFileString().begin()));
                     if ((lineStart != prevLineStart) || (lineEnd != prevLineEnd))
                     {
+                        long lenLineEncodingPre = 0;
+                        long colMatch = columnFromPosition(textFile.GetFileString(), posMatch, &lenLineEncodingPre);
+                        long lenMatch = static_cast<long>(whatC[0].length());
                         for (long l = lineStart; l <= lineEnd; ++l)
                         {
                             auto sLine = textFile.GetLineString(l);
+                            long lenLineMatch = static_cast<long>(sLine.length()) - colMatch;
+                            if (lenMatch < lenLineMatch)
+                            {
+                                lenLineMatch = lenMatch;
+                            }
+                            sInfo.matchLinesNumbers.push_back(l);
+                            sInfo.matchMovesNumbers.push_back(colMatch);
                             if (m_bCaptureSearch)
                             {
                                 auto out = whatC.format(m_replaceString, flags);
                                 sInfo.matchLines.push_back(std::move(out));
+                                sInfo.matchLengths.push_back(static_cast<long>(out.length()));
                             }
                             else
+                            {
                                 sInfo.matchLines.push_back(std::move(sLine));
-                            sInfo.matchLinesNumbers.push_back(l);
+                                sInfo.matchLengths.push_back(lenLineMatch);
+                            }
+                            if (lenMatch > lenLineMatch)
+                            {
+                                colMatch = 1;
+                                lenMatch -= lenLineMatch + lenLineEncodingPre;
+                            }
                         }
                     }
                     ++sInfo.matchCount;
@@ -3835,13 +4002,19 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
                         nFound++;
                         if (m_bNotSearch)
                             break;
-                        long lineStart = textFile.LineFromPosition(static_cast<long>(whatC[0].first - textFile.GetFileString().begin()));
+                        long posMatch = static_cast<long>(whatC[0].first - textFile.GetFileString().begin());
+                        long lineStart = textFile.LineFromPosition(posMatch);
                         long lineEnd   = textFile.LineFromPosition(static_cast<long>(whatC[0].second - textFile.GetFileString().begin()));
+                        long lenLineEncodingPre = 0;
+                        long colMatch = columnFromPosition(textFile.GetFileString(), posMatch, &lenLineEncodingPre);
+                        long lenMatch = static_cast<long>(whatC[0].length());
                         if (m_bCaptureSearch)
                         {
                             auto out = whatC.format(m_replaceString, flags);
                             sInfo.matchLines.push_back(out);
                             sInfo.matchLinesNumbers.push_back(lineStart);
+                            sInfo.matchMovesNumbers.push_back(colMatch);
+                            sInfo.matchLengths.push_back(static_cast<long>(out.length()));
                         }
                         else
                         {
@@ -3849,8 +4022,21 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
                             {
                                 for (long l = lineStart; l <= lineEnd; ++l)
                                 {
-                                    sInfo.matchLines.push_back(textFile.GetLineString(l));
+                                    auto sLine = textFile.GetLineString(l);
+                                    long lenLineMatch = static_cast<long>(sLine.length()) - colMatch;
+                                    if (lenMatch < lenLineMatch)
+                                    {
+                                        lenLineMatch = lenMatch;
+                                    }
+                                    sInfo.matchLines.push_back(sLine);
                                     sInfo.matchLinesNumbers.push_back(l);
+                                    sInfo.matchMovesNumbers.push_back(colMatch);
+                                    sInfo.matchLengths.push_back(lenLineMatch);
+                                    if (lenMatch > lenLineMatch)
+                                    {
+                                        colMatch = 1;
+                                        lenMatch -= lenLineMatch + lenLineEncodingPre;
+                                    }
                                 }
                             }
                         }
@@ -4018,6 +4204,7 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
             {
                 boost::regex       expression = boost::regex(searchFor, ft);
                 std::vector<DWORD> matchLinesNumbers;
+                std::vector<DWORD> matchMovesNumbers;
                 bool               bFound = false;
                 {
                     boost::spirit::classic::file_iterator<>                       start(filePath.c_str());
@@ -4030,6 +4217,7 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
                         if (m_bNotSearch)
                             break;
                         matchLinesNumbers.push_back(static_cast<DWORD>(whatC[0].first - fBeg));
+                        matchMovesNumbers.push_back(1);
                         ++sInfo.matchCount;
                         // update search position:
                         start = whatC[0].second;
@@ -4054,6 +4242,7 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
                         if (m_bNotSearch)
                             break;
                         matchLinesNumbers.push_back(static_cast<DWORD>(whatC[0].first - fBeg));
+                        matchMovesNumbers.push_back(1);
                         ++sInfo.matchCount;
                         // update search position:
                         start = whatC[0].second;
@@ -4133,6 +4322,7 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
                         }
                     }
                     sInfo.matchLinesNumbers = matchLinesNumbers;
+                    sInfo.matchMovesNumbers = matchMovesNumbers;
 
                     if (m_bReplace)
                     {
