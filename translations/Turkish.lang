@@ -44,7 +44,7 @@ msgid "%ld more matches"
 msgstr "%ld daha fazla eşleşme"
 
 #. Resource IDs: (1069)
-msgid "%path% is replaced with the path of the file, %line% with the line to jump to"
+msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %move% with an extra offset"
 msgstr "%path% dosyanın yolu, %line% ile atlanacak satırla değiştirilir"
 
 #. Resource IDs: (119)
@@ -124,8 +124,12 @@ msgstr ""
 msgid "Check for updates"
 msgstr ""
 
+#. Resource IDs: (180)
+msgid "Move"
+msgstr ""
+
 #. Resource IDs: (1068)
-msgid "Command line to start an editor at a specific line:"
+msgid "Command line to start an editor at a specific line and move:"
 msgstr "Belirli bir satırda bir editör başlatmak için komut satırı:"
 
 #. Resource IDs: (1060)
