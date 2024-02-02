@@ -1,3 +1,4 @@
-/src/Resources/grepWin.rc2  text working-tree-encoding=UTF-16
-/src/Resources/grepWin.rc   text working-tree-encoding=UTF-16
-/src/resource.h             text working-tree-encoding=UTF-16
+/src/Resources/grepWin.rc   text working-tree-encoding=UTF-8
+/src/Resources/grepWin.rc2  text working-tree-encoding=UTF-8
+/src/resource.h             text working-tree-encoding=UTF-8
+/translations/*.lang        text working-tree-encoding=UTF-8
