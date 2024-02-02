@@ -2164,9 +2164,9 @@ void CSearchDlg::ShowContextMenu(HWND hWnd, int x, int y)
             auto     subIdx = std::get<1>(tup);
             data.path       = info.filePath;
             LineDataLine dataLine;
-            if (info.matchLinesNumbers.size() > subIdx)
+            if (static_cast<int>(info.matchLinesNumbers.size()) > subIdx)
                 dataLine.number = info.matchLinesNumbers[subIdx];
-            if (info.matchLines.size() > subIdx)
+            if (static_cast<int>(info.matchLines.size()) > subIdx)
                 dataLine.text = info.matchLines[subIdx];
             data.lines.push_back(dataLine);
             lines.push_back(data);
@@ -2337,7 +2337,7 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
             OpenFileAtListIndex(lpNMItemActivate->iItem);
         }
     }
-    if (lpNMItemActivate->hdr.code == LVN_ODSTATECHANGED)
+    else if (lpNMItemActivate->hdr.code == LVN_ODSTATECHANGED)
     {
         if (!m_bBlockUpdate)
         {
@@ -2346,7 +2346,7 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
             UpdateInfoLabel();
         }
     }
-    if (lpNMItemActivate->hdr.code == LVN_ITEMCHANGED)
+    else if (lpNMItemActivate->hdr.code == LVN_ITEMCHANGED)
     {
         if ((lpNMItemActivate->uOldState & LVIS_SELECTED) || (lpNMItemActivate->uNewState & LVIS_SELECTED))
         {
@@ -2358,7 +2358,7 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
             }
         }
     }
-    if (lpNMItemActivate->hdr.code == LVN_BEGINDRAG)
+    else if (lpNMItemActivate->hdr.code == LVN_BEGINDRAG)
     {
         CDropFiles dropFiles; // class for creating DROPFILES struct
 
@@ -2379,7 +2379,7 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
             dropFiles.CreateStructure(hListControl);
         }
     }
-    if (lpNMItemActivate->hdr.code == LVN_COLUMNCLICK)
+    else if (lpNMItemActivate->hdr.code == LVN_COLUMNCLICK)
     {
         bool fileList = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
         m_bAscending  = !m_bAscending;
@@ -2488,7 +2488,7 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
         SendMessage(hListControl, WM_SETREDRAW, TRUE, 0);
         RedrawWindow(hListControl, nullptr, nullptr, RDW_ERASE | RDW_FRAME | RDW_INVALIDATE | RDW_ALLCHILDREN);
     }
-    if (lpNMItemActivate->hdr.code == LVN_GETINFOTIP)
+    else if (lpNMItemActivate->hdr.code == LVN_GETINFOTIP)
     {
         NMLVGETINFOTIP* pInfoTip = reinterpret_cast<NMLVGETINFOTIP*>(lpNMItemActivate);
 
@@ -2522,7 +2522,7 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
             wcsncpy_s(pInfoTip->pszText, pInfoTip->cchTextMax, matchString.c_str(), pInfoTip->cchTextMax - 1LL);
         }
     }
-    if (lpNMItemActivate->hdr.code == LVN_GETDISPINFO)
+    else if (lpNMItemActivate->hdr.code == LVN_GETDISPINFO)
     {
         static const std::wstring sBinary         = TranslatedString(hResource, IDS_BINARY);
         static const std::wstring sReadError      = TranslatedString(hResource, IDS_READERROR);
