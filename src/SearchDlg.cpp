@@ -4332,7 +4332,14 @@ void CSearchDlg::AutoSizeAllColumns()
         RECT rc{};
         ListView_GetItemRect(hListControl, 0, &rc, LVIR_BOUNDS);
         auto itemWidth = rc.right - rc.left;
-        ListView_GetItemRect(hListControl, 0, &rc, LVIR_ICON);
+        if (nItemCount > 0)
+        {
+            GetClientRect(hListControl, &rc);
+            if (itemWidth < rc.right - rc.left)
+            {
+                itemWidth = rc.right - rc.left;
+            }
+        }
         auto totalWidth = std::accumulate(colWidths.begin(), colWidths.end(), 0);
         totalWidth -= colWidths[colWidths.size() - 2];
         auto textWidth = itemWidth - totalWidth;
