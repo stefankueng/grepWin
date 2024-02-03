@@ -2701,7 +2701,7 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
         pInfoTip->pszText[0]     = 0;
         if (static_cast<int>(m_items.size()) > iItem)
         {
-            CSearchInfo  inf         = m_items[iItem];
+            CSearchInfo& inf         = m_items[iItem];
 
             std::wstring matchString = inf.filePath + L"\n";
             if (!inf.exception.empty())
@@ -2885,14 +2885,34 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
     }
 }
 
+void static OpenFileInProcess(LPWSTR lpCommandLine)
+{
+    STARTUPINFO         startupInfo{};
+    PROCESS_INFORMATION processInfo{};
+    startupInfo.cb = sizeof(STARTUPINFO);
+    CreateProcess(nullptr, lpCommandLine, nullptr, nullptr, FALSE, 0, nullptr, nullptr, &startupInfo, &processInfo);
+    CloseHandle(processInfo.hThread);
+    CloseHandle(processInfo.hProcess);
+}
+
 void CSearchDlg::OpenFileAtListIndex(int listIndex)
 {
-    int          iItem  = GetSelectedListIndex(listIndex);
-    CSearchInfo  inf    = m_items[iItem];
-    size_t       dotPos = inf.filePath.rfind('.');
-    std::wstring ext;
-    if (dotPos != std::wstring::npos)
-        ext = inf.filePath.substr(dotPos);
+    auto            tup         = m_listItems[listIndex];
+    int             iItem       = std::get<0>(tup);
+    CSearchInfo&    inf         = m_items[iItem];
+    auto            subIndex    = 0;
+    wchar_t         line[32];
+    wchar_t         move[32];
+
+    bool fileList = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
+
+    if (!fileList)
+    {
+        subIndex = std::get<1>(tup);
+    }
+
+    swprintf_s(line, 32, L"%ld", inf.matchLinesNumbers[subIndex]);
+    swprintf_s(move, 32, L"%ld", inf.matchMovesNumbers[subIndex]);
 
     CRegStdString regEditorCmd(L"Software\\grepWin\\editorcmd");
     std::wstring  cmd = regEditorCmd;
@@ -2900,56 +2920,17 @@ void CSearchDlg::OpenFileAtListIndex(int listIndex)
         cmd = g_iniFile.GetValue(L"global", L"editorcmd", L"");
     if (!cmd.empty() && !inf.readError && inf.encoding != CTextFile::UnicodeType::Binary)
     {
-        bool fileList = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
-        if (!fileList)
-        {
-            HWND    hListControl          = GetDlgItem(*this, IDC_RESULTLIST);
-            wchar_t textLineBuf[MAX_PATH] = {0};
-            LVITEM  lv                    = {0};
-            lv.iItem                      = listIndex;
-            lv.iSubItem                   = 1; // line number
-            lv.mask                       = LVIF_TEXT;
-            lv.pszText                    = textLineBuf;
-            lv.cchTextMax                 = _countof(textLineBuf);
-            if (ListView_GetItem(hListControl, &lv))
-            {
-                if (_wtol(textLineBuf) == 0)
-                    wcscpy_s(textLineBuf, L"0");
-                SearchReplace(cmd, L"%line%", textLineBuf);
-            }
-            lv.iSubItem                   = 2; // move number
-            if (ListView_GetItem(hListControl, &lv))
-            {
-                if (_wtol(textLineBuf) == 0)
-                    wcscpy_s(textLineBuf, L"0");
-                SearchReplace(cmd, L"%move%", textLineBuf);
-            }
-        }
-        else
-        {
-            // use the first matching line in this file
-            if (!inf.matchLinesNumbers.empty())
-            {
-                SearchReplace(cmd, L"%line%", CStringUtils::Format(L"%lu", inf.matchLinesNumbers[0]));
-                SearchReplace(cmd, L"%move%", CStringUtils::Format(L"%lu", inf.matchMovesNumbers[0]));
-            }
-            else
-            {
-                SearchReplace(cmd, L"%line%", L"0");
-                SearchReplace(cmd, L"%move%", L"0");
-            }
-        }
-
-        SearchReplace(cmd, L"%path%", inf.filePath.c_str());
-
-        STARTUPINFO         startupInfo{};
-        PROCESS_INFORMATION processInfo{};
-        startupInfo.cb = sizeof(STARTUPINFO);
-        CreateProcess(nullptr, const_cast<wchar_t*>(cmd.c_str()), nullptr, nullptr, FALSE, 0, nullptr, nullptr, &startupInfo, &processInfo);
-        CloseHandle(processInfo.hThread);
-        CloseHandle(processInfo.hProcess);
+        SearchReplace(cmd, L"%line%", line);
+        SearchReplace(cmd, L"%move%", move);
+        SearchReplace(cmd, L"%path%", inf.filePath);
+        OpenFileInProcess(const_cast<wchar_t*>(cmd.c_str()));
         return;
     }
+
+    size_t          dotPos  = inf.filePath.rfind('.');
+    std::wstring    ext;
+    if (dotPos != std::wstring::npos)
+        ext = inf.filePath.substr(dotPos);
 
     DWORD bufLen = 0;
     if (AssocQueryString(ASSOCF_INIT_DEFAULTTOSTAR, ASSOCSTR_DDECOMMAND, ext.c_str(), nullptr, nullptr, &bufLen) == S_OK)
@@ -2962,6 +2943,7 @@ void CSearchDlg::OpenFileAtListIndex(int listIndex)
             return;
         }
     }
+
     bufLen = 0;
     AssocQueryString(ASSOCF_INIT_DEFAULTTOSTAR, ASSOCSTR_COMMAND, ext.c_str(), nullptr, nullptr, &bufLen);
     auto cmdBuf = std::make_unique<wchar_t[]>(bufLen + 1LL);
@@ -2974,119 +2956,111 @@ void CSearchDlg::OpenFileAtListIndex(int listIndex)
     application = cmdBuf.get();
 
     // resolve parameters
-    if (application.find(L"%1") == std::wstring::npos)
-        application += L" %1";
+    std::wstring    appname         = application;
+    std::ranges::transform(appname, appname.begin(), ::towlower);
+    std::wstring    quote           = L"\"";
+    std::wstring    params;
+    std::wstring    paramsSuffix;
+    bool            bDontQuotePath  = FALSE;
 
-    bool         fileList = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
-    std::wstring lineNumberParamBefore;
-    std::wstring lineNumberParam;
-    wchar_t      textLineBuf[MAX_PATH] = {0};
-    if (!fileList)
+    std::wstring    argHolder       = L"%1";
+    size_t          holderIndex     = application.find(argHolder);
+    size_t          reservedLength;
+    if (holderIndex == std::wstring::npos)
     {
-        HWND   hListControl = GetDlgItem(*this, IDC_RESULTLIST);
-        LVITEM lv           = {0};
-        lv.iItem            = listIndex;
-        lv.iSubItem         = 1; // line number
-        lv.mask             = LVIF_TEXT;
-        lv.pszText          = textLineBuf;
-        lv.cchTextMax       = _countof(textLineBuf);
-        if (!ListView_GetItem(hListControl, &lv))
+        reservedLength = application.length() + 1;
+        application += L" %1";
+    }
+    else
+    {
+        reservedLength = holderIndex;
+        if (holderIndex > 0 && application[holderIndex - 1] == L'"')
         {
-            textLineBuf[0] = '\0';
+            reservedLength--;
+            // replace "%1" with %1
+            SearchReplace(application, L"\"%1\"", argHolder);
         }
     }
-    else if (!inf.matchLinesNumbers.empty())
-    {
-        // use the first matching line in this file
-        swprintf_s(textLineBuf, L"%ld", inf.matchLinesNumbers[0]);
-    }
-    if (textLineBuf[0] == 0)
-        wcscpy_s(textLineBuf, L"0");
-    std::wstring appname = application;
-    std::ranges::transform(appname, appname.begin(), ::towlower);
 
     // now find out if the application which opens the file is known to us
-    // and if it has a 'linenumber' switch to jump directly to a specific
-    // line number.
+    // and add extra params to the "%1" for better locating.
     if (appname.find(L"notepad++.exe") != std::wstring::npos)
     {
-        // notepad++
-        lineNumberParam = CStringUtils::Format(L"-n%s", textLineBuf);
+        params = CStringUtils::Format(L"-n%s -c%s ", line, move);
     }
     else if (appname.find(L"xemacs.exe") != std::wstring::npos)
     {
-        // XEmacs
-        lineNumberParam = CStringUtils::Format(L"+%s", textLineBuf);
+        params = CStringUtils::Format(L"+%s ", line);
     }
-    else if (appname.find(L"uedit32.exe") != std::wstring::npos)
+    else if ((appname.find(L"uedit32.exe") != std::wstring::npos) || (appname.find(L"uedit64.exe") != std::wstring::npos))
     {
-        // UltraEdit
-        lineNumberParam = CStringUtils::Format(L"-l%s", textLineBuf);
-    }
-    else if (appname.find(L"codewright.exe") != std::wstring::npos)
-    {
-        // CodeWright
-        lineNumberParam = CStringUtils::Format(L"-G%s", textLineBuf);
+        // UltraEdit, `/<ln>/<cn>` covers more (old) versions than `-l<ln> -c<ln>`
+        params = quote;
+        paramsSuffix = CStringUtils::Format(L"/%s/%s\"", line, move);
+        bDontQuotePath = TRUE;
     }
     else if (appname.find(L"notepad2.exe") != std::wstring::npos)
     {
-        // Notepad2
-        auto escapedSearch = m_searchString;
-        SearchReplace(escapedSearch, L"\"", L"\\\"");
-        lineNumberParamBefore = CStringUtils::Format(L"/g %s /mr \"%s\"", textLineBuf, escapedSearch.c_str());
+        std::wstring match;
+        if (inf.matchLines.size() > 0)
+        {
+            // not binary
+            const wchar_t*  specialChar[17]     = {
+                // oringinal
+                L"\\",
+                // regex special chars, current and future
+                L"^", L"$", L".", L"?", L"*", L"+", L"[", L"]", L"(", L")", L"{", L"}", L"|",
+                // command line special chars
+                L"\"", L" ", L"\t"
+            };
+            const wchar_t*  specialEscaped[17]  = {
+                L"\\x5c",
+                L"\\^", L"\\$", L"\\.", L"\\?", L"\\*", L"\\+", L"\\[", L"\\]", L"\\(", L"\\)", L"\\{", L"\\}", L"\\|",
+                L"\\x22", L"\\x20", L"\\x09"
+            };
+            match = inf.matchLines[subIndex].substr(inf.matchMovesNumbers[subIndex] - 1, inf.matchLengths[subIndex]);
+            for (int i = 0; i < _countof(specialChar); ++i)
+            {
+                SearchReplace(match, specialChar[i], specialEscaped[i]);
+            }
+            if (match.length() > 32767 - 1 - 2 - 2 - 13 - inf.filePath.length() - reservedLength)
+            {
+                match.clear();
+            }
+        }
+        params = CStringUtils::Format(L"/g %s,%s /mr \"%s\" ", line, move, match.c_str());
     }
     else if ((appname.find(L"bowpad.exe") != std::wstring::npos) || (appname.find(L"bowpad64.exe") != std::wstring::npos))
     {
-        // BowPad
-        lineNumberParam = CStringUtils::Format(L"/line:%s", textLineBuf);
+        paramsSuffix = CStringUtils::Format(L" /line:%s", line);
     }
     else if (appname.find(L"code.exe") != std::wstring::npos)
     {
         // Visual Studio Code
-        lineNumberParamBefore = L"--goto";
-        lineNumberParam       = CStringUtils::Format(L":%s", textLineBuf);
+        params = L"-g ";
+        paramsSuffix = CStringUtils::Format(L":%s:%s", line, move);
+    }
+    else if (application.find(L"-single-argument") != std::wstring::npos)
+    {
+        // Chrome family: all following are path that does not need double quotes, even if there are spaces
+        // https://chromium.googlesource.com/chromium/src/+/refs/heads/main/base/command_line.cc
+        bDontQuotePath = TRUE;
     }
 
-    // replace "%1" with %1
-    std::wstring           tag     = L"\"%1\"";
-    std::wstring           repl    = L"%1";
-    std::wstring::iterator itBegin = search(application.begin(), application.end(), tag.begin(), tag.end());
-    if (itBegin != application.end())
+    if (bDontQuotePath)
     {
-        std::wstring::iterator itEnd = itBegin + tag.size();
-        application.replace(itBegin, itEnd, repl);
+        params += inf.filePath;
     }
-    // replace %1 with "path/of/selected/file"
-    tag = L"%1";
-    if (application.find(L"rundll32.exe") == std::wstring::npos && application.find(L"--single-argument") == std::wstring::npos)
-        repl = L"\"" + inf.filePath + L"\"";
     else
-        repl = inf.filePath;
-    if (!lineNumberParamBefore.empty())
     {
-        repl = lineNumberParamBefore + L" " + repl;
+        params += quote + inf.filePath + quote;
     }
-    itBegin = std::ranges::search(application, tag).begin();
-    if (itBegin != application.end())
-    {
-        std::wstring::iterator itEnd = itBegin + tag.size();
-        application.replace(itBegin, itEnd, repl);
-    }
-    if (!lineNumberParam.empty())
-    {
-        if (!lineNumberParam.starts_with(L":"))
-        {
-            application += L" ";
-        }
-        application += lineNumberParam;
-    }
+    params += paramsSuffix;
 
-    STARTUPINFO         startupInfo{};
-    PROCESS_INFORMATION processInfo{};
-    startupInfo.cb = sizeof(STARTUPINFO);
-    CreateProcess(nullptr, const_cast<wchar_t*>(application.c_str()), nullptr, nullptr, FALSE, 0, nullptr, nullptr, &startupInfo, &processInfo);
-    CloseHandle(processInfo.hThread);
-    CloseHandle(processInfo.hProcess);
+    // replace %1 with the final decorated path
+    SearchReplace(application, argHolder, params);
+
+    OpenFileInProcess(const_cast<wchar_t*>(application.c_str()));
 }
 
 bool grepWinIsRegexValid(const std::wstring& searchString)
