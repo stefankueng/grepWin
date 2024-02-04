@@ -78,7 +78,6 @@ DWORD WINAPI            SearchThreadEntry(LPVOID lpParam);
 
 // ReSharper disable once CppInconsistentNaming
 UINT                    CSearchDlg::m_grepwinStartupmsg = RegisterWindowMessage(L"grepWin_StartupMessage");
-std::map<size_t, DWORD> linePositions;
 
 extern ULONGLONG        g_startTime;
 extern HANDLE           hInitProtection;
@@ -2278,7 +2277,10 @@ void CSearchDlg::ShowContextMenu(HWND hWnd, int x, int y)
             data.path       = info.filePath;
             LineDataLine dataLine;
             if (static_cast<int>(info.matchLinesNumbers.size()) > subIdx)
+            {
                 dataLine.number = info.matchLinesNumbers[subIdx];
+                dataLine.move   = info.matchMovesNumbers[subIdx];
+            }
             if (static_cast<int>(info.matchLines.size()) > subIdx)
                 dataLine.text = info.matchLines[subIdx];
             data.lines.push_back(dataLine);
@@ -4233,7 +4235,6 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
                 {
                     if (!bLoadResult && (type != CTextFile::Binary) && !m_bNotSearch)
                     {
-                        linePositions.clear();
                         // open the file and set up a vector of all lines
                         CAutoFile hFile;
                         int       retryCounter = 0;
@@ -4247,9 +4248,10 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
                         } while (!hFile && retryCounter < 5);
                         if (hFile)
                         {
-                            auto   fBuf      = std::make_unique<char[]>(4096);
-                            DWORD  bytesRead = 0;
-                            size_t pos       = 0;
+                            std::map<size_t, DWORD> linePositions;
+                            auto                    fBuf         = std::make_unique<char[]>(4096);
+                            DWORD                   bytesRead    = 0;
+                            size_t                  pos          = 0;
                             while (ReadFile(hFile, fBuf.get(), 4096, &bytesRead, nullptr))
                             {
                                 if (bytesRead == 0)

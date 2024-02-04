@@ -342,6 +342,8 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
                             wchar_t buf[40] = {0};
                             swprintf_s(buf, L"%ld", it2->number);
                             SearchReplace(cmd, L"%line%", buf);
+                            swprintf_s(buf, L"%ld", it2->move);
+                            SearchReplace(cmd, L"%move%", buf);
 
                             STARTUPINFO         startupInfo;
                             PROCESS_INFORMATION processInfo;
@@ -365,9 +367,14 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
                             wchar_t buf[40] = {0};
                             swprintf_s(buf, L"%ld", it->matchLinesNumbers[0]);
                             SearchReplace(cmd, L"%line%", buf);
+                            swprintf_s(buf, L"%ld", it->matchMovesNumbers[0]);
+                            SearchReplace(cmd, L"%move%", buf);
                         }
                         else
+                        {
                             SearchReplace(cmd, L"%line%", L"0");
+                            SearchReplace(cmd, L"%move%", L"0");
+                        }
 
                         STARTUPINFO         startupInfo;
                         PROCESS_INFORMATION processInfo;
