@@ -4187,6 +4187,7 @@ int CSearchDlg::CheckRegex()
 
     auto buf                       = GetDlgItemText(IDC_SEARCHTEXT);
     int  len                       = static_cast<int>(wcslen(buf.get()));
+    int  lenSearchText             = len;
     if (IsDlgButtonChecked(*this, IDC_REGEXRADIO) == BST_CHECKED)
     {
         // check if the regex is valid
@@ -4225,6 +4226,7 @@ int CSearchDlg::CheckRegex()
                 DialogEnableWindow(IDC_REPLACE, false);
                 DialogEnableWindow(IDC_CREATEBACKUP, false);
                 RedrawWindow(GetDlgItem(*this, IDC_SEARCHTEXT), nullptr, nullptr, RDW_FRAME | RDW_INVALIDATE);
+                lenSearchText = 0;
             }
         }
         else
@@ -4281,7 +4283,7 @@ int CSearchDlg::CheckRegex()
     }
     RedrawWindow(GetDlgItem(*this, IDC_PATTERN), nullptr, nullptr, RDW_FRAME | RDW_INVALIDATE);
 
-    return len;
+    return lenSearchText;
 }
 
 void CSearchDlg::AutoSizeAllColumns()
