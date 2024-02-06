@@ -396,7 +396,7 @@ BEGIN
     IDS_COPYRESULT          "Copy text result to clipboard"
     IDS_COPYRESULTS         "Copy text results to clipboard"
     IDS_XMOREMATCHES        "%ld more matches"
-    IDS_CONTEXTLINE         "Line %5ld : %30s\n"
+    IDS_CONTEXTLINE         "Line %5ld : %s\n"
     IDS_INFOLABELFILE       "scanning file '%s'"
     IDS_ERR_RELATIVEPATH    "Relative paths are not allowed. Please enter an absolute path!"
     IDS_ERR_INVALID_PATH    "Invalid path!"

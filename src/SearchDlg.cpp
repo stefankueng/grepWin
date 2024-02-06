@@ -2695,37 +2695,51 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
     }
     else if (lpNMItemActivate->hdr.code == LVN_GETINFOTIP)
     {
-        NMLVGETINFOTIP* pInfoTip = reinterpret_cast<NMLVGETINFOTIP*>(lpNMItemActivate);
+        NMLVGETINFOTIP* pInfoTip    = reinterpret_cast<NMLVGETINFOTIP*>(lpNMItemActivate);
 
-        // Which item number?
-        size_t          itemId   = pInfoTip->iItem;
-        int             iItem    = GetSelectedListIndex(static_cast<int>(itemId));
-        pInfoTip->pszText[0]     = 0;
-        if (static_cast<int>(m_items.size()) > iItem)
+        size_t          listIndex   = pInfoTip->iItem;
+        auto            tup         = m_listItems[listIndex];
+        int             iItem       = std::get<0>(tup);
+        CSearchInfo&    inf         = m_items[iItem];
+        int             subIndex    = 0;
+
+        bool fileList = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
+
+        if (!fileList)
         {
-            CSearchInfo& inf         = m_items[iItem];
-
-            std::wstring matchString = inf.filePath + L"\n";
-            if (!inf.exception.empty())
-            {
-                matchString += inf.exception;
-                matchString += L"\n";
-            }
-            std::wstring sFormat = TranslatedString(hResource, IDS_CONTEXTLINE);
-            for (size_t i = 0; i < min(inf.matchLines.size(), 5); ++i)
-            {
-                std::wstring matchText = inf.matchLines[i];
-                CStringUtils::trim(matchText);
-                matchString += CStringUtils::Format(sFormat.c_str(), inf.matchLinesNumbers[i], matchText.c_str());
-            }
-            if (inf.matchLines.size() > 5)
-            {
-                std::wstring sx  = TranslatedString(hResource, IDS_XMOREMATCHES);
-                std::wstring ssx = CStringUtils::Format(sx.c_str(), static_cast<int>(inf.matchLines.size() - 5));
-                matchString += ssx;
-            }
-            wcsncpy_s(pInfoTip->pszText, pInfoTip->cchTextMax, matchString.c_str(), pInfoTip->cchTextMax - 1LL);
+            subIndex = std::get<1>(tup);
         }
+
+        std::wstring matchString    = inf.filePath + L"\n";
+        if (!inf.exception.empty())
+        {
+            matchString += inf.exception;
+            matchString += L"\n";
+        }
+
+        std::wstring    sFormat     = TranslatedString(hResource, IDS_CONTEXTLINE);
+        int             leftMax     = static_cast<int>(inf.matchLines.size());
+        int             showMax     = min(leftMax, subIndex + 5);
+        for (; subIndex < showMax; ++subIndex)
+        {
+            std::wstring matchText  = inf.matchLines[subIndex];
+            CStringUtils::rtrim(matchText);
+            DWORD   iShow   = 0;
+            if (inf.matchMovesNumbers[subIndex] > 8)
+            {
+                // 6 + 1 prefix chars would give a context
+                iShow = inf.matchMovesNumbers[subIndex] - 8;
+            }
+            matchString += CStringUtils::Format(sFormat.c_str(), inf.matchLinesNumbers[subIndex], matchText.substr(iShow, 50).c_str());
+        }
+        leftMax  -= subIndex;
+        if (leftMax > 0)
+        {
+            std::wstring sx  = TranslatedString(hResource, IDS_XMOREMATCHES);
+            std::wstring ssx = CStringUtils::Format(sx.c_str(), leftMax);
+            matchString += ssx;
+        }
+        wcsncpy_s(pInfoTip->pszText, pInfoTip->cchTextMax, matchString.c_str(), pInfoTip->cchTextMax - 1LL);
     }
     else if (lpNMItemActivate->hdr.code == LVN_GETDISPINFO)
     {

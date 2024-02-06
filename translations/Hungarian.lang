@@ -311,8 +311,8 @@ msgstr "Sor"
 
 #. Resource IDs: (150)
 #, c-format
-msgid "Line %5ld : %30s\n"
-msgstr "%5ld : %30s sor\n"
+msgid "Line %5ld : %s\n"
+msgstr "%5ld : %s sor\n"
 
 #. Resource IDs: (135)
 msgid "Matches"

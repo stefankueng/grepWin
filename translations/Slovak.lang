@@ -311,8 +311,8 @@ msgstr "Riadok"
 
 #. Resource IDs: (150)
 #, c-format
-msgid "Line %5ld : %30s\n"
-msgstr "Riadok %5ld : %30s\n"
+msgid "Line %5ld : %s\n"
+msgstr "Riadok %5ld : %s\n"
 
 #. Resource IDs: (135)
 msgid "Matches"
