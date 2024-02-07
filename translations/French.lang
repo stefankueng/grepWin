@@ -604,7 +604,7 @@ msgid "number of NULL bytes per MB allowed for a file to still be considered tex
 msgstr ""
 
 #. Resource IDs: (112)
-msgid "only files that match this pattern are searched.\r\nUse \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
+msgid "only files that match this pattern are searched.\r\nText match extended. Use\"|\" as the delimiter.\r\nExample: *.cpp|*.h"
 msgstr "La recherche ne sera manée que dans les fichiers qui correspondent à ce motif.\nUtiliser '|' comme séparateur\nExemple : *.cpp|*.h"
 
 #. Resource IDs: (176)
@@ -641,7 +641,7 @@ msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | s
 msgstr "Chemin(s) de recherche récursive.\n'|' pour ajouter un chemin.\nExemple : c:\\temp|d:\\logs"
 
 #. Resource IDs: (113)
-msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
+msgid "you can exclude directories, e.g. CVS and images.\r\nText match extended. Example: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "Il est possible d'exclure des dossiers. Exemple : ^(CVS|images)$ pour exclure CVS\\ et images\\.\nLes dossiers .svn sont 'cachés' sous Windows et ne sont normalment pas parcourus."
 
 #. Resource IDs: (1064, 1066, 1067)

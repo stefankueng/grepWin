@@ -74,7 +74,7 @@ BEGIN
     PUSHBUTTON      "/",IDC_EDITMULTILINE2,553,81,13,12
     CONTROL         "Search case-sensitive",IDC_CASE_SENSITIVE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,98,89,10
     CONTROL         "Dot matches newline",IDC_DOTMATCHNEWLINE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,108,98,125,10
-    CONTROL         "Create backup files",IDC_CREATEBACKUP,"Button",BS_AUTOCHECKBOX | WS_DISABLED | WS_TABSTOP,238,98,91,10
+    CONTROL         "Create backup files",IDC_CREATEBACKUP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,238,98,91,10
     CONTROL         "Treat files as UTF8",IDC_UTF8,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,335,98,93,10
     PUSHBUTTON      "Test regex",IDC_TESTREGEX,14,109,77,14
     PUSHBUTTON      "Add to Presets",IDC_ADDTOBOOKMARKS,108,109,76,14
@@ -91,7 +91,7 @@ BEGIN
     CONTROL         "Include system items",IDC_INCLUDESYSTEM,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,166,90,10
     CONTROL         "Include hidden items",IDC_INCLUDEHIDDEN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,108,166,85,10
     CONTROL         "Include subfolders",IDC_INCLUDESUBFOLDERS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,178,89,10
-    CONTROL         "Include binary files",IDC_INCLUDEBINARY,"Button",BS_AUTOCHECKBOX | WS_DISABLED | WS_TABSTOP,108,178,86,10
+    CONTROL         "Include binary files",IDC_INCLUDEBINARY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,108,178,86,10
     CONTROL         "Include symbolic links",IDC_INCLUDESYMLINK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,190,115,10
     CONTROL         "All dates",IDC_RADIO_DATE_ALL,"Button",BS_AUTORADIOBUTTON,198,139,106,10
     CONTROL         "Newer than",IDC_RADIO_DATE_NEWER,"Button",BS_AUTORADIOBUTTON,198,152,58,10
@@ -349,8 +349,8 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_PATTERN_TT          "only files that match this pattern are searched.\r\nUse ""|"" as the delimiter.\r\nExample: *.cpp|*.h"
-    IDS_EXCLUDEDIR_TT       "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
+    IDS_PATTERN_TT          "only files that match this pattern are searched.\r\nText match extended. Use ""|"" as the delimiter.\r\nExample: *.cpp|*.h"
+    IDS_EXCLUDEDIR_TT       "you can exclude directories, e.g. CVS and images.\r\nText match extended. Example: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
     IDS_SEARCHPATH_TT       "the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"
     IDS_DOTMATCHNEWLINE_TT  "Newline is matched by '.'"
     IDS_SEARCHTEXT_TT       "a regular expression used for searching. Press F1 for more info."
