@@ -604,7 +604,7 @@ msgid "number of NULL bytes per MB allowed for a file to still be considered tex
 msgstr "NULL-байт на МБ для файла, чтобы считать его текстовым, а не двоичным"
 
 #. Resource IDs: (112)
-msgid "only files that match this pattern are searched.\r\nUse \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
+msgid "only files that match this pattern are searched.\r\nText match extended. Use\"|\" as the delimiter.\r\nExample: *.cpp|*.h"
 msgstr "Поиск только файлов соответствующих шаблону.\r\nИспользуйте '|' как разделитель.\r\nПример: *.cpp|*.h"
 
 #. Resource IDs: (176)
@@ -641,7 +641,7 @@ msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | s
 msgstr "Рекурсивный поиск путей.\r\nРазделяйте пути знаком '|'.\r\nПример: c:\\temp|d:\\logs"
 
 #. Resource IDs: (113)
-msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
+msgid "you can exclude directories, e.g. CVS and images.\r\nText match extended. Example: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "Вы можете исключать папки.\r\nПример: ^(CVS|images)$\r\nВнимание: папки '.svn', как правило, скрыты в Windows,\r\nпоэтому они обычно не сканируются."
 
 #. Resource IDs: (1064, 1066, 1067)

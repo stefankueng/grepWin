@@ -604,7 +604,7 @@ msgid "number of NULL bytes per MB allowed for a file to still be considered tex
 msgstr "ilość znakó/bajtów NULL na każdy MB pozwalający nadal uznać plik jako tekstowy, zamiast binarny"
 
 #. Resource IDs: (112)
-msgid "only files that match this pattern are searched.\r\nUse \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
+msgid "only files that match this pattern are searched.\r\nText match extended. Use\"|\" as the delimiter.\r\nExample: *.cpp|*.h"
 msgstr "Wyszukiwane są tylko pliki odpowiadające temu wzorcowi.\r\nJako separatora użyj \"|\" \r\nPrzykład: *.cpp|*."
 
 #. Resource IDs: (176)
@@ -641,7 +641,7 @@ msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | s
 msgstr "Ścieżka(-i), która(-e) jest(są) przeszukiwana(-e) regularnie.\r\nOddziel ścieżki za pomocą symbolu (pipe): | \r\nPrzykład: c:\\temp|d:\\logs"
 
 #. Resource IDs: (113)
-msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
+msgid "you can exclude directories, e.g. CVS and images.\r\nText match extended. Example: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "Można wykluczyć katalogi, np. CVS i obrazy.\r\nPrzykład: ^(CVS|obrazy)$\r\nUwaga, foldery '.svn' są ukryte w Windows, więc zwykle nie są one skanowane."
 
 #. Resource IDs: (1064, 1066, 1067)

@@ -93,6 +93,7 @@ public:
         m_showContent    = true;
         m_showContentSet = true;
     }
+    bool isSearchPathValid() const;
     bool isRegexValid() const;
     bool isExcludeDirsRegexValid() const;
     bool isFileNameMatchRegexValid() const;
@@ -114,7 +115,7 @@ protected:
     bool             SaveSettings();
     void             SaveWndPosition();
     void             formatDate(wchar_t dateNative[], const FILETIME& fileTime, bool forceShortFmt) const;
-    int              CheckRegex();
+    bool             CheckRegex(const std::wstring& patternString);
     bool             MatchPath(LPCTSTR pathBuf) const;
     void             AutoSizeAllColumns();
     int              GetSelectedListIndex(int index);
@@ -199,7 +200,11 @@ private:
     std::wstring                      m_resultString;
     std::wstring                      m_toolTipReplaceString;
     std::unique_ptr<CInfoRtfDialog>   m_rtfDialog;
-    bool                              m_isRegexValid;
+
+    bool                              m_hasSearchDir;
+    bool                              m_isSearchPathValid;
+    int                               m_SearchValidLength;
+    int                               m_ReplaceValidLength;
     bool                              m_isExcludeDirsRegexValid;
     bool                              m_isFileNameMatchingRegexValid;
 

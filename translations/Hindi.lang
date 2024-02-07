@@ -604,7 +604,7 @@ msgid "number of NULL bytes per MB allowed for a file to still be considered tex
 msgstr "फ़ाइल को binary के बजाए टेक्स्ट मानने के लिए NULL bytes per MB की यह संख्या मान्य है"
 
 #. Resource IDs: (112)
-msgid "only files that match this pattern are searched.\r\nUse \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
+msgid "only files that match this pattern are searched.\r\nText match extended. Use\"|\" as the delimiter.\r\nExample: *.cpp|*.h"
 msgstr "मात्र वही फ़ाइल खोजी जाएंगी जो इस स्वरूप से मिलान खाती हैं.\ndelimiter के रूप में '|' प्रयोग करें.\nउदाहरण: *.cpp|*.h"
 
 #. Resource IDs: (176)
@@ -641,7 +641,7 @@ msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | s
 msgstr "जो पथ recursively खोजे जा रहे हैं.\n'|' चिन्ह से पथ अलग करें.\nउदाहरण: c:\\temp|d:\\logs"
 
 #. Resource IDs: (113)
-msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
+msgid "you can exclude directories, e.g. CVS and images.\r\nText match extended. Example: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "आप निदेशिका बाहर रख सकते हैं, उदाहरण CVS and चित्र .\nउदाहरण: ^(CVS|चित्र)$\nकृपया ध्यान दें, 'Windows में .svn' फ़ोल्डर 'छिपे' हुए हैं, अतः वो प्रायः स्कैन नहीं किए जाते"
 
 #. Resource IDs: (1064, 1066, 1067)

@@ -95,9 +95,29 @@ void                    drawRedEditBox(HWND hWnd, WPARAM wParam)
     RECT rc = {0};
     GetWindowRect(hWnd, &rc);
     MapWindowPoints(nullptr, hWnd, reinterpret_cast<LPPOINT>(&rc), 2);
-    ::SetBkColor(hdc, RGB(255, 0, 0));
+    ::SetBkColor(hdc, RGB(236, 93, 93));
     ::ExtTextOut(hdc, 0, 0, ETO_OPAQUE, &rc, nullptr, 0, nullptr);
     ReleaseDC(hWnd, hdc);
+}
+
+LRESULT CALLBACK SearchPathWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR /*uIdSubclass*/, DWORD_PTR dwRefData)
+{
+    switch (uMsg)
+    {
+        case WM_NCPAINT:
+        {
+            auto searchDlg = reinterpret_cast<CSearchDlg*>(dwRefData);
+            if (!searchDlg->isSearchPathValid())
+            {
+                drawRedEditBox(hWnd, wParam);
+                return 0;
+            }
+        }
+        default:
+            break;
+    }
+
+    return DefSubclassProc(hWnd, uMsg, wParam, lParam);
 }
 
 LRESULT CALLBACK SearchEditWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR /*uIdSubclass*/, DWORD_PTR dwRefData)
@@ -160,6 +180,14 @@ LRESULT CALLBACK FileNameMatchEditWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
     return DefSubclassProc(hWnd, uMsg, wParam, lParam);
 }
 
+static void removeMineExtVariables(std::wstring& str)
+{
+    for (const auto& s : {L"${filepath}", L"${filename}", L"${fileext}"})
+    {
+        SearchReplace(str, s, L"");
+    }
+}
+
 CSearchDlg::CSearchDlg(HWND hParent)
     : m_hParent(hParent)
     , m_dwThreadRunning(FALSE)
@@ -218,7 +246,10 @@ CSearchDlg::CSearchDlg(HWND hParent)
     , m_totalMatches(0)
     , m_selectedItems(0)
     , m_bAscending(true)
-    , m_isRegexValid(true)
+    , m_hasSearchDir(false)
+    , m_isSearchPathValid(false)
+    , m_SearchValidLength(0)
+    , m_ReplaceValidLength(0)
     , m_isExcludeDirsRegexValid(true)
     , m_isFileNameMatchingRegexValid(true)
     , m_themeCallbackId(0)
@@ -269,9 +300,15 @@ CSearchDlg::~CSearchDlg()
         delete m_pDropTarget;
 }
 
+bool CSearchDlg::isSearchPathValid() const
+{
+    return m_isSearchPathValid;
+}
+
 bool CSearchDlg::isRegexValid() const
 {
-    return m_isRegexValid;
+    // 0 is allowed to count files
+    return m_SearchValidLength >= 0;
 }
 
 bool CSearchDlg::isExcludeDirsRegexValid() const
@@ -349,56 +386,12 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             AddToolTip(IDC_PATTERNMRU, TranslatedString(hResource, IDS_OPEN_MRU).c_str());
             AddToolTip(IDC_REPLACETEXT, LPSTR_TEXTCALLBACK);
 
+            SetWindowSubclass(GetDlgItem(*this, IDC_SEARCHPATH), SearchPathWndProc, SearchEditSubclassID, reinterpret_cast<DWORD_PTR>(this));
             SetWindowSubclass(GetDlgItem(*this, IDC_SEARCHTEXT), SearchEditWndProc, SearchEditSubclassID, reinterpret_cast<DWORD_PTR>(this));
             SetWindowSubclass(GetDlgItem(*this, IDC_EXCLUDEDIRSPATTERN), ExcludeDirEditWndProc, SearchEditSubclassID, reinterpret_cast<DWORD_PTR>(this));
             SetWindowSubclass(GetDlgItem(*this, IDC_PATTERN), FileNameMatchEditWndProc, SearchEditSubclassID, reinterpret_cast<DWORD_PTR>(this));
 
-            if (m_searchPath.empty())
-            {
-                if (bPortable)
-                    m_searchPath = g_iniFile.GetValue(L"global", L"searchpath", L"");
-                else
-                    m_searchPath = std::wstring(m_regSearchPath);
-            }
-            else
-            {
-                // expand a possible 'short' path
-                DWORD ret = 0;
-                ret       = ::GetLongPathName(m_searchPath.c_str(), nullptr, 0);
-                if (ret)
-                {
-                    auto pathBuf = std::make_unique<wchar_t[]>(ret + 2LL);
-                    ret          = ::GetLongPathName(m_searchPath.c_str(), pathBuf.get(), ret + 1);
-                    m_searchPath = std::wstring(pathBuf.get(), ret);
-                }
-            }
-
-            if (m_patternRegex.empty() && !m_patternRegexC)
-            {
-                if (bPortable)
-                {
-                    m_patternRegex      = g_iniFile.GetValue(L"global", L"pattern", L"");
-                    m_bUseRegexForPaths = !!_wtoi(g_iniFile.GetValue(L"global", L"UseFileMatchRegex", L""));
-                }
-                else
-                {
-                    m_patternRegex      = std::wstring(m_regPattern);
-                    m_bUseRegexForPaths = !!static_cast<DWORD>(m_regUseRegexForPaths);
-                }
-            }
-            if (m_excludeDirsPatternRegex.empty() && !m_excludeDirsPatternRegexC)
-            {
-                if (bPortable)
-                    m_excludeDirsPatternRegex = g_iniFile.GetValue(L"global", L"ExcludeDirsPattern", L"");
-                else
-                    m_excludeDirsPatternRegex = std::wstring(m_regExcludeDirsPattern);
-            }
             // initialize the controls
-            SetDlgItemText(hwndDlg, IDC_SEARCHPATH, m_searchPath.c_str());
-            SetDlgItemText(hwndDlg, IDC_SEARCHTEXT, m_searchString.c_str());
-            SetDlgItemText(hwndDlg, IDC_EXCLUDEDIRSPATTERN, m_excludeDirsPatternRegex.c_str());
-            SetDlgItemText(hwndDlg, IDC_PATTERN, m_patternRegex.c_str());
-            SetDlgItemText(hwndDlg, IDC_REPLACETEXT, m_replaceString.c_str());
 
             // the path edit control should work as a drop target for files and folders
             HWND hSearchPath = GetDlgItem(hwndDlg, IDC_SEARCHPATH);
@@ -525,15 +518,12 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 
             CheckRadioButton(hwndDlg, IDC_REGEXRADIO, IDC_TEXTRADIO, (bPortable ? _wtoi(g_iniFile.GetValue(L"global", L"UseRegex", L"0")) : static_cast<DWORD>(m_regUseRegex)) ? IDC_REGEXRADIO : IDC_TEXTRADIO);
             CheckRadioButton(hwndDlg, IDC_ALLSIZERADIO, IDC_SIZERADIO, m_bAllSize ? IDC_ALLSIZERADIO : IDC_SIZERADIO);
-            CheckRadioButton(hwndDlg, IDC_FILEPATTERNREGEX, IDC_FILEPATTERNTEXT, m_bUseRegexForPaths ? IDC_FILEPATTERNREGEX : IDC_FILEPATTERNTEXT);
             SendDlgItemMessage(hwndDlg, IDC_WHOLEWORDS, BM_SETCHECK, m_bWholeWords ? BST_CHECKED : BST_UNCHECKED, 0);
             DialogEnableWindow(IDC_WHOLEWORDS, IsDlgButtonChecked(hwndDlg, IDC_TEXTRADIO));
             if (!m_searchString.empty() || m_bUseRegexC)
                 CheckRadioButton(*this, IDC_REGEXRADIO, IDC_TEXTRADIO, m_bUseRegex ? IDC_REGEXRADIO : IDC_TEXTRADIO);
 
             DialogEnableWindow(IDC_TESTREGEX, !IsDlgButtonChecked(*this, IDC_TEXTRADIO));
-            DialogEnableWindow(IDC_ADDTOBOOKMARKS, FALSE);
-            DialogEnableWindow(IDC_EXCLUDEDIRSPATTERN, !!m_bIncludeSubfolders);
 
             ::SetDlgItemText(*this, IDOK, TranslatedString(hResource, IDS_SEARCH).c_str());
             if (!m_showContentSet)
@@ -559,6 +549,54 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             DateTime_SetSystemtime(hTime2, GDT_VALID, &sysTime);
             ShowWindow(GetDlgItem(*this, IDC_DATEPICK2), (m_dateLimit == IDC_RADIO_DATE_BETWEEN - IDC_RADIO_DATE_ALL) ? SW_SHOW : SW_HIDE);
             ShowWindow(GetDlgItem(*this, IDC_DATEPICK1), (m_dateLimit != 0) ? SW_SHOW : SW_HIDE);
+
+            // Set search path at last to trigger testing properties of others that it controls
+            if (m_patternRegex.empty() && !m_patternRegexC)
+            {
+                if (bPortable)
+                {
+                    m_patternRegex      = g_iniFile.GetValue(L"global", L"pattern", L"");
+                    m_bUseRegexForPaths = !!_wtoi(g_iniFile.GetValue(L"global", L"UseFileMatchRegex", L""));
+                }
+                else
+                {
+                    m_patternRegex      = std::wstring(m_regPattern);
+                    m_bUseRegexForPaths = !!static_cast<DWORD>(m_regUseRegexForPaths);
+                }
+            }
+            if (m_excludeDirsPatternRegex.empty() && !m_excludeDirsPatternRegexC)
+            {
+                if (bPortable)
+                    m_excludeDirsPatternRegex = g_iniFile.GetValue(L"global", L"ExcludeDirsPattern", L"");
+                else
+                    m_excludeDirsPatternRegex = std::wstring(m_regExcludeDirsPattern);
+            }
+            if (m_searchPath.empty())
+            {
+                if (bPortable)
+                    m_searchPath = g_iniFile.GetValue(L"global", L"searchpath", L"");
+                else
+                    m_searchPath = std::wstring(m_regSearchPath);
+            }
+            else
+            {
+                // expand a possible 'short' path
+                DWORD ret = 0;
+                ret       = ::GetLongPathName(m_searchPath.c_str(), nullptr, 0);
+                if (ret)
+                {
+                    auto pathBuf = std::make_unique<wchar_t[]>(ret + 2LL);
+                    ret          = ::GetLongPathName(m_searchPath.c_str(), pathBuf.get(), ret + 1);
+                    m_searchPath = std::wstring(pathBuf.get(), ret);
+                }
+            }
+            SetDlgItemText(hwndDlg, IDC_PATTERN, m_patternRegex.c_str());
+            SetDlgItemText(hwndDlg, IDC_EXCLUDEDIRSPATTERN, m_excludeDirsPatternRegex.c_str());
+            CheckRadioButton(hwndDlg, IDC_FILEPATTERNREGEX, IDC_FILEPATTERNTEXT, m_bUseRegexForPaths ? IDC_FILEPATTERNREGEX : IDC_FILEPATTERNTEXT);
+            SetDlgItemText(hwndDlg, IDC_SEARCHTEXT, m_searchString.c_str());
+            SetDlgItemText(hwndDlg, IDC_SEARCHPATH, m_searchPath.c_str());
+            // trigger setting replace button state
+            SetDlgItemText(hwndDlg, IDC_REPLACETEXT, m_replaceString.c_str());
 
             SetFocus(GetDlgItem(hwndDlg, IDC_SEARCHTEXT));
 
@@ -793,8 +831,8 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                             if (pDropDown->hdr.hwndFrom == GetDlgItem(*this, IDOK))
                             {
                                 auto buf    = GetDlgItemText(IDC_SEARCHPATH);
-                                bool bIsDir = !!PathIsDirectory(buf.get());
-                                if ((!bIsDir) && wcschr(buf.get(), '|'))
+                                bool bIsDir = PathIsDirectory(buf.get());
+                                if ((!bIsDir) && wcschr(buf.get(), L'|'))
                                     bIsDir = true; // assume directories in case of multiple paths
 
                                 auto sInverseSearch      = TranslatedString(hResource, IDS_INVERSESEARCH);
@@ -1109,7 +1147,6 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                 SetDlgItemText(*this, IDC_EXCLUDEDIRSPATTERN, m_excludeDirsPatternRegex.c_str());
                 SetDlgItemText(*this, IDC_PATTERN, m_patternRegex.c_str());
                 DialogEnableWindow(IDC_WHOLEWORDS, IsDlgButtonChecked(hwndDlg, IDC_TEXTRADIO));
-                CheckRegex();
             }
         }
         break;
@@ -1394,63 +1431,160 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
             }
         }
         break;
+        // validation_group { // initialize them in bottom up order for this control
         case IDC_SEARCHPATH:
         {
             if (msg == EN_CHANGE)
             {
                 if (m_autoCompleteSearchPaths.GetOptions() & ACO_NOPREFIXFILTERING)
                     m_autoCompleteSearchPaths.SetOptions(ACO_UPDOWNKEYDROPSLIST | ACO_AUTOSUGGEST);
-                int  len    = GetDlgItemTextLength(IDC_SEARCHTEXT);
-                auto buf    = GetDlgItemText(IDC_SEARCHPATH);
-                bool bIsDir = !!PathIsDirectory(buf.get());
-                if ((!bIsDir) && wcschr(buf.get(), '|'))
-                    bIsDir = true; // assume directories in case of multiple paths
-                bool bIncludeSubfolders = (IsDlgButtonChecked(*this, IDC_INCLUDESUBFOLDERS) == BST_CHECKED);
-                DialogEnableWindow(IDC_ALLSIZERADIO, bIsDir);
-                DialogEnableWindow(IDC_SIZERADIO, bIsDir);
-                DialogEnableWindow(IDC_SIZECOMBO, bIsDir);
-                DialogEnableWindow(IDC_SIZEEDIT, bIsDir);
-                DialogEnableWindow(IDC_INCLUDESYSTEM, bIsDir);
-                DialogEnableWindow(IDC_INCLUDEHIDDEN, bIsDir);
-                DialogEnableWindow(IDC_INCLUDESUBFOLDERS, bIsDir);
-                DialogEnableWindow(IDC_INCLUDESYMLINK, bIsDir);
-                DialogEnableWindow(IDC_INCLUDEBINARY, bIsDir && len > 0);
-                DialogEnableWindow(IDC_PATTERN, bIsDir);
-                DialogEnableWindow(IDC_EXCLUDEDIRSPATTERN, bIsDir || bIncludeSubfolders);
-                DialogEnableWindow(IDC_FILEPATTERNREGEX, bIsDir);
-                DialogEnableWindow(IDC_FILEPATTERNTEXT, bIsDir);
+                auto        buf     = GetDlgItemText(IDC_SEARCHPATH);
+                wchar_t*    path    = buf.get();
+                wchar_t*    p       = wcschr(path, L'|');
+                if (p != NULL)
+                {
+                    *p  = L'\x00';
+                }
+                // dir
+                bool bValid         = PathIsDirectory(path);
+                m_hasSearchDir      = bValid;   // only the 1st of multiple
+                DialogEnableWindow(IDC_ALLSIZERADIO, bValid);
+                DialogEnableWindow(IDC_SIZERADIO, bValid);
+                DialogEnableWindow(IDC_SIZECOMBO, bValid);
+                DialogEnableWindow(IDC_SIZEEDIT, bValid);
+                //
+                DialogEnableWindow(IDC_INCLUDESYSTEM, bValid);
+                DialogEnableWindow(IDC_INCLUDEHIDDEN, bValid);
+                DialogEnableWindow(IDC_INCLUDESUBFOLDERS, bValid);
+                DialogEnableWindow(IDC_INCLUDEBINARY, bValid);
+                DialogEnableWindow(IDC_INCLUDESYMLINK, bValid);
+                //
+                DialogEnableWindow(IDC_RADIO_DATE_ALL, bValid);
+                DialogEnableWindow(IDC_RADIO_DATE_NEWER, bValid);
+                DialogEnableWindow(IDC_RADIO_DATE_OLDER, bValid);
+                DialogEnableWindow(IDC_RADIO_DATE_BETWEEN, bValid);
+                //
+                bool bIncludeSubfolders = bValid && (IsDlgButtonChecked(*this, IDC_INCLUDESUBFOLDERS) == BST_CHECKED);
+                DialogEnableWindow(IDC_EXCLUDEDIRSPATTERN, bIncludeSubfolders);
+                DialogEnableWindow(IDC_EXCLUDEDIRMRU, bIncludeSubfolders);
+                DialogEnableWindow(IDC_PATTERN, bValid);
+                DialogEnableWindow(IDC_PATTERNMRU, bValid);
+                //
+                DialogEnableWindow(IDC_FILEPATTERNREGEX, bValid);
+                DialogEnableWindow(IDC_FILEPATTERNTEXT, bValid);
+                if (!bValid)
+                {
+                    // or file
+                    bValid          = PathFileExists(path);
+                }
+                m_isSearchPathValid = bValid;
+                RedrawWindow(GetDlgItem(*this, IDC_SEARCHPATH), nullptr, nullptr, RDW_FRAME | RDW_INVALIDATE);
 
                 // change the dialog title to "grepWin : search/path"
-                wchar_t compactPath[100] = {0};
-                PathCompactPathEx(compactPath, buf.get(), 40, 0);
-                wchar_t titleBuf[MAX_PATH] = {0};
+                wchar_t compactPath[100]    = {0};
+                PathCompactPathEx(compactPath, path, 40, 0);
+                wchar_t titleBuf[MAX_PATH]  = {0};
                 swprintf_s(titleBuf, _countof(titleBuf), L"grepWin : %s", compactPath);
                 SetWindowText(*this, titleBuf);
             }
         }
+        case IDC_REGEXRADIO:
+        case IDC_TEXTRADIO:
+        {
+            if (id != IDC_SEARCHPATH)
+            {
+                DialogEnableWindow(IDC_TESTREGEX, !IsDlgButtonChecked(*this, IDC_TEXTRADIO));
+                DialogEnableWindow(IDC_WHOLEWORDS, IsDlgButtonChecked(*this, IDC_TEXTRADIO));
+            }
+        }
+        case IDC_SEARCHTEXT:
+        {
+            if (id == IDC_REGEXRADIO || id == IDC_TEXTRADIO || (msg == EN_CHANGE && id == IDC_SEARCHTEXT))
+            {
+                if (m_autoCompleteSearchPatterns.GetOptions() & ACO_NOPREFIXFILTERING)
+                    m_autoCompleteSearchPatterns.SetOptions(ACO_UPDOWNKEYDROPSLIST | ACO_AUTOSUGGEST);
+                std::wstring    search  = GetDlgItemText(IDC_SEARCHTEXT).get();
+                m_SearchValidLength     = static_cast<int>(search.length());
+                if (IsDlgButtonChecked(*this, IDC_REGEXRADIO) == BST_CHECKED)
+                {
+                    removeMineExtVariables(search);
+                    if (m_SearchValidLength > 0 && !CheckRegex(search))
+                    {
+                        m_SearchValidLength = -1;
+                    }
+                }
+                DialogEnableWindow(IDC_ADDTOBOOKMARKS, m_SearchValidLength > 0);
+                RedrawWindow(GetDlgItem(*this, IDC_SEARCHTEXT), nullptr, nullptr, RDW_FRAME | RDW_INVALIDATE);
+            }
+        }
+        case IDC_REPLACETEXT:
+        {
+            if (id == IDC_REGEXRADIO || id == IDC_TEXTRADIO || (msg == EN_CHANGE && id == IDC_REPLACETEXT))
+            {
+                if (m_autoCompleteReplacePatterns.GetOptions() & ACO_NOPREFIXFILTERING)
+                    m_autoCompleteReplacePatterns.SetOptions(ACO_UPDOWNKEYDROPSLIST | ACO_AUTOSUGGEST);
+                std::wstring    replace = GetDlgItemText(IDC_REPLACETEXT).get();
+                m_ReplaceValidLength    = static_cast<int>(replace.length());
+            }
+        }
+        case IDC_FILEPATTERNREGEX:
+        case IDC_FILEPATTERNTEXT:
+        case IDC_EXCLUDEDIRSPATTERN:
+        {
+            if (id == IDC_FILEPATTERNREGEX || id == IDC_FILEPATTERNTEXT || (msg == EN_CHANGE && id == IDC_EXCLUDEDIRSPATTERN))
+            {
+                if (m_autoCompleteExcludeDirsPatterns.GetOptions() & ACO_NOPREFIXFILTERING)
+                    m_autoCompleteExcludeDirsPatterns.SetOptions(ACO_UPDOWNKEYDROPSLIST | ACO_AUTOSUGGEST);
+                if (IsDlgButtonChecked(*this, IDC_FILEPATTERNREGEX) == BST_CHECKED)
+                {
+                    auto        buf = GetDlgItemText(IDC_EXCLUDEDIRSPATTERN);
+                    wchar_t*    str = buf.get();
+                    m_isExcludeDirsRegexValid = (wcslen(str) == 0 || CheckRegex(str));
+                }
+                else
+                {
+                    m_isExcludeDirsRegexValid = TRUE;
+                }
+                RedrawWindow(GetDlgItem(*this, IDC_EXCLUDEDIRSPATTERN), nullptr, nullptr, RDW_FRAME | RDW_INVALIDATE);
+            }
+        }
+        case IDC_PATTERN:
+        {
+            if (id == IDC_FILEPATTERNREGEX || id == IDC_FILEPATTERNTEXT || (msg == EN_CHANGE && id == IDC_PATTERN))
+            {
+                if (m_autoCompleteFilePatterns.GetOptions() & ACO_NOPREFIXFILTERING)
+                    m_autoCompleteFilePatterns.SetOptions(ACO_UPDOWNKEYDROPSLIST | ACO_AUTOSUGGEST);
+                if (IsDlgButtonChecked(*this, IDC_FILEPATTERNREGEX) == BST_CHECKED)
+                {
+                    auto        buf = GetDlgItemText(IDC_PATTERN);
+                    wchar_t*    str = buf.get();
+                    m_isFileNameMatchingRegexValid = (wcslen(str) == 0 || CheckRegex(str));
+                }
+                else
+                {
+                    m_isFileNameMatchingRegexValid = TRUE;
+                }
+                RedrawWindow(GetDlgItem(*this, IDC_PATTERN), nullptr, nullptr, RDW_FRAME | RDW_INVALIDATE);
+            }
+
+            // all grouped conditions
+            bool bValid = m_isSearchPathValid;
+            if (bValid && m_hasSearchDir)
+            {
+                bValid = m_isExcludeDirsRegexValid && m_isFileNameMatchingRegexValid;
+            }
+            DialogEnableWindow(IDOK, bValid && (m_SearchValidLength >= 0));
+            DialogEnableWindow(IDC_REPLACE, bValid && (m_SearchValidLength > 0));
+        }
         break;
+        // } validation_group
         case IDC_INCLUDESUBFOLDERS:
         {
             if (msg == BN_CLICKED)
             {
-                auto buf                = GetDlgItemText(IDC_SEARCHPATH);
                 bool bIncludeSubfolders = (IsDlgButtonChecked(*this, IDC_INCLUDESUBFOLDERS) == BST_CHECKED);
-                bool bIsDir             = !!PathIsDirectory(buf.get());
-                if ((!bIsDir) && wcschr(buf.get(), '|'))
-                    bIsDir = true; // assume directories in case of multiple paths
-                DialogEnableWindow(IDC_EXCLUDEDIRSPATTERN, bIsDir || bIncludeSubfolders);
-            }
-        }
-        break;
-        case IDC_SEARCHTEXT:
-        {
-            if (msg == EN_CHANGE)
-            {
-                if (m_autoCompleteSearchPatterns.GetOptions() & ACO_NOPREFIXFILTERING)
-                    m_autoCompleteSearchPatterns.SetOptions(ACO_UPDOWNKEYDROPSLIST | ACO_AUTOSUGGEST);
-                int len = CheckRegex();
-                DialogEnableWindow(IDC_ADDTOBOOKMARKS, len > 0);
-                DialogEnableWindow(IDC_INCLUDEBINARY, len > 0);
+                DialogEnableWindow(IDC_EXCLUDEDIRSPATTERN, bIncludeSubfolders);
+                DialogEnableWindow(IDC_EXCLUDEDIRMRU, bIncludeSubfolders);
             }
         }
         break;
@@ -1475,16 +1609,6 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                     }
                 }
             }
-        }
-        break;
-        case IDC_REGEXRADIO:
-        case IDC_TEXTRADIO:
-        case IDC_FILEPATTERNREGEX:
-        case IDC_FILEPATTERNTEXT:
-        {
-            CheckRegex();
-            DialogEnableWindow(IDC_TESTREGEX, !IsDlgButtonChecked(*this, IDC_TEXTRADIO));
-            DialogEnableWindow(IDC_WHOLEWORDS, IsDlgButtonChecked(*this, IDC_TEXTRADIO));
         }
         break;
         case IDC_ADDTOBOOKMARKS:
@@ -1617,35 +1741,6 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
             m_autoCompleteFilePatterns.SetOptions(ACO_UPDOWNKEYDROPSLIST | ACO_AUTOSUGGEST | ACO_NOPREFIXFILTERING);
             ::SetFocus(GetDlgItem(*this, IDC_PATTERN));
             SendDlgItemMessage(*this, IDC_PATTERN, WM_KEYDOWN, VK_DOWN, 0);
-        }
-        break;
-        case IDC_PATTERN:
-        {
-            if (msg == EN_CHANGE)
-            {
-                if (m_autoCompleteFilePatterns.GetOptions() & ACO_NOPREFIXFILTERING)
-                    m_autoCompleteFilePatterns.SetOptions(ACO_UPDOWNKEYDROPSLIST | ACO_AUTOSUGGEST);
-                CheckRegex();
-            }
-        }
-        break;
-        case IDC_EXCLUDEDIRSPATTERN:
-        {
-            if (msg == EN_CHANGE)
-            {
-                if (m_autoCompleteExcludeDirsPatterns.GetOptions() & ACO_NOPREFIXFILTERING)
-                    m_autoCompleteExcludeDirsPatterns.SetOptions(ACO_UPDOWNKEYDROPSLIST | ACO_AUTOSUGGEST);
-                CheckRegex();
-            }
-        }
-        break;
-        case IDC_REPLACETEXT:
-        {
-            if (msg == EN_CHANGE)
-            {
-                if (m_autoCompleteReplacePatterns.GetOptions() & ACO_NOPREFIXFILTERING)
-                    m_autoCompleteReplacePatterns.SetOptions(ACO_UPDOWNKEYDROPSLIST | ACO_AUTOSUGGEST);
-            }
         }
         break;
         case IDC_EXPORT:
@@ -4179,109 +4274,17 @@ void CSearchDlg::formatDate(wchar_t dateNative[], const FILETIME& fileTime, bool
     wcsncat_s(dateNative, GREPWIN_DATEBUFFER, timeBuf, GREPWIN_DATEBUFFER);
 }
 
-int CSearchDlg::CheckRegex()
+bool CSearchDlg::CheckRegex(const std::wstring& patternString)
 {
-    m_isRegexValid                 = true;
-    m_isExcludeDirsRegexValid      = true;
-    m_isFileNameMatchingRegexValid = true;
-
-    auto buf                       = GetDlgItemText(IDC_SEARCHTEXT);
-    int  len                       = static_cast<int>(wcslen(buf.get()));
-    if (IsDlgButtonChecked(*this, IDC_REGEXRADIO) == BST_CHECKED)
+    try
     {
-        // check if the regex is valid
-        bool bValid = true;
-        if (len)
-        {
-            try
-            {
-                std::wstring localSearchString = buf.get();
-                SearchReplace(localSearchString, L"${filepath}", L"");
-                SearchReplace(localSearchString, L"${filepath}", L"");
-                SearchReplace(localSearchString, L"${fileext}", L"");
-
-                boost::wregex expression = boost::wregex(localSearchString);
-            }
-            catch (const std::exception&)
-            {
-                bValid         = false;
-                m_isRegexValid = false;
-            }
-        }
-        if (len)
-        {
-            if (bValid)
-            {
-                SetDlgItemText(*this, IDC_REGEXOKLABEL, TranslatedString(hResource, IDS_REGEXOK).c_str());
-                DialogEnableWindow(IDOK, true);
-                DialogEnableWindow(IDC_REPLACE, true);
-                DialogEnableWindow(IDC_CREATEBACKUP, true);
-                RedrawWindow(GetDlgItem(*this, IDC_SEARCHTEXT), nullptr, nullptr, RDW_FRAME | RDW_INVALIDATE);
-            }
-            else
-            {
-                SetDlgItemText(*this, IDC_REGEXOKLABEL, TranslatedString(hResource, IDS_REGEXINVALID).c_str());
-                DialogEnableWindow(IDOK, false);
-                DialogEnableWindow(IDC_REPLACE, false);
-                DialogEnableWindow(IDC_CREATEBACKUP, false);
-                RedrawWindow(GetDlgItem(*this, IDC_SEARCHTEXT), nullptr, nullptr, RDW_FRAME | RDW_INVALIDATE);
-            }
-        }
-        else
-        {
-            SetDlgItemText(*this, IDC_REGEXOKLABEL, L"");
-            DialogEnableWindow(IDOK, true);
-            DialogEnableWindow(IDC_REPLACE, false);
-            DialogEnableWindow(IDC_CREATEBACKUP, false);
-            RedrawWindow(GetDlgItem(*this, IDC_SEARCHTEXT), nullptr, nullptr, RDW_FRAME | RDW_INVALIDATE);
-        }
+        boost::wregex expression = boost::wregex(patternString);
+        return true;
     }
-    else
+    catch (const std::exception&)
     {
-        SetDlgItemText(*this, IDC_REGEXOKLABEL, L"");
-        DialogEnableWindow(IDOK, true);
-        DialogEnableWindow(IDC_REPLACE, len > 0);
-        DialogEnableWindow(IDC_CREATEBACKUP, len > 0);
-        RedrawWindow(GetDlgItem(*this, IDC_SEARCHTEXT), nullptr, nullptr, RDW_FRAME | RDW_INVALIDATE);
+        return false;
     }
-
-    {
-        buf = GetDlgItemText(IDC_EXCLUDEDIRSPATTERN);
-        len = static_cast<int>(wcslen(buf.get()));
-        if (len)
-        {
-            try
-            {
-                std::wstring  sRegex     = buf.get();
-                boost::wregex expression = boost::wregex(sRegex);
-            }
-            catch (const std::exception&)
-            {
-                m_isExcludeDirsRegexValid = false;
-            }
-        }
-        RedrawWindow(GetDlgItem(*this, IDC_EXCLUDEDIRSPATTERN), nullptr, nullptr, RDW_FRAME | RDW_INVALIDATE);
-    }
-    if (IsDlgButtonChecked(*this, IDC_FILEPATTERNREGEX) == BST_CHECKED)
-    {
-        buf = GetDlgItemText(IDC_PATTERN);
-        len = static_cast<int>(wcslen(buf.get()));
-        if (len)
-        {
-            try
-            {
-                std::wstring  sRegex     = buf.get();
-                boost::wregex expression = boost::wregex(sRegex);
-            }
-            catch (const std::exception&)
-            {
-                m_isFileNameMatchingRegexValid = false;
-            }
-        }
-    }
-    RedrawWindow(GetDlgItem(*this, IDC_PATTERN), nullptr, nullptr, RDW_FRAME | RDW_INVALIDATE);
-
-    return len;
 }
 
 void CSearchDlg::AutoSizeAllColumns()

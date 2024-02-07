@@ -604,7 +604,7 @@ msgid "number of NULL bytes per MB allowed for a file to still be considered tex
 msgstr ""
 
 #. Resource IDs: (112)
-msgid "only files that match this pattern are searched.\r\nUse \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
+msgid "only files that match this pattern are searched.\r\nText match extended. Use\"|\" as the delimiter.\r\nExample: *.cpp|*.h"
 msgstr "αναζητούνται μόνο αρχεία που ταιριάζουν με αυτό το μοτίβο.\nΧρήση του \"|\" ως διαχωριστικό.\r\nΠαράδειγμα: *.cpp|*.h"
 
 #. Resource IDs: (176)
@@ -641,7 +641,7 @@ msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | s
 msgstr "διαδρομές που αναζητούνται διαδοχικά. \r\nΧρήση του \"|\" ως διαχωριστικό.\r\nΠαράδειγμα: c:\\temp|d:\\logs"
 
 #. Resource IDs: (113)
-msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
+msgid "you can exclude directories, e.g. CVS and images.\r\nText match extended. Example: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "μπορείτε να εξαιρέσετε καταλόγους, π.χ. CVS και εικόνες.\r\nΠαράδειγμα: ^(CVS|images)$\r\nΣημείωση, οι φάκελοι '.svn' είναι 'κρυφοί' στα Windows, επομένως συνήθως δεν σαρώνονται."
 
 #. Resource IDs: (1064, 1066, 1067)

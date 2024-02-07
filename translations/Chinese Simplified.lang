@@ -604,8 +604,8 @@ msgid "number of NULL bytes per MB allowed for a file to still be considered tex
 msgstr "允许将文件仍视为文本而不是二进制文件的每 MB 空字节数"
 
 #. Resource IDs: (112)
-msgid "only files that match this pattern are searched.\r\nUse \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
-msgstr "仅匹配此样式的文件被搜索.\r\n 使用 \"|\" 作为分隔符.\r\n 例如: *.cpp|*.h"
+msgid "only files that match this pattern are searched.\r\nText match extended. Use \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
+msgstr "仅匹配此样式的文件被搜索.\r\n文本匹配已扩展. 使用 \"|\" 作为分隔符.\r\n例如: *.cpp|*.h"
 
 #. Resource IDs: (176)
 msgid "open list with recent entries"
@@ -641,8 +641,8 @@ msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | s
 msgstr "将被递归搜索的路径.\r\n 使用 \"|\" 符号来分隔路径.\r\n 比如:  c:\\temp|d:\\logs"
 
 #. Resource IDs: (113)
-msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
-msgstr "你可以排除目录, 比如: CVS 和 images.\r\n 例如: ^(CVS|images)$\r\n 注意, \".svn\" 目录在 Windows 中是隐藏的, 所以通常不扫描它们."
+msgid "you can exclude directories, e.g. CVS and images.\r\nText match extended. Example: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
+msgstr "你可以排除目录, 比如: CVS 和 images.\r\n文本匹配已扩展. 例如: ^(CVS|images)$\r\n注意, \".svn\" 目录在 Windows 中是隐藏的, 所以通常不扫描它们."
 
 #. Resource IDs: (1064, 1066, 1067)
 msgid "|"
