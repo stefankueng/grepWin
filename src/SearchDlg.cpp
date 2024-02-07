@@ -3618,22 +3618,25 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
     // we keep it simple:
     // files bigger than 30MB are considered binary. Binary files are searched
     // as if they're ANSI text files.
-    std::wstring localSearchString = searchString;
+    std::wstring localSearchString  = searchString;
+    std::wstring fileNameFull       = sInfo.filePath.substr(sInfo.filePath.find_last_of('\\') + 1);
 
-    SearchReplace(localSearchString, L"${filepath}", sInfo.filePath);
-    std::wstring fileNameFull = sInfo.filePath.substr(sInfo.filePath.find_last_of('\\') + 1);
-    auto         dotPos       = fileNameFull.find_last_of('.');
-    if (dotPos != std::string::npos)
+    if (bUseRegex)
     {
-        std::wstring filename = fileNameFull.substr(0, dotPos);
-        SearchReplace(localSearchString, L"${filename}", filename);
-        if (fileNameFull.size() > dotPos)
+        SearchReplace(localSearchString, L"${filepath}", sInfo.filePath);
+        auto         dotPos       = fileNameFull.find_last_of('.');
+        if (dotPos != std::string::npos)
         {
-            std::wstring fileExt = fileNameFull.substr(dotPos + 1);
-            SearchReplace(localSearchString, L"${fileext}", fileExt);
+            std::wstring filename = fileNameFull.substr(0, dotPos);
+            SearchReplace(localSearchString, L"${filename}", filename);
+            if (fileNameFull.size() > dotPos)
+            {
+                std::wstring fileExt = fileNameFull.substr(dotPos + 1);
+                SearchReplace(localSearchString, L"${fileext}", fileExt);
+            }
         }
     }
-    if (!bUseRegex)
+    else
     {
         using namespace std::string_literals;
         for (const auto& c : {L"\\"s, L"^"s, L"$"s, L"."s, L"|"s, L"?"s, L"*"s, L"+"s, L"("s, L")"s, L"["s, L"{"s})
@@ -3779,17 +3782,20 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
                 flags &= ~boost::match_prev_avail;
                 flags &= ~boost::match_not_bob;
                 RegexReplaceFormatter replaceFmt(m_replaceString);
-                replaceFmt.SetReplacePair(L"${filepath}", sInfo.filePath);
-                std::wstring fileNameFullW = sInfo.filePath.substr(sInfo.filePath.find_last_of('\\') + 1);
-                auto         dotPosW       = fileNameFullW.find_last_of('.');
-                if (dotPosW != std::string::npos)
+                if (bUseRegex)
                 {
-                    std::wstring filename = fileNameFullW.substr(0, dotPosW);
-                    replaceFmt.SetReplacePair(L"${filename}", filename);
-                    if (fileNameFullW.size() > dotPosW)
+                    replaceFmt.SetReplacePair(L"${filepath}", sInfo.filePath);
+                    std::wstring fileNameFullW = sInfo.filePath.substr(sInfo.filePath.find_last_of('\\') + 1);
+                    auto         dotPosW       = fileNameFullW.find_last_of('.');
+                    if (dotPosW != std::string::npos)
                     {
-                        std::wstring fileExt = fileNameFullW.substr(dotPosW + 1);
-                        replaceFmt.SetReplacePair(L"${fileext}", fileExt);
+                        std::wstring filename = fileNameFullW.substr(0, dotPosW);
+                        replaceFmt.SetReplacePair(L"${filename}", filename);
+                        if (fileNameFullW.size() > dotPosW)
+                        {
+                            std::wstring fileExt = fileNameFullW.substr(dotPosW + 1);
+                            replaceFmt.SetReplacePair(L"${fileext}", fileExt);
+                        }
                     }
                 }
                 std::wstring replaced = regex_replace(textFile.GetFileString(), expression, replaceFmt, flags);
@@ -4054,16 +4060,19 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
                         flags &= ~boost::match_not_bob;
                         RegexReplaceFormatterA replaceFmt(CUnicodeUtils::StdGetUTF8(m_replaceString));
                         replaceFmt.SetReplacePair("${filepath}", CUnicodeUtils::StdGetUTF8(sInfo.filePath));
-                        std::string fileNameFullA = CUnicodeUtils::StdGetUTF8(sInfo.filePath.substr(sInfo.filePath.find_last_of('\\') + 1));
-                        auto        dotPosA       = fileNameFullA.find_last_of('.');
-                        if (dotPosA != std::string::npos)
+                        if (bUseRegex)
                         {
-                            std::string filename = fileNameFullA.substr(0, dotPosA);
-                            replaceFmt.SetReplacePair("${filename}", filename);
-                            if (fileNameFull.size() > dotPosA)
+                            std::string fileNameFullA = CUnicodeUtils::StdGetUTF8(sInfo.filePath.substr(sInfo.filePath.find_last_of('\\') + 1));
+                            auto        dotPosA       = fileNameFullA.find_last_of('.');
+                            if (dotPosA != std::string::npos)
                             {
-                                std::string fileExt = fileNameFullA.substr(dotPosA + 1);
-                                replaceFmt.SetReplacePair("${fileext}", fileExt);
+                                std::string filename = fileNameFullA.substr(0, dotPosA);
+                                replaceFmt.SetReplacePair("${filename}", filename);
+                                if (fileNameFull.size() > dotPosA)
+                                {
+                                    std::string fileExt = fileNameFullA.substr(dotPosA + 1);
+                                    replaceFmt.SetReplacePair("${fileext}", fileExt);
+                                }
                             }
                         }
 
