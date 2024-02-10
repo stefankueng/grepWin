@@ -3917,8 +3917,6 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
             boost::match_flag_type                             flags = boost::match_default | boost::format_all;
             if (!bDotMatchesNewline)
                 flags |= boost::match_not_dot_newline;
-            long prevLineStart = 0;
-            long prevLineEnd   = 0;
             while (!bCancelled && regex_search(start, end, whatC, expression, flags))
             {
                 if (whatC[0].matched)
@@ -3926,45 +3924,40 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
                     nFound++;
                     if (m_bNotSearch)
                         break;
-                    long posMatch = static_cast<long>(whatC[0].first - textFile.GetFileString().begin());
-                    long lineStart = textFile.LineFromPosition(posMatch);
-                    long lineEnd   = textFile.LineFromPosition(static_cast<long>(whatC[0].second - textFile.GetFileString().begin()));
-                    if ((lineStart != prevLineStart) || (lineEnd != prevLineEnd))
+                    long posMatch           = static_cast<long>(whatC[0].first - textFile.GetFileString().begin());
+                    long lineStart          = textFile.LineFromPosition(posMatch);
+                    long lineEnd            = textFile.LineFromPosition(static_cast<long>(whatC[0].second - textFile.GetFileString().begin()));
+                    long lenLineEncodingPre = 0;
+                    long colMatch           = columnFromPosition(textFile.GetFileString(), posMatch, &lenLineEncodingPre);
+                    long lenMatch           = static_cast<long>(whatC[0].length());
+                    for (long l = lineStart; l <= lineEnd; ++l)
                     {
-                        long lenLineEncodingPre = 0;
-                        long colMatch = columnFromPosition(textFile.GetFileString(), posMatch, &lenLineEncodingPre);
-                        long lenMatch = static_cast<long>(whatC[0].length());
-                        for (long l = lineStart; l <= lineEnd; ++l)
+                        auto sLine          = textFile.GetLineString(l);
+                        long lenLineMatch   = static_cast<long>(sLine.length()) - colMatch;
+                        if (lenMatch < lenLineMatch)
                         {
-                            auto sLine = textFile.GetLineString(l);
-                            long lenLineMatch = static_cast<long>(sLine.length()) - colMatch;
-                            if (lenMatch < lenLineMatch)
-                            {
-                                lenLineMatch = lenMatch;
-                            }
-                            sInfo.matchLinesNumbers.push_back(l);
-                            sInfo.matchMovesNumbers.push_back(colMatch);
-                            if (m_bCaptureSearch)
-                            {
-                                auto out = whatC.format(m_replaceString, flags);
-                                sInfo.matchLines.push_back(std::move(out));
-                                sInfo.matchLengths.push_back(static_cast<long>(out.length()));
-                            }
-                            else
-                            {
-                                sInfo.matchLines.push_back(std::move(sLine));
-                                sInfo.matchLengths.push_back(lenLineMatch);
-                            }
-                            if (lenMatch > lenLineMatch)
-                            {
-                                colMatch = 1;
-                                lenMatch -= lenLineMatch + lenLineEncodingPre;
-                            }
+                            lenLineMatch = lenMatch;
+                        }
+                        sInfo.matchLinesNumbers.push_back(l);
+                        sInfo.matchMovesNumbers.push_back(colMatch);
+                        if (m_bCaptureSearch)
+                        {
+                            auto out = whatC.format(m_replaceString, flags);
+                            sInfo.matchLines.push_back(std::move(out));
+                            sInfo.matchLengths.push_back(static_cast<long>(out.length()));
+                        }
+                        else
+                        {
+                            sInfo.matchLines.push_back(std::move(sLine));
+                            sInfo.matchLengths.push_back(lenLineMatch);
+                        }
+                        if (lenMatch > lenLineMatch)
+                        {
+                            colMatch = 1;
+                            lenMatch -= lenLineMatch + lenLineEncodingPre;
                         }
                     }
                     ++sInfo.matchCount;
-                    prevLineStart = lineStart;
-                    prevLineEnd   = lineEnd;
                 }
                 // update search position:
                 if (start == whatC[0].second)
@@ -3992,12 +3985,12 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
                         nFound++;
                         if (m_bNotSearch)
                             break;
-                        long posMatch = static_cast<long>(whatC[0].first - textFile.GetFileString().begin());
-                        long lineStart = textFile.LineFromPosition(posMatch);
-                        long lineEnd   = textFile.LineFromPosition(static_cast<long>(whatC[0].second - textFile.GetFileString().begin()));
+                        long posMatch           = static_cast<long>(whatC[0].first - textFile.GetFileString().begin());
+                        long lineStart          = textFile.LineFromPosition(posMatch);
+                        long lineEnd            = textFile.LineFromPosition(static_cast<long>(whatC[0].second - textFile.GetFileString().begin()));
                         long lenLineEncodingPre = 0;
-                        long colMatch = columnFromPosition(textFile.GetFileString(), posMatch, &lenLineEncodingPre);
-                        long lenMatch = static_cast<long>(whatC[0].length());
+                        long colMatch           = columnFromPosition(textFile.GetFileString(), posMatch, &lenLineEncodingPre);
+                        long lenMatch           = static_cast<long>(whatC[0].length());
                         if (m_bCaptureSearch)
                         {
                             auto out = whatC.format(m_replaceString, flags);
@@ -4008,31 +4001,26 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
                         }
                         else
                         {
-                            if ((lineStart != prevLineStart) || (lineEnd != prevLineEnd))
+                            for (long l = lineStart; l <= lineEnd; ++l)
                             {
-                                for (long l = lineStart; l <= lineEnd; ++l)
+                                auto sLine          = textFile.GetLineString(l);
+                                long lenLineMatch   = static_cast<long>(sLine.length()) - colMatch;
+                                if (lenMatch < lenLineMatch)
                                 {
-                                    auto sLine = textFile.GetLineString(l);
-                                    long lenLineMatch = static_cast<long>(sLine.length()) - colMatch;
-                                    if (lenMatch < lenLineMatch)
-                                    {
-                                        lenLineMatch = lenMatch;
-                                    }
-                                    sInfo.matchLines.push_back(sLine);
-                                    sInfo.matchLinesNumbers.push_back(l);
-                                    sInfo.matchMovesNumbers.push_back(colMatch);
-                                    sInfo.matchLengths.push_back(lenLineMatch);
-                                    if (lenMatch > lenLineMatch)
-                                    {
-                                        colMatch = 1;
-                                        lenMatch -= lenLineMatch + lenLineEncodingPre;
-                                    }
+                                    lenLineMatch = lenMatch;
+                                }
+                                sInfo.matchLines.push_back(sLine);
+                                sInfo.matchLinesNumbers.push_back(l);
+                                sInfo.matchMovesNumbers.push_back(colMatch);
+                                sInfo.matchLengths.push_back(lenLineMatch);
+                                if (lenMatch > lenLineMatch)
+                                {
+                                    colMatch = 1;
+                                    lenMatch -= lenLineMatch + lenLineEncodingPre;
                                 }
                             }
                         }
                         ++sInfo.matchCount;
-                        prevLineStart = lineStart;
-                        prevLineEnd   = lineEnd;
                     }
                     // update search position:
                     if (start == whatC[0].second)
