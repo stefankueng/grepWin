@@ -49,7 +49,7 @@ public:
     std::wstring              filePath;
     __int64                   fileSize;
     std::vector<DWORD>        matchLinesNumbers;
-    std::vector<DWORD>        matchMovesNumbers;
+    std::vector<DWORD>        matchColumnsNumbers;
     std::vector<DWORD>        matchLengths;
     std::vector<std::wstring> matchLines;
     __int64                   matchCount;

@@ -191,10 +191,10 @@ CAPTION "grepWin Settings"
 FONT 9, "Segoe UI", 400, 0, 0x1
 BEGIN
     GROUPBOX        "Editor",IDC_EDITORGROUP,7,7,303,61
-    LTEXT           "Command line to start an editor at a specific line and move:",IDC_STATIC1,13,19,288,8
+    LTEXT           "Command line to start an editor at a specific line and in line offset:",IDC_STATIC1,13,19,288,8
     EDITTEXT        IDC_EDITORCMD,13,31,269,14,ES_AUTOHSCROLL
     PUSHBUTTON      "...",IDC_SEARCHPATHBROWSE,286,31,15,14
-    LTEXT           "%path% is replaced with the path of the file, %line% with the line to jump to, %move% with an extra offset",IDC_STATIC2,13,47,288,17
+    LTEXT           "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset",IDC_STATIC2,13,47,288,17
     LTEXT           "Language:",IDC_STATIC4,7,72,135,8
     COMBOBOX        IDC_LANGUAGE,170,71,140,30,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
     LTEXT           "number of NULL bytes per MB allowed for a file to still be considered text instead of binary",IDC_STATIC3,7,85,241,17
@@ -376,7 +376,7 @@ BEGIN
     IDS_REGEXINVALID        "invalid regex!"
     IDS_SIZE                "Size"
     IDS_LINE                "Line"
-    IDS_MOVE                "Move"
+    IDS_COLUMN              "Column"
     IDS_MATCHES             "Matches"
     IDS_TEXT                "Text"
     IDS_PATH                "Path"

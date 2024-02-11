@@ -23,7 +23,7 @@
 struct LineDataLine
 {
     DWORD           number;
-    DWORD           move;
+    DWORD           column;
     std::wstring    text;
 };
 
