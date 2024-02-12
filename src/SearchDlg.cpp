@@ -2505,28 +2505,35 @@ LRESULT CSearchDlg::ColorizeMatchResultProc(LPNMLVCUSTOMDRAW lpLVCD)
                     LPWSTR      pMatch      = lv.pszText + colMatch - 1;
                     SIZE        textSize    = {0, 0};
 
-                    rc.left += CDPIAware::Instance().Scale(*this, 6);
+                    rc.left     += 6;
+                    rc.right    -= 6;
 
                     // Not precise sometimes.
                     // We keep the text and draw a transparent rectangle only. So, will not break the text.
                     GetTextExtentPoint32(hdc, lv.pszText, colMatch - 1, &textSize);
                     rc.left += textSize.cx;
+                    if (rc.left >= rc.right)
+                    {
+                        break;
+                    }
                     GetTextExtentPoint32(hdc, pMatch, pInfo->matchLengths[subIndex], &textSize);
-                    rc.right = rc.left + textSize.cx;
+                    if (rc.right > rc.left + textSize.cx)
+                    {
+                        rc.right = rc.left + textSize.cx;
+                    }
 
+                    LONG            width   = rc.right - rc.left;
                     LONG            height  = rc.bottom - rc.top;
                     HDC             hcdc    = CreateCompatibleDC(hdc);
-                    BITMAPINFO      bmi     = { {sizeof(BITMAPINFOHEADER), textSize.cx, height, 1, 32, BI_RGB, textSize.cx * height * 4u, 0, 0, 0, 0}, {{0, 0, 0, 0}} };
+                    BITMAPINFO      bmi     = { {sizeof(BITMAPINFOHEADER), width, height, 1, 32, BI_RGB, width * height * 4u, 0, 0, 0, 0}, {{0, 0, 0, 0}} };
                     BLENDFUNCTION   blend   = {AC_SRC_OVER, 0, 92, 0};  // 36%
                     HBITMAP         hBitmap = CreateDIBSection(hcdc, &bmi, DIB_RGB_COLORS, NULL, NULL, 0x0);
-                    RECT            rc2     = {0, 0, textSize.cx, height};
+                    RECT            rc2     = {0, 0, width, height};
                     SelectObject(hcdc, hBitmap);
                     FillRect(hcdc, &rc2, CreateSolidBrush(RGB(255, 255, 0)));
-                    AlphaBlend(hdc, rc.left, rc.top, textSize.cx, height, hcdc, 0, 0, textSize.cx, height, blend);
+                    AlphaBlend(hdc, rc.left, rc.top, width, height, hcdc, 0, 0, width, height, blend);
                     DeleteObject(hBitmap);
                     DeleteDC(hcdc);
-
-                    return CDRF_DODEFAULT;
                 }
             }
         }
