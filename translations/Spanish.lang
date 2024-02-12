@@ -44,7 +44,7 @@ msgid "%ld more matches"
 msgstr "%ld mas resultados"
 
 #. Resource IDs: (1069)
-msgid "%path% is replaced with the path of the file, %line% with the line to jump to"
+msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset"
 msgstr ""
 
 #. Resource IDs: (119)
@@ -124,8 +124,12 @@ msgstr ""
 msgid "Check for updates"
 msgstr ""
 
+#. Resource IDs: (180)
+msgid "Column"
+msgstr ""
+
 #. Resource IDs: (1068)
-msgid "Command line to start an editor at a specific line:"
+msgid "Command line to start an editor at a specific line and in line offset:"
 msgstr "Linea de comandos para iniciar un editor en la linea especificada:"
 
 #. Resource IDs: (1060)
@@ -307,8 +311,8 @@ msgstr "Linea"
 
 #. Resource IDs: (150)
 #, c-format
-msgid "Line %5ld : %30s\n"
-msgstr "Linea %5ld : %30s\n"
+msgid "Line %5ld : %s\n"
+msgstr "Linea %5ld : %s\n"
 
 #. Resource IDs: (135)
 msgid "Matches"

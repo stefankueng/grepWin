@@ -109,6 +109,7 @@ protected:
     void             FillResultList();
     bool             AddFoundEntry(CSearchInfo* pInfo, bool bOnlyListControl = false);
     void             ShowContextMenu(HWND hWnd, int x, int y);
+    LRESULT          ColorizeMatchResultProc(LPNMLVCUSTOMDRAW lpLVCD);
     void             DoListNotify(LPNMITEMACTIVATE lpNMItemActivate);
     void             OpenFileAtListIndex(int listIndex);
     void             UpdateInfoLabel();
