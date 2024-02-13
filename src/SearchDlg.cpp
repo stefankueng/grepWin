@@ -3835,21 +3835,6 @@ bool CSearchDlg::MatchPath(LPCTSTR pathBuf) const
     return bPattern;
 }
 
-static long columnFromPosition(const std::wstring& textContent, long pos)
-{
-    long i = pos;
-    while (i > 0 && textContent[i] != L'\n' && textContent[i] != L'\r')
-    {
-        --i;
-    }
-    if (pos == i)
-    {
-        // first/empty line starting
-        return 1;
-    }
-    return pos - i;
-}
-
 void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, bool bSearchAlways, bool bIncludeBinary, bool bUseRegex, bool bCaseSensitive, bool bDotMatchesNewline, const std::wstring& searchString, const std::wstring& searchStringUtf16Le, std::atomic_bool& bCancelled)
 {
     int          nFound            = 0;
@@ -3929,11 +3914,14 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
                     nFound++;
                     if (m_bNotSearch)
                         break;
-                    long posMatch           = static_cast<long>(whatC[0].first - textFile.GetFileString().begin());
-                    long lineStart          = textFile.LineFromPosition(posMatch);
-                    long lineEnd            = textFile.LineFromPosition(static_cast<long>(whatC[0].second - textFile.GetFileString().begin()));
-                    long colMatch           = columnFromPosition(textFile.GetFileString(), posMatch);
-                    long lenMatch           = static_cast<long>(whatC[0].length());
+                    long posMatchHead   = static_cast<long>(whatC[0].first - textFile.GetFileString().begin());
+                    long posMatchTail   = static_cast<long>(whatC[0].second - textFile.GetFileString().begin());
+                    if (whatC[0].first < whatC[0].second)   // m[0].second is not part of the match
+                        --posMatchTail;
+                    long lineStart      = textFile.LineFromPosition(posMatchHead);
+                    long lineEnd        = textFile.LineFromPosition(posMatchTail);
+                    long colMatch       = textFile.ColumnFromPosition(posMatchHead, lineStart);
+                    long lenMatch       = static_cast<long>(whatC[0].length());
                     for (long l = lineStart; l <= lineEnd; ++l)
                     {
                         auto sLine          = textFile.GetLineString(l);
@@ -3964,14 +3952,11 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
                     ++sInfo.matchCount;
                 }
                 // update search position:
-                if (start == whatC[0].second)
-                {
-                    if (start == end)
-                        break;
+                start = whatC[0].second;
+                if (start == end)
+                    break;
+                if (start == whatC[0].first)    // ^$
                     ++start;
-                }
-                else
-                    start = whatC[0].second;
                 // update flags:
                 flags |= boost::match_prev_avail;
                 flags |= boost::match_not_bob;
@@ -3989,11 +3974,14 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
                         nFound++;
                         if (m_bNotSearch)
                             break;
-                        long posMatch           = static_cast<long>(whatC[0].first - textFile.GetFileString().begin());
-                        long lineStart          = textFile.LineFromPosition(posMatch);
-                        long lineEnd            = textFile.LineFromPosition(static_cast<long>(whatC[0].second - textFile.GetFileString().begin()));
-                        long colMatch           = columnFromPosition(textFile.GetFileString(), posMatch);
-                        long lenMatch           = static_cast<long>(whatC[0].length());
+                        long posMatchHead   = static_cast<long>(whatC[0].first - textFile.GetFileString().begin());
+                        long posMatchTail   = static_cast<long>(whatC[0].second - textFile.GetFileString().begin());
+                        if (whatC[0].first < whatC[0].second)   // m[0].second is not part of the match
+                            --posMatchTail;
+                        long lineStart      = textFile.LineFromPosition(posMatchHead);
+                        long lineEnd        = textFile.LineFromPosition(posMatchTail);
+                        long colMatch       = textFile.ColumnFromPosition(posMatchHead, lineStart);
+                        long lenMatch       = static_cast<long>(whatC[0].length());
                         if (m_bCaptureSearch)
                         {
                             auto out = whatC.format(m_replaceString, flags);
@@ -4026,14 +4014,11 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
                         ++sInfo.matchCount;
                     }
                     // update search position:
-                    if (start == whatC[0].second)
-                    {
-                        if (start == end)
-                            break;
+                    start = whatC[0].second;
+                    if (start == end)
+                        break;
+                    if (start == whatC[0].first)    // ^$
                         ++start;
-                    }
-                    else
-                        start = whatC[0].second;
                     // update flags:
                     flags |= boost::match_prev_avail;
                     flags |= boost::match_not_bob;
@@ -4192,7 +4177,7 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
                     boost::spirit::classic::file_iterator<>                       fBeg = start;
                     boost::spirit::classic::file_iterator<>                       end  = start.make_end();
                     boost::match_results<boost::spirit::classic::file_iterator<>> whatC;
-                    while (boost::regex_search(start, end, whatC, expression, flags) && !bCancelled)
+                    while (boost::regex_search(start, end, whatC, expression, flags))
                     {
                         nFound++;
                         if (m_bNotSearch)
@@ -4202,6 +4187,10 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
                         ++sInfo.matchCount;
                         // update search position:
                         start = whatC[0].second;
+                        if (start == end)
+                            break;
+                        if (start == whatC[0].first)    // ^$
+                            ++start;
                         // update flags:
                         flags |= boost::match_prev_avail;
                         flags |= boost::match_not_bob;
@@ -4227,6 +4216,10 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
                         ++sInfo.matchCount;
                         // update search position:
                         start = whatC[0].second;
+                        if (start == end)
+                            break;
+                        if (start == whatC[0].first)    // ^$
+                            ++start;
                         // update flags:
                         flags |= boost::match_prev_avail;
                         flags |= boost::match_not_bob;
