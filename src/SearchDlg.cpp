@@ -3835,26 +3835,17 @@ bool CSearchDlg::MatchPath(LPCTSTR pathBuf) const
     return bPattern;
 }
 
-static long columnFromPosition(const std::wstring& textContent, long pos, long* lenLineEncodingPre)
+static long columnFromPosition(const std::wstring& textContent, long pos)
 {
-    *lenLineEncodingPre = 0;
-    if (pos == 0)
-    {
-        return 1;
-    }
-
     long i = pos;
     while (i > 0 && textContent[i] != L'\n' && textContent[i] != L'\r')
     {
         --i;
     }
-    if (i >= 2 && textContent[i] == L'\n' && textContent[i - 1] == L'\r')
+    if (pos == i)
     {
-        *lenLineEncodingPre = 2;
-    }
-    else if (i > 0)
-    {
-        *lenLineEncodingPre = 1;
+        // first/empty line starting
+        return 1;
     }
     return pos - i;
 }
@@ -3941,13 +3932,12 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
                     long posMatch           = static_cast<long>(whatC[0].first - textFile.GetFileString().begin());
                     long lineStart          = textFile.LineFromPosition(posMatch);
                     long lineEnd            = textFile.LineFromPosition(static_cast<long>(whatC[0].second - textFile.GetFileString().begin()));
-                    long lenLineEncodingPre = 0;
-                    long colMatch           = columnFromPosition(textFile.GetFileString(), posMatch, &lenLineEncodingPre);
+                    long colMatch           = columnFromPosition(textFile.GetFileString(), posMatch);
                     long lenMatch           = static_cast<long>(whatC[0].length());
                     for (long l = lineStart; l <= lineEnd; ++l)
                     {
                         auto sLine          = textFile.GetLineString(l);
-                        long lenLineMatch   = static_cast<long>(sLine.length()) - colMatch;
+                        long lenLineMatch   = static_cast<long>(sLine.length()) - colMatch + 1;
                         if (lenMatch < lenLineMatch)
                         {
                             lenLineMatch = lenMatch;
@@ -3968,7 +3958,7 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
                         if (lenMatch > lenLineMatch)
                         {
                             colMatch = 1;
-                            lenMatch -= lenLineMatch + lenLineEncodingPre;
+                            lenMatch -= lenLineMatch;
                         }
                     }
                     ++sInfo.matchCount;
@@ -4002,8 +3992,7 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
                         long posMatch           = static_cast<long>(whatC[0].first - textFile.GetFileString().begin());
                         long lineStart          = textFile.LineFromPosition(posMatch);
                         long lineEnd            = textFile.LineFromPosition(static_cast<long>(whatC[0].second - textFile.GetFileString().begin()));
-                        long lenLineEncodingPre = 0;
-                        long colMatch           = columnFromPosition(textFile.GetFileString(), posMatch, &lenLineEncodingPre);
+                        long colMatch           = columnFromPosition(textFile.GetFileString(), posMatch);
                         long lenMatch           = static_cast<long>(whatC[0].length());
                         if (m_bCaptureSearch)
                         {
@@ -4030,7 +4019,7 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
                                 if (lenMatch > lenLineMatch)
                                 {
                                     colMatch = 1;
-                                    lenMatch -= lenLineMatch + lenLineEncodingPre;
+                                    lenMatch -= lenLineMatch;
                                 }
                             }
                         }
