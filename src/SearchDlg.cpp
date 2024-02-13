@@ -4525,7 +4525,8 @@ void CSearchDlg::AutoSizeAllColumns()
     {
         RECT rc{};
         ListView_GetItemRect(hListControl, 0, &rc, LVIR_BOUNDS);
-        auto itemWidth = rc.right - rc.left;
+        int cxVScroll   = GetSystemMetrics(SM_CXVSCROLL);
+        auto itemWidth  = rc.right - rc.left - cxVScroll;
         if (nItemCount > 0)
         {
             GetClientRect(hListControl, &rc);
