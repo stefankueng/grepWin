@@ -3890,23 +3890,24 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
         bLoadResult = textFile.Load(sInfo.filePath.c_str(), type, m_bUTF8, bCancelled);
     }
     sInfo.encoding = type;
+
+    int                     ft      = boost::regex::normal;
+    if (!bCaseSensitive)
+        ft |= boost::regbase::icase;
+    boost::match_flag_type  flags   = boost::match_default | boost::format_all;
+    if (!bDotMatchesNewline)
+        flags |= boost::match_not_dot_newline;
+
     if ((bLoadResult) && ((type != CTextFile::Binary) || (bIncludeBinary) || bSearchAlways))
     {
         sInfo.readError = false;
         std::wstring::const_iterator start, end;
         start = textFile.GetFileString().begin();
         end   = textFile.GetFileString().end();
-        boost::match_results<std::wstring::const_iterator> what;
         try
         {
-            int ft = boost::regex::normal;
-            if (!bCaseSensitive)
-                ft |= boost::regbase::icase;
             boost::wregex                                      expression = boost::wregex(localSearchString, ft);
             boost::match_results<std::wstring::const_iterator> whatC;
-            boost::match_flag_type                             flags = boost::match_default | boost::format_all;
-            if (!bDotMatchesNewline)
-                flags |= boost::match_not_dot_newline;
             while (!bCancelled && regex_search(start, end, whatC, expression, flags))
             {
                 if (whatC[0].matched)
@@ -3961,7 +3962,7 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
                 flags |= boost::match_prev_avail;
                 flags |= boost::match_not_bob;
             }
-            if (type == CTextFile::Binary)
+            if (nFound == 0 && type == CTextFile::Binary)
             {
                 boost::wregex expressionUtf16 = boost::wregex(searchStringUtf16Le, ft);
                 start                         = textFile.GetFileString().begin();
@@ -4158,14 +4159,6 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
                 searchFor += "\\E";
             }
 
-            boost::match_results<std::string::const_iterator> what;
-            boost::match_flag_type                            flags = boost::match_default | boost::format_all;
-            if (!bDotMatchesNewline)
-                flags |= boost::match_not_dot_newline;
-            int ft = boost::regex::normal;
-            if (!bCaseSensitive)
-                ft |= boost::regbase::icase;
-
             try
             {
                 boost::regex       expression = boost::regex(searchFor, ft);
@@ -4199,7 +4192,7 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
                             break;
                     }
                 }
-                if (type == CTextFile::Binary && !m_bReplace)
+                if (nFound == 0 && type == CTextFile::Binary && !m_bReplace)
                 {
                     boost::wregex                                                        expressionUtf16Le = boost::wregex(searchString, ft);
                     boost::spirit::classic::file_iterator<wchar_t>                       start(filePath.c_str());
