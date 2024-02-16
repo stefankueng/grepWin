@@ -3867,11 +3867,7 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
     }
     else
     {
-        using namespace std::string_literals;
-        for (const auto& c : {L"\\"s, L"^"s, L"$"s, L"."s, L"|"s, L"?"s, L"*"s, L"+"s, L"("s, L")"s, L"["s, L"{"s})
-        {
-            SearchReplace(localSearchString, c, L"\\" + c);
-        }
+        localSearchString = L"\\Q" + localSearchString + L"\\E";
         if (m_bWholeWords)
             localSearchString = L"\\b" + localSearchString + L"\\b";
     }
@@ -4097,9 +4093,9 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
 
             if (!bUseRegex)
             {
-                searchFor = "\\Q";
-                searchFor += CUnicodeUtils::StdGetUTF8(searchString);
-                searchFor += "\\E";
+                searchFor = "\\Q" + searchFor + "\\E";
+                if (m_bWholeWords)
+                    searchFor = "\\b" + searchFor + "\\b";
             }
 
             try
