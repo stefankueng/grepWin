@@ -3759,6 +3759,9 @@ void CSearchDlg::SetDateLimit(int dateLimit, FILETIME t1, FILETIME t2)
 
 bool CSearchDlg::MatchPath(LPCTSTR pathBuf) const
 {
+    if (m_patterns.empty())
+        return true;
+
     bool        bPattern = false;
     // find start of pathname
     const auto* pName    = wcsrchr(pathBuf, '\\');
@@ -3768,37 +3771,27 @@ bool CSearchDlg::MatchPath(LPCTSTR pathBuf) const
         pName++; // skip the last '\\' char
     if (m_bUseRegexForPaths)
     {
-        if (m_patterns.empty())
+        if (grepWinMatchI(m_patternRegex, pName))
             bPattern = true;
-        else
-        {
-            if (grepWinMatchI(m_patternRegex, pName))
-                bPattern = true;
-            // for a regex check, also test with the full path
-            else if (grepWinMatchI(m_patternRegex, pathBuf))
-                bPattern = true;
-        }
+        // for a regex check, also test with the full path
+        else if (grepWinMatchI(m_patternRegex, pathBuf))
+            bPattern = true;
     }
     else
     {
-        if (!m_patterns.empty())
-        {
-            if (m_patterns[0].size() && (m_patterns[0][0] == '-'))
-                bPattern = true;
-
-            std::wstring fName = pName;
-            std::ranges::transform(fName, fName.begin(), ::towlower);
-
-            for (const auto& pattern : m_patterns)
-            {
-                if (!pattern.empty() && pattern.at(0) == '-')
-                    bPattern = bPattern && !wcswildcmp(&(pattern)[1], fName.c_str());
-                else
-                    bPattern = bPattern || wcswildcmp(pattern.c_str(), fName.c_str());
-            }
-        }
-        else
+        if (m_patterns[0].size() && (m_patterns[0][0] == '-'))
             bPattern = true;
+
+        std::wstring fName = pName;
+        std::ranges::transform(fName, fName.begin(), ::towlower);
+
+        for (const auto& pattern : m_patterns)
+        {
+            if (!pattern.empty() && pattern.at(0) == '-')
+                bPattern = bPattern && !wcswildcmp(&(pattern)[1], fName.c_str());
+            else
+                bPattern = bPattern || wcswildcmp(pattern.c_str(), fName.c_str());
+        }
     }
     return bPattern;
 }
