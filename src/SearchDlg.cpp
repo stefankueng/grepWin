@@ -1198,6 +1198,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 
                 CStringUtils::rtrim(m_searchPath, L"\\/");
                 SearchReplace(m_searchPath, L"/", L"\\");
+                SearchReplace(m_searchPath, L"\\|", L"\\");
 
                 if (PathIsRelative(m_searchPath.c_str()))
                 {
@@ -3329,6 +3330,7 @@ bool CSearchDlg::SaveSettings()
     return true;
 }
 
+// matches the whole of the input
 bool grepWinMatchI(const std::wstring& theRegex, const wchar_t* pText)
 {
     try
@@ -3346,6 +3348,12 @@ bool grepWinMatchI(const std::wstring& theRegex, const wchar_t* pText)
     return false;
 }
 
+/* rules:
+    1. treat dir as special file
+    2. no limits on user specified files
+    3. search empty means counting only mode
+    4. real search/replace does not check dir size nor date
+*/
 DWORD CSearchDlg::SearchThread()
 {
     ProfileTimer              profile(L"SearchThread");
@@ -3361,19 +3369,9 @@ DWORD CSearchDlg::SearchThread()
     {
         pos            = wcscspn(pBufSearchPath, L"|");
         std::wstring s = std::wstring(pBufSearchPath, pos);
-        if (!s.empty())
+        // pre-cleaned for history
+        if (!s.empty() && PathFileExists(s.c_str()))
         {
-            // Remove extra backslashes except for the UNC identifier
-            std::string::size_type found = s.find_first_of('\\', 1);
-            while (found != std::string::npos)
-            {
-                while (s[found + 1] == '\\')
-                {
-                    s.erase(found + 1, 1);
-                }
-                found = s.find_first_of('\\', found + 1);
-            }
-            CStringUtils::rtrim(s, L"\\/ ");
             pathVector.push_back(s);
         }
         pBufSearchPath += pos;
@@ -3412,64 +3410,100 @@ DWORD CSearchDlg::SearchThread()
     // the UI thread and this one.
     ThreadPool tp(max(std::thread::hardware_concurrency() - 2, 1));
 
+    bool    bCountingOnly   = m_searchString.empty();
+
     for (const auto& cSearchPath : pathVector)
     {
-        std::wstring searchPath = cSearchPath;
-        size_t       endPos     = searchPath.find_last_not_of(L" \\");
-        if (std::wstring::npos != endPos)
+        bool            bHasLimits;
+        std::wstring    searchRoot;
+        if (PathIsDirectory(cSearchPath.c_str()))
         {
-            searchPath = searchPath.substr(0, endPos + 1);
-            if (searchPath[searchPath.length() - 1] == ':')
-                searchPath += L"\\";
+            bHasLimits  = true;
+            searchRoot  = cSearchPath;
         }
-        std::wstring searchRoot = searchPath;
-        if (!searchPath.empty())
+        else
         {
-            bool bAlwaysSearch = false;
-            if (!PathIsDirectory(searchPath.c_str()))
+            bHasLimits  = false;
+            searchRoot  = cSearchPath.substr(0, cSearchPath.find_last_of('\\'));
+        }
+
+        CDirFileEnum    fileEnumerator(cSearchPath.c_str());
+        if (!m_bIncludeSymLinks)
+            fileEnumerator.SetAttributesToIgnore(FILE_ATTRIBUTE_REPARSE_POINT);
+        bool            bRecurse        = bHasLimits && m_bIncludeSubfolders;
+        bool            bIsDirectory    = false;
+        std::wstring    sPath;
+
+        while ((fileEnumerator.NextFile(sPath, &bIsDirectory, bRecurse)) && !m_cancelled)
+        {
+            if (m_backupAndTempFiles.contains(sPath))
+                continue;
+
+            wcscpy_s(pathBuf.get(), MAX_PATH_NEW, sPath.c_str());
+            const WIN32_FIND_DATA*  pFindData       = fileEnumerator.GetFileInfo();
+            FILETIME                fileTime        = pFindData->ftLastWriteTime;
+            uint64_t                fullFileSize    = (static_cast<uint64_t>(pFindData->nFileSizeHigh) << 32) | pFindData->nFileSizeLow;
+
+            bool                    bSearch         = true;
+
+            if (bHasLimits)
             {
-                bAlwaysSearch = true;
-                searchRoot    = searchRoot.substr(0, searchRoot.find_last_of('\\'));
-            }
-            bool         bIsDirectory = false;
-            CDirFileEnum fileEnumerator(searchPath.c_str());
-            if (!m_bIncludeSymLinks)
-                fileEnumerator.SetAttributesToIgnore(FILE_ATTRIBUTE_REPARSE_POINT);
-            bool         bRecurse = m_bIncludeSubfolders;
-            std::wstring sPath;
-            while ((fileEnumerator.NextFile(sPath, &bIsDirectory, bRecurse)) && ((!m_cancelled) || bAlwaysSearch))
-            {
-                if (bAlwaysSearch && _wcsicmp(searchPath.c_str(), sPath.c_str()))
-                    bAlwaysSearch = false;
-                if (m_backupAndTempFiles.contains(sPath))
-                    continue;
-                wcscpy_s(pathBuf.get(), MAX_PATH_NEW, sPath.c_str());
-                const WIN32_FIND_DATA*  pFindData   = fileEnumerator.GetFileInfo();
-                if (!bIsDirectory)
+                bSearch = (m_bIncludeHidden || ((pFindData->dwFileAttributes & FILE_ATTRIBUTE_HIDDEN) == 0)) &&
+                          (m_bIncludeSystem || ((pFindData->dwFileAttributes & FILE_ATTRIBUTE_SYSTEM) == 0));
+                if (bSearch)
                 {
-                    uint64_t    fullFileSize    = (static_cast<uint64_t>(pFindData->nFileSizeHigh) << 32) | pFindData->nFileSizeLow;
-                    FILETIME    ft              = pFindData->ftLastWriteTime;
-                    bool        bSearch         = false;
-                    if (bAlwaysSearch)
+                    if (bIsDirectory)
                     {
-                        wcscpy_s(pathBuf.get(), MAX_PATH_NEW, searchPath.c_str());
+                        if (m_bIncludeSubfolders)
+                        {
+                            // dir not excluded
+                            bSearch = m_excludeDirsPatternRegex.empty();
+                            if (!bSearch)
+                            {
+                                bool bExcluded  = grepWinMatchI(m_excludeDirsPatternRegex, pFindData->cFileName) ||
+                                                  grepWinMatchI(m_excludeDirsPatternRegex, pathBuf.get());
+                                if (!bExcluded)
+                                {
+                                    std::wstring    relPath = pathBuf.get() + cSearchPath.size() + 1;
+                                    if (relPath.find(L'\\') != std::wstring::npos)
+                                    {
+                                        bExcluded = grepWinMatchI(m_excludeDirsPatternRegex, relPath.c_str());
+                                    }
+                                }
+                                bSearch = !bExcluded;
+                            }
+                        }
+                        else
+                        {
+                            bSearch = false;
+                        }
+                        bRecurse = bSearch;
+                        if (bSearch && !m_patternRegex.empty())
+                        {
+                            bSearch = false;
+                        }
                     }
                     else
                     {
-                        bSearch = (m_bIncludeHidden || ((pFindData->dwFileAttributes & FILE_ATTRIBUTE_HIDDEN) == 0)) &&
-                                  (m_bIncludeSystem || ((pFindData->dwFileAttributes & FILE_ATTRIBUTE_SYSTEM) == 0));
-                        if (!m_bAllSize && bSearch)
+                        // name match
+                        bSearch = MatchPath(pathBuf.get());
+                        bRecurse = false;
+                    }
+
+                    if (bSearch && (!bIsDirectory || bCountingOnly))
+                    {
+                        if (!m_bAllSize)
                         {
                             switch (m_sizeCmp)
                             {
                                 case 0: // less than
-                                    bSearch = bSearch && (fullFileSize < m_lSize);
+                                    bSearch &= fullFileSize < m_lSize;
                                     break;
                                 case 1: // equal
-                                    bSearch = bSearch && (fullFileSize == m_lSize);
+                                    bSearch &= fullFileSize == m_lSize;
                                     break;
                                 case 2: // greater than
-                                    bSearch = bSearch && (fullFileSize > m_lSize);
+                                    bSearch &= fullFileSize > m_lSize;
                                     break;
                                 default:
                                     break;
@@ -3483,116 +3517,47 @@ DWORD CSearchDlg::SearchThread()
                                 case IDC_RADIO_DATE_ALL:
                                     break;
                                 case IDC_RADIO_DATE_NEWER:
-                                    bSearch = CompareFileTime(&ft, &m_date1) >= 0;
+                                    bSearch &= CompareFileTime(&fileTime, &m_date1) >= 0;
                                     break;
                                 case IDC_RADIO_DATE_OLDER:
-                                    bSearch = CompareFileTime(&ft, &m_date1) <= 0;
+                                    bSearch &= CompareFileTime(&fileTime, &m_date1) <= 0;
                                     break;
                                 case IDC_RADIO_DATE_BETWEEN:
-                                    bSearch = CompareFileTime(&ft, &m_date1) >= 0;
-                                    bSearch = bSearch && (CompareFileTime(&ft, &m_date2) <= 0);
+                                    bSearch &= CompareFileTime(&fileTime, &m_date1) >= 0 &&
+                                               CompareFileTime(&fileTime, &m_date2) <= 0;
                                     break;
                             }
                         }
                     }
-                    bRecurse      = m_bIncludeSubfolders && bSearch;
-                    bool bPattern = MatchPath(pathBuf.get());
+                }
+            }
 
-                    if ((bSearch && bPattern) || bAlwaysSearch)
-                    {
-                        CSearchInfo sInfo(pathBuf.get());
-                        sInfo.fileSize     = fullFileSize;
-                        sInfo.modifiedTime = ft;
-                        if (m_searchString.empty())
-                        {
-                            SendMessage(*this, SEARCH_FOUND, 1, reinterpret_cast<LPARAM>(&sInfo));
-                            SendMessage(*this, SEARCH_PROGRESS, 1, 0);
-                        }
-                        else
-                        {
-                            auto searchFn = [=]() {
-                                SearchFile(sInfo, searchRoot, bAlwaysSearch, m_bIncludeBinary, m_bUseRegex, m_bCaseSensitive, m_bDotMatchesNewline, m_searchString, m_cancelled);
-                            };
-                            tp.enqueueWait(searchFn);
-                        }
-                    }
-                    else
-                        SendMessage(*this, SEARCH_PROGRESS, 0, 0);
-                }
-                else
+            if (bSearch)
+            {
+                CSearchInfo sInfo(pathBuf.get());
+                sInfo.modifiedTime  = fileTime;
+                sInfo.folder        = bIsDirectory;
+                sInfo.fileSize      = fullFileSize;
+                if (bCountingOnly)
                 {
-                    bool            bSearch = (m_bIncludeHidden || ((pFindData->dwFileAttributes & FILE_ATTRIBUTE_HIDDEN) == 0)) &&
-                                              (m_bIncludeSystem || ((pFindData->dwFileAttributes & FILE_ATTRIBUTE_SYSTEM) == 0));
-                    std::wstring    relPath = pathBuf.get();
-                    relPath = relPath.substr(searchPath.size());
-                    if (!relPath.empty())
-                    {
-                        if (relPath[0] == '\\')
-                            relPath = relPath.substr(1);
-                    }
-                    bool bExcludeDir = bSearch && !m_excludeDirsPatternRegex.empty() &&
-                                       (grepWinMatchI(m_excludeDirsPatternRegex, pFindData->cFileName) ||
-                                        grepWinMatchI(m_excludeDirsPatternRegex, pathBuf.get()) ||
-                                        grepWinMatchI(m_excludeDirsPatternRegex, relPath.c_str()));
-                    bSearch  = bSearch && !bExcludeDir;
-                    bRecurse = bIsDirectory && m_bIncludeSubfolders && bSearch;
-                    if (m_searchString.empty() && m_replaceString.empty())
-                    {
-                        // if there's no search and replace string, include folders in the 'matched' list if they
-                        // match the specified file pattern
-                        if (MatchPath(pathBuf.get()))
-                        {
-                            if (bSearch)
-                            {
-                                switch (m_dateLimit + IDC_RADIO_DATE_ALL)
-                                {
-                                    default:
-                                    case IDC_RADIO_DATE_ALL:
-                                        break;
-                                    case IDC_RADIO_DATE_NEWER:
-                                        bSearch = CompareFileTime(&pFindData->ftLastWriteTime, &m_date1) >= 0;
-                                        break;
-                                    case IDC_RADIO_DATE_OLDER:
-                                        bSearch = CompareFileTime(&pFindData->ftLastWriteTime, &m_date1) <= 0;
-                                        break;
-                                    case IDC_RADIO_DATE_BETWEEN:
-                                        bSearch = CompareFileTime(&pFindData->ftLastWriteTime, &m_date1) >= 0;
-                                        bSearch = bSearch && (CompareFileTime(&pFindData->ftLastWriteTime, &m_date2) <= 0);
-                                        break;
-                                }
-                            }
-                            if (!m_bAllSize && bSearch)
-                            {
-                                // assume a 'file'-size of zero for dirs
-                                switch (m_sizeCmp)
-                                {
-                                    case 0: // less than
-                                        bSearch = bSearch && (0 < m_lSize);
-                                        break;
-                                    case 1: // equal
-                                        bSearch = bSearch && (0 == m_lSize);
-                                        break;
-                                    case 2: // greater than
-                                        bSearch = bSearch && (0 > m_lSize);
-                                        break;
-                                    default:
-                                        break;
-                                }
-                            }
-                            if (bSearch)
-                            {
-                                CSearchInfo sInfo(pathBuf.get());
-                                sInfo.modifiedTime = pFindData->ftLastWriteTime;
-                                sInfo.folder       = true;
-                                SendMessage(*this, SEARCH_FOUND, 1, reinterpret_cast<LPARAM>(&sInfo));
-                            }
-                        }
-                    }
+                    SendMessage(*this, SEARCH_FOUND, 1, reinterpret_cast<LPARAM>(&sInfo));
+                    SendMessage(*this, SEARCH_PROGRESS, 1, 0);
                 }
-                bAlwaysSearch = false;
+                else if (!bIsDirectory)
+                {
+                    auto searchFn = [=]() {
+                        SearchFile(sInfo, searchRoot, !bHasLimits, m_bIncludeBinary, m_bUseRegex, m_bCaseSensitive, m_bDotMatchesNewline, m_searchString, m_cancelled);
+                    };
+                    tp.enqueueWait(searchFn);
+                }
+            }
+            else if (!bIsDirectory || (bCountingOnly && m_patternRegex.empty()))
+            {
+                SendMessage(*this, SEARCH_PROGRESS, 0, 0);
             }
         }
     }
+
     tp.waitFinished();
     SendMessage(*this, SEARCH_END, 0, 0);
     m_dwThreadRunning = false;
