@@ -3437,32 +3437,27 @@ DWORD CSearchDlg::SearchThread()
                 fileEnumerator.SetAttributesToIgnore(FILE_ATTRIBUTE_REPARSE_POINT);
             bool         bRecurse = m_bIncludeSubfolders;
             std::wstring sPath;
-            while ((fileEnumerator.NextFile(sPath, &bIsDirectory, bRecurse)) && ((!m_cancelled) || (bAlwaysSearch)))
+            while ((fileEnumerator.NextFile(sPath, &bIsDirectory, bRecurse)) && ((!m_cancelled) || bAlwaysSearch))
             {
                 if (bAlwaysSearch && _wcsicmp(searchPath.c_str(), sPath.c_str()))
                     bAlwaysSearch = false;
                 if (m_backupAndTempFiles.contains(sPath))
                     continue;
                 wcscpy_s(pathBuf.get(), MAX_PATH_NEW, sPath.c_str());
+                const WIN32_FIND_DATA*  pFindData   = fileEnumerator.GetFileInfo();
                 if (!bIsDirectory)
                 {
-                    bool     bSearch      = false;
-                    uint64_t fullFileSize = 0;
-                    FILETIME ft           = {0};
+                    uint64_t    fullFileSize    = (static_cast<uint64_t>(pFindData->nFileSizeHigh) << 32) | pFindData->nFileSizeLow;
+                    FILETIME    ft              = pFindData->ftLastWriteTime;
+                    bool        bSearch         = false;
                     if (bAlwaysSearch)
                     {
-                        const WIN32_FIND_DATA* pFindData = fileEnumerator.GetFileInfo();
                         wcscpy_s(pathBuf.get(), MAX_PATH_NEW, searchPath.c_str());
-                        fullFileSize = (static_cast<uint64_t>(pFindData->nFileSizeHigh) << 32) | pFindData->nFileSizeLow;
-                        ft           = pFindData->ftLastWriteTime;
                     }
                     else
                     {
-                        const WIN32_FIND_DATA* pFindData = fileEnumerator.GetFileInfo();
-                        bSearch                          = ((m_bIncludeHidden) || ((pFindData->dwFileAttributes & FILE_ATTRIBUTE_HIDDEN) == 0));
-                        bSearch                          = bSearch && ((m_bIncludeSystem) || ((pFindData->dwFileAttributes & FILE_ATTRIBUTE_SYSTEM) == 0));
-                        fullFileSize                     = (static_cast<uint64_t>(pFindData->nFileSizeHigh) << 32) | pFindData->nFileSizeLow;
-                        ft                               = pFindData->ftLastWriteTime;
+                        bSearch = (m_bIncludeHidden || ((pFindData->dwFileAttributes & FILE_ATTRIBUTE_HIDDEN) == 0)) &&
+                                  (m_bIncludeSystem || ((pFindData->dwFileAttributes & FILE_ATTRIBUTE_SYSTEM) == 0));
                         if (!m_bAllSize && bSearch)
                         {
                             switch (m_sizeCmp)
@@ -3500,10 +3495,10 @@ DWORD CSearchDlg::SearchThread()
                             }
                         }
                     }
-                    bRecurse      = ((m_bIncludeSubfolders) && (bSearch));
+                    bRecurse      = m_bIncludeSubfolders && bSearch;
                     bool bPattern = MatchPath(pathBuf.get());
 
-                    if ((bSearch && bPattern) || (bAlwaysSearch))
+                    if ((bSearch && bPattern) || bAlwaysSearch)
                     {
                         CSearchInfo sInfo(pathBuf.get());
                         sInfo.fileSize     = fullFileSize;
@@ -3526,11 +3521,10 @@ DWORD CSearchDlg::SearchThread()
                 }
                 else
                 {
-                    const WIN32_FIND_DATA* pFindData = fileEnumerator.GetFileInfo();
-                    bool                   bSearch   = ((m_bIncludeHidden) || ((pFindData->dwFileAttributes & FILE_ATTRIBUTE_HIDDEN) == 0));
-                    bSearch                          = bSearch && ((m_bIncludeSystem) || ((pFindData->dwFileAttributes & FILE_ATTRIBUTE_SYSTEM) == 0));
-                    std::wstring relPath             = pathBuf.get();
-                    relPath                          = relPath.substr(searchPath.size());
+                    bool            bSearch = (m_bIncludeHidden || ((pFindData->dwFileAttributes & FILE_ATTRIBUTE_HIDDEN) == 0)) &&
+                                              (m_bIncludeSystem || ((pFindData->dwFileAttributes & FILE_ATTRIBUTE_SYSTEM) == 0));
+                    std::wstring    relPath = pathBuf.get();
+                    relPath = relPath.substr(searchPath.size());
                     if (!relPath.empty())
                     {
                         if (relPath[0] == '\\')
@@ -3541,7 +3535,7 @@ DWORD CSearchDlg::SearchThread()
                                         grepWinMatchI(m_excludeDirsPatternRegex, pathBuf.get()) ||
                                         grepWinMatchI(m_excludeDirsPatternRegex, relPath.c_str()));
                     bSearch  = bSearch && !bExcludeDir;
-                    bRecurse = ((bIsDirectory) && (m_bIncludeSubfolders) && (bSearch));
+                    bRecurse = bIsDirectory && m_bIncludeSubfolders && bSearch;
                     if (m_searchString.empty() && m_replaceString.empty())
                     {
                         // if there's no search and replace string, include folders in the 'matched' list if they
@@ -3900,7 +3894,7 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
     if (!bDotMatchesNewline)
         flags |= boost::match_not_dot_newline;
 
-    if ((bLoadResult) && ((type != CTextFile::Binary) || (bIncludeBinary) || bSearchAlways))
+    if (bLoadResult && ((type != CTextFile::Binary) || bIncludeBinary || bSearchAlways))
     {
         sInfo.readError = false;
         std::wstring::const_iterator start, end;
@@ -3964,7 +3958,7 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
                 flags |= boost::match_prev_avail;
                 flags |= boost::match_not_bob;
             }
-            if ((m_bReplace) && (nFound))
+            if (m_bReplace && nFound)
             {
                 flags &= ~boost::match_prev_avail;
                 flags &= ~boost::match_not_bob;
@@ -4391,7 +4385,7 @@ void CSearchDlg::AutoSizeAllColumns()
         int  maxCol   = Header_GetItemCount(headerCtrl) - 1;
         int  imgWidth = 0;
         auto hImgList = ListView_GetImageList(hListControl, LVSIL_SMALL);
-        if ((hImgList) && (ImageList_GetImageCount(hImgList)))
+        if (hImgList && ImageList_GetImageCount(hImgList))
         {
             IMAGEINFO imgInfo;
             ImageList_GetImageInfo(hImgList, 0, &imgInfo);
