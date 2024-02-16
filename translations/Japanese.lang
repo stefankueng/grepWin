@@ -645,7 +645,7 @@ msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | s
 msgstr "パスは再帰的に検索されます。\r\nパスを「|」で区切ることができます。\r\n指定例: c:\\temp|d:\\logs"
 
 #. Resource IDs: (113)
-msgid "you can exclude directories, e.g. CVS and images.\r\nText match extended. Example: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
+msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "フォルダを除外できます。CVS と images を除外する例です。\r\n指定例: ^(CVS|images)$\r\n注: Windows では「.svn」フォルダは隠されているため、通常はスキャンされません。"
 
 #. Resource IDs: (1064, 1066, 1067)

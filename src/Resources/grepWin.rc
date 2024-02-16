@@ -350,7 +350,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_PATTERN_TT          "only files that match this pattern are searched.\r\nText match extended. Use ""|"" as the delimiter.\r\nExample: *.cpp|*.h"
-    IDS_EXCLUDEDIR_TT       "you can exclude directories, e.g. CVS and images.\r\nText match extended. Example: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
+    IDS_EXCLUDEDIR_TT       "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
     IDS_SEARCHPATH_TT       "the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"
     IDS_DOTMATCHNEWLINE_TT  "Newline is matched by '.'"
     IDS_SEARCHTEXT_TT       "a regular expression used for searching. Press F1 for more info."

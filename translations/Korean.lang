@@ -645,7 +645,7 @@ msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | s
 msgstr "재귀적으로 검색되는 경로입니다.\n'|' 기호로 경로를 구분합니다.\n예제: c:\\temp|d:\\logs"
 
 #. Resource IDs: (113)
-msgid "you can exclude directories, e.g. CVS and images.\r\nText match extended. Example: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
+msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "디렉터리를 제외할 수 있고, 예를 들어 CVS 및 이미지입니다.\n예제: ^(CVS|images)$\n참고: '.svn'폴더는 Windows에서 '숨겨져' 있으므로 일반적으로 검색되지 않습니다."
 
 #. Resource IDs: (1064, 1066, 1067)

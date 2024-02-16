@@ -645,7 +645,7 @@ msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | s
 msgstr "sökväg(arna) söks rekursivt.\r\nSeparera sökvägar med | symbolen.\r\nExempelvis: c:\\temp|d:\\logs"
 
 #. Resource IDs: (113)
-msgid "you can exclude directories, e.g. CVS and images.\r\nText match extended. Example: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
+msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
 msgstr "du kan exkludera mappar, exempelvis CVS och bilder.\r\nExempelvis: ^(CVS|bilder)$\r\nMärk, '.svn'-mappar are är dolda i Windows, så de är vanligtvis inte sökta i."
 
 #. Resource IDs: (1064, 1066, 1067)

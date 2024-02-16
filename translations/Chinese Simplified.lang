@@ -645,8 +645,8 @@ msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | s
 msgstr "将被递归搜索的路径.\r\n 使用 \"|\" 符号来分隔路径.\r\n 比如:  c:\\temp|d:\\logs"
 
 #. Resource IDs: (113)
-msgid "you can exclude directories, e.g. CVS and images.\r\nText match extended. Example: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
-msgstr "你可以排除目录, 比如: CVS 和 images.\r\n文本匹配已扩展. 例如: ^(CVS|images)$\r\n注意, \".svn\" 目录在 Windows 中是隐藏的, 所以通常不扫描它们."
+msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
+msgstr "你可以排除目录, 比如: CVS 和 images.\r\n例如: ^(CVS|images)$\r\n注意, \".svn\" 目录在 Windows 中是隐藏的, 所以通常不扫描它们."
 
 #. Resource IDs: (1064, 1066, 1067)
 msgid "|"

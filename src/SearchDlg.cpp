@@ -1534,25 +1534,6 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
         }
         case IDC_FILEPATTERNREGEX:
         case IDC_FILEPATTERNTEXT:
-        case IDC_EXCLUDEDIRSPATTERN:
-        {
-            if (id == IDC_FILEPATTERNREGEX || id == IDC_FILEPATTERNTEXT || (msg == EN_CHANGE && id == IDC_EXCLUDEDIRSPATTERN))
-            {
-                if (m_autoCompleteExcludeDirsPatterns.GetOptions() & ACO_NOPREFIXFILTERING)
-                    m_autoCompleteExcludeDirsPatterns.SetOptions(ACO_UPDOWNKEYDROPSLIST | ACO_AUTOSUGGEST);
-                if (IsDlgButtonChecked(*this, IDC_FILEPATTERNREGEX) == BST_CHECKED)
-                {
-                    auto        buf = GetDlgItemText(IDC_EXCLUDEDIRSPATTERN);
-                    wchar_t*    str = buf.get();
-                    m_isExcludeDirsRegexValid = (wcslen(str) == 0 || CheckRegex(str));
-                }
-                else
-                {
-                    m_isExcludeDirsRegexValid = TRUE;
-                }
-                RedrawWindow(GetDlgItem(*this, IDC_EXCLUDEDIRSPATTERN), nullptr, nullptr, RDW_FRAME | RDW_INVALIDATE);
-            }
-        }
         case IDC_PATTERN:
         {
             if (id == IDC_FILEPATTERNREGEX || id == IDC_FILEPATTERNTEXT || (msg == EN_CHANGE && id == IDC_PATTERN))
@@ -1590,6 +1571,19 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 bool bIncludeSubfolders = (IsDlgButtonChecked(*this, IDC_INCLUDESUBFOLDERS) == BST_CHECKED);
                 DialogEnableWindow(IDC_EXCLUDEDIRSPATTERN, bIncludeSubfolders);
                 DialogEnableWindow(IDC_EXCLUDEDIRMRU, bIncludeSubfolders);
+            }
+        }
+        break;
+        case IDC_EXCLUDEDIRSPATTERN:
+        {
+            if (msg == EN_CHANGE)
+            {
+                if (m_autoCompleteExcludeDirsPatterns.GetOptions() & ACO_NOPREFIXFILTERING)
+                    m_autoCompleteExcludeDirsPatterns.SetOptions(ACO_UPDOWNKEYDROPSLIST | ACO_AUTOSUGGEST);
+                auto        buf = GetDlgItemText(IDC_EXCLUDEDIRSPATTERN);
+                wchar_t*    str = buf.get();
+                m_isExcludeDirsRegexValid = (wcslen(str) == 0 || CheckRegex(str));
+                RedrawWindow(GetDlgItem(*this, IDC_EXCLUDEDIRSPATTERN), nullptr, nullptr, RDW_FRAME | RDW_INVALIDATE);
             }
         }
         break;
