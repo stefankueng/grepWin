@@ -2709,42 +2709,45 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
     }
     else if (lpNMItemActivate->hdr.code == LVN_GETINFOTIP)
     {
+        bool            fileList    = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
         NMLVGETINFOTIP* pInfoTip    = reinterpret_cast<NMLVGETINFOTIP*>(lpNMItemActivate);
-
         size_t          listIndex   = pInfoTip->iItem;
-        auto            tup         = m_listItems[listIndex];
-        int             iItem       = std::get<0>(tup);
-        CSearchInfo&    inf         = m_items[iItem];
+        CSearchInfo*    pInfo;
         int             subIndex    = 0;
 
-        bool fileList = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
-
-        if (!fileList)
+        if (fileList)
         {
+            pInfo = &m_items[listIndex];
+        }
+        else
+        {
+            auto    tup     = m_listItems[listIndex];
+            int     iItem   = std::get<0>(tup);
+            pInfo = &m_items[iItem];
             subIndex = std::get<1>(tup);
         }
 
-        std::wstring matchString    = inf.filePath + L"\n";
-        if (!inf.exception.empty())
+        std::wstring matchString    = pInfo->filePath + L"\n";
+        if (!pInfo->exception.empty())
         {
-            matchString += inf.exception;
+            matchString += pInfo->exception;
             matchString += L"\n";
         }
 
         std::wstring    sFormat     = TranslatedString(hResource, IDS_CONTEXTLINE);
-        int             leftMax     = static_cast<int>(inf.matchLines.size());
+        int             leftMax     = static_cast<int>(pInfo->matchLines.size());
         int             showMax     = min(leftMax, subIndex + 5);
         for (; subIndex < showMax; ++subIndex)
         {
-            std::wstring matchText  = inf.matchLines[subIndex];
+            std::wstring matchText  = pInfo->matchLines[subIndex];
             CStringUtils::rtrim(matchText);
             DWORD   iShow   = 0;
-            if (inf.matchColumnsNumbers[subIndex] > 8)
+            if (pInfo->matchColumnsNumbers[subIndex] > 8)
             {
                 // 6 + 1 prefix chars would give a context
-                iShow = inf.matchColumnsNumbers[subIndex] - 8;
+                iShow = pInfo->matchColumnsNumbers[subIndex] - 8;
             }
-            matchString += CStringUtils::Format(sFormat.c_str(), inf.matchLinesNumbers[subIndex], matchText.substr(iShow, 50).c_str());
+            matchString += CStringUtils::Format(sFormat.c_str(), pInfo->matchLinesNumbers[subIndex], matchText.substr(iShow, 50).c_str());
         }
         leftMax  -= subIndex;
         if (leftMax > 0)
