@@ -1,6 +1,6 @@
 ﻿// grepWin - regex search and replace for Windows
 
-// Copyright (C) 2020-2021, 2023 - Stefan Kueng
+// Copyright (C) 2020-2021, 2023-2024 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -49,7 +49,7 @@ static BOOL        GetEditBorderColor(HWND hWnd, COLORREF* pClr);
 
 HBRUSH             CTheme::m_sBackBrush = nullptr;
 
-CTheme::CTheme()
+CTheme::           CTheme()
     : m_bLoaded(false)
     , m_dark(false)
     , m_isHighContrastMode(false)
@@ -942,6 +942,7 @@ bool CTheme::IsDarkModeAllowed()
                 m_bDarkModeIsAllowed = true;
         }
     }
+    m_bDarkModeIsAllowed = m_bDarkModeIsAllowed && DarkModeHelper::Instance().ShouldAppsUseDarkMode();
     return m_bDarkModeIsAllowed;
 }
 
