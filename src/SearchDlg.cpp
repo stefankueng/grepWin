@@ -2759,7 +2759,11 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
                 // 6 + 1 prefix chars would give a context
                 iShow = pInfo->matchColumnsNumbers[subIndex] - 8;
             }
-            matchString += CStringUtils::Format(sFormat.c_str(), pInfo->matchLinesNumbers[subIndex], matchText.substr(iShow, 50).c_str());
+            if (iShow < matchText.size())   // tricky including binary files that with leading L'\x00'
+            {
+                matchText = matchText.substr(iShow, 50);
+            }
+            matchString += CStringUtils::Format(sFormat.c_str(), pInfo->matchLinesNumbers[subIndex], matchText.c_str());
         }
         leftMax  -= subIndex;
         if (leftMax > 0)
