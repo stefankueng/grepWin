@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008, 2012-2014, 2021-2023 - Stefan Kueng
+// Copyright (C) 2007-2008, 2012-2014, 2021-2024 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -150,7 +150,7 @@ bool CSearchInfo::operator<(const CSearchInfo& other) const
     if (fileSize != other.fileSize)
         return fileSize < other.fileSize;
     if (matchCount != other.matchCount)
-        return matchCount < matchCount;
+        return matchCount < other.matchCount;
     if (readError != other.readError)
         return readError != other.readError;
     if (folder != other.folder)
