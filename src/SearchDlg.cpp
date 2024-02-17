@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2023 - Stefan Kueng
+// Copyright (C) 2007-2024 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -72,17 +72,17 @@
 #define GREPWIN_DATEBUFFER 100
 #define LABELUPDATETIMER   10
 
-constexpr auto          SearchEditSubclassID = 4321;
+constexpr auto   SearchEditSubclassID = 4321;
 
-DWORD WINAPI            SearchThreadEntry(LPVOID lpParam);
+DWORD WINAPI     SearchThreadEntry(LPVOID lpParam);
 
 // ReSharper disable once CppInconsistentNaming
-UINT                    CSearchDlg::m_grepwinStartupmsg = RegisterWindowMessage(L"grepWin_StartupMessage");
+UINT             CSearchDlg::m_grepwinStartupmsg = RegisterWindowMessage(L"grepWin_StartupMessage");
 
-extern ULONGLONG        g_startTime;
-extern HANDLE           hInitProtection;
+extern ULONGLONG g_startTime;
+extern HANDLE    hInitProtection;
 
-void                    drawRedEditBox(HWND hWnd, WPARAM wParam)
+void             drawRedEditBox(HWND hWnd, WPARAM wParam)
 {
     // make the border of the edit control red in case
     // the regex is invalid
@@ -1297,6 +1297,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 if (m_bReplace)
                 {
                     m_replaceString = ExpandString(m_replaceString);
+                    m_bNotSearch    = false;
                 }
 
                 if (m_searchString.empty() || m_bNotSearch)
@@ -1460,16 +1461,16 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
             {
                 if (m_autoCompleteSearchPaths.GetOptions() & ACO_NOPREFIXFILTERING)
                     m_autoCompleteSearchPaths.SetOptions(ACO_UPDOWNKEYDROPSLIST | ACO_AUTOSUGGEST);
-                auto        buf     = GetDlgItemText(IDC_SEARCHPATH);
-                wchar_t*    path    = buf.get();
-                wchar_t*    p       = wcschr(path, L'|');
+                auto     buf  = GetDlgItemText(IDC_SEARCHPATH);
+                wchar_t* path = buf.get();
+                wchar_t* p    = wcschr(path, L'|');
                 if (p != NULL)
                 {
-                    *p  = L'\x00';
+                    *p = L'\x00';
                 }
                 // dir
-                bool bValid         = PathIsDirectory(path);
-                m_hasSearchDir      = bValid;   // only the 1st of multiple
+                bool bValid    = PathIsDirectory(path);
+                m_hasSearchDir = bValid; // only the 1st of multiple
                 DialogEnableWindow(IDC_ALLSIZERADIO, bValid);
                 DialogEnableWindow(IDC_SIZERADIO, bValid);
                 DialogEnableWindow(IDC_SIZECOMBO, bValid);
@@ -1497,15 +1498,15 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 if (!bValid)
                 {
                     // or file
-                    bValid          = PathFileExists(path);
+                    bValid = PathFileExists(path);
                 }
                 m_isSearchPathValid = bValid;
                 RedrawWindow(GetDlgItem(*this, IDC_SEARCHPATH), nullptr, nullptr, RDW_FRAME | RDW_INVALIDATE);
 
                 // change the dialog title to "grepWin : search/path"
-                wchar_t compactPath[100]    = {0};
+                wchar_t compactPath[100] = {0};
                 PathCompactPathEx(compactPath, path, 40, 0);
-                wchar_t titleBuf[MAX_PATH]  = {0};
+                wchar_t titleBuf[MAX_PATH] = {0};
                 swprintf_s(titleBuf, _countof(titleBuf), L"grepWin : %s", compactPath);
                 SetWindowText(*this, titleBuf);
             }
@@ -1525,8 +1526,8 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
             {
                 if (m_autoCompleteSearchPatterns.GetOptions() & ACO_NOPREFIXFILTERING)
                     m_autoCompleteSearchPatterns.SetOptions(ACO_UPDOWNKEYDROPSLIST | ACO_AUTOSUGGEST);
-                std::wstring    search  = GetDlgItemText(IDC_SEARCHTEXT).get();
-                m_SearchValidLength     = static_cast<int>(search.length());
+                std::wstring search = GetDlgItemText(IDC_SEARCHTEXT).get();
+                m_SearchValidLength = static_cast<int>(search.length());
                 if (IsDlgButtonChecked(*this, IDC_REGEXRADIO) == BST_CHECKED)
                 {
                     removeMineExtVariables(search);
@@ -1545,8 +1546,8 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
             {
                 if (m_autoCompleteReplacePatterns.GetOptions() & ACO_NOPREFIXFILTERING)
                     m_autoCompleteReplacePatterns.SetOptions(ACO_UPDOWNKEYDROPSLIST | ACO_AUTOSUGGEST);
-                std::wstring    replace = GetDlgItemText(IDC_REPLACETEXT).get();
-                m_ReplaceValidLength    = static_cast<int>(replace.length());
+                std::wstring replace = GetDlgItemText(IDC_REPLACETEXT).get();
+                m_ReplaceValidLength = static_cast<int>(replace.length());
             }
         }
         case IDC_FILEPATTERNREGEX:
@@ -1559,8 +1560,8 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                     m_autoCompleteFilePatterns.SetOptions(ACO_UPDOWNKEYDROPSLIST | ACO_AUTOSUGGEST);
                 if (IsDlgButtonChecked(*this, IDC_FILEPATTERNREGEX) == BST_CHECKED)
                 {
-                    auto        buf = GetDlgItemText(IDC_PATTERN);
-                    wchar_t*    str = buf.get();
+                    auto     buf                   = GetDlgItemText(IDC_PATTERN);
+                    wchar_t* str                   = buf.get();
                     m_isFileNameMatchingRegexValid = (wcslen(str) == 0 || isRegexValid(str));
                 }
                 else
@@ -1597,8 +1598,8 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
             {
                 if (m_autoCompleteExcludeDirsPatterns.GetOptions() & ACO_NOPREFIXFILTERING)
                     m_autoCompleteExcludeDirsPatterns.SetOptions(ACO_UPDOWNKEYDROPSLIST | ACO_AUTOSUGGEST);
-                auto        buf = GetDlgItemText(IDC_EXCLUDEDIRSPATTERN);
-                wchar_t*    str = buf.get();
+                auto     buf              = GetDlgItemText(IDC_EXCLUDEDIRSPATTERN);
+                wchar_t* str              = buf.get();
                 m_isExcludeDirsRegexValid = (wcslen(str) == 0 || isRegexValid(str));
                 RedrawWindow(GetDlgItem(*this, IDC_EXCLUDEDIRSPATTERN), nullptr, nullptr, RDW_FRAME | RDW_INVALIDATE);
             }
@@ -2332,7 +2333,21 @@ bool CSearchDlg::PreTranslateMessage(MSG* pMsg)
         {
             case VK_RETURN:
             {
-                if (GetFocus() == hListControl)
+                if (bCtrl && bShift)
+                {
+                    // replace
+                    DoCommand(IDC_REPLACE, 0);
+                }
+                else if (bShift)
+                {
+                    DoCommand(IDC_INVERSESEARCH, 0);
+                }
+                else if (bCtrl)
+                {
+                    // search in found files
+                    DoCommand(IDC_SEARCHINFOUNDFILES, 0);
+                }
+                else if (GetFocus() == hListControl)
                 {
                     int iItem = -1;
                     while ((iItem = ListView_GetNextItem(hListControl, iItem, LVNI_SELECTED)) != (-1))
@@ -2459,38 +2474,38 @@ LRESULT CSearchDlg::ColorizeMatchResultProc(LPNMLVCUSTOMDRAW lpLVCD)
 {
     switch (lpLVCD->nmcd.dwDrawStage)
     {
-        case CDDS_PREPAINT:                      // theme hooks this stage
+        case CDDS_PREPAINT: // theme hooks this stage
             return CDRF_NOTIFYITEMDRAW;
         case CDDS_ITEMPREPAINT:
             return CDRF_NOTIFYSUBITEMDRAW;
-        case  CDDS_ITEMPREPAINT | CDDS_SUBITEM:
+        case CDDS_ITEMPREPAINT | CDDS_SUBITEM:
             return CDRF_NOTIFYPOSTPAINT | CDRF_NEWFONT;
         case CDDS_ITEMPOSTPAINT | CDDS_SUBITEM: // use the theme color
         {
             if (lpLVCD->iSubItem == 3 && IsDlgButtonChecked(*this, IDC_RESULTFILES) != BST_CHECKED)
             {
-                HDC             hdc                 = lpLVCD->nmcd.hdc;
-                RECT            rc                  = lpLVCD->nmcd.rc;  // lpLVCD->rcText does not work
+                HDC  hdc = lpLVCD->nmcd.hdc;
+                RECT rc  = lpLVCD->nmcd.rc; // lpLVCD->rcText does not work
                 if (rc.top == 0)
                 {
                     // hover on items
                     break;
                 }
 
-                int             iRow                = (int)(lpLVCD->nmcd.dwItemSpec);
-                auto            tup                 = m_listItems[iRow];
-                int             index               = std::get<0>(tup);
-                CSearchInfo*    pInfo               = &m_items[index];
+                int          iRow  = (int)(lpLVCD->nmcd.dwItemSpec);
+                auto         tup   = m_listItems[iRow];
+                int          index = std::get<0>(tup);
+                CSearchInfo* pInfo = &m_items[index];
                 if (pInfo->encoding == CTextFile::Binary)
                 {
                     break;
                 }
 
-                int             subIndex            = std::get<1>(tup);
-                int             lenText             = static_cast<int>(pInfo->matchLines[subIndex].length());
+                int   subIndex          = std::get<1>(tup);
+                int   lenText           = static_cast<int>(pInfo->matchLines[subIndex].length());
 
-                auto            colMatch            = pInfo->matchColumnsNumbers[subIndex];
-                WCHAR           textBuf[MAX_PATH]   = {0};
+                auto  colMatch          = pInfo->matchColumnsNumbers[subIndex];
+                WCHAR textBuf[MAX_PATH] = {0};
                 if (colMatch + pInfo->matchLengths[subIndex] >= MAX_PATH)
                 {
                     // LV_ITEM: Allows any length string to be stored as item text, only the first 259 TCHARs are displayed.
@@ -2498,12 +2513,12 @@ LRESULT CSearchDlg::ColorizeMatchResultProc(LPNMLVCUSTOMDRAW lpLVCD)
                     break;
                 }
 
-                HWND            hListControl        = GetDlgItem(*this, IDC_RESULTLIST);
-                LVITEM          lv                  = {0};
-                lv.iItem    = iRow;
-                lv.iSubItem = 3;
-                lv.mask     = LVIF_TEXT;
-                lv.pszText  = textBuf;
+                HWND   hListControl = GetDlgItem(*this, IDC_RESULTLIST);
+                LVITEM lv           = {0};
+                lv.iItem            = iRow;
+                lv.iSubItem         = 3;
+                lv.mask             = LVIF_TEXT;
+                lv.pszText          = textBuf;
                 if (lenText + 1 > _countof(textBuf))
                 {
                     lv.cchTextMax = _countof(textBuf);
@@ -2514,11 +2529,11 @@ LRESULT CSearchDlg::ColorizeMatchResultProc(LPNMLVCUSTOMDRAW lpLVCD)
                 }
                 if (ListView_GetItem(hListControl, &lv))
                 {
-                    LPWSTR      pMatch      = lv.pszText + colMatch - 1;
-                    SIZE        textSize    = {0, 0};
+                    LPWSTR pMatch   = lv.pszText + colMatch - 1;
+                    SIZE   textSize = {0, 0};
 
-                    rc.left     += 6;
-                    rc.right    -= 6;
+                    rc.left += 6;
+                    rc.right -= 6;
 
                     // Not precise sometimes.
                     // We keep the text and draw a transparent rectangle only. So, will not break the text.
@@ -2534,13 +2549,13 @@ LRESULT CSearchDlg::ColorizeMatchResultProc(LPNMLVCUSTOMDRAW lpLVCD)
                         rc.right = rc.left + textSize.cx;
                     }
 
-                    LONG            width   = rc.right - rc.left;
-                    LONG            height  = rc.bottom - rc.top;
-                    HDC             hcdc    = CreateCompatibleDC(hdc);
-                    BITMAPINFO      bmi     = { {sizeof(BITMAPINFOHEADER), width, height, 1, 32, BI_RGB, width * height * 4u, 0, 0, 0, 0}, {{0, 0, 0, 0}} };
-                    BLENDFUNCTION   blend   = {AC_SRC_OVER, 0, 92, 0};  // 36%
-                    HBITMAP         hBitmap = CreateDIBSection(hcdc, &bmi, DIB_RGB_COLORS, NULL, NULL, 0x0);
-                    RECT            rc2     = {0, 0, width, height};
+                    LONG          width   = rc.right - rc.left;
+                    LONG          height  = rc.bottom - rc.top;
+                    HDC           hcdc    = CreateCompatibleDC(hdc);
+                    BITMAPINFO    bmi     = {{sizeof(BITMAPINFOHEADER), width, height, 1, 32, BI_RGB, width * height * 4u, 0, 0, 0, 0}, {{0, 0, 0, 0}}};
+                    BLENDFUNCTION blend   = {AC_SRC_OVER, 0, 92, 0}; // 36%
+                    HBITMAP       hBitmap = CreateDIBSection(hcdc, &bmi, DIB_RGB_COLORS, NULL, NULL, 0x0);
+                    RECT          rc2     = {0, 0, width, height};
                     SelectObject(hcdc, hBitmap);
                     FillRect(hcdc, &rc2, CreateSolidBrush(RGB(255, 255, 0)));
                     AlphaBlend(hdc, rc.left, rc.top, width, height, hcdc, 0, 0, width, height, blend);
@@ -2721,11 +2736,11 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
     }
     else if (lpNMItemActivate->hdr.code == LVN_GETINFOTIP)
     {
-        bool            fileList    = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
-        NMLVGETINFOTIP* pInfoTip    = reinterpret_cast<NMLVGETINFOTIP*>(lpNMItemActivate);
-        size_t          listIndex   = pInfoTip->iItem;
+        bool            fileList  = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
+        NMLVGETINFOTIP* pInfoTip  = reinterpret_cast<NMLVGETINFOTIP*>(lpNMItemActivate);
+        size_t          listIndex = pInfoTip->iItem;
         CSearchInfo*    pInfo;
-        int             subIndex    = 0;
+        int             subIndex = 0;
 
         if (fileList)
         {
@@ -2733,27 +2748,27 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
         }
         else
         {
-            auto    tup     = m_listItems[listIndex];
-            int     iItem   = std::get<0>(tup);
-            pInfo = &m_items[iItem];
-            subIndex = std::get<1>(tup);
+            auto tup   = m_listItems[listIndex];
+            int  iItem = std::get<0>(tup);
+            pInfo      = &m_items[iItem];
+            subIndex   = std::get<1>(tup);
         }
 
-        std::wstring matchString    = pInfo->filePath + L"\n";
+        std::wstring matchString = pInfo->filePath + L"\n";
         if (!pInfo->exception.empty())
         {
             matchString += pInfo->exception;
             matchString += L"\n";
         }
 
-        std::wstring    sFormat     = TranslatedString(hResource, IDS_CONTEXTLINE);
-        int             leftMax     = static_cast<int>(pInfo->matchLines.size());
-        int             showMax     = min(leftMax, subIndex + 5);
+        std::wstring sFormat = TranslatedString(hResource, IDS_CONTEXTLINE);
+        int          leftMax = static_cast<int>(pInfo->matchLines.size());
+        int          showMax = min(leftMax, subIndex + 5);
         for (; subIndex < showMax; ++subIndex)
         {
-            std::wstring matchText  = pInfo->matchLines[subIndex];
+            std::wstring matchText = pInfo->matchLines[subIndex];
             CStringUtils::rtrim(matchText);
-            DWORD   iShow   = 0;
+            DWORD iShow = 0;
             if (pInfo->matchColumnsNumbers[subIndex] > 8)
             {
                 // 6 + 1 prefix chars would give a context
@@ -2765,7 +2780,7 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
             }
             matchString += CStringUtils::Format(sFormat.c_str(), pInfo->matchLinesNumbers[subIndex], matchText.c_str());
         }
-        leftMax  -= subIndex;
+        leftMax -= subIndex;
         if (leftMax > 0)
         {
             std::wstring sx  = TranslatedString(hResource, IDS_XMOREMATCHES);
@@ -2946,14 +2961,14 @@ void static OpenFileInProcess(LPWSTR lpCommandLine)
 
 void CSearchDlg::OpenFileAtListIndex(int listIndex)
 {
-    auto            tup         = m_listItems[listIndex];
-    int             iItem       = std::get<0>(tup);
-    CSearchInfo&    inf         = m_items[iItem];
-    auto            subIndex    = 0;
-    wchar_t         line[32];
-    wchar_t         move[32];
+    auto         tup      = m_listItems[listIndex];
+    int          iItem    = std::get<0>(tup);
+    CSearchInfo& inf      = m_items[iItem];
+    auto         subIndex = 0;
+    wchar_t      line[32];
+    wchar_t      move[32];
 
-    bool fileList = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
+    bool         fileList = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
 
     if (!fileList)
     {
@@ -2976,8 +2991,8 @@ void CSearchDlg::OpenFileAtListIndex(int listIndex)
         return;
     }
 
-    size_t          dotPos  = inf.filePath.rfind('.');
-    std::wstring    ext;
+    size_t       dotPos = inf.filePath.rfind('.');
+    std::wstring ext;
     if (dotPos != std::wstring::npos)
         ext = inf.filePath.substr(dotPos);
 
@@ -3002,19 +3017,19 @@ void CSearchDlg::OpenFileAtListIndex(int listIndex)
     DWORD        len         = ExpandEnvironmentStrings(application.c_str(), nullptr, 0);
     cmdBuf                   = std::make_unique<wchar_t[]>(len + 1LL);
     ExpandEnvironmentStrings(application.c_str(), cmdBuf.get(), len);
-    application = cmdBuf.get();
+    application          = cmdBuf.get();
 
     // resolve parameters
-    std::wstring    appname         = application;
+    std::wstring appname = application;
     std::ranges::transform(appname, appname.begin(), ::towlower);
-    std::wstring    quote           = L"\"";
-    std::wstring    params;
-    std::wstring    paramsSuffix;
-    bool            bDontQuotePath  = FALSE;
+    std::wstring quote = L"\"";
+    std::wstring params;
+    std::wstring paramsSuffix;
+    bool         bDontQuotePath = FALSE;
 
-    std::wstring    argHolder       = L"%1";
-    size_t          holderIndex     = application.find(argHolder);
-    size_t          reservedLength;
+    std::wstring argHolder      = L"%1";
+    size_t       holderIndex    = application.find(argHolder);
+    size_t       reservedLength;
     if (holderIndex == std::wstring::npos)
     {
         reservedLength = application.length() + 1;
@@ -3044,8 +3059,8 @@ void CSearchDlg::OpenFileAtListIndex(int listIndex)
     else if ((appname.find(L"uedit32.exe") != std::wstring::npos) || (appname.find(L"uedit64.exe") != std::wstring::npos))
     {
         // UltraEdit, `/<ln>/<cn>` covers more (old) versions than `-l<ln> -c<ln>`
-        params = quote;
-        paramsSuffix = CStringUtils::Format(L"/%s/%s\"", line, move);
+        params         = quote;
+        paramsSuffix   = CStringUtils::Format(L"/%s/%s\"", line, move);
         bDontQuotePath = TRUE;
     }
     else if (appname.find(L"notepad2.exe") != std::wstring::npos)
@@ -3054,19 +3069,17 @@ void CSearchDlg::OpenFileAtListIndex(int listIndex)
         if (inf.matchLines.size() > 0)
         {
             // not binary
-            const wchar_t*  specialChar[17]     = {
+            const wchar_t* specialChar[17] = {
                 // oringinal
                 L"\\",
                 // regex special chars, current and future
                 L"^", L"$", L".", L"?", L"*", L"+", L"[", L"]", L"(", L")", L"{", L"}", L"|",
                 // command line special chars
-                L"\"", L" ", L"\t"
-            };
-            const wchar_t*  specialEscaped[17]  = {
+                L"\"", L" ", L"\t"};
+            const wchar_t* specialEscaped[17] = {
                 L"\\x5c",
                 L"\\^", L"\\$", L"\\.", L"\\?", L"\\*", L"\\+", L"\\[", L"\\]", L"\\(", L"\\)", L"\\{", L"\\}", L"\\|",
-                L"\\x22", L"\\x20", L"\\x09"
-            };
+                L"\\x22", L"\\x20", L"\\x09"};
             match = inf.matchLines[subIndex].substr(inf.matchColumnsNumbers[subIndex] - 1, inf.matchLengths[subIndex]);
             for (int i = 0; i < _countof(specialChar); ++i)
             {
@@ -3086,7 +3099,7 @@ void CSearchDlg::OpenFileAtListIndex(int listIndex)
     else if (appname.find(L"code.exe") != std::wstring::npos)
     {
         // Visual Studio Code
-        params = L"-g ";
+        params       = L"-g ";
         paramsSuffix = CStringUtils::Format(L":%s:%s", line, move);
     }
     else if (application.find(L"-single-argument") != std::wstring::npos)
@@ -3845,13 +3858,13 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
     // we keep it simple:
     // files bigger than 30MB are considered binary. Binary files are searched
     // as if they're ANSI text files.
-    std::wstring localSearchString  = searchString;
-    std::wstring fileNameFull       = sInfo.filePath.substr(sInfo.filePath.find_last_of('\\') + 1);
+    std::wstring localSearchString = searchString;
+    std::wstring fileNameFull      = sInfo.filePath.substr(sInfo.filePath.find_last_of('\\') + 1);
 
     if (bUseRegex)
     {
         SearchReplace(localSearchString, L"${filepath}", sInfo.filePath);
-        auto         dotPos       = fileNameFull.find_last_of('.');
+        auto dotPos = fileNameFull.find_last_of('.');
         if (dotPos != std::string::npos)
         {
             std::wstring filename = fileNameFull.substr(0, dotPos);
@@ -3895,10 +3908,10 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
     }
     sInfo.encoding = type;
 
-    int                     ft      = boost::regex::normal;
+    int ft         = boost::regex::normal;
     if (!bCaseSensitive)
         ft |= boost::regbase::icase;
-    boost::match_flag_type  flags   = boost::match_default | boost::format_all;
+    boost::match_flag_type flags = boost::match_default | boost::format_all;
     if (!bDotMatchesNewline)
         flags |= boost::match_not_dot_newline;
 
@@ -3919,18 +3932,18 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
                     nFound++;
                     if (m_bNotSearch)
                         break;
-                    long posMatchHead   = static_cast<long>(whatC[0].first - textFile.GetFileString().begin());
-                    long posMatchTail   = static_cast<long>(whatC[0].second - textFile.GetFileString().begin());
-                    if (whatC[0].first < whatC[0].second)   // m[0].second is not part of the match
+                    long posMatchHead = static_cast<long>(whatC[0].first - textFile.GetFileString().begin());
+                    long posMatchTail = static_cast<long>(whatC[0].second - textFile.GetFileString().begin());
+                    if (whatC[0].first < whatC[0].second) // m[0].second is not part of the match
                         --posMatchTail;
-                    long lineStart      = textFile.LineFromPosition(posMatchHead);
-                    long lineEnd        = textFile.LineFromPosition(posMatchTail);
-                    long colMatch       = textFile.ColumnFromPosition(posMatchHead, lineStart);
-                    long lenMatch       = static_cast<long>(whatC[0].length());
+                    long lineStart = textFile.LineFromPosition(posMatchHead);
+                    long lineEnd   = textFile.LineFromPosition(posMatchTail);
+                    long colMatch  = textFile.ColumnFromPosition(posMatchHead, lineStart);
+                    long lenMatch  = static_cast<long>(whatC[0].length());
                     for (long l = lineStart; l <= lineEnd; ++l)
                     {
-                        auto sLine          = textFile.GetLineString(l);
-                        long lenLineMatch   = static_cast<long>(sLine.length()) - colMatch + 1;
+                        auto sLine        = textFile.GetLineString(l);
+                        long lenLineMatch = static_cast<long>(sLine.length()) - colMatch + 1;
                         if (lenMatch < lenLineMatch)
                         {
                             lenLineMatch = lenMatch;
@@ -3960,7 +3973,7 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
                 start = whatC[0].second;
                 if (start == end)
                     break;
-                if (start == whatC[0].first)    // ^$
+                if (start == whatC[0].first) // ^$
                     ++start;
                 // update flags:
                 flags |= boost::match_prev_avail;
@@ -3979,14 +3992,14 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
                         nFound++;
                         if (m_bNotSearch)
                             break;
-                        long posMatchHead   = static_cast<long>(whatC[0].first - textFile.GetFileString().begin());
-                        long posMatchTail   = static_cast<long>(whatC[0].second - textFile.GetFileString().begin());
-                        if (whatC[0].first < whatC[0].second)   // m[0].second is not part of the match
+                        long posMatchHead = static_cast<long>(whatC[0].first - textFile.GetFileString().begin());
+                        long posMatchTail = static_cast<long>(whatC[0].second - textFile.GetFileString().begin());
+                        if (whatC[0].first < whatC[0].second) // m[0].second is not part of the match
                             --posMatchTail;
-                        long lineStart      = textFile.LineFromPosition(posMatchHead);
-                        long lineEnd        = textFile.LineFromPosition(posMatchTail);
-                        long colMatch       = textFile.ColumnFromPosition(posMatchHead, lineStart);
-                        long lenMatch       = static_cast<long>(whatC[0].length());
+                        long lineStart = textFile.LineFromPosition(posMatchHead);
+                        long lineEnd   = textFile.LineFromPosition(posMatchTail);
+                        long colMatch  = textFile.ColumnFromPosition(posMatchHead, lineStart);
+                        long lenMatch  = static_cast<long>(whatC[0].length());
                         if (m_bCaptureSearch)
                         {
                             auto out = whatC.format(m_replaceString, flags);
@@ -3999,8 +4012,8 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
                         {
                             for (long l = lineStart; l <= lineEnd; ++l)
                             {
-                                auto sLine          = textFile.GetLineString(l);
-                                long lenLineMatch   = static_cast<long>(sLine.length()) - colMatch;
+                                auto sLine        = textFile.GetLineString(l);
+                                long lenLineMatch = static_cast<long>(sLine.length()) - colMatch;
                                 if (lenMatch < lenLineMatch)
                                 {
                                     lenLineMatch = lenMatch;
@@ -4022,7 +4035,7 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
                     start = whatC[0].second;
                     if (start == end)
                         break;
-                    if (start == whatC[0].first)    // ^$
+                    if (start == whatC[0].first) // ^$
                         ++start;
                     // update flags:
                     flags |= boost::match_prev_avail;
@@ -4186,7 +4199,7 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
                         start = whatC[0].second;
                         if (start == end)
                             break;
-                        if (start == whatC[0].first)    // ^$
+                        if (start == whatC[0].first) // ^$
                             ++start;
                         // update flags:
                         flags |= boost::match_prev_avail;
@@ -4215,7 +4228,7 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
                         start = whatC[0].second;
                         if (start == end)
                             break;
-                        if (start == whatC[0].first)    // ^$
+                        if (start == whatC[0].first) // ^$
                             ++start;
                         // update flags:
                         flags |= boost::match_prev_avail;
@@ -4244,9 +4257,9 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
                         if (hFile)
                         {
                             std::map<size_t, DWORD> linePositions;
-                            auto                    fBuf         = std::make_unique<char[]>(4096);
-                            DWORD                   bytesRead    = 0;
-                            size_t                  pos          = 0;
+                            auto                    fBuf      = std::make_unique<char[]>(4096);
+                            DWORD                   bytesRead = 0;
+                            size_t                  pos       = 0;
                             while (ReadFile(hFile, fBuf.get(), 4096, &bytesRead, nullptr))
                             {
                                 if (bytesRead == 0)
@@ -4292,7 +4305,7 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
                             }
                         }
                     }
-                    sInfo.matchLinesNumbers = matchLinesNumbers;
+                    sInfo.matchLinesNumbers   = matchLinesNumbers;
                     sInfo.matchColumnsNumbers = matchColumnsNumbers;
 
                     if (m_bReplace)
@@ -4491,8 +4504,8 @@ void CSearchDlg::AutoSizeAllColumns()
     {
         RECT rc{};
         ListView_GetItemRect(hListControl, 0, &rc, LVIR_BOUNDS);
-        int cxVScroll   = GetSystemMetrics(SM_CXVSCROLL);
-        auto itemWidth  = rc.right - rc.left - cxVScroll;
+        int  cxVScroll = GetSystemMetrics(SM_CXVSCROLL);
+        auto itemWidth = rc.right - rc.left - cxVScroll;
         if (nItemCount > 0)
         {
             GetClientRect(hListControl, &rc);
