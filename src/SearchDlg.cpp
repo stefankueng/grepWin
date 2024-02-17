@@ -261,8 +261,8 @@ CSearchDlg::CSearchDlg(HWND hParent)
     , m_bAscending(true)
     , m_hasSearchDir(false)
     , m_isSearchPathValid(false)
-    , m_SearchValidLength(0)
-    , m_ReplaceValidLength(0)
+    , m_searchValidLength(0)
+    , m_replaceValidLength(0)
     , m_isExcludeDirsRegexValid(true)
     , m_isFileNameMatchingRegexValid(true)
     , m_themeCallbackId(0)
@@ -321,7 +321,7 @@ bool CSearchDlg::isSearchPathValid() const
 bool CSearchDlg::isSearchValid() const
 {
     // 0 is allowed to count files
-    return m_SearchValidLength >= 0;
+    return m_searchValidLength >= 0;
 }
 
 bool CSearchDlg::isExcludeDirsRegexValid() const
@@ -827,7 +827,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                 {
                     if (reinterpret_cast<LPNMHDR>(lParam)->code == NM_CUSTOMDRAW)
                     {
-                        return ColorizeMatchResultProc((LPNMLVCUSTOMDRAW)lParam);
+                        return ColorizeMatchResultProc(reinterpret_cast<LPNMLVCUSTOMDRAW>(lParam));
                     }
                     DoListNotify(reinterpret_cast<LPNMITEMACTIVATE>(lParam));
                     break;
@@ -1471,7 +1471,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 auto     buf  = GetDlgItemText(IDC_SEARCHPATH);
                 wchar_t* path = buf.get();
                 wchar_t* p    = wcschr(path, L'|');
-                if (p != NULL)
+                if (p != nullptr)
                 {
                     *p = L'\x00';
                 }
@@ -1534,16 +1534,16 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 if (m_autoCompleteSearchPatterns.GetOptions() & ACO_NOPREFIXFILTERING)
                     m_autoCompleteSearchPatterns.SetOptions(ACO_UPDOWNKEYDROPSLIST | ACO_AUTOSUGGEST);
                 std::wstring search = GetDlgItemText(IDC_SEARCHTEXT).get();
-                m_SearchValidLength = static_cast<int>(search.length());
+                m_searchValidLength = static_cast<int>(search.length());
                 if (IsDlgButtonChecked(*this, IDC_REGEXRADIO) == BST_CHECKED)
                 {
                     removeMineExtVariables(search);
-                    if (m_SearchValidLength > 0 && !isRegexValid(search))
+                    if (m_searchValidLength > 0 && !isRegexValid(search))
                     {
-                        m_SearchValidLength = -1;
+                        m_searchValidLength = -1;
                     }
                 }
-                DialogEnableWindow(IDC_ADDTOBOOKMARKS, m_SearchValidLength > 0);
+                DialogEnableWindow(IDC_ADDTOBOOKMARKS, m_searchValidLength > 0);
                 RedrawWindow(GetDlgItem(*this, IDC_SEARCHTEXT), nullptr, nullptr, RDW_FRAME | RDW_INVALIDATE);
             }
         }
@@ -1554,7 +1554,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 if (m_autoCompleteReplacePatterns.GetOptions() & ACO_NOPREFIXFILTERING)
                     m_autoCompleteReplacePatterns.SetOptions(ACO_UPDOWNKEYDROPSLIST | ACO_AUTOSUGGEST);
                 std::wstring replace = GetDlgItemText(IDC_REPLACETEXT).get();
-                m_ReplaceValidLength = static_cast<int>(replace.length());
+                m_replaceValidLength = static_cast<int>(replace.length());
             }
         }
         case IDC_FILEPATTERNREGEX:
@@ -1584,8 +1584,8 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
             {
                 bValid = m_isExcludeDirsRegexValid && m_isFileNameMatchingRegexValid;
             }
-            DialogEnableWindow(IDOK, bValid && (m_SearchValidLength >= 0));
-            DialogEnableWindow(IDC_REPLACE, bValid && (m_SearchValidLength > 0));
+            DialogEnableWindow(IDOK, bValid && (m_searchValidLength >= 0));
+            DialogEnableWindow(IDC_REPLACE, bValid && (m_searchValidLength > 0));
         }
         break;
         // } validation_group
@@ -2499,7 +2499,7 @@ LRESULT CSearchDlg::ColorizeMatchResultProc(LPNMLVCUSTOMDRAW lpLVCD)
                     break;
                 }
 
-                int          iRow  = (int)(lpLVCD->nmcd.dwItemSpec);
+                int          iRow  = static_cast<int>(lpLVCD->nmcd.dwItemSpec);
                 auto         tup   = m_listItems[iRow];
                 int          index = std::get<0>(tup);
                 CSearchInfo* pInfo = &m_items[index];
@@ -2559,9 +2559,9 @@ LRESULT CSearchDlg::ColorizeMatchResultProc(LPNMLVCUSTOMDRAW lpLVCD)
                     LONG          width   = rc.right - rc.left;
                     LONG          height  = rc.bottom - rc.top;
                     HDC           hcdc    = CreateCompatibleDC(hdc);
-                    BITMAPINFO    bmi     = {{sizeof(BITMAPINFOHEADER), width, height, 1, 32, BI_RGB, width * height * 4u, 0, 0, 0, 0}, {{0, 0, 0, 0}}};
+                    BITMAPINFO    bmi     = {{sizeof(BITMAPINFOHEADER), width, height, 1, 32, BI_RGB, static_cast<DWORD>(width * height * 4u), 0, 0, 0, 0}, {{0, 0, 0, 0}}};
                     BLENDFUNCTION blend   = {AC_SRC_OVER, 0, 92, 0}; // 36%
-                    HBITMAP       hBitmap = CreateDIBSection(hcdc, &bmi, DIB_RGB_COLORS, NULL, NULL, 0x0);
+                    HBITMAP       hBitmap = CreateDIBSection(hcdc, &bmi, DIB_RGB_COLORS, nullptr, nullptr, 0x0);
                     RECT          rc2     = {0, 0, width, height};
                     SelectObject(hcdc, hBitmap);
                     FillRect(hcdc, &rc2, CreateSolidBrush(RGB(255, 255, 0)));
@@ -2781,7 +2781,7 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
                 // 6 + 1 prefix chars would give a context
                 iShow = pInfo->matchColumnsNumbers[subIndex] - 8;
             }
-            if (iShow < matchText.size())   // tricky including binary files that with leading L'\x00'
+            if (iShow < matchText.size()) // tricky including binary files that with leading L'\x00'
             {
                 matchText = matchText.substr(iShow, 50);
             }
@@ -4433,7 +4433,7 @@ DWORD WINAPI SearchThreadEntry(LPVOID lpParam)
     return 0L;
 }
 
-void CSearchDlg::formatDate(wchar_t dateNative[], const FILETIME& fileTime, bool forceShortFmt) const
+void CSearchDlg::formatDate(wchar_t dateNative[], const FILETIME& fileTime, bool forceShortFmt)
 {
     dateNative[0] = '\0';
 
@@ -4670,7 +4670,7 @@ void CSearchDlg::ShowUpdateAvailable()
     }
 }
 
-bool CSearchDlg::IsVersionNewer(const std::wstring& sVer) const
+bool CSearchDlg::IsVersionNewer(const std::wstring& sVer)
 {
     int            major = 0;
     int            minor = 0;
@@ -4739,7 +4739,7 @@ bool CSearchDlg::CloneWindow()
     return true;
 }
 
-std::wstring CSearchDlg::ExpandString(const std::wstring& replaceString) const
+std::wstring CSearchDlg::ExpandString(const std::wstring& replaceString)
 {
     // ${now,formatString}
     wchar_t buf[4096] = {};
