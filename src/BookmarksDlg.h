@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2009, 2012-2013, 2016, 2019-2023 - Stefan Kueng
+// Copyright (C) 2007-2009, 2012-2013, 2016, 2019-2024 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -85,6 +85,6 @@ private:
     std::wstring m_sFileMatch;
     bool         m_bFileMatchRegex;
 
-    int         m_themeCallbackId;
-    CDlgResizer m_resizer;
+    int          m_themeCallbackId;
+    CDlgResizer  m_resizer;
 };

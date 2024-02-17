@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008, 2010, 2012-2013, 2021-2023 - Stefan Kueng
+// Copyright (C) 2007-2008, 2010, 2012-2013, 2021-2024 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -55,7 +55,7 @@ public:
     __int64                   matchCount;
     CTextFile::UnicodeType    encoding;
     FILETIME                  modifiedTime;
-    std::wstring              exception;
     bool                      readError;
     bool                      folder;
+    std::wstring              exception;
 };
