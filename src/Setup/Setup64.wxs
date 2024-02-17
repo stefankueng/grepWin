@@ -81,7 +81,8 @@
             <File Id="package.msix" Name="package.msix" DiskId="1" Source="../../bin/release64/package.msix" Vital="yes" />
             <File Id="shelldll" Name="ExplorerCommandVerb.dll" DiskId="1" Source="../../bin/release64/ExplorerCommandVerb.dll" Vital="yes" />
             <File Id="German.lang" Name="German.lang" DiskId="1" Source="../../translations/German.lang" />
-            <File Id="Chinese.lang" Name="Chinese.lang" DiskId="1" Source="../../translations/Chinese.lang" />
+            <File Id="ChineseSimplified.lang" Name="Chinese Simplified.lang" DiskId="1" Source="../../translations/Chinese Simplified.lang" />
+            <File Id="ChineseTraditional.lang" Name="Chinese Traditional.lang" DiskId="1" Source="../../translations/Chinese Traditional.lang" />
             <File Id="Japanese.lang" Name="Japanese.lang" DiskId="1" Source="../../translations/Japanese.lang" />
             <File Id="Dutch.lang" Name="Dutch.lang" DiskId="1" Source="../../translations/Dutch.lang" />
             <File Id="Polish.lang" Name="Polish.lang" DiskId="1" Source="../../translations/Polish.lang" />
