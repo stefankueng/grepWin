@@ -94,7 +94,7 @@ public:
         m_showContentSet = true;
     }
     bool isSearchPathValid() const;
-    bool isRegexValid() const;
+    bool isSearchValid() const;
     bool isExcludeDirsRegexValid() const;
     bool isFileNameMatchRegexValid() const;
 
@@ -116,7 +116,6 @@ protected:
     bool             SaveSettings();
     void             SaveWndPosition();
     void             formatDate(wchar_t dateNative[], const FILETIME& fileTime, bool forceShortFmt) const;
-    bool             CheckRegex(const std::wstring& patternString);
     bool             MatchPath(LPCTSTR pathBuf) const;
     void             AutoSizeAllColumns();
     int              GetSelectedListIndex(int index);

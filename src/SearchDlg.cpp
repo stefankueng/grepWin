@@ -126,7 +126,7 @@ LRESULT CALLBACK SearchEditWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
         case WM_NCPAINT:
         {
             auto searchDlg = reinterpret_cast<CSearchDlg*>(dwRefData);
-            if (!searchDlg->isRegexValid())
+            if (!searchDlg->isSearchValid())
             {
                 drawRedEditBox(hWnd, wParam);
                 return 0;
@@ -185,6 +185,20 @@ static void removeMineExtVariables(std::wstring& str)
     {
         SearchReplace(str, s, L"");
     }
+}
+
+static bool isRegexValid(const std::wstring& searchString)
+{
+    bool bValid = true;
+    try
+    {
+        boost::wregex expression = boost::wregex(searchString);
+    }
+    catch (const std::exception&)
+    {
+        bValid = false;
+    }
+    return bValid;
 }
 
 CSearchDlg::CSearchDlg(HWND hParent)
@@ -304,7 +318,7 @@ bool CSearchDlg::isSearchPathValid() const
     return m_isSearchPathValid;
 }
 
-bool CSearchDlg::isRegexValid() const
+bool CSearchDlg::isSearchValid() const
 {
     // 0 is allowed to count files
     return m_SearchValidLength >= 0;
@@ -1513,7 +1527,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 if (IsDlgButtonChecked(*this, IDC_REGEXRADIO) == BST_CHECKED)
                 {
                     removeMineExtVariables(search);
-                    if (m_SearchValidLength > 0 && !CheckRegex(search))
+                    if (m_SearchValidLength > 0 && !isRegexValid(search))
                     {
                         m_SearchValidLength = -1;
                     }
@@ -1544,7 +1558,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 {
                     auto        buf = GetDlgItemText(IDC_PATTERN);
                     wchar_t*    str = buf.get();
-                    m_isFileNameMatchingRegexValid = (wcslen(str) == 0 || CheckRegex(str));
+                    m_isFileNameMatchingRegexValid = (wcslen(str) == 0 || isRegexValid(str));
                 }
                 else
                 {
@@ -1582,7 +1596,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                     m_autoCompleteExcludeDirsPatterns.SetOptions(ACO_UPDOWNKEYDROPSLIST | ACO_AUTOSUGGEST);
                 auto        buf = GetDlgItemText(IDC_EXCLUDEDIRSPATTERN);
                 wchar_t*    str = buf.get();
-                m_isExcludeDirsRegexValid = (wcslen(str) == 0 || CheckRegex(str));
+                m_isExcludeDirsRegexValid = (wcslen(str) == 0 || isRegexValid(str));
                 RedrawWindow(GetDlgItem(*this, IDC_EXCLUDEDIRSPATTERN), nullptr, nullptr, RDW_FRAME | RDW_INVALIDATE);
             }
         }
@@ -3090,21 +3104,6 @@ void CSearchDlg::OpenFileAtListIndex(int listIndex)
     OpenFileInProcess(const_cast<wchar_t*>(application.c_str()));
 }
 
-bool grepWinIsRegexValid(const std::wstring& searchString)
-{
-    // check if the regex is valid
-    bool bValid = true;
-    try
-    {
-        boost::wregex expression = boost::wregex(searchString);
-    }
-    catch (const std::exception&)
-    {
-        bValid = false;
-    }
-    return bValid;
-}
-
 bool CSearchDlg::SaveSettings()
 {
     // get all the information we need from the dialog
@@ -3154,7 +3153,7 @@ bool CSearchDlg::SaveSettings()
     if (m_bUseRegex)
     {
         // check if the regex is valid before doing the search
-        if (!grepWinIsRegexValid(m_searchString) && !m_searchString.empty())
+        if (!m_searchString.empty() && !isSearchValid())
         {
             return false;
         }
@@ -3163,13 +3162,13 @@ bool CSearchDlg::SaveSettings()
     if (m_bUseRegexForPaths)
     {
         // check if the regex is valid before doing the search
-        if (!grepWinIsRegexValid(m_patternRegex) && !m_patternRegex.empty())
+        if (!m_patternRegex.empty() && !isFileNameMatchRegexValid())
         {
             return false;
         }
     }
     // check if the Exclude Dirs regex is valid before doing the search
-    if (!grepWinIsRegexValid(m_excludeDirsPatternRegex) && !m_excludeDirsPatternRegex.empty())
+    if (!m_excludeDirsPatternRegex.empty() && !isExcludeDirsRegexValid())
     {
         return false;
     }
@@ -4435,19 +4434,6 @@ void CSearchDlg::formatDate(wchar_t dateNative[], const FILETIME& fileTime, bool
     wcsncat_s(dateNative, GREPWIN_DATEBUFFER, dateBuf, GREPWIN_DATEBUFFER);
     wcsncat_s(dateNative, GREPWIN_DATEBUFFER, L" ", GREPWIN_DATEBUFFER);
     wcsncat_s(dateNative, GREPWIN_DATEBUFFER, timeBuf, GREPWIN_DATEBUFFER);
-}
-
-bool CSearchDlg::CheckRegex(const std::wstring& patternString)
-{
-    try
-    {
-        boost::wregex expression = boost::wregex(patternString);
-        return true;
-    }
-    catch (const std::exception&)
-    {
-        return false;
-    }
 }
 
 void CSearchDlg::AutoSizeAllColumns()
