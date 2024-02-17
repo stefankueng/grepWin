@@ -792,6 +792,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                 if (!m_bNoSaveSettings)
                 {
                     m_autoCompleteFilePatterns.Save();
+                    m_autoCompleteExcludeDirsPatterns.Save();
                     m_autoCompleteSearchPatterns.Save();
                     m_autoCompleteReplacePatterns.Save();
                     m_autoCompleteSearchPaths.Save();
@@ -1250,6 +1251,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 if (!m_bNoSaveSettings)
                 {
                     m_autoCompleteFilePatterns.Save();
+                    m_autoCompleteExcludeDirsPatterns.Save();
                     m_autoCompleteSearchPatterns.Save();
                     m_autoCompleteReplacePatterns.Save();
                     m_autoCompleteSearchPaths.Save();
@@ -1350,6 +1352,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                     if (!m_bNoSaveSettings)
                     {
                         m_autoCompleteFilePatterns.Save();
+                        m_autoCompleteExcludeDirsPatterns.Save();
                         m_autoCompleteSearchPatterns.Save();
                         m_autoCompleteReplacePatterns.Save();
                         m_autoCompleteSearchPaths.Save();
@@ -2404,6 +2407,7 @@ bool CSearchDlg::PreTranslateMessage(MSG* pMsg)
             case VK_DELETE:
             {
                 m_autoCompleteFilePatterns.RemoveSelected();
+                m_autoCompleteExcludeDirsPatterns.RemoveSelected();
                 m_autoCompleteSearchPatterns.RemoveSelected();
                 m_autoCompleteReplacePatterns.RemoveSelected();
                 m_autoCompleteSearchPaths.RemoveSelected();
