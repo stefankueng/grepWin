@@ -62,11 +62,12 @@
 #include <ranges>
 #include <string>
 
+#include <cvt/utf16> // `std::codecvt_utf16` is deprecated
+
 #pragma warning(push)
 #pragma warning(disable : 4996) // warning STL4010: Various members of std::allocator are deprecated in C++17
 #include <boost/regex.hpp>
 #include <boost/iostreams/device/mapped_file.hpp>
-#include <boost/spirit/include/classic_file_iterator.hpp>
 #pragma warning(pop)
 
 #define GREPWIN_DATEBUFFER 100
@@ -179,7 +180,7 @@ LRESULT CALLBACK FileNameMatchEditWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
     return DefSubclassProc(hWnd, uMsg, wParam, lParam);
 }
 
-static void escapeForRegexEx(std::wstring& str)
+static void escapeForRegexEx(std::wstring& str, int type)
 {
     const wchar_t* specialChar[17] = {
         // oringinal
@@ -192,18 +193,65 @@ static void escapeForRegexEx(std::wstring& str)
         L"\\x5c",
         L"\\^", L"\\$", L"\\.", L"\\?", L"\\*", L"\\+", L"\\[", L"\\]", L"\\(", L"\\)", L"\\{", L"\\}", L"\\|",
         L"\\x22", L"\\x20", L"\\x09"};
+    int count;
+    switch (type)
+    {
+    case 1: // one line string as process argv
+        count = _countof(specialChar);
+        break;
+    default: // regex safe as text
+        count = 14;
+        break;
+    }
+    for (int i = 0; i < count; ++i)
+    {
+        SearchReplace(str, specialChar[i], specialEscaped[i]);
+    }
+}
+
+static void escapeForReplaceText(std::wstring& str)
+{
+    const wchar_t* specialChar[6] = {L"\\", L"$", L"(", L")", L"?", L","};
+    const wchar_t* specialEscaped[6] = {L"\\x5c", L"\\$", L"\\(", L"\\)", L"\\?", L"\\,"};
     for (int i = 0; i < _countof(specialChar); ++i)
     {
         SearchReplace(str, specialChar[i], specialEscaped[i]);
     }
 }
 
-static void removeMineExtVariables(std::wstring& str)
+static void removeGrepWinExtVariables(std::wstring& str)
 {
     for (const auto& s : {L"${filepath}", L"${filename}", L"${fileext}"})
     {
         SearchReplace(str, s, L"");
     }
+}
+
+static void replaceGrepWinFilePathVariables(std::wstring& str, std::wstring& filePath)
+{
+    // those variables are for regex mode only
+    std::wstring fullPath     = filePath;
+    escapeForRegexEx(fullPath, 0);
+
+    std::wstring fileNameFull = fullPath.substr(fullPath.rfind(L"\\x5c") + 4);
+    std::wstring filename;
+    std::wstring fileExt;
+    auto         dotPos       = fileNameFull.find_last_of(L'.');
+    if (dotPos != std::string::npos)
+    {
+        filename = fileNameFull.substr(0, dotPos - 1);
+        if (fileNameFull.size() > dotPos)
+        {
+            fileExt = fileNameFull.substr(dotPos + 1);
+        }
+    }
+    else
+    {
+        filename = fileNameFull;
+    }
+    SearchReplace(str, L"${filepath}", fullPath);
+    SearchReplace(str, L"${filename}", filename);
+    SearchReplace(str, L"${fileext}", fileExt);
 }
 
 static bool isRegexValid(const std::wstring& searchString)
@@ -879,7 +927,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                                 auto sCaptureSearch      = TranslatedString(hResource, IDS_CAPTURESEARCH);
                                 AppendMenu(hSplitMenu, bIsDir ? MF_STRING : MF_STRING | MF_DISABLED, IDC_INVERSESEARCH, sInverseSearch.c_str());
                                 AppendMenu(hSplitMenu, m_items.empty() ? MF_STRING | MF_DISABLED : MF_STRING, IDC_SEARCHINFOUNDFILES, sSearchInFoundFiles.c_str());
-                                AppendMenu(hSplitMenu, GetDlgItemTextLength(IDC_REPLACETEXT) ? MF_STRING : MF_STRING | MF_DISABLED, IDC_CAPTURESEARCH, sCaptureSearch.c_str());
+                                AppendMenu(hSplitMenu, m_bUseRegex && GetDlgItemTextLength(IDC_REPLACETEXT) ? MF_STRING : MF_STRING | MF_DISABLED, IDC_CAPTURESEARCH, sCaptureSearch.c_str());
                             }
                             // Display the menu.
                             TrackPopupMenu(hSplitMenu, TPM_LEFTALIGN | TPM_TOPALIGN, pt.x, pt.y, 0, *this, nullptr);
@@ -985,7 +1033,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
         {
             auto searchInfo = reinterpret_cast<CSearchInfo*>(lParam);
             m_totalMatches += static_cast<int>(searchInfo->matchCount);
-            if ((wParam != 0) || (m_searchString.empty()) || searchInfo->readError || !searchInfo->exception.empty() || m_bNotSearch)
+            if ((wParam != 0) || m_searchString.empty() || searchInfo->readError || !searchInfo->exception.empty() || m_bNotSearch)
             {
                 AddFoundEntry(searchInfo);
             }
@@ -1557,7 +1605,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 m_searchValidLength = static_cast<int>(search.length());
                 if (IsDlgButtonChecked(*this, IDC_REGEXRADIO) == BST_CHECKED)
                 {
-                    removeMineExtVariables(search);
+                    removeGrepWinExtVariables(search);
                     if (m_searchValidLength > 0 && !isRegexValid(search))
                     {
                         m_searchValidLength = -1;
@@ -2529,6 +2577,11 @@ LRESULT CSearchDlg::ColorizeMatchResultProc(LPNMLVCUSTOMDRAW lpLVCD)
                 }
 
                 int   subIndex          = std::get<1>(tup);
+                if (static_cast<int>(pInfo->matchLines.size()) <= subIndex)
+                {
+                    // no those details for large files
+                    break;
+                }
                 int   lenText           = static_cast<int>(pInfo->matchLines[subIndex].length());
 
                 auto  colMatch          = pInfo->matchColumnsNumbers[subIndex];
@@ -3097,7 +3150,7 @@ void CSearchDlg::OpenFileAtListIndex(int listIndex)
         {
             // not binary
             match = inf.matchLines[subIndex].substr(inf.matchColumnsNumbers[subIndex] - 1, inf.matchLengths[subIndex]);
-            escapeForRegexEx(match);
+            escapeForRegexEx(match, 1);
             if (match.length() > 32767 - 1 - 2 - 2 - 13 - inf.filePath.length() - reservedLength)
             {
                 match.clear();
@@ -3383,28 +3436,16 @@ DWORD CSearchDlg::SearchThread()
         pBufSearchPath++;
     } while (*pBufSearchPath && (*(pBufSearchPath - 1)));
 
-    if (!m_bUseRegex && !m_replaceString.empty())
+    if (!m_bUseRegex)
     {
-        // escape all characters in the replace string
-        std::wstring sRepl;
-        for (const auto& c : m_replaceString)
+        if (!m_searchString.empty())
         {
-            switch (c)
-            {
-                case '$':
-                // case '\\':
-                case '(':
-                case ')':
-                case '?':
-                case ':':
-                    sRepl += L"\\";
-                    break;
-                default:
-                    break;
-            }
-            sRepl += c;
+            escapeForRegexEx(m_searchString, 0);
         }
-        m_replaceString = sRepl;
+        if (m_bReplace && !m_replaceString.empty())
+        {
+            escapeForReplaceText(m_replaceString);
+        }
     }
 
     SendMessage(*this, SEARCH_START, 0, 0);
@@ -3551,7 +3592,7 @@ DWORD CSearchDlg::SearchThread()
                 else if (!bIsDirectory)
                 {
                     auto searchFn = [=]() {
-                        SearchFile(sInfo, searchRoot, !bHasLimits, m_bIncludeBinary, m_bUseRegex, m_bCaseSensitive, m_bDotMatchesNewline, m_searchString, m_cancelled);
+                        SearchFile(sInfo, searchRoot);
                     };
                     tp.enqueueWait(searchFn);
                 }
@@ -3801,34 +3842,501 @@ bool CSearchDlg::MatchPath(LPCTSTR pathBuf) const
     return bPattern;
 }
 
-void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, bool bSearchAlways, bool bIncludeBinary, bool bUseRegex, bool bCaseSensitive, bool bDotMatchesNewline, const std::wstring& searchString, std::atomic_bool& bCancelled)
+std::wstring CSearchDlg::BackupFile(const std::wstring& destParentDir, const std::wstring& filePath, bool bMove)
 {
-    int          nFound            = 0;
-    std::wstring localSearchString = searchString;
-    std::wstring fileNameFull      = sInfo.filePath.substr(sInfo.filePath.find_last_of('\\') + 1);
-
-    if (bUseRegex)
+    std::wstring backupFile;
+    bool         backupInFolder = bPortable
+                                      ? (_wtoi(g_iniFile.GetValue(L"settings", L"backupinfolder", L"0")) != 0)
+                                      : (static_cast<DWORD>(m_regBackupInFolder) != 0);
+    if (backupInFolder)
     {
-        SearchReplace(localSearchString, L"${filepath}", sInfo.filePath);
-        auto dotPos = fileNameFull.find_last_of('.');
-        if (dotPos != std::string::npos)
-        {
-            std::wstring filename = fileNameFull.substr(0, dotPos);
-            SearchReplace(localSearchString, L"${filename}", filename);
-            if (fileNameFull.size() > dotPos)
-            {
-                std::wstring fileExt = fileNameFull.substr(dotPos + 1);
-                SearchReplace(localSearchString, L"${fileext}", fileExt);
-            }
-        }
+        std::wstring backupFolder = destParentDir + L"\\grepWin_backup\\";
+        backupFolder += filePath.substr(destParentDir.size() + 1);
+        backupFolder = CPathUtils::GetParentDirectory(backupFolder);
+        CPathUtils::CreateRecursiveDirectory(backupFolder);
+        backupFile = backupFolder + L"\\" + CPathUtils::GetFileName(filePath);
     }
     else
     {
-        localSearchString = L"\\Q" + localSearchString + L"\\E";
-        if (m_bWholeWords)
-            localSearchString = L"\\b" + localSearchString + L"\\b";
+        backupFile = filePath + L".bak";
+    }
+    SetFileAttributes(backupFile.c_str(), 0);
+    bool bOK;
+    if (bMove)
+    {
+        bOK = MoveFileEx(filePath.c_str(), backupFile.c_str(), MOVEFILE_REPLACE_EXISTING);
+    }
+    else
+    {
+        bOK = CopyFile(filePath.c_str(), backupFile.c_str(), FALSE);
+    }
+    if (!bOK)
+    {
+        return L"";
+    }
+    m_backupAndTempFiles.insert(backupFile);
+
+    return backupFile;
+}
+
+int CSearchDlg::AdoptTempResultFile(CSearchInfo& sInfo, const std::wstring& searchRoot, const std::wstring& tempFilePath)
+{
+    FILETIME creationTime{};
+    FILETIME lastAccessTime{};
+    FILETIME lastWriteTime{};
+    if (m_bKeepFileDate)
+    {
+        HANDLE hFile = CreateFile(sInfo.filePath.c_str(), FILE_READ_ATTRIBUTES, FILE_SHARE_DELETE | FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING, 0, nullptr);
+        if (hFile == INVALID_HANDLE_VALUE)
+        {
+            return -1;
+        }
+        bool bOK = GetFileTime(hFile, &creationTime, &lastAccessTime, &lastWriteTime);
+        CloseHandle(hFile);
+        if (!bOK)
+        {
+            return -1;
+        }
+    }
+    DWORD origAttributes = GetFileAttributes(sInfo.filePath.c_str());
+    bool  bIsSHR         = (origAttributes & (FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_READONLY | FILE_ATTRIBUTE_SYSTEM)) != 0;
+    if (bIsSHR)
+    {
+        SetFileAttributes(sInfo.filePath.c_str(), 0);
+    }
+    if (m_bCreateBackup && !sInfo.hasBackedup)
+    {
+        if (BackupFile(searchRoot, sInfo.filePath, true).empty())
+        {
+            return -1;
+        }
+        sInfo.hasBackedup = true;
+    }
+    if (!MoveFileEx(tempFilePath.c_str(), sInfo.filePath.c_str(), MOVEFILE_REPLACE_EXISTING))
+    {
+        return -1;
+    }
+    if (m_bKeepFileDate)
+    {
+        int countDown = 5;
+        do
+        {
+            HANDLE hFile = CreateFile(sInfo.filePath.c_str(), FILE_WRITE_ATTRIBUTES, FILE_SHARE_DELETE | FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING, 0, nullptr);
+            bool bOK = hFile != INVALID_HANDLE_VALUE;
+            if (bOK)
+            {
+                // The NTFS file system delays updates to the last access time for a file by up to 1 hour after the last access.
+                bOK = SetFileTime(hFile, &creationTime, &lastAccessTime, &lastWriteTime);
+                CloseHandle(hFile);
+            }
+            if (bOK)
+            {
+                break;
+            }
+            else
+            {
+                Sleep(50);
+            }
+            --countDown;
+        } while (countDown > 0);
+        // if (countDown <= 0), main change has been made, still return succeeded.
+    }
+    if (bIsSHR)
+    {
+        SetFileAttributes(sInfo.filePath.c_str(), origAttributes);
     }
 
+    return 1;
+}
+
+int CSearchDlg::SearchOnTextFile(CSearchInfo& sInfo, const std::wstring& searchRoot, const std::wstring& searchExpression, const std::wstring& replaceExpression, UINT syntaxFlags, UINT matchFlags, CTextFile& textFile)
+{
+    int                                                nFound = 0;
+
+    std::wstring                                       expr = searchExpression;
+    if (!m_bUseRegex && m_bWholeWords)
+    {
+        expr = L"\\b" + expr + L"\\b";
+    }
+
+    std::wstring::const_iterator                       start, end;
+    start = textFile.GetFileString().begin();
+    end   = textFile.GetFileString().end();
+    boost::match_results<std::wstring::const_iterator> whatC;
+    boost::wregex                                      wRegEx = boost::wregex(expr, syntaxFlags);
+    boost::match_flag_type                             mFlags = static_cast<boost::match_flag_type>(matchFlags);
+
+    while (!m_cancelled && regex_search(start, end, whatC, wRegEx, mFlags))
+    {
+        if (whatC[0].matched)
+        {
+            nFound++;
+            if (m_bNotSearch)
+                break;
+            long posMatchHead = static_cast<long>(whatC[0].first - textFile.GetFileString().begin());
+            long posMatchTail = static_cast<long>(whatC[0].second - textFile.GetFileString().begin());
+            if (whatC[0].first < whatC[0].second) // m[0].second is not part of the match
+                --posMatchTail;
+            long lineStart = textFile.LineFromPosition(posMatchHead);
+            long lineEnd   = textFile.LineFromPosition(posMatchTail);
+            long colMatch  = textFile.ColumnFromPosition(posMatchHead, lineStart);
+            long lenMatch  = static_cast<long>(whatC[0].length());
+            for (long l = lineStart; l <= lineEnd; ++l)
+            {
+                auto sLine        = textFile.GetLineString(l);
+                long lenLineMatch = static_cast<long>(sLine.length()) - colMatch + 1;
+                if (lenMatch < lenLineMatch)
+                {
+                    lenLineMatch = lenMatch;
+                }
+                sInfo.matchLinesNumbers.push_back(l);
+                sInfo.matchColumnsNumbers.push_back(colMatch);
+                if (m_bCaptureSearch)
+                {
+                    auto out = whatC.format(m_replaceString, mFlags);
+                    sInfo.matchLines.push_back(std::move(out));
+                    sInfo.matchLengths.push_back(static_cast<long>(out.length()));
+                }
+                else
+                {
+                    sInfo.matchLines.push_back(std::move(sLine));
+                    sInfo.matchLengths.push_back(lenLineMatch);
+                }
+                if (lenMatch > lenLineMatch)
+                {
+                    colMatch = 1;
+                    lenMatch -= lenLineMatch;
+                }
+            }
+            ++sInfo.matchCount;
+        }
+        // update search position:
+        start = whatC[0].second;
+        if (start == end)
+            break;
+        if (start == whatC[0].first) // ^$
+            ++start;
+        // update match flags:
+        mFlags |= boost::match_prev_avail;
+        mFlags |= boost::match_not_bob;
+    }
+
+    if (!m_bReplace || m_cancelled || nFound == 0)
+    {
+        return nFound;
+    }
+
+    RegexReplaceFormatter<wchar_t> replaceFmt(replaceExpression);
+    std::wstring                   replaced    = regex_replace(textFile.GetFileString(), wRegEx, replaceFmt, static_cast<boost::match_flag_type>(matchFlags));
+    if (!replaced.compare(textFile.GetFileString()))
+    {
+        return 0;
+    }
+
+    textFile.SetFileContent(replaced);
+    std::wstring filePathTemp = sInfo.filePath + L".grepwinreplaced";
+    m_backupAndTempFiles.insert(filePathTemp);
+    if (!textFile.Save(filePathTemp.c_str(), false))
+    {
+        return -1;
+    }
+
+    if (AdoptTempResultFile(sInfo, searchRoot, filePathTemp) <= 0)
+    {
+        return -1;
+    }
+
+    return nFound;
+}
+
+template<typename CharT = char>
+class TextOffset
+{
+private:
+    long                lenBOM;
+    std::vector<size_t> linePositions;
+
+public:
+    TextOffset()
+        : lenBOM(0)
+    {
+    }
+
+    // UTF8
+    const char* SkipBOM(const char* start, const char* end)
+    {
+        char BOM[] = "\xEF\xBB\xBF";
+        if (end - start > 2 && memcmp(start, BOM, 3) == 0)
+        {
+            lenBOM = 3;
+            return start + 3;
+        }
+        return start;
+    }
+
+    // UTF-16LE
+    const wchar_t* SkipBOM(const wchar_t* start, const wchar_t* end)
+    {
+        if (end - start > 1 && *start == 0xFEFF)
+        {
+            lenBOM = 1;
+            return start + 1;
+        }
+        return start;
+    }
+
+    bool CalculateLines(const CharT* start, const CharT* end, std::atomic_bool &bCancelled)
+    {
+        if (start >= end)
+            return false;
+
+        linePositions.clear();
+        linePositions.reserve((end - start) / 10);
+
+        size_t  pos     = 0;
+        bool    bGot   = false;
+        for (auto it = start; it < end && !bCancelled; ++it)
+        {
+            bGot = false;
+            if (*it == '\r')
+            {
+                // cr lineending
+                bGot = true;
+                if (it + 1 < end)
+                {
+                    if (it[1] == '\n')
+                    {
+                        // crlf lineending
+                        ++it;
+                        ++pos;
+                    }
+                }
+            }
+            else if (*it == '\n')
+            {
+                // lf lineending
+                bGot = true;
+            }
+            if (bGot)
+                linePositions.push_back(pos);
+            ++pos;
+        }
+        if (!bGot)
+            linePositions.push_back(pos);
+        return true;
+    }
+
+    long LineFromPosition(long pos) const
+    {
+        auto lb     = std::lower_bound(linePositions.begin(), linePositions.end(), static_cast<size_t>(pos));
+        auto lbLine = lb - linePositions.begin();
+        return static_cast<long>(lbLine + 1);
+    }
+
+    long ColumnFromPosition(long pos, long line) const
+    {
+        if (line < 0)
+            line = LineFromPosition(pos);
+        long lastLineEnd = -1;
+        if (line > 1)
+            lastLineEnd = static_cast<long>(linePositions[line - 2]);
+        else
+            lastLineEnd += lenBOM;
+        return pos - lastLineEnd;
+    }
+};
+
+template<typename CharT = char>
+std::basic_string<CharT> ConvertToString(const std::wstring& str, CTextFile::UnicodeType encoding, bool bForceChar, CharT* dummy = NULL)
+{};
+
+template<>
+std::basic_string<char> ConvertToString<char>(const std::wstring& str, CTextFile::UnicodeType encoding, bool bForceChar, char*)
+{
+    if (bForceChar)
+    {
+        return std::basic_string<char>(reinterpret_cast<const char*>(str.c_str()), 2 * str.length());
+    }
+    return (encoding == CTextFile::Ansi) ? CUnicodeUtils::StdGetANSI(str) : CUnicodeUtils::StdGetUTF8(str);
+};
+
+template<>
+std::basic_string<wchar_t> ConvertToString<wchar_t>(const std::wstring& str, CTextFile::UnicodeType, bool, wchar_t*)
+{
+    return str;
+};
+
+template<typename CharT>
+int CSearchDlg::SearchByFilePath(CSearchInfo& sInfo, const std::wstring& searchRoot, const std::wstring& searchExpression, const std::wstring& replaceExpression, UINT syntaxFlags, UINT matchFlags, bool misaligned, CharT*)
+{
+    std::string        filePathA = CUnicodeUtils::StdGetANSI(sInfo.filePath);
+    int                nFound    = 0;
+
+    boost::iostreams::mapped_file_source inFile(filePathA);
+    if (!inFile.is_open())
+        return -1;
+
+    const char*        inData   = inFile.data();
+    size_t             inSize   = inFile.size();
+    size_t             skipSize = 0;
+    size_t             workSize = inSize;
+    size_t             dropSize = 0;
+    const CharT*       fBeg     = reinterpret_cast<const CharT*>(inData);
+    const CharT*       start    = fBeg;
+    const CharT*       end      = fBeg + inSize / sizeof(CharT);
+
+    TextOffset<CharT>  textOffset;
+    if ((sInfo.encoding == CTextFile::UTF8) || (sInfo.encoding == CTextFile::Unicode_Le))
+    {
+        start = textOffset.SkipBOM(fBeg, end);
+    }
+    else
+        start = fBeg;
+
+    skipSize = reinterpret_cast<const char*>(start) - inData;
+    workSize = inSize - skipSize;
+    if (sizeof(CharT) > 1)
+    {
+        if (misaligned && skipSize < inSize)
+        {
+            ++skipSize;
+            --workSize;
+            const char* p = reinterpret_cast<const char*>(start);
+            ++p;
+            start = reinterpret_cast<const CharT*>(p);
+        }
+        dropSize = workSize % sizeof(CharT);
+        if (dropSize > 0)
+            workSize -= dropSize;
+    }
+    if (workSize == 0)
+    {
+        inFile.close();
+        return 0;
+    }
+    end = reinterpret_cast<const CharT*>(inData + skipSize + workSize);
+
+    bool                     bTreateWcharAsChars = sizeof(CharT) == 1 && !m_bUseRegex &&
+                                                   (sInfo.encoding == CTextFile::Unicode_Le || sInfo.encoding == CTextFile::Binary);
+    std::basic_string<CharT> expr                = ConvertToString<CharT>(searchExpression, sInfo.encoding, bTreateWcharAsChars);
+
+    if (!m_bUseRegex && m_bWholeWords)
+    {
+        const CharT boundary[] = {'\\', 'b', 0};
+        expr = boundary + expr + boundary;
+    }
+
+    boost::match_results<const CharT*> whatC;
+    boost::basic_regex<CharT>          regEx     = boost::basic_regex<CharT>(expr, syntaxFlags);
+    boost::match_flag_type             mFlags    = static_cast<boost::match_flag_type>(matchFlags);
+    const CharT*                       startIter = start;
+    while (!m_cancelled && boost::regex_search(startIter, end, whatC, regEx, mFlags))
+    {
+        nFound++;
+        if (m_bNotSearch)
+            break;
+        sInfo.matchLinesNumbers.push_back(static_cast<DWORD>(whatC[0].first - fBeg));
+        sInfo.matchColumnsNumbers.push_back(1);
+        ++sInfo.matchCount;
+        // update search position:
+        startIter = whatC[0].second;
+        if (startIter == end)
+            break;
+        if (startIter == whatC[0].first) // ^$
+            ++startIter;
+        // update match flags:
+        mFlags |= boost::match_prev_avail;
+        mFlags |= boost::match_not_bob;
+    }
+
+    if (nFound == 0)
+    {
+        inFile.close();
+        return 0;
+    }
+
+    if ((sInfo.encoding != CTextFile::Binary) && (sInfo.encoding != CTextFile::Unicode_Be) && !m_bNotSearch)
+    {
+        textOffset.CalculateLines(start, end, m_cancelled);
+        for (size_t mp = 0; mp < sInfo.matchLinesNumbers.size(); ++mp)
+        {
+            auto pos = sInfo.matchLinesNumbers[mp];
+            sInfo.matchLinesNumbers[mp]   = textOffset.LineFromPosition(pos);
+            sInfo.matchColumnsNumbers[mp] = textOffset.ColumnFromPosition(pos, sInfo.matchLinesNumbers[mp]);
+        }
+    }
+
+    if (!m_bReplace || m_cancelled)
+    {
+        inFile.close();
+        return nFound;
+    }
+
+    std::basic_string<CharT> repl          = ConvertToString<CharT>(replaceExpression, sInfo.encoding, bTreateWcharAsChars);
+
+    std::wstring             filePathTempW = sInfo.filePath + L".grepwinreplaced";
+    std::string              filePathTempA = filePathA + ".grepwinreplaced";
+    m_backupAndTempFiles.insert(filePathTempW);
+
+    std::basic_filebuf<char> outFileBufA;
+    if (skipSize > 0)
+    {
+        outFileBufA.open(filePathTempA, std::ios::out | std::ios::trunc | std::ios::binary);
+        if (!outFileBufA.is_open())
+        {
+            inFile.close();
+            return -1;
+        }
+        for (size_t i = 0; i < skipSize; ++i)
+        {
+            outFileBufA.sputc(inData[i]);
+        }
+        outFileBufA.close();
+    }
+
+    std::basic_filebuf<CharT> outFileBufT;
+    outFileBufT.open(filePathTempA, std::ios::out | std::ios::app | std::ios::binary);
+    if (!outFileBufT.is_open())
+    {
+        inFile.close();
+        return -1;
+    }
+    if (sizeof(CharT) > 1)
+    {
+        _STL_DISABLE_DEPRECATED_WARNING // align: `cvt/utf16` still uses `std::codecvt_mode`
+        std::locale LocUTF16LE(std::locale(), new stdext::cvt::codecvt_utf16<wchar_t, 0x10ffff, std::little_endian>);
+        _STL_RESTORE_CLANG_WARNINGS
+        outFileBufT.pubimbue(LocUTF16LE);
+    }
+    std::ostreambuf_iterator<CharT>            outIter(&outFileBufT);
+    RegexReplaceFormatter<CharT, const CharT*> replaceFmt(repl);
+    regex_replace(outIter, start, end, regEx, replaceFmt, static_cast<boost::match_flag_type>(matchFlags));
+    outFileBufT.close();
+
+    if (dropSize > 0)
+    {
+        outFileBufA.open(filePathTempA, std::ios::out | std::ios::app | std::ios::binary);
+        if (!outFileBufA.is_open())
+        {
+            inFile.close();
+            return -1;
+        }
+        outFileBufA.sputc(inData[inSize - 2]);
+        outFileBufA.close();
+    }
+
+    inFile.close();
+
+    if (AdoptTempResultFile(sInfo, searchRoot, filePathTempW) <= 0)
+    {
+        return -1;
+    }
+
+    return nFound;
+}
+
+void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot)
+{
     CTextFile              textFile;
     CTextFile::UnicodeType type        = CTextFile::AutoType;
     bool                   bLoadResult = false;
@@ -3839,462 +4347,92 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
     else
     {
         ProfileTimer profile((L"file load and parse: " + sInfo.filePath).c_str());
-        auto         nNullCount = bPortable ? _wtoi(g_iniFile.GetValue(L"settings", L"nullbytes", L"0")) : static_cast<int>(static_cast<DWORD>(CRegStdDWORD(L"Software\\grepWin\\nullbytes", 0)));
+        auto         nNullCount = bPortable ? _wtoi(g_iniFile.GetValue(L"settings", L"nullbytes", L"0"))
+                                            : static_cast<int>(static_cast<DWORD>(CRegStdDWORD(L"Software\\grepWin\\nullbytes", 0)));
         if (nNullCount > 0)
         {
             constexpr __int64 oneMB = 1024 * 1024;
             auto              megs  = sInfo.fileSize / oneMB;
             textFile.SetNullbyteCountForBinary(nNullCount * (static_cast<int>(megs) + 1));
         }
-        bLoadResult = textFile.Load(sInfo.filePath.c_str(), type, m_bUTF8, bCancelled);
+        bLoadResult = textFile.Load(sInfo.filePath.c_str(), type, m_bUTF8, m_cancelled);
     }
+
     sInfo.encoding = type;
 
-    int ft         = boost::regex::normal;
-    if (!bCaseSensitive)
-        ft |= boost::regbase::icase;
-    boost::match_flag_type flags = boost::match_default | boost::format_all;
-    if (!bDotMatchesNewline)
-        flags |= boost::match_not_dot_newline;
-
-    if (bLoadResult && ((type != CTextFile::Binary) || bIncludeBinary || bSearchAlways))
+    std::wstring searchExpression  = m_searchString;
+    std::wstring replaceExpression = m_replaceString;
+    if (m_bUseRegex)
     {
-        sInfo.readError = false;
-        std::wstring::const_iterator start, end;
-        start = textFile.GetFileString().begin();
-        end   = textFile.GetFileString().end();
+        replaceGrepWinFilePathVariables(searchExpression, sInfo.filePath);
+        if (m_bReplace)
+        {
+            replaceGrepWinFilePathVariables(replaceExpression, sInfo.filePath);
+        }
+    }
+
+    UINT                   syntaxFlags = boost::regex::normal;
+    if (!m_bCaseSensitive)
+        syntaxFlags |= boost::regbase::icase;
+    boost::match_flag_type matchFlags  = boost::match_default | boost::format_all;
+    if (!m_bDotMatchesNewline)
+        matchFlags |= boost::match_not_dot_newline;
+
+    int nCount = 0; // >= 0: got results; -1: skipped
+
+    if (type == CTextFile::AutoType) // reading the file failed
+    {
+        sInfo.readError = true;
+        nCount = -1;
+    }
+    else if (bLoadResult && ((type != CTextFile::Binary) || m_bIncludeBinary)) // loaded
+    {
+        // for unrecognized, only `Binary` returns true
         try
         {
-            boost::wregex                                      expression = boost::wregex(localSearchString, ft);
-            boost::match_results<std::wstring::const_iterator> whatC;
-            while (!bCancelled && regex_search(start, end, whatC, expression, flags))
+            nCount = SearchOnTextFile(sInfo, searchRoot, searchExpression, replaceExpression, syntaxFlags, matchFlags, textFile);
+        }
+        catch (const std::exception& ex)
+        {
+            sInfo.exception = CUnicodeUtils::StdGetUnicode(ex.what());
+            nCount = 1;
+        }
+    }
+    else if ((type != CTextFile::Binary) || m_bIncludeBinary || m_bForceBinary)
+    {
+        // file is either too big or binary.
+        try
+        {
+            // Ansi, UTF8, Unicode_Le, Unicode_Be and Binary
+            if (type != CTextFile::Unicode_Le)
             {
-                if (whatC[0].matched)
-                {
-                    nFound++;
-                    if (m_bNotSearch)
-                        break;
-                    long posMatchHead = static_cast<long>(whatC[0].first - textFile.GetFileString().begin());
-                    long posMatchTail = static_cast<long>(whatC[0].second - textFile.GetFileString().begin());
-                    if (whatC[0].first < whatC[0].second) // m[0].second is not part of the match
-                        --posMatchTail;
-                    long lineStart = textFile.LineFromPosition(posMatchHead);
-                    long lineEnd   = textFile.LineFromPosition(posMatchTail);
-                    long colMatch  = textFile.ColumnFromPosition(posMatchHead, lineStart);
-                    long lenMatch  = static_cast<long>(whatC[0].length());
-                    for (long l = lineStart; l <= lineEnd; ++l)
-                    {
-                        auto sLine        = textFile.GetLineString(l);
-                        long lenLineMatch = static_cast<long>(sLine.length()) - colMatch + 1;
-                        if (lenMatch < lenLineMatch)
-                        {
-                            lenLineMatch = lenMatch;
-                        }
-                        sInfo.matchLinesNumbers.push_back(l);
-                        sInfo.matchColumnsNumbers.push_back(colMatch);
-                        if (m_bCaptureSearch)
-                        {
-                            auto out = whatC.format(m_replaceString, flags);
-                            sInfo.matchLines.push_back(std::move(out));
-                            sInfo.matchLengths.push_back(static_cast<long>(out.length()));
-                        }
-                        else
-                        {
-                            sInfo.matchLines.push_back(std::move(sLine));
-                            sInfo.matchLengths.push_back(lenLineMatch);
-                        }
-                        if (lenMatch > lenLineMatch)
-                        {
-                            colMatch = 1;
-                            lenMatch -= lenLineMatch;
-                        }
-                    }
-                    ++sInfo.matchCount;
-                }
-                // update search position:
-                start = whatC[0].second;
-                if (start == end)
-                    break;
-                if (start == whatC[0].first) // ^$
-                    ++start;
-                // update flags:
-                flags |= boost::match_prev_avail;
-                flags |= boost::match_not_bob;
+                // Treating a multi-byte char as single byte chars:
+                //  yields part of it may be matched as a standalone char,
+                //  so requires it grouped for repeats to get accurate results.
+                nCount = SearchByFilePath<char>(sInfo, searchRoot, searchExpression, replaceExpression, syntaxFlags, matchFlags, false);
             }
-            if (m_bReplace && nFound)
+            if (type == CTextFile::Unicode_Le || (type == CTextFile::Binary && nCount == 0))
             {
-                flags &= ~boost::match_prev_avail;
-                flags &= ~boost::match_not_bob;
-                RegexReplaceFormatter<wchar_t> replaceFmt(m_replaceString);
-                if (bUseRegex)
-                {
-                    replaceFmt.SetReplacePair(L"${filepath}", sInfo.filePath);
-                    std::wstring fileNameFullW = sInfo.filePath.substr(sInfo.filePath.find_last_of('\\') + 1);
-                    auto         dotPosW       = fileNameFullW.find_last_of('.');
-                    if (dotPosW != std::string::npos)
-                    {
-                        std::wstring filename = fileNameFullW.substr(0, dotPosW);
-                        replaceFmt.SetReplacePair(L"${filename}", filename);
-                        if (fileNameFullW.size() > dotPosW)
-                        {
-                            std::wstring fileExt = fileNameFullW.substr(dotPosW + 1);
-                            replaceFmt.SetReplacePair(L"${fileext}", fileExt);
-                        }
-                    }
-                }
-                std::wstring replaced = regex_replace(textFile.GetFileString(), expression, replaceFmt, flags);
-                if (replaced.compare(textFile.GetFileString()))
-                {
-                    textFile.SetFileContent(replaced);
-                    if (m_bCreateBackup)
-                    {
-                        std::wstring backupFile     = sInfo.filePath + L".bak";
-                        auto         backupInFolder = bPortable
-                                                          ? (_wtoi(g_iniFile.GetValue(L"settings", L"backupinfolder", L"0")) != 0)
-                                                          : (static_cast<DWORD>(m_regBackupInFolder) != 0);
-                        if (backupInFolder)
-                        {
-                            std::wstring backupFolder = searchRoot + L"\\grepWin_backup\\";
-                            backupFolder += sInfo.filePath.substr(searchRoot.size() + 1);
-                            backupFolder = CPathUtils::GetParentDirectory(backupFolder);
-                            CPathUtils::CreateRecursiveDirectory(backupFolder);
-                            backupFile = backupFolder + L"\\" + CPathUtils::GetFileName(sInfo.filePath);
-                        }
-                        CopyFile(sInfo.filePath.c_str(), backupFile.c_str(), FALSE);
-                        m_backupAndTempFiles.insert(backupFile);
-                    }
-                    if (!textFile.Save(sInfo.filePath.c_str(), m_bKeepFileDate))
-                    {
-                        // saving the file failed. Find out why...
-                        DWORD err = GetLastError();
-                        if (err == ERROR_ACCESS_DENIED)
-                        {
-                            // access denied can happen if the file has the
-                            // read-only flag and/or the hidden flag set
-                            // those are not situations where we should fail, so
-                            // we reset those flags and restore them
-                            // again after saving the file
-                            FILETIME creationTime{};
-                            FILETIME lastAccessTime{};
-                            FILETIME lastWriteTime{};
-                            if (m_bKeepFileDate)
-                            {
-                                CAutoFile hFile = CreateFile(sInfo.filePath.c_str(), GENERIC_READ, FILE_SHARE_DELETE | FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING, 0, nullptr);
-                                if (hFile)
-                                {
-                                    GetFileTime(hFile, &creationTime, &lastAccessTime, &lastWriteTime);
-                                }
-                            }
-
-                            DWORD origAttributes = GetFileAttributes(sInfo.filePath.c_str());
-                            DWORD newAttributes  = origAttributes & (~(FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_READONLY | FILE_ATTRIBUTE_SYSTEM));
-                            SetFileAttributes(sInfo.filePath.c_str(), newAttributes);
-                            bool bRet = textFile.Save(sInfo.filePath.c_str(), false);
-                            // restore the attributes
-                            SetFileAttributes(sInfo.filePath.c_str(), origAttributes);
-                            if (m_bKeepFileDate)
-                            {
-                                bool success = false;
-                                int  retries = 5;
-                                while (!success && retries >= 0)
-                                {
-                                    {
-                                        CAutoFile hFile = CreateFile(sInfo.filePath.c_str(), GENERIC_WRITE, FILE_SHARE_DELETE | FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING, 0, nullptr);
-                                        if (hFile)
-                                        {
-                                            success = !!SetFileTime(hFile, &creationTime, &lastAccessTime, &lastWriteTime);
-                                        }
-                                    }
-                                    --retries;
-                                    if (!success)
-                                        Sleep(50);
-                                }
-                                assert(success);
-                            }
-                            if (!bRet)
-                            {
-                                SendMessage(*this, SEARCH_PROGRESS, 0, 0);
-                                return;
-                            }
-                        }
-                    }
-                }
+                nCount = SearchByFilePath<wchar_t>(sInfo, searchRoot, searchExpression, replaceExpression, syntaxFlags, matchFlags, false);
+                if (type == CTextFile::Binary)
+                    nCount += SearchByFilePath<wchar_t>(sInfo, searchRoot, searchExpression, replaceExpression, syntaxFlags, matchFlags, true);
             }
         }
         catch (const std::exception& ex)
         {
             sInfo.exception = CUnicodeUtils::StdGetUnicode(ex.what());
-            SendMessage(*this, SEARCH_FOUND, 0, reinterpret_cast<LPARAM>(&sInfo));
-            SendMessage(*this, SEARCH_PROGRESS, 1, 0);
+            nCount = 1;
         }
-    }
-    else
-    {
-        if (type == CTextFile::AutoType)
+        catch (...)
         {
-            sInfo.readError = true;
-            SendMessage(*this, SEARCH_FOUND, 0, reinterpret_cast<LPARAM>(&sInfo));
-            SendMessage(*this, SEARCH_PROGRESS, 1, 0);
+            nCount = -1;
             return;
         }
-
-        // file is either too big or binary.
-        // in any case, use the search function that uses a file iterator
-        // instead of a string iterator to reduce the memory consumption
-
-        if ((type != CTextFile::Binary) || bIncludeBinary || bSearchAlways || m_bForceBinary)
-        {
-            sInfo.encoding        = type;
-            std::string filePath  = CUnicodeUtils::StdGetANSI(sInfo.filePath);
-            std::string searchFor = (type == CTextFile::Ansi) ? CUnicodeUtils::StdGetANSI(searchString) : CUnicodeUtils::StdGetUTF8(searchString);
-
-            if (!bUseRegex)
-            {
-                searchFor = "\\Q" + searchFor + "\\E";
-                if (m_bWholeWords)
-                    searchFor = "\\b" + searchFor + "\\b";
-            }
-
-            try
-            {
-                boost::regex       expression = boost::regex(searchFor, ft);
-                std::vector<DWORD> matchLinesNumbers;
-                std::vector<DWORD> matchColumnsNumbers;
-                bool               bFound = false;
-                {
-                    boost::spirit::classic::file_iterator<>                       start(filePath.c_str());
-                    boost::spirit::classic::file_iterator<>                       fBeg = start;
-                    boost::spirit::classic::file_iterator<>                       end  = start.make_end();
-                    boost::match_results<boost::spirit::classic::file_iterator<>> whatC;
-                    while (boost::regex_search(start, end, whatC, expression, flags))
-                    {
-                        nFound++;
-                        if (m_bNotSearch)
-                            break;
-                        matchLinesNumbers.push_back(static_cast<DWORD>(whatC[0].first - fBeg));
-                        matchColumnsNumbers.push_back(1);
-                        ++sInfo.matchCount;
-                        // update search position:
-                        start = whatC[0].second;
-                        if (start == end)
-                            break;
-                        if (start == whatC[0].first) // ^$
-                            ++start;
-                        // update flags:
-                        flags |= boost::match_prev_avail;
-                        flags |= boost::match_not_bob;
-                        bFound = true;
-                        if (bCancelled)
-                            break;
-                    }
-                }
-                if (nFound == 0 && type == CTextFile::Binary && !m_bReplace)
-                {
-                    boost::wregex                                                        expressionUtf16Le = boost::wregex(searchString, ft);
-                    boost::spirit::classic::file_iterator<wchar_t>                       start(filePath.c_str());
-                    boost::spirit::classic::file_iterator<wchar_t>                       fBeg = start;
-                    boost::spirit::classic::file_iterator<wchar_t>                       end  = start.make_end();
-                    boost::match_results<boost::spirit::classic::file_iterator<wchar_t>> whatC;
-                    while (boost::regex_search(start, end, whatC, expressionUtf16Le, flags))
-                    {
-                        nFound++;
-                        if (m_bNotSearch)
-                            break;
-                        matchLinesNumbers.push_back(static_cast<DWORD>(whatC[0].first - fBeg));
-                        matchColumnsNumbers.push_back(1);
-                        ++sInfo.matchCount;
-                        // update search position:
-                        start = whatC[0].second;
-                        if (start == end)
-                            break;
-                        if (start == whatC[0].first) // ^$
-                            ++start;
-                        // update flags:
-                        flags |= boost::match_prev_avail;
-                        flags |= boost::match_not_bob;
-                        bFound = true;
-                        if (bCancelled)
-                            break;
-                    }
-                }
-
-                if (bFound && !bCancelled)
-                {
-                    if (!bLoadResult && (type != CTextFile::Binary) && !m_bNotSearch)
-                    {
-                        // open the file and set up a vector of all lines
-                        CAutoFile hFile;
-                        int       retryCounter = 0;
-                        do
-                        {
-                            if (retryCounter)
-                                Sleep(20 + retryCounter * 50);
-                            hFile = CreateFile(sInfo.filePath.c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
-                                               nullptr, OPEN_EXISTING, FILE_FLAG_SEQUENTIAL_SCAN, nullptr);
-                            retryCounter++;
-                        } while (!hFile && retryCounter < 5);
-                        if (hFile)
-                        {
-                            std::map<size_t, DWORD> linePositions;
-                            auto                    fBuf      = std::make_unique<char[]>(4096);
-                            DWORD                   bytesRead = 0;
-                            size_t                  pos       = 0;
-                            while (ReadFile(hFile, fBuf.get(), 4096, &bytesRead, nullptr))
-                            {
-                                if (bytesRead == 0)
-                                    break;
-                                for (DWORD br = 0; br < bytesRead; ++br)
-                                {
-                                    if (fBuf[br] == '\r')
-                                    {
-                                        ++br;
-                                        ++pos;
-                                        if (br < bytesRead)
-                                        {
-                                            if (fBuf[br] == '\n')
-                                            {
-                                                // crlf lineending
-                                                auto lp            = linePositions.size();
-                                                linePositions[pos] = static_cast<DWORD>(lp);
-                                            }
-                                            else
-                                            {
-                                                // cr lineending
-                                                auto lp                = linePositions.size();
-                                                linePositions[pos - 1] = static_cast<DWORD>(lp);
-                                            }
-                                        }
-                                        else
-                                            break;
-                                    }
-                                    else if (fBuf[br] == '\n')
-                                    {
-                                        // lf lineending
-                                        auto lp            = linePositions.size();
-                                        linePositions[pos] = static_cast<DWORD>(lp);
-                                    }
-                                    ++pos;
-                                }
-                            }
-                            for (size_t mp = 0; mp < matchLinesNumbers.size(); ++mp)
-                            {
-                                auto fp = linePositions.lower_bound(matchLinesNumbers[mp]);
-                                if (fp != linePositions.end())
-                                    matchLinesNumbers[mp] = fp->second;
-                            }
-                        }
-                    }
-                    sInfo.matchLinesNumbers   = matchLinesNumbers;
-                    sInfo.matchColumnsNumbers = matchColumnsNumbers;
-
-                    if (m_bReplace)
-                    {
-                        std::wstring backupFile = sInfo.filePath + L".bak";
-                        if (m_bCreateBackup)
-                        {
-                            if (static_cast<DWORD>(m_regBackupInFolder))
-                            {
-                                std::wstring backupFolder = searchRoot + L"\\grepWin_backup\\";
-                                backupFolder += sInfo.filePath.substr(searchRoot.size() + 1);
-                                backupFolder = CPathUtils::GetParentDirectory(backupFolder);
-                                CPathUtils::CreateRecursiveDirectory(backupFolder);
-                                backupFile = backupFolder + L"\\" + CPathUtils::GetFileName(sInfo.filePath);
-                            }
-                            CopyFile(sInfo.filePath.c_str(), backupFile.c_str(), FALSE);
-                            m_backupAndTempFiles.insert(backupFile);
-                        }
-
-                        flags &= ~boost::match_prev_avail;
-                        flags &= ~boost::match_not_bob;
-                        RegexReplaceFormatter<char, boost::iostreams::mapped_file_source::iterator> replaceFmt(CUnicodeUtils::StdGetUTF8(m_replaceString));
-                        replaceFmt.SetReplacePair("${filepath}", CUnicodeUtils::StdGetUTF8(sInfo.filePath));
-                        if (bUseRegex)
-                        {
-                            std::string fileNameFullA = CUnicodeUtils::StdGetUTF8(sInfo.filePath.substr(sInfo.filePath.find_last_of('\\') + 1));
-                            auto        dotPosA       = fileNameFullA.find_last_of('.');
-                            if (dotPosA != std::string::npos)
-                            {
-                                std::string filename = fileNameFullA.substr(0, dotPosA);
-                                replaceFmt.SetReplacePair("${filename}", filename);
-                                if (fileNameFull.size() > dotPosA)
-                                {
-                                    std::string fileExt = fileNameFullA.substr(dotPosA + 1);
-                                    replaceFmt.SetReplacePair("${fileext}", fileExt);
-                                }
-                            }
-                        }
-
-                        FILETIME creationTime{};
-                        FILETIME lastAccessTime{};
-                        FILETIME lastWriteTime{};
-                        if (m_bKeepFileDate)
-                        {
-                            CAutoFile hFile = CreateFile(sInfo.filePath.c_str(), GENERIC_READ, FILE_SHARE_DELETE | FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING, 0, nullptr);
-                            if (hFile)
-                            {
-                                GetFileTime(hFile, &creationTime, &lastAccessTime, &lastWriteTime);
-                            }
-                            else
-                                assert(false);
-                        }
-
-                        std::string filePathOut = m_bCreateBackup ? filePath : filePath + ".grepwinreplaced";
-                        if (!m_bCreateBackup)
-                            m_backupAndTempFiles.insert(sInfo.filePath + L".grepwinreplaced");
-                        boost::iostreams::mapped_file_source replaceInFile(m_bCreateBackup ? CUnicodeUtils::StdGetANSI(backupFile).c_str() : filePath.c_str());
-                        std::ofstream                        os(filePathOut.c_str(), std::ios::out | std::ios::trunc | std::ios::binary);
-                        std::ostream_iterator<char, char>    out(os);
-                        regex_replace(out, replaceInFile.begin(), replaceInFile.end(), expression, replaceFmt, flags);
-                        os.close();
-                        replaceInFile.close();
-                        if (!m_bCreateBackup)
-                            MoveFileExA(filePathOut.c_str(), filePath.c_str(), MOVEFILE_REPLACE_EXISTING);
-                        if (m_bKeepFileDate)
-                        {
-                            bool success = false;
-                            int  retries = 5;
-                            while (!success && retries >= 0)
-                            {
-                                {
-                                    CAutoFile hFile = CreateFile(sInfo.filePath.c_str(), GENERIC_WRITE, FILE_SHARE_DELETE | FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING, 0, nullptr);
-                                    if (hFile)
-                                    {
-                                        success = !!SetFileTime(hFile, &creationTime, &lastAccessTime, &lastWriteTime);
-                                    }
-                                }
-                                --retries;
-                                if (!success)
-                                    Sleep(50);
-                            }
-                            assert(success);
-                        }
-                    }
-                }
-            }
-            catch (const std::exception& ex)
-            {
-                sInfo.exception = CUnicodeUtils::StdGetUnicode(ex.what());
-                SendMessage(*this, SEARCH_FOUND, 0, reinterpret_cast<LPARAM>(&sInfo));
-                SendMessage(*this, SEARCH_PROGRESS, 1, 0);
-            }
-            catch (...)
-            {
-                SendMessage(*this, SEARCH_PROGRESS, 0, 0);
-                return;
-            }
-        }
-    }
-    if (m_bNotSearch)
-    {
-        if (nFound == 0)
-            SendMessage(*this, SEARCH_FOUND, nFound, reinterpret_cast<LPARAM>(&sInfo));
-        SendMessage(*this, SEARCH_PROGRESS, (nFound >= 0), 0);
-        return;
     }
 
-    if (nFound >= 0)
-        SendMessage(*this, SEARCH_FOUND, nFound, reinterpret_cast<LPARAM>(&sInfo));
-    SendMessage(*this, SEARCH_PROGRESS, (nFound >= 0), 0);
+    SendMessage(*this, SEARCH_PROGRESS, (nCount >= 0), 0);
+    bool bAsResult = m_bNotSearch ? (nCount <= 0) : (nCount > 0);
+    SendMessage(*this, SEARCH_FOUND, bAsResult, reinterpret_cast<LPARAM>(&sInfo));
 }
 
 DWORD WINAPI SearchThreadEntry(LPVOID lpParam)
@@ -4341,7 +4479,7 @@ void CSearchDlg::AutoSizeAllColumns()
     HWND             hListControl          = GetDlgItem(*this, IDC_RESULTLIST);
     auto             headerCtrl            = ListView_GetHeader(hListControl);
     int              nItemCount            = ListView_GetItemCount(hListControl);
-    wchar_t          textBuf[MAX_PATH * 4] = {0};
+    wchar_t          textBuf[MAX_PATH] = {0};
     std::vector<int> colWidths;
     if (headerCtrl)
     {
@@ -4620,15 +4758,15 @@ std::wstring CSearchDlg::ExpandString(const std::wstring& replaceString)
     GetTimeFormat(LOCALE_USER_DEFAULT, 0, nullptr, nullptr, buf, _countof(buf));
     dateStr += L" - ";
     dateStr += buf;
-    std::time_t                                        now        = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-    int                                                ft         = boost::regex::normal;
-    boost::wregex                                      expression = boost::wregex(L"\\$\\{now\\s*,?([^}]*)\\}", ft);
+    std::time_t                                        now          = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+    UINT                                               syntaxFlags  = boost::regex::normal;
+    boost::wregex                                      expression   = boost::wregex(L"\\$\\{now\\s*,?([^}]*)\\}", syntaxFlags);
     boost::match_results<std::wstring::const_iterator> whatC;
-    boost::match_flag_type                             flags        = boost::match_default | boost::format_all;
+    boost::match_flag_type                             matchFlags   = boost::match_default | boost::format_all;
     auto                                               resultString = replaceString;
     try
     {
-        while (regex_search(resultString.cbegin(), resultString.cend(), whatC, expression, flags))
+        while (regex_search(resultString.cbegin(), resultString.cend(), whatC, expression, matchFlags))
         {
             if (whatC[0].matched)
             {

@@ -103,7 +103,12 @@ protected:
     LRESULT             DoCommand(int id, int msg);
     bool                PreTranslateMessage(MSG* pMsg) override;
 
-    void                SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, bool bSearchAlways, bool bIncludeBinary, bool bUseRegex, bool bCaseSensitive, bool bDotMatchesNewline, const std::wstring& searchString, std::atomic_bool& bCancelled);
+    std::wstring        BackupFile(const std::wstring& destParentDir, const std::wstring& filePath, bool bMove);
+    int                 AdoptTempResultFile(CSearchInfo& sInfo, const std::wstring& searchRoot, const std::wstring& tempFilePath);
+    int                 SearchOnTextFile(CSearchInfo& sInfo, const std::wstring& searchRoot, const std::wstring& searchExpression, const std::wstring& replaceExpression, UINT syntaxFlags, UINT matchFlags, CTextFile& textFile);
+    template<typename CharT = char>
+    int                 SearchByFilePath(CSearchInfo& sInfo, const std::wstring& searchRoot, const std::wstring& searchExpression, const std::wstring& replaceExpression, UINT syntaxFlags, UINT matchFlags, bool misaligned, CharT* dummy = NULL);
+    void                SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot);
 
     bool                InitResultList();
     void                FillResultList();
