@@ -376,7 +376,6 @@ BEGIN
     IDS_REGEXINVALID        "invalid regex!"
     IDS_SIZE                "Size"
     IDS_LINE                "Line"
-    IDS_COLUMN              "Column"
     IDS_MATCHES             "Matches"
     IDS_TEXT                "Text"
     IDS_PATH                "Path"
@@ -386,6 +385,15 @@ BEGIN
     IDS_OPENWITHEDITOR      "Open with Editor"
     IDS_OPENCONTAININGFOLDER "Open containing folder"
     IDS_COPYPATH            "Copy path to clipboard"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_OPEN_MRU            "open list with recent entries"
+    IDS_COPY_COLUMN         "Copy column for all items"
+    IDS_COPY_COLUMN_SEL     "Copy column for selected items"
+    IDS_REGEXEXCEPTION      "Regex stack error"
+    IDS_COLUMN              "Column"
 END
 
 STRINGTABLE
@@ -411,7 +419,7 @@ END
 STRINGTABLE
 BEGIN
     IDS_ERR_PATHNOTEXIST    "The path ""%s"" does not exist or is not accessible!"
-    IDS_INVERSESEARCH       "Inverse search (NOT searchstring)"
+    IDS_INVERSESEARCH       "Inverse search"
     IDS_SEARCHINFOUNDFILES  "Search in found files"
     IDS_EXPORT_TT           "Export results..."
     IDS_EXPORTTITLE         "Export resultlist"
@@ -419,21 +427,13 @@ BEGIN
     IDS_EXPORTMATCHLINENUMBER "include match line numbers"
     IDS_EXPORTMATCHLINECONTENT "include match line text"
     IDS_UPDATEAVAILABLE     "grepWin %s is available"
-    IDS_CAPTURESEARCH       "Capture search"
+    IDS_CAPTURESEARCH       "Capture search (Shows replaced text)"
     IDS_CLONE               "start new grepWin window"
     IDS_NEWINSTANCE_TT      "start new grepWin window"
     IDS_REPLACEUTF8         "You have the option ""%s"" enabled.\r\nWhen replacing, this option can lead to corrupted files.\r\nDo you want to proceed anyway?"
     IDS_INFOLABELSEL        "Searched %ld files, skipped %ld files. Found %ld matches in %ld files. %ld results selected."
     IDS_INFOLABELEMPTY      "Found %ld files, skipped %ld files."
     IDS_INFOLABELSELEMPTY   "%ld files, skipped %ld files. %ld results selected."
-END
-
-STRINGTABLE
-BEGIN
-    IDS_OPEN_MRU            "open list with recent entries"
-    IDS_COPY_COLUMN         "Copy column for all items"
-    IDS_COPY_COLUMN_SEL     "Copy column for selected items"
-    IDS_REGEXEXCEPTION      "Regex stack error"
 END
 
 #endif    // English (United States) resources

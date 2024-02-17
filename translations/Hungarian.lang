@@ -44,8 +44,8 @@ msgid "%ld more matches"
 msgstr "%ld további találat"
 
 #. Resource IDs: (1069)
-msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset"
-msgstr "%path% helyébe a fájl elérési útvonala, %line% helyébe az a sor lép, amelyre ugrani kell"
+msgid "%path% is replaced with the path of the file, %line% with the line to jump to"
+msgstr ""
 
 #. Resource IDs: (119)
 msgid "&About grepWin..."
@@ -124,13 +124,9 @@ msgstr "Keresés rögzítése"
 msgid "Check for updates"
 msgstr "Frissítések ellenőrzése"
 
-#. Resource IDs: (180)
-msgid "Column"
-msgstr ""
-
 #. Resource IDs: (1068)
-msgid "Command line to start an editor at a specific line and in line offset:"
-msgstr "Parancs, ami a szerkesztőt egy bizonyos sornál nyitja meg:"
+msgid "Command line to start an editor at a specific line:"
+msgstr ""
 
 #. Resource IDs: (1060)
 msgid "Content"
@@ -311,8 +307,8 @@ msgstr "Sor"
 
 #. Resource IDs: (150)
 #, c-format
-msgid "Line %5ld : %s\n"
-msgstr "%5ld : %s sor\n"
+msgid "Line %5ld : %30s\n"
+msgstr ""
 
 #. Resource IDs: (135)
 msgid "Matches"
@@ -608,8 +604,8 @@ msgid "number of NULL bytes per MB allowed for a file to still be considered tex
 msgstr "a NULL bájtok MB-onként megengedett száma, hogy egy fájl még mindig szövegnek és nem binárisnak minősüljön"
 
 #. Resource IDs: (112)
-msgid "only files that match this pattern are searched.\r\nText match extended. Use\"|\" as the delimiter.\r\nExample: *.cpp|*.h"
-msgstr "csak a mintának megfelelő fájlokat keresi a rendszer.\r\n\"|\" jelet használja elválasztójelként.\r\nPélda: *.cpp|*.h"
+msgid "only files that match this pattern are searched.\r\nUse \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
+msgstr ""
 
 #. Resource IDs: (176)
 msgid "open list with recent entries"

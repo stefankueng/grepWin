@@ -1307,6 +1307,13 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                     m_showContent = false;
                     InitResultList();
                 }
+                else if (!m_replaceString.empty() && id == IDC_CAPTURESEARCH)
+                {
+                    // switch to content view
+                    CheckRadioButton(*this, IDC_RESULTFILES, IDC_RESULTCONTENT, IDC_RESULTCONTENT);
+                    m_showContent = true;
+                    InitResultList();
+                }
 
                 m_dwThreadRunning = true;
                 m_cancelled       = false;

@@ -44,8 +44,8 @@ msgid "%ld more matches"
 msgstr "%ld mehr Übereinstimmungen"
 
 #. Resource IDs: (1069)
-msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset"
-msgstr "%path% wird durch den Pfad der Datei ersetzt, %line% mit der Zeile, zu der gesprungen wird."
+msgid "%path% is replaced with the path of the file, %line% with the line to jump to"
+msgstr "%path% wird mit dem Pfad der Datei ersetzt, %line% mit der Zeile im Text"
 
 #. Resource IDs: (119)
 msgid "&About grepWin..."
@@ -124,13 +124,9 @@ msgstr "Resultat-Suche"
 msgid "Check for updates"
 msgstr "Auf Updates prüfen"
 
-#. Resource IDs: (180)
-msgid "Column"
-msgstr ""
-
 #. Resource IDs: (1068)
-msgid "Command line to start an editor at a specific line and in line offset:"
-msgstr "Befehlszeile, um einen Editor an einer spezifischen Zeile zu starten:"
+msgid "Command line to start an editor at a specific line:"
+msgstr "Kommandozeile um Editor zu starten mit der angegebenen Zeile:"
 
 #. Resource IDs: (1060)
 msgid "Content"
@@ -311,8 +307,8 @@ msgstr "Zeile"
 
 #. Resource IDs: (150)
 #, c-format
-msgid "Line %5ld : %s\n"
-msgstr "Zeile %5ld : %s\n"
+msgid "Line %5ld : %30s\n"
+msgstr "Zeile %5ld : %30s\n"
 
 #. Resource IDs: (135)
 msgid "Matches"
@@ -608,8 +604,8 @@ msgid "number of NULL bytes per MB allowed for a file to still be considered tex
 msgstr "Anzahl erlaubte NULL Bytes pro MB damit eine Datei als Text statt binär erkannt wird"
 
 #. Resource IDs: (112)
-msgid "only files that match this pattern are searched.\r\nText match extended. Use\"|\" as the delimiter.\r\nExample: *.cpp|*.h"
-msgstr "Nur Dateien, die diesem Muster entsprechen, werden gesucht.\r\nVerwenden Sie \"|\" als Trennzeichen.\r\nBeispiel: *.cpp|*.h"
+msgid "only files that match this pattern are searched.\r\nUse \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
+msgstr "Nur Dateien welche dem Schema entsprechen werden durchsucht.\r\nBenutze \"|\" als Trennzeichen.\r\nBeispiel: *.cpp|*.h"
 
 #. Resource IDs: (176)
 msgid "open list with recent entries"

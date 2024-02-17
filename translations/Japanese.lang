@@ -44,8 +44,8 @@ msgid "%ld more matches"
 msgstr "%ld か所のさらなる一致"
 
 #. Resource IDs: (1069)
-msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset"
-msgstr "%path% はファイルのパス - %line% は移動先の行番号 で置換されます"
+msgid "%path% is replaced with the path of the file, %line% with the line to jump to"
+msgstr ""
 
 #. Resource IDs: (119)
 msgid "&About grepWin..."
@@ -124,13 +124,9 @@ msgstr "キャプチャと後方参照を使用"
 msgid "Check for updates"
 msgstr "最新版を確認"
 
-#. Resource IDs: (180)
-msgid "Column"
-msgstr ""
-
 #. Resource IDs: (1068)
-msgid "Command line to start an editor at a specific line and in line offset:"
-msgstr "指定行をエディタで開くためのコマンドライン:"
+msgid "Command line to start an editor at a specific line:"
+msgstr ""
 
 #. Resource IDs: (1060)
 msgid "Content"
@@ -311,8 +307,8 @@ msgstr "行番号"
 
 #. Resource IDs: (150)
 #, c-format
-msgid "Line %5ld : %s\n"
-msgstr "行 %5ld : %s\n"
+msgid "Line %5ld : %30s\n"
+msgstr ""
 
 #. Resource IDs: (135)
 msgid "Matches"
@@ -608,8 +604,8 @@ msgid "number of NULL bytes per MB allowed for a file to still be considered tex
 msgstr "ファイルをバイナリでなくテキストと認識するための MB あたりの NULL バイトの数"
 
 #. Resource IDs: (112)
-msgid "only files that match this pattern are searched.\r\nText match extended. Use\"|\" as the delimiter.\r\nExample: *.cpp|*.h"
-msgstr "このパターンに一致するファイルから検索されます。\r\n区切りに「|」が使えます。\r\n指定例: *.cpp|*.h"
+msgid "only files that match this pattern are searched.\r\nUse \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
+msgstr ""
 
 #. Resource IDs: (176)
 msgid "open list with recent entries"

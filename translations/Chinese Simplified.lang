@@ -44,8 +44,8 @@ msgid "%ld more matches"
 msgstr "还有 %ld 个匹配"
 
 #. Resource IDs: (1069)
-msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset"
-msgstr "%path% 将被替换为文件的路径, %line% 将被替换为要转至的行号, %column% 为行内偏移量."
+msgid "%path% is replaced with the path of the file, %line% with the line to jump to"
+msgstr ""
 
 #. Resource IDs: (119)
 msgid "&About grepWin..."
@@ -124,13 +124,9 @@ msgstr "输入替换搜索"
 msgid "Check for updates"
 msgstr "检查更新"
 
-#. Resource IDs: (180)
-msgid "Column"
-msgstr "行内偏移"
-
 #. Resource IDs: (1068)
-msgid "Command line to start an editor at a specific line and in line offset:"
-msgstr "用于在指定的行和行内偏移来启动编辑器的命令行:"
+msgid "Command line to start an editor at a specific line:"
+msgstr ""
 
 #. Resource IDs: (1060)
 msgid "Content"
@@ -311,8 +307,8 @@ msgstr "行号"
 
 #. Resource IDs: (150)
 #, c-format
-msgid "Line %5ld : %s\n"
-msgstr "行 %5ld : %s\n"
+msgid "Line %5ld : %30s\n"
+msgstr ""
 
 #. Resource IDs: (135)
 msgid "Matches"
@@ -608,8 +604,8 @@ msgid "number of NULL bytes per MB allowed for a file to still be considered tex
 msgstr "允许将文件仍视为文本而不是二进制文件的每 MB 空字节数"
 
 #. Resource IDs: (112)
-msgid "only files that match this pattern are searched.\r\nText match extended. Use \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
-msgstr "仅匹配此样式的文件被搜索.\r\n文本匹配已扩展. 使用 \"|\" 作为分隔符.\r\n例如: *.cpp|*.h"
+msgid "only files that match this pattern are searched.\r\nUse \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
+msgstr ""
 
 #. Resource IDs: (176)
 msgid "open list with recent entries"

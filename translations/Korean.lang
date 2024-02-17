@@ -44,8 +44,8 @@ msgid "%ld more matches"
 msgstr "%ld개 더 많은 일치"
 
 #. Resource IDs: (1069)
-msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset"
-msgstr "%path%가 파일의 경로로 대체되었습니다. %line%는 이동할 행으로 대체되었습니다"
+msgid "%path% is replaced with the path of the file, %line% with the line to jump to"
+msgstr ""
 
 #. Resource IDs: (119)
 msgid "&About grepWin..."
@@ -124,13 +124,9 @@ msgstr "캡쳐 검색"
 msgid "Check for updates"
 msgstr "업데이트 확인"
 
-#. Resource IDs: (180)
-msgid "Column"
-msgstr ""
-
 #. Resource IDs: (1068)
-msgid "Command line to start an editor at a specific line and in line offset:"
-msgstr "특정 줄에서 편집기를 시작하는 명령줄:"
+msgid "Command line to start an editor at a specific line:"
+msgstr ""
 
 #. Resource IDs: (1060)
 msgid "Content"
@@ -311,8 +307,8 @@ msgstr "줄"
 
 #. Resource IDs: (150)
 #, c-format
-msgid "Line %5ld : %s\n"
-msgstr "줄 %5ld : %s\n"
+msgid "Line %5ld : %30s\n"
+msgstr ""
 
 #. Resource IDs: (135)
 msgid "Matches"
@@ -608,8 +604,8 @@ msgid "number of NULL bytes per MB allowed for a file to still be considered tex
 msgstr "파일이 바이너리 대신 텍스트로 간주되도록 허용되는 MB 당 NULL 바이트 수"
 
 #. Resource IDs: (112)
-msgid "only files that match this pattern are searched.\r\nText match extended. Use\"|\" as the delimiter.\r\nExample: *.cpp|*.h"
-msgstr "이 패턴과 일치하는 파일들만 검색됩니다.\n구분 기호로 '|'를 사용합니다.\n예제: *.cpp|*.h"
+msgid "only files that match this pattern are searched.\r\nUse \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
+msgstr ""
 
 #. Resource IDs: (176)
 msgid "open list with recent entries"
