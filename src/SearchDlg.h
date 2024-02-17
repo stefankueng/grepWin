@@ -103,7 +103,7 @@ protected:
     LRESULT             DoCommand(int id, int msg);
     bool                PreTranslateMessage(MSG* pMsg) override;
 
-    void                SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, bool bSearchAlways, bool bIncludeBinary, bool bUseRegex, bool bCaseSensitive, bool bDotMatchesNewline, const std::wstring& searchString, const std::wstring& searchStringUtf16Le, std::atomic_bool& bCancelled);
+    void                SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, bool bSearchAlways, bool bIncludeBinary, bool bUseRegex, bool bCaseSensitive, bool bDotMatchesNewline, const std::wstring& searchString, std::atomic_bool& bCancelled);
 
     bool                InitResultList();
     void                FillResultList();

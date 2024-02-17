@@ -3406,20 +3406,6 @@ DWORD CSearchDlg::SearchThread()
 
     SendMessage(*this, SEARCH_START, 0, 0);
 
-    std::wstring searchStringutf16;
-
-    for (auto c : m_searchString)
-    {
-        searchStringutf16 += c;
-        if (std::iswalpha(c) && ((c & 0xFF00) == 0))
-            searchStringutf16 += L"\\x00";
-        else
-        {
-            searchStringutf16 = m_searchString;
-            break;
-        }
-    }
-
     // use a thread pool:
     // use 2 threads less than processors are available,
     // because we already have two threads in use:
@@ -3530,10 +3516,9 @@ DWORD CSearchDlg::SearchThread()
                         else
                         {
                             auto searchFn = [=]() {
-                                SearchFile(sInfo, searchRoot, bAlwaysSearch, m_bIncludeBinary, m_bUseRegex, m_bCaseSensitive, m_bDotMatchesNewline, m_searchString, searchStringutf16, m_cancelled);
+                                SearchFile(sInfo, searchRoot, bAlwaysSearch, m_bIncludeBinary, m_bUseRegex, m_bCaseSensitive, m_bDotMatchesNewline, m_searchString, m_cancelled);
                             };
                             tp.enqueueWait(searchFn);
-                            // SearchFile(std::move(sinfo), searchRoot, bAlwaysSearch, m_bIncludeBinary, m_bUseRegex, m_bCaseSensitive, m_bDotMatchesNewline, m_searchString, SearchStringutf16, &m_Cancelled);
                         }
                     }
                     else
@@ -3859,12 +3844,9 @@ bool CSearchDlg::MatchPath(LPCTSTR pathBuf) const
     return bPattern;
 }
 
-void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, bool bSearchAlways, bool bIncludeBinary, bool bUseRegex, bool bCaseSensitive, bool bDotMatchesNewline, const std::wstring& searchString, const std::wstring& searchStringUtf16Le, std::atomic_bool& bCancelled)
+void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, bool bSearchAlways, bool bIncludeBinary, bool bUseRegex, bool bCaseSensitive, bool bDotMatchesNewline, const std::wstring& searchString, std::atomic_bool& bCancelled)
 {
     int          nFound            = 0;
-    // we keep it simple:
-    // files bigger than 30MB are considered binary. Binary files are searched
-    // as if they're ANSI text files.
     std::wstring localSearchString = searchString;
     std::wstring fileNameFull      = sInfo.filePath.substr(sInfo.filePath.find_last_of('\\') + 1);
 
@@ -3985,69 +3967,6 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
                 // update flags:
                 flags |= boost::match_prev_avail;
                 flags |= boost::match_not_bob;
-            }
-            if (nFound == 0 && type == CTextFile::Binary)
-            {
-                boost::wregex expressionUtf16 = boost::wregex(searchStringUtf16Le, ft);
-                start                         = textFile.GetFileString().begin();
-                end                           = textFile.GetFileString().end();
-
-                while (!bCancelled && regex_search(start, end, whatC, expressionUtf16, flags))
-                {
-                    if (whatC[0].matched)
-                    {
-                        nFound++;
-                        if (m_bNotSearch)
-                            break;
-                        long posMatchHead = static_cast<long>(whatC[0].first - textFile.GetFileString().begin());
-                        long posMatchTail = static_cast<long>(whatC[0].second - textFile.GetFileString().begin());
-                        if (whatC[0].first < whatC[0].second) // m[0].second is not part of the match
-                            --posMatchTail;
-                        long lineStart = textFile.LineFromPosition(posMatchHead);
-                        long lineEnd   = textFile.LineFromPosition(posMatchTail);
-                        long colMatch  = textFile.ColumnFromPosition(posMatchHead, lineStart);
-                        long lenMatch  = static_cast<long>(whatC[0].length());
-                        if (m_bCaptureSearch)
-                        {
-                            auto out = whatC.format(m_replaceString, flags);
-                            sInfo.matchLines.push_back(out);
-                            sInfo.matchLinesNumbers.push_back(lineStart);
-                            sInfo.matchColumnsNumbers.push_back(colMatch);
-                            sInfo.matchLengths.push_back(static_cast<long>(out.length()));
-                        }
-                        else
-                        {
-                            for (long l = lineStart; l <= lineEnd; ++l)
-                            {
-                                auto sLine        = textFile.GetLineString(l);
-                                long lenLineMatch = static_cast<long>(sLine.length()) - colMatch;
-                                if (lenMatch < lenLineMatch)
-                                {
-                                    lenLineMatch = lenMatch;
-                                }
-                                sInfo.matchLines.push_back(sLine);
-                                sInfo.matchLinesNumbers.push_back(l);
-                                sInfo.matchColumnsNumbers.push_back(colMatch);
-                                sInfo.matchLengths.push_back(lenLineMatch);
-                                if (lenMatch > lenLineMatch)
-                                {
-                                    colMatch = 1;
-                                    lenMatch -= lenLineMatch;
-                                }
-                            }
-                        }
-                        ++sInfo.matchCount;
-                    }
-                    // update search position:
-                    start = whatC[0].second;
-                    if (start == end)
-                        break;
-                    if (start == whatC[0].first) // ^$
-                        ++start;
-                    // update flags:
-                    flags |= boost::match_prev_avail;
-                    flags |= boost::match_not_bob;
-                }
             }
             if ((m_bReplace) && (nFound))
             {
