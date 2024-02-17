@@ -179,6 +179,25 @@ LRESULT CALLBACK FileNameMatchEditWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
     return DefSubclassProc(hWnd, uMsg, wParam, lParam);
 }
 
+static void escapeForRegexEx(std::wstring& str)
+{
+    const wchar_t* specialChar[17] = {
+        // oringinal
+        L"\\",
+        // regex special chars, current and future
+        L"^", L"$", L".", L"?", L"*", L"+", L"[", L"]", L"(", L")", L"{", L"}", L"|",
+        // command line special chars
+        L"\"", L" ", L"\t"};
+    const wchar_t* specialEscaped[17] = {
+        L"\\x5c",
+        L"\\^", L"\\$", L"\\.", L"\\?", L"\\*", L"\\+", L"\\[", L"\\]", L"\\(", L"\\)", L"\\{", L"\\}", L"\\|",
+        L"\\x22", L"\\x20", L"\\x09"};
+    for (int i = 0; i < _countof(specialChar); ++i)
+    {
+        SearchReplace(str, specialChar[i], specialEscaped[i]);
+    }
+}
+
 static void removeMineExtVariables(std::wstring& str)
 {
     for (const auto& s : {L"${filepath}", L"${filename}", L"${fileext}"})
@@ -3077,22 +3096,8 @@ void CSearchDlg::OpenFileAtListIndex(int listIndex)
         if (inf.matchLines.size() > 0)
         {
             // not binary
-            const wchar_t* specialChar[17] = {
-                // oringinal
-                L"\\",
-                // regex special chars, current and future
-                L"^", L"$", L".", L"?", L"*", L"+", L"[", L"]", L"(", L")", L"{", L"}", L"|",
-                // command line special chars
-                L"\"", L" ", L"\t"};
-            const wchar_t* specialEscaped[17] = {
-                L"\\x5c",
-                L"\\^", L"\\$", L"\\.", L"\\?", L"\\*", L"\\+", L"\\[", L"\\]", L"\\(", L"\\)", L"\\{", L"\\}", L"\\|",
-                L"\\x22", L"\\x20", L"\\x09"};
             match = inf.matchLines[subIndex].substr(inf.matchColumnsNumbers[subIndex] - 1, inf.matchLengths[subIndex]);
-            for (int i = 0; i < _countof(specialChar); ++i)
-            {
-                SearchReplace(match, specialChar[i], specialEscaped[i]);
-            }
+            escapeForRegexEx(match);
             if (match.length() > 32767 - 1 - 2 - 2 - 13 - inf.filePath.length() - reservedLength)
             {
                 match.clear();
