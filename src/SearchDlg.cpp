@@ -3925,7 +3925,7 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
             {
                 flags &= ~boost::match_prev_avail;
                 flags &= ~boost::match_not_bob;
-                RegexReplaceFormatter replaceFmt(m_replaceString);
+                RegexReplaceFormatter<wchar_t> replaceFmt(m_replaceString);
                 if (bUseRegex)
                 {
                     replaceFmt.SetReplacePair(L"${filepath}", sInfo.filePath);
@@ -4206,7 +4206,7 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot, b
 
                         flags &= ~boost::match_prev_avail;
                         flags &= ~boost::match_not_bob;
-                        RegexReplaceFormatterA replaceFmt(CUnicodeUtils::StdGetUTF8(m_replaceString));
+                        RegexReplaceFormatter<char, boost::iostreams::mapped_file_source::iterator> replaceFmt(CUnicodeUtils::StdGetUTF8(m_replaceString));
                         replaceFmt.SetReplacePair("${filepath}", CUnicodeUtils::StdGetUTF8(sInfo.filePath));
                         if (bUseRegex)
                         {

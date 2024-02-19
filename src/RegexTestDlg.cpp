@@ -214,7 +214,7 @@ void CRegexTestDlg::DoRegex()
                 if (!bDotMatchesNewline)
                     rflags |= boost::match_not_dot_newline;
 
-                RegexReplaceFormatter replaceFmt(m_replaceText);
+                RegexReplaceFormatter<wchar_t> replaceFmt(m_replaceText);
                 replaceFmt.SetReplacePair(L"${filepath}", L"c:\\grepwintest\\file.txt");
                 replaceFmt.SetReplacePair(L"${filename}", L"file");
                 replaceFmt.SetReplacePair(L"${fileext}", L"txt");

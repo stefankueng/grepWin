@@ -18,6 +18,3 @@
 //
 #include "stdafx.h"
 #include "RegexReplaceFormatter.h"
-
-std::vector<NumberReplacer>  g_incVec;
-std::vector<NumberReplacerA> g_incVecA;
