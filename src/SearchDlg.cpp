@@ -1774,41 +1774,12 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
             int          uID      = (id == IDC_EDITMULTILINE1 ? IDC_SEARCHTEXT : IDC_REPLACETEXT);
             auto         buf      = GetDlgItemText(static_cast<int>(uID));
             std::wstring ctrlText = buf.get();
-
-            // replace all \r\n strings with real CRLFs
-            try
-            {
-                int                    ft         = boost::regex::normal;
-                boost::wregex          expression = (id == IDC_EDITMULTILINE1
-                                                         ? boost::wregex(L"\\(\\?:\\\\n\\|\\\\r\\\\n\\|\\\\n\\\\r\\)", ft)
-                                                         : boost::wregex(L"\\\\r\\\\n", ft));
-                boost::match_flag_type rFlags     = boost::match_default | boost::format_all;
-                ctrlText                          = regex_replace(ctrlText, expression, L"\\r\\n", rFlags);
-            }
-            catch (const std::exception&)
-            {
-            }
             CMultiLineEditDlg editDlg(*this);
             editDlg.SetString(ctrlText);
 
             if (editDlg.DoModal(hResource, IDD_MULTILINEEDIT, *this) == IDOK)
             {
                 std::wstring text = editDlg.GetSearchString();
-                // replace all CRLFs with \r\n strings (literal)
-                try
-                {
-                    int                    ft         = boost::regex::normal;
-                    boost::wregex          expression = boost::wregex(L"\\r\\n", ft);
-                    boost::match_flag_type rFlags     = boost::match_default | boost::format_all;
-                    if (id == IDC_EDITMULTILINE1)
-                        text = regex_replace(text, expression, L"\\(\\?:\\\\n|\\\\r\\\\n|\\\\n\\\\r\\)", rFlags);
-                    else
-                        text = regex_replace(text, expression, L"\\\\r\\\\n", rFlags);
-                }
-                catch (const std::exception&)
-                {
-                }
-
                 SetDlgItemText(*this, static_cast<int>(uID), text.c_str());
             }
             ::SetFocus(GetDlgItem(*this, uID));
@@ -3441,6 +3412,7 @@ DWORD CSearchDlg::SearchThread()
         if (!m_searchString.empty())
         {
             escapeForRegexEx(m_searchString, 0);
+            SearchReplace(m_searchString, L"\\r\\n", L"\\(\\?:\\\\n|\\\\r|\\\\r\\\\n\\)"); // multi-line
         }
         if (m_bReplace && !m_replaceString.empty())
         {
