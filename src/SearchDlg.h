@@ -112,6 +112,7 @@ protected:
 
     bool                InitResultList();
     void                FillResultList();
+    void                SetSearchModeUI(bool isTextMode);
     bool                AddFoundEntry(CSearchInfo* pInfo, bool bOnlyListControl = false);
     void                ShowContextMenu(HWND hWnd, int x, int y);
     LRESULT             ColorizeMatchResultProc(LPNMLVCUSTOMDRAW lpLVCD);

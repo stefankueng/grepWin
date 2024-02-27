@@ -401,6 +401,14 @@ bool CSearchDlg::isFileNameMatchRegexValid() const
     return m_isFileNameMatchingRegexValid;
 }
 
+void CSearchDlg::SetSearchModeUI(bool isTextMode)
+{
+    DialogEnableWindow(IDC_WHOLEWORDS, isTextMode);
+    DialogEnableWindow(IDC_TESTREGEX, !isTextMode);
+    DialogEnableWindow(IDC_EDITMULTILINE1, isTextMode);
+    DialogEnableWindow(IDC_EDITMULTILINE2, isTextMode);
+}
+
 LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     if (uMsg == m_grepwinStartupmsg)
@@ -599,11 +607,11 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             CheckRadioButton(hwndDlg, IDC_REGEXRADIO, IDC_TEXTRADIO, (bPortable ? _wtoi(g_iniFile.GetValue(L"global", L"UseRegex", L"0")) : static_cast<DWORD>(m_regUseRegex)) ? IDC_REGEXRADIO : IDC_TEXTRADIO);
             CheckRadioButton(hwndDlg, IDC_ALLSIZERADIO, IDC_SIZERADIO, m_bAllSize ? IDC_ALLSIZERADIO : IDC_SIZERADIO);
             SendDlgItemMessage(hwndDlg, IDC_WHOLEWORDS, BM_SETCHECK, m_bWholeWords ? BST_CHECKED : BST_UNCHECKED, 0);
-            DialogEnableWindow(IDC_WHOLEWORDS, IsDlgButtonChecked(hwndDlg, IDC_TEXTRADIO));
             if (!m_searchString.empty() || m_bUseRegexC)
                 CheckRadioButton(*this, IDC_REGEXRADIO, IDC_TEXTRADIO, m_bUseRegex ? IDC_REGEXRADIO : IDC_TEXTRADIO);
 
-            DialogEnableWindow(IDC_TESTREGEX, !IsDlgButtonChecked(*this, IDC_TEXTRADIO));
+            bool isTextMode = IsDlgButtonChecked(*this, IDC_TEXTRADIO);
+            SetSearchModeUI(isTextMode);
 
             ::SetDlgItemText(*this, IDOK, TranslatedString(hResource, IDS_SEARCH).c_str());
             if (!m_showContentSet)
@@ -1215,7 +1223,8 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                 SetDlgItemText(*this, IDC_SEARCHTEXT, m_searchString.c_str());
                 SetDlgItemText(*this, IDC_REPLACETEXT, m_replaceString.c_str());
                 CheckRadioButton(*this, IDC_REGEXRADIO, IDC_TEXTRADIO, m_bUseRegex ? IDC_REGEXRADIO : IDC_TEXTRADIO);
-                DialogEnableWindow(IDC_TESTREGEX, !IsDlgButtonChecked(*this, IDC_TEXTRADIO));
+                bool isTextMode = IsDlgButtonChecked(*this, IDC_TEXTRADIO);
+                SetSearchModeUI(isTextMode);
 
                 SendDlgItemMessage(*this, IDC_INCLUDESUBFOLDERS, BM_SETCHECK, m_bIncludeSubfolders ? BST_CHECKED : BST_UNCHECKED, 0);
                 SendDlgItemMessage(*this, IDC_INCLUDESYMLINK, BM_SETCHECK, m_bIncludeSymLinks ? BST_CHECKED : BST_UNCHECKED, 0);
@@ -1233,7 +1242,6 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                 CheckRadioButton(*this, IDC_FILEPATTERNREGEX, IDC_FILEPATTERNTEXT, m_bUseRegexForPaths ? IDC_FILEPATTERNREGEX : IDC_FILEPATTERNTEXT);
                 SetDlgItemText(*this, IDC_EXCLUDEDIRSPATTERN, m_excludeDirsPatternRegex.c_str());
                 SetDlgItemText(*this, IDC_PATTERN, m_patternRegex.c_str());
-                DialogEnableWindow(IDC_WHOLEWORDS, IsDlgButtonChecked(hwndDlg, IDC_TEXTRADIO));
             }
         }
         break;
@@ -1591,8 +1599,8 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
         {
             if (id != IDC_SEARCHPATH)
             {
-                DialogEnableWindow(IDC_TESTREGEX, !IsDlgButtonChecked(*this, IDC_TEXTRADIO));
-                DialogEnableWindow(IDC_WHOLEWORDS, IsDlgButtonChecked(*this, IDC_TEXTRADIO));
+                bool isTextMode = IsDlgButtonChecked(*this, IDC_TEXTRADIO);
+                SetSearchModeUI(isTextMode);
             }
         }
         case IDC_SEARCHTEXT:
