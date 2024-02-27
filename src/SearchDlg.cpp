@@ -3412,7 +3412,7 @@ DWORD CSearchDlg::SearchThread()
         if (!m_searchString.empty())
         {
             escapeForRegexEx(m_searchString, 0);
-            SearchReplace(m_searchString, L"\\r\\n", L"\\(\\?:\\\\n|\\\\r|\\\\r\\\\n\\)"); // multi-line
+            SearchReplace(m_searchString, L"\r\n", L"(?:\\n|\\r|\\r\\n)"); // multi-line
         }
         if (m_bReplace && !m_replaceString.empty())
         {
