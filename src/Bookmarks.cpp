@@ -49,6 +49,7 @@ void CBookmarks::Load()
     CreateDirectory(m_iniPath.c_str(), nullptr);
     m_iniPath += L"\\bookmarks";
     SetUnicode();
+    SetMultiLine(true); // multiline search
     LoadFile(m_iniPath.c_str());
 }
 

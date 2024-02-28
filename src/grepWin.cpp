@@ -337,6 +337,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
     if (bPortable)
     {
         g_iniFile.SetUnicode();
+        g_iniFile.SetMultiLine(true); // multiline search
         g_iniFile.LoadFile(g_iniPath.c_str());
     }
 
