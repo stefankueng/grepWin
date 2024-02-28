@@ -327,11 +327,11 @@ CSearchDlg::CSearchDlg(HWND hParent)
     , m_selectedItems(0)
     , m_bAscending(true)
     , m_hasSearchDir(false)
-    , m_isSearchPathValid(false)
+    , m_bSearchPathValid(false)
     , m_searchValidLength(0)
     , m_replaceValidLength(0)
-    , m_isExcludeDirsRegexValid(true)
-    , m_isFileNameMatchingRegexValid(true)
+    , m_bExcludeDirsRegexValid(true)
+    , m_bFileNameMatchingRegexValid(true)
     , m_themeCallbackId(0)
     , m_pDropTarget(nullptr)
     , m_autoCompleteFilePatterns(bPortable ? &g_iniFile : nullptr)
@@ -382,7 +382,7 @@ CSearchDlg::~CSearchDlg()
 
 bool CSearchDlg::isSearchPathValid() const
 {
-    return m_isSearchPathValid;
+    return m_bSearchPathValid;
 }
 
 bool CSearchDlg::isSearchValid() const
@@ -393,12 +393,12 @@ bool CSearchDlg::isSearchValid() const
 
 bool CSearchDlg::isExcludeDirsRegexValid() const
 {
-    return m_isExcludeDirsRegexValid;
+    return m_bExcludeDirsRegexValid;
 }
 
 bool CSearchDlg::isFileNameMatchRegexValid() const
 {
-    return m_isFileNameMatchingRegexValid;
+    return m_bFileNameMatchingRegexValid;
 }
 
 void CSearchDlg::SetSearchModeUI(bool isTextMode)
@@ -1583,7 +1583,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                     // or file
                     bValid = PathFileExists(path);
                 }
-                m_isSearchPathValid = bValid;
+                m_bSearchPathValid = bValid;
                 RedrawWindow(GetDlgItem(*this, IDC_SEARCHPATH), nullptr, nullptr, RDW_FRAME | RDW_INVALIDATE);
 
                 // change the dialog title to "grepWin : search/path"
@@ -1643,22 +1643,22 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                     m_autoCompleteFilePatterns.SetOptions(ACO_UPDOWNKEYDROPSLIST | ACO_AUTOSUGGEST);
                 if (IsDlgButtonChecked(*this, IDC_FILEPATTERNREGEX) == BST_CHECKED)
                 {
-                    auto     buf                   = GetDlgItemText(IDC_PATTERN);
-                    wchar_t* str                   = buf.get();
-                    m_isFileNameMatchingRegexValid = (wcslen(str) == 0 || isRegexValid(str));
+                    auto     buf                  = GetDlgItemText(IDC_PATTERN);
+                    wchar_t* str                  = buf.get();
+                    m_bFileNameMatchingRegexValid = (wcslen(str) == 0 || isRegexValid(str));
                 }
                 else
                 {
-                    m_isFileNameMatchingRegexValid = TRUE;
+                    m_bFileNameMatchingRegexValid = TRUE;
                 }
                 RedrawWindow(GetDlgItem(*this, IDC_PATTERN), nullptr, nullptr, RDW_FRAME | RDW_INVALIDATE);
             }
 
             // all grouped conditions
-            bool bValid = m_isSearchPathValid;
+            bool bValid = m_bSearchPathValid;
             if (bValid && m_hasSearchDir)
             {
-                bValid = m_isExcludeDirsRegexValid && m_isFileNameMatchingRegexValid;
+                bValid = m_bExcludeDirsRegexValid && m_bFileNameMatchingRegexValid;
             }
             DialogEnableWindow(IDOK, bValid && (m_searchValidLength >= 0));
             DialogEnableWindow(IDC_REPLACE, bValid && (m_searchValidLength > 0));
@@ -1681,9 +1681,9 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
             {
                 if (m_autoCompleteExcludeDirsPatterns.GetOptions() & ACO_NOPREFIXFILTERING)
                     m_autoCompleteExcludeDirsPatterns.SetOptions(ACO_UPDOWNKEYDROPSLIST | ACO_AUTOSUGGEST);
-                auto     buf              = GetDlgItemText(IDC_EXCLUDEDIRSPATTERN);
-                wchar_t* str              = buf.get();
-                m_isExcludeDirsRegexValid = (wcslen(str) == 0 || isRegexValid(str));
+                auto     buf             = GetDlgItemText(IDC_EXCLUDEDIRSPATTERN);
+                wchar_t* str             = buf.get();
+                m_bExcludeDirsRegexValid = (wcslen(str) == 0 || isRegexValid(str));
                 RedrawWindow(GetDlgItem(*this, IDC_EXCLUDEDIRSPATTERN), nullptr, nullptr, RDW_FRAME | RDW_INVALIDATE);
             }
         }

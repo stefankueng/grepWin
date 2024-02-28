@@ -208,11 +208,11 @@ private:
     std::unique_ptr<CInfoRtfDialog>   m_rtfDialog;
 
     bool                              m_hasSearchDir;
-    bool                              m_isSearchPathValid;
+    bool                              m_bSearchPathValid;
     int                               m_searchValidLength;
     int                               m_replaceValidLength;
-    bool                              m_isExcludeDirsRegexValid;
-    bool                              m_isFileNameMatchingRegexValid;
+    bool                              m_bExcludeDirsRegexValid;
+    bool                              m_bFileNameMatchingRegexValid;
 
     CDlgResizer                       m_resizer;
     int                               m_themeCallbackId;
