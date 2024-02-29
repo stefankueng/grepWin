@@ -2295,7 +2295,10 @@ void CSearchDlg::ShowContextMenu(HWND hWnd, int x, int y)
                                 case 1: // line number
                                     copyText += std::to_wstring(pInfo->matchLinesNumbers[subIndex]);
                                     break;
-                                case 2: // line
+                                case 2: // column number
+                                    copyText += std::to_wstring(pInfo->matchColumnsNumbers[subIndex]);
+                                    break;
+                                case 3: // line
                                 {
                                     std::wstring line;
                                     if (pInfo->matchLines.size() > static_cast<size_t>(subIndex))
@@ -2307,7 +2310,7 @@ void CSearchDlg::ShowContextMenu(HWND hWnd, int x, int y)
                                     copyText += line;
                                 }
                                 break;
-                                case 3: // path
+                                case 4: // path
                                     copyText += pInfo->filePath.substr(0, pInfo->filePath.size() - pInfo->filePath.substr(pInfo->filePath.find_last_of('\\') + 1).size() - 1);
                                     break;
                             }
@@ -2976,7 +2979,7 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
                         case 1: // line number
                             swprintf_s(pItem->pszText, pItem->cchTextMax, L"%ld", pInfo->matchLinesNumbers[subIndex]);
                             break;
-                        case 2: // move number
+                        case 2: // column number
                             swprintf_s(pItem->pszText, pItem->cchTextMax, L"%ld", pInfo->matchColumnsNumbers[subIndex]);
                             break;
                         case 3: // line
