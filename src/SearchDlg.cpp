@@ -4057,10 +4057,10 @@ public:
         return start;
     }
 
-    // UTF-16LE
+    // UTF-16LE, UTF-16BE
     const wchar_t* SkipBOM(const wchar_t* start, const wchar_t* end)
     {
-        if (end - start > 1 && *start == 0xFEFF)
+        if (end - start > 1 && (*start == 0xFEFF || *start == 0xFFFE))
         {
             lenBOM = 1;
             return start + 1;
@@ -4129,23 +4129,46 @@ public:
     }
 };
 
+static std::wstring utf16Swap(const std::wstring& str)
+{
+    std::wstring swapped = str;
+    for (size_t i = 0; i < swapped.length(); ++i)
+    {
+        swapped[i] = swapped[i] << 8 | (swapped[i] >> 8 & 0xff);
+    }
+    return swapped;
+}
+
 template<typename CharT = char>
-std::basic_string<CharT> ConvertToString(const std::wstring& str, CTextFile::UnicodeType encoding, bool bForceChar, CharT* dummy = NULL)
+std::basic_string<CharT> ConvertToString(const std::wstring& str, CTextFile::UnicodeType encoding, CharT* dummy = NULL)
 {};
 
 template<>
-std::basic_string<char> ConvertToString<char>(const std::wstring& str, CTextFile::UnicodeType encoding, bool bForceChar, char*)
+std::basic_string<char> ConvertToString<char>(const std::wstring& str, CTextFile::UnicodeType encoding, char*)
 {
-    if (bForceChar)
+    switch (encoding)
     {
-        return std::basic_string<char>(reinterpret_cast<const char*>(str.c_str()), 2 * str.length());
+        case CTextFile::Unicode_Le:
+            return std::basic_string<char>(reinterpret_cast<const char*>(str.c_str()), 2 * str.length());
+        case CTextFile::Unicode_Be:
+        {
+            std::wstring strBe = utf16Swap(str);
+            return std::basic_string<char>(reinterpret_cast<const char*>(strBe.c_str()), 2 * strBe.length());
+        }
+        case CTextFile::Ansi:
+            return CUnicodeUtils::StdGetANSI(str);
+        case CTextFile::UTF8:
+            return CUnicodeUtils::StdGetUTF8(str);
+        default:
+            return "";
     }
-    return (encoding == CTextFile::Ansi) ? CUnicodeUtils::StdGetANSI(str) : CUnicodeUtils::StdGetUTF8(str);
 };
 
 template<>
-std::basic_string<wchar_t> ConvertToString<wchar_t>(const std::wstring& str, CTextFile::UnicodeType, bool, wchar_t*)
+std::basic_string<wchar_t> ConvertToString<wchar_t>(const std::wstring& str, CTextFile::UnicodeType encoding, wchar_t*)
 {
+    if (encoding == CTextFile::Unicode_Be)
+        return utf16Swap(str);
     return str;
 };
 
@@ -4169,7 +4192,7 @@ int CSearchDlg::SearchByFilePath(CSearchInfo& sInfo, const std::wstring& searchR
     const CharT*       end      = fBeg + inSize / sizeof(CharT);
 
     TextOffset<CharT>  textOffset;
-    if ((sInfo.encoding == CTextFile::UTF8) || (sInfo.encoding == CTextFile::Unicode_Le))
+    if ((sInfo.encoding == CTextFile::UTF8) || (sInfo.encoding == CTextFile::Unicode_Le) || (sInfo.encoding == CTextFile::Unicode_Be))
     {
         start = textOffset.SkipBOM(fBeg, end);
     }
@@ -4199,9 +4222,7 @@ int CSearchDlg::SearchByFilePath(CSearchInfo& sInfo, const std::wstring& searchR
     }
     end = reinterpret_cast<const CharT*>(inData + skipSize + workSize);
 
-    bool                     bTreateWcharAsChars = sizeof(CharT) == 1 && !m_bUseRegex &&
-                                                   (sInfo.encoding == CTextFile::Unicode_Le || sInfo.encoding == CTextFile::Binary);
-    std::basic_string<CharT> expr                = ConvertToString<CharT>(searchExpression, sInfo.encoding, bTreateWcharAsChars);
+    std::basic_string<CharT> expr                = ConvertToString<CharT>(searchExpression, sInfo.encoding);
 
     if (!m_bUseRegex && m_bWholeWords)
     {
@@ -4255,7 +4276,7 @@ int CSearchDlg::SearchByFilePath(CSearchInfo& sInfo, const std::wstring& searchR
         return nFound;
     }
 
-    std::basic_string<CharT> repl          = ConvertToString<CharT>(replaceExpression, sInfo.encoding, bTreateWcharAsChars);
+    std::basic_string<CharT> repl          = ConvertToString<CharT>(replaceExpression, sInfo.encoding);
 
     std::wstring             filePathTempW = sInfo.filePath + L".grepwinreplaced";
     std::string              filePathTempA = filePathA + ".grepwinreplaced";
@@ -4368,9 +4389,9 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot)
         sInfo.readError = true;
         nCount = -1;
     }
-    else if (bLoadResult && ((type != CTextFile::Binary) || m_bIncludeBinary)) // loaded
+    else if (bLoadResult && ((type != CTextFile::Binary) || m_bIncludeBinary)) // transcoded
     {
-        // for unrecognized, only `Binary` returns true
+        // for unrecognized, only `Binary` returns true and treated as UTF-16LE, the same as app internal
         try
         {
             nCount = SearchOnTextFile(sInfo, searchRoot, searchExpression, replaceExpression, syntaxFlags, matchFlags, textFile);
@@ -4384,33 +4405,84 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot)
     else if ((type != CTextFile::Binary) || m_bIncludeBinary || m_bForceBinary)
     {
         // file is either too big or binary.
-        try
+        // types: Ansi, UTF8, Unicode_Le, Unicode_Be and Binary
+        std::vector<CTextFile::UnicodeType> encodingTries;
+        if (!m_bUseRegex || type == CTextFile::Binary)
         {
-            // Ansi, UTF8, Unicode_Le, Unicode_Be and Binary
-            if (type != CTextFile::Unicode_Le)
+            // Treating a multi-byte char as single byte chars:
+            //  yields part of it may be matched as a standalone char,
+            //  so requires it grouped for repeats to get accurate results.
+            //  Unicode_Le and Unicode_Be in Regex mode are turned into wchar_t branch. UTF8 is still here.
+            // Without transcoding the file, transcoding the input to other encoding is a trick, to get a bit more outcome.
+            // It only works for raw data, not escaped sequence, that is pure ASCII char!
+            switch (type)
             {
-                // Treating a multi-byte char as single byte chars:
-                //  yields part of it may be matched as a standalone char,
-                //  so requires it grouped for repeats to get accurate results.
-                nCount = SearchByFilePath<char>(sInfo, searchRoot, searchExpression, replaceExpression, syntaxFlags, matchFlags, false);
+                case CTextFile::Binary:
+                {
+                    if (m_bUseRegex)
+                        encodingTries = {CTextFile::Ansi, CTextFile::UTF8};
+                    else
+                        encodingTries = {CTextFile::Ansi, CTextFile::UTF8, CTextFile::Unicode_Le, CTextFile::Unicode_Be};
+                }
+                break;
+                case CTextFile::Ansi:
+                case CTextFile::UTF8:
+                case CTextFile::Unicode_Le:
+                case CTextFile::Unicode_Be:
+                default:
+                    encodingTries = {type};
+                    break;
             }
-            if (type == CTextFile::Unicode_Le || (type == CTextFile::Binary && nCount == 0))
+            for (auto assumption : encodingTries)
             {
-                nCount = SearchByFilePath<wchar_t>(sInfo, searchRoot, searchExpression, replaceExpression, syntaxFlags, matchFlags, false);
-                if (type == CTextFile::Binary)
-                    nCount += SearchByFilePath<wchar_t>(sInfo, searchRoot, searchExpression, replaceExpression, syntaxFlags, matchFlags, true);
+                sInfo.encoding = assumption;
+                try
+                {
+                    nCount = SearchByFilePath<char>(sInfo, searchRoot, searchExpression, replaceExpression, syntaxFlags, matchFlags, false);
+                }
+                catch (...)
+                {
+                    // regex error
+                }
+                if (nCount > 0)
+                {
+                    break; // try all is consuming
+                }
             }
         }
-        catch (const std::exception& ex)
+        if (m_bUseRegex && (type == CTextFile::Unicode_Le || type == CTextFile::Unicode_Be || type == CTextFile::Binary))
         {
-            sInfo.exception = CUnicodeUtils::StdGetUnicode(ex.what());
-            nCount = 1;
+            switch (type)
+            {
+                case CTextFile::Binary:
+                    encodingTries = {CTextFile::Unicode_Le, CTextFile::Unicode_Be};
+                    break;
+                case CTextFile::Unicode_Le:
+                case CTextFile::Unicode_Be:
+                default:
+                    encodingTries = {type};
+                    break;
+            }
+            for (auto assumption : encodingTries)
+            {
+                sInfo.encoding = assumption;
+                try
+                {
+                    nCount = SearchByFilePath<wchar_t>(sInfo, searchRoot, searchExpression, replaceExpression, syntaxFlags, matchFlags, false);
+                    if (type == CTextFile::Binary)
+                        nCount += SearchByFilePath<wchar_t>(sInfo, searchRoot, searchExpression, replaceExpression, syntaxFlags, matchFlags, true);
+                }
+                catch (...)
+                {
+                    // regex error
+                }
+                if (nCount > 0)
+                {
+                    break; // try all is consuming
+                }
+            }
         }
-        catch (...)
-        {
-            nCount = -1;
-            return;
-        }
+        // sInfo.encoding = type; // show the matched encoding
     }
 
     SendMessage(*this, SEARCH_PROGRESS, (nCount >= 0), 0);
