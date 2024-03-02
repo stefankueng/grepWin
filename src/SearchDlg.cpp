@@ -74,17 +74,16 @@
 #define GREPWIN_DATEBUFFER 100
 #define LABELUPDATETIMER   10
 
+DWORD WINAPI     SearchThreadEntry(LPVOID lpParam);
+extern HANDLE    hInitProtection;
+extern ULONGLONG g_startTime;
+
 namespace
 {
 
-constexpr auto   SearchEditSubclassID = 4321;
+constexpr auto SearchEditSubclassID = 4321;
 
-DWORD WINAPI     SearchThreadEntry(LPVOID lpParam);
-
-extern ULONGLONG g_startTime;
-extern HANDLE    hInitProtection;
-
-void             drawRedEditBox(HWND hWnd, WPARAM wParam)
+void           drawRedEditBox(HWND hWnd, WPARAM wParam)
 {
     // make the border of the edit control red in case
     // the regex is invalid
