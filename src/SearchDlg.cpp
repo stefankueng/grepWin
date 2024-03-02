@@ -74,12 +74,12 @@
 #define GREPWIN_DATEBUFFER 100
 #define LABELUPDATETIMER   10
 
+namespace
+{
+
 constexpr auto   SearchEditSubclassID = 4321;
 
 DWORD WINAPI     SearchThreadEntry(LPVOID lpParam);
-
-// ReSharper disable once CppInconsistentNaming
-UINT             CSearchDlg::m_grepwinStartupmsg = RegisterWindowMessage(L"grepWin_StartupMessage");
 
 extern ULONGLONG g_startTime;
 extern HANDLE    hInitProtection;
@@ -181,7 +181,7 @@ LRESULT CALLBACK FileNameMatchEditWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
     return DefSubclassProc(hWnd, uMsg, wParam, lParam);
 }
 
-static void escapeForRegexEx(std::wstring& str, int type)
+void escapeForRegexEx(std::wstring& str, int type)
 {
     const wchar_t* specialChar[17] = {
         // oringinal
@@ -210,7 +210,7 @@ static void escapeForRegexEx(std::wstring& str, int type)
     }
 }
 
-static void escapeForReplaceText(std::wstring& str)
+void escapeForReplaceText(std::wstring& str)
 {
     const wchar_t* specialChar[6]    = {L"\\", L"$", L"(", L")", L"?", L","};
     const wchar_t* specialEscaped[6] = {L"\\x5c", L"\\$", L"\\(", L"\\)", L"\\?", L"\\,"};
@@ -220,7 +220,7 @@ static void escapeForReplaceText(std::wstring& str)
     }
 }
 
-static void removeGrepWinExtVariables(std::wstring& str)
+void removeGrepWinExtVariables(std::wstring& str)
 {
     for (const auto& s : {L"${filepath}", L"${filename}", L"${fileext}"})
     {
@@ -228,7 +228,7 @@ static void removeGrepWinExtVariables(std::wstring& str)
     }
 }
 
-static void replaceGrepWinFilePathVariables(std::wstring& str, std::wstring& filePath)
+void replaceGrepWinFilePathVariables(std::wstring& str, std::wstring& filePath)
 {
     // those variables are for regex mode only
     std::wstring fullPath = filePath;
@@ -255,7 +255,7 @@ static void replaceGrepWinFilePathVariables(std::wstring& str, std::wstring& fil
     SearchReplace(str, L"${fileext}", fileExt);
 }
 
-static bool isRegexValid(const std::wstring& searchString)
+bool isRegexValid(const std::wstring& searchString)
 {
     bool bValid = true;
     try
@@ -268,6 +268,10 @@ static bool isRegexValid(const std::wstring& searchString)
     }
     return bValid;
 }
+} // namespace
+
+// ReSharper disable once CppInconsistentNaming
+UINT CSearchDlg::m_grepwinStartupmsg = RegisterWindowMessage(L"grepWin_StartupMessage");
 
 CSearchDlg::CSearchDlg(HWND hParent)
     : m_hParent(hParent)
@@ -4032,7 +4036,6 @@ int CSearchDlg::SearchOnTextFile(CSearchInfo& sInfo, const std::wstring& searchR
 
     return nFound;
 }
-
 
 static std::wstring utf16Swap(const std::wstring& str)
 {
