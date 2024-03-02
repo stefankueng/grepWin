@@ -4276,16 +4276,13 @@ int CSearchDlg::SearchByFilePath(CSearchInfo& sInfo, const std::wstring& searchR
         return nFound;
     }
 
-    std::basic_string<CharT> repl          = ConvertToString<CharT>(replaceExpression, sInfo.encoding);
-
-    std::wstring             filePathTempW = sInfo.filePath + L".grepwinreplaced";
-    std::string              filePathTempA = filePathA + ".grepwinreplaced";
-    m_backupAndTempFiles.insert(filePathTempW);
+    std::wstring filePathTemp = sInfo.filePath + L".grepwinreplaced";
+    m_backupAndTempFiles.insert(filePathTemp);
 
     std::basic_filebuf<char> outFileBufA;
     if (skipSize > 0)
     {
-        outFileBufA.open(filePathTempA, std::ios::out | std::ios::trunc | std::ios::binary);
+        outFileBufA.open(filePathTemp, std::ios::out | std::ios::trunc | std::ios::binary);
         if (!outFileBufA.is_open())
         {
             inFile.close();
@@ -4299,7 +4296,7 @@ int CSearchDlg::SearchByFilePath(CSearchInfo& sInfo, const std::wstring& searchR
     }
 
     std::basic_filebuf<CharT> outFileBufT;
-    outFileBufT.open(filePathTempA, std::ios::out | std::ios::app | std::ios::binary);
+    outFileBufT.open(filePathTemp, std::ios::out | std::ios::app | std::ios::binary);
     if (!outFileBufT.is_open())
     {
         inFile.close();
@@ -4313,13 +4310,14 @@ int CSearchDlg::SearchByFilePath(CSearchInfo& sInfo, const std::wstring& searchR
         outFileBufT.pubimbue(LocUTF16LE);
     }
     std::ostreambuf_iterator<CharT>            outIter(&outFileBufT);
+    std::basic_string<CharT>                   repl = ConvertToString<CharT>(replaceExpression, sInfo.encoding);
     RegexReplaceFormatter<CharT, const CharT*> replaceFmt(repl);
     regex_replace(outIter, start, end, regEx, replaceFmt, static_cast<boost::match_flag_type>(matchFlags));
     outFileBufT.close();
 
     if (dropSize > 0)
     {
-        outFileBufA.open(filePathTempA, std::ios::out | std::ios::app | std::ios::binary);
+        outFileBufA.open(filePathTemp, std::ios::out | std::ios::app | std::ios::binary);
         if (!outFileBufA.is_open())
         {
             inFile.close();
@@ -4331,7 +4329,7 @@ int CSearchDlg::SearchByFilePath(CSearchInfo& sInfo, const std::wstring& searchR
 
     inFile.close();
 
-    if (AdoptTempResultFile(sInfo, searchRoot, filePathTempW) <= 0)
+    if (AdoptTempResultFile(sInfo, searchRoot, filePathTemp) <= 0)
     {
         return -1;
     }
