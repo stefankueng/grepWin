@@ -107,13 +107,13 @@ protected:
     int                 AdoptTempResultFile(CSearchInfo& sInfo, const std::wstring& searchRoot, const std::wstring& tempFilePath);
     int                 SearchOnTextFile(CSearchInfo& sInfo, const std::wstring& searchRoot, const std::wstring& searchExpression, const std::wstring& replaceExpression, UINT syntaxFlags, UINT matchFlags, CTextFile& textFile);
     template<typename CharT = char>
-    int                 SearchByFilePath(CSearchInfo& sInfo, const std::wstring& searchRoot, const std::wstring& searchExpression, const std::wstring& replaceExpression, UINT syntaxFlags, UINT matchFlags, bool misaligned, CharT* dummy = NULL);
+    int                 SearchByFilePath(CSearchInfo& sInfo, const std::wstring& searchRoot, const std::wstring& searchExpression, const std::wstring& replaceExpression, UINT syntaxFlags, UINT matchFlags, bool misaligned, CharT* dummy = nullptr);
     void                SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot);
 
     bool                InitResultList();
     void                FillResultList();
     void                SetSearchModeUI(bool isTextMode);
-    bool                AddFoundEntry(CSearchInfo* pInfo, bool bOnlyListControl = false);
+    bool                AddFoundEntry(const CSearchInfo* pInfo, bool bOnlyListControl = false);
     void                ShowContextMenu(HWND hWnd, int x, int y);
     LRESULT             ColorizeMatchResultProc(LPNMLVCUSTOMDRAW lpLVCD);
     void                DoListNotify(LPNMITEMACTIVATE lpNMItemActivate);

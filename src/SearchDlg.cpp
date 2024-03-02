@@ -63,7 +63,6 @@
 #include <ranges>
 #include <string>
 
-
 #pragma warning(push)
 #pragma warning(disable : 4996) // warning STL4010: Various members of std::allocator are deprecated in C++17
 
@@ -197,12 +196,12 @@ static void escapeForRegexEx(std::wstring& str, int type)
     int count;
     switch (type)
     {
-    case 1: // one line string as process argv
-        count = _countof(specialChar);
-        break;
-    default: // regex safe as text
-        count = 14;
-        break;
+        case 1: // one line string as process argv
+            count = _countof(specialChar);
+            break;
+        default: // regex safe as text
+            count = 14;
+            break;
     }
     for (int i = 0; i < count; ++i)
     {
@@ -212,7 +211,7 @@ static void escapeForRegexEx(std::wstring& str, int type)
 
 static void escapeForReplaceText(std::wstring& str)
 {
-    const wchar_t* specialChar[6] = {L"\\", L"$", L"(", L")", L"?", L","};
+    const wchar_t* specialChar[6]    = {L"\\", L"$", L"(", L")", L"?", L","};
     const wchar_t* specialEscaped[6] = {L"\\x5c", L"\\$", L"\\(", L"\\)", L"\\?", L"\\,"};
     for (int i = 0; i < _countof(specialChar); ++i)
     {
@@ -231,13 +230,13 @@ static void removeGrepWinExtVariables(std::wstring& str)
 static void replaceGrepWinFilePathVariables(std::wstring& str, std::wstring& filePath)
 {
     // those variables are for regex mode only
-    std::wstring fullPath     = filePath;
+    std::wstring fullPath = filePath;
     escapeForRegexEx(fullPath, 0);
 
     std::wstring fileNameFull = fullPath.substr(fullPath.rfind(L"\\x5c") + 4);
     std::wstring filename;
     std::wstring fileExt;
-    auto         dotPos       = fileNameFull.find_last_of(L'.');
+    auto         dotPos = fileNameFull.find_last_of(L'.');
     if (dotPos != std::string::npos)
     {
         filename = fileNameFull.substr(0, dotPos - 1);
@@ -1780,9 +1779,9 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
         case IDC_EDITMULTILINE1:
         case IDC_EDITMULTILINE2:
         {
-            int          uID      = (id == IDC_EDITMULTILINE1 ? IDC_SEARCHTEXT : IDC_REPLACETEXT);
-            auto         buf      = GetDlgItemText(static_cast<int>(uID));
-            std::wstring ctrlText = buf.get();
+            int               uID      = (id == IDC_EDITMULTILINE1 ? IDC_SEARCHTEXT : IDC_REPLACETEXT);
+            auto              buf      = GetDlgItemText(static_cast<int>(uID));
+            std::wstring      ctrlText = buf.get();
             CMultiLineEditDlg editDlg(*this);
             editDlg.SetString(ctrlText);
 
@@ -2113,7 +2112,7 @@ bool CSearchDlg::InitResultList()
     return true;
 }
 
-bool CSearchDlg::AddFoundEntry(CSearchInfo* pInfo, bool bOnlyListControl)
+bool CSearchDlg::AddFoundEntry(const CSearchInfo* pInfo, bool bOnlyListControl)
 {
     if (!bOnlyListControl)
     {
@@ -2559,7 +2558,7 @@ LRESULT CSearchDlg::ColorizeMatchResultProc(LPNMLVCUSTOMDRAW lpLVCD)
                     break;
                 }
 
-                int   subIndex          = std::get<1>(tup);
+                int subIndex = std::get<1>(tup);
                 if (static_cast<int>(pInfo->matchLines.size()) <= subIndex)
                 {
                     // no those details for large files
@@ -3440,29 +3439,29 @@ DWORD CSearchDlg::SearchThread()
     // the UI thread and this one.
     ThreadPool tp(max(std::thread::hardware_concurrency() - 2, 1));
 
-    bool    bCountingOnly   = m_searchString.empty();
+    bool       bCountingOnly = m_searchString.empty();
 
     for (const auto& cSearchPath : pathVector)
     {
-        bool            bHasLimits;
-        std::wstring    searchRoot;
+        bool         bHasLimits;
+        std::wstring searchRoot;
         if (PathIsDirectory(cSearchPath.c_str()))
         {
-            bHasLimits  = true;
-            searchRoot  = cSearchPath;
+            bHasLimits = true;
+            searchRoot = cSearchPath;
         }
         else
         {
-            bHasLimits  = false;
-            searchRoot  = cSearchPath.substr(0, cSearchPath.find_last_of('\\'));
+            bHasLimits = false;
+            searchRoot = cSearchPath.substr(0, cSearchPath.find_last_of('\\'));
         }
 
-        CDirFileEnum    fileEnumerator(cSearchPath.c_str());
+        CDirFileEnum fileEnumerator(cSearchPath.c_str());
         if (!m_bIncludeSymLinks)
             fileEnumerator.SetAttributesToIgnore(FILE_ATTRIBUTE_REPARSE_POINT);
-        bool            bRecurse        = bHasLimits && m_bIncludeSubfolders;
-        bool            bIsDirectory    = false;
-        std::wstring    sPath;
+        bool         bRecurse     = bHasLimits && m_bIncludeSubfolders;
+        bool         bIsDirectory = false;
+        std::wstring sPath;
 
         while ((fileEnumerator.NextFile(sPath, &bIsDirectory, bRecurse)) && !m_cancelled)
         {
@@ -3470,11 +3469,11 @@ DWORD CSearchDlg::SearchThread()
                 continue;
 
             wcscpy_s(pathBuf.get(), MAX_PATH_NEW, sPath.c_str());
-            const WIN32_FIND_DATA*  pFindData       = fileEnumerator.GetFileInfo();
-            FILETIME                fileTime        = pFindData->ftLastWriteTime;
-            uint64_t                fullFileSize    = (static_cast<uint64_t>(pFindData->nFileSizeHigh) << 32) | pFindData->nFileSizeLow;
+            const WIN32_FIND_DATA* pFindData    = fileEnumerator.GetFileInfo();
+            FILETIME               fileTime     = pFindData->ftLastWriteTime;
+            uint64_t               fullFileSize = (static_cast<uint64_t>(pFindData->nFileSizeHigh) << 32) | pFindData->nFileSizeLow;
 
-            bool                    bSearch         = true;
+            bool                   bSearch      = true;
 
             if (bHasLimits)
             {
@@ -3490,11 +3489,11 @@ DWORD CSearchDlg::SearchThread()
                             bSearch = m_excludeDirsPatternRegex.empty();
                             if (!bSearch)
                             {
-                                bool bExcluded  = grepWinMatchI(m_excludeDirsPatternRegex, pFindData->cFileName) ||
-                                                  grepWinMatchI(m_excludeDirsPatternRegex, pathBuf.get());
+                                bool bExcluded = grepWinMatchI(m_excludeDirsPatternRegex, pFindData->cFileName) ||
+                                                 grepWinMatchI(m_excludeDirsPatternRegex, pathBuf.get());
                                 if (!bExcluded)
                                 {
-                                    std::wstring    relPath = pathBuf.get() + cSearchPath.size() + 1;
+                                    std::wstring relPath = pathBuf.get() + cSearchPath.size() + 1;
                                     if (relPath.find(L'\\') != std::wstring::npos)
                                     {
                                         bExcluded = grepWinMatchI(m_excludeDirsPatternRegex, relPath.c_str());
@@ -3516,7 +3515,7 @@ DWORD CSearchDlg::SearchThread()
                     else
                     {
                         // name match
-                        bSearch = MatchPath(pathBuf.get());
+                        bSearch  = MatchPath(pathBuf.get());
                         bRecurse = false;
                     }
 
@@ -3565,9 +3564,9 @@ DWORD CSearchDlg::SearchThread()
             if (bSearch)
             {
                 CSearchInfo sInfo(pathBuf.get());
-                sInfo.modifiedTime  = fileTime;
-                sInfo.folder        = bIsDirectory;
-                sInfo.fileSize      = fullFileSize;
+                sInfo.modifiedTime = fileTime;
+                sInfo.folder       = bIsDirectory;
+                sInfo.fileSize     = fullFileSize;
                 if (bCountingOnly)
                 {
                     SendMessage(*this, SEARCH_FOUND, 1, reinterpret_cast<LPARAM>(&sInfo));
@@ -3845,16 +3844,16 @@ std::wstring CSearchDlg::BackupFile(const std::wstring& destParentDir, const std
         backupFile = filePath + L".bak";
     }
     SetFileAttributes(backupFile.c_str(), 0);
-    bool bOK;
+    bool bOk = false;
     if (bMove)
     {
-        bOK = MoveFileEx(filePath.c_str(), backupFile.c_str(), MOVEFILE_REPLACE_EXISTING);
+        bOk = MoveFileEx(filePath.c_str(), backupFile.c_str(), MOVEFILE_REPLACE_EXISTING);
     }
     else
     {
-        bOK = CopyFile(filePath.c_str(), backupFile.c_str(), FALSE);
+        bOk = CopyFile(filePath.c_str(), backupFile.c_str(), FALSE);
     }
-    if (!bOK)
+    if (!bOk)
     {
         return L"";
     }
@@ -3875,16 +3874,16 @@ int CSearchDlg::AdoptTempResultFile(CSearchInfo& sInfo, const std::wstring& sear
         {
             return -1;
         }
-        bool bOK = GetFileTime(hFile, &creationTime, &lastAccessTime, &lastWriteTime);
+        bool bOk = GetFileTime(hFile, &creationTime, &lastAccessTime, &lastWriteTime);
         CloseHandle(hFile);
-        if (!bOK)
+        if (!bOk)
         {
             return -1;
         }
     }
     DWORD origAttributes = GetFileAttributes(sInfo.filePath.c_str());
-    bool  bIsSHR         = (origAttributes & (FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_READONLY | FILE_ATTRIBUTE_SYSTEM)) != 0;
-    if (bIsSHR)
+    bool  bIsShr         = (origAttributes & (FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_READONLY | FILE_ATTRIBUTE_SYSTEM)) != 0;
+    if (bIsShr)
     {
         SetFileAttributes(sInfo.filePath.c_str(), 0);
     }
@@ -3906,14 +3905,14 @@ int CSearchDlg::AdoptTempResultFile(CSearchInfo& sInfo, const std::wstring& sear
         do
         {
             HANDLE hFile = CreateFile(sInfo.filePath.c_str(), FILE_WRITE_ATTRIBUTES, FILE_SHARE_DELETE | FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING, 0, nullptr);
-            bool bOK = hFile != INVALID_HANDLE_VALUE;
-            if (bOK)
+            bool   bOk   = hFile != INVALID_HANDLE_VALUE;
+            if (bOk)
             {
                 // The NTFS file system delays updates to the last access time for a file by up to 1 hour after the last access.
-                bOK = SetFileTime(hFile, &creationTime, &lastAccessTime, &lastWriteTime);
+                bOk = SetFileTime(hFile, &creationTime, &lastAccessTime, &lastWriteTime);
                 CloseHandle(hFile);
             }
-            if (bOK)
+            if (bOk)
             {
                 break;
             }
@@ -3925,7 +3924,7 @@ int CSearchDlg::AdoptTempResultFile(CSearchInfo& sInfo, const std::wstring& sear
         } while (countDown > 0);
         // if (countDown <= 0), main change has been made, still return succeeded.
     }
-    if (bIsSHR)
+    if (bIsShr)
     {
         SetFileAttributes(sInfo.filePath.c_str(), origAttributes);
     }
@@ -3935,15 +3934,15 @@ int CSearchDlg::AdoptTempResultFile(CSearchInfo& sInfo, const std::wstring& sear
 
 int CSearchDlg::SearchOnTextFile(CSearchInfo& sInfo, const std::wstring& searchRoot, const std::wstring& searchExpression, const std::wstring& replaceExpression, UINT syntaxFlags, UINT matchFlags, CTextFile& textFile)
 {
-    int                                                nFound = 0;
+    int          nFound = 0;
 
-    std::wstring                                       expr = searchExpression;
+    std::wstring expr   = searchExpression;
     if (!m_bUseRegex && m_bWholeWords)
     {
         expr = L"\\b" + expr + L"\\b";
     }
 
-    std::wstring::const_iterator                       start, end;
+    std::wstring::const_iterator start, end;
     start = textFile.GetFileString().begin();
     end   = textFile.GetFileString().end();
     boost::match_results<std::wstring::const_iterator> whatC;
@@ -4011,7 +4010,7 @@ int CSearchDlg::SearchOnTextFile(CSearchInfo& sInfo, const std::wstring& searchR
     }
 
     RegexReplaceFormatter<wchar_t> replaceFmt(replaceExpression);
-    std::wstring                   replaced    = regex_replace(textFile.GetFileString(), wRegEx, replaceFmt, static_cast<boost::match_flag_type>(matchFlags));
+    std::wstring                   replaced = regex_replace(textFile.GetFileString(), wRegEx, replaceFmt, static_cast<boost::match_flag_type>(matchFlags));
     if (!replaced.compare(textFile.GetFileString()))
     {
         return 0;
@@ -4033,7 +4032,7 @@ int CSearchDlg::SearchOnTextFile(CSearchInfo& sInfo, const std::wstring& searchR
     return nFound;
 }
 
-template<typename CharT = char>
+template <typename CharT = char>
 class TextOffset
 {
 private:
@@ -4069,7 +4068,7 @@ public:
         return start;
     }
 
-    bool CalculateLines(const CharT* start, const CharT* end, std::atomic_bool &bCancelled)
+    bool CalculateLines(const CharT* start, const CharT* end, const std::atomic_bool& bCancelled)
     {
         if (start >= end)
             return false;
@@ -4077,8 +4076,8 @@ public:
         linePositions.clear();
         linePositions.reserve((end - start) / 10);
 
-        size_t  pos     = 0;
-        bool    bGot   = false;
+        size_t pos  = 0;
+        bool   bGot = false;
         for (auto it = start; it < end && !bCancelled; ++it)
         {
             bGot = false;
@@ -4140,11 +4139,13 @@ static std::wstring utf16Swap(const std::wstring& str)
     return swapped;
 }
 
-template<typename CharT = char>
-std::basic_string<CharT> ConvertToString(const std::wstring& str, CTextFile::UnicodeType encoding, CharT* dummy = NULL)
-{};
+template <typename CharT = char>
+std::basic_string<CharT> ConvertToString(const std::wstring& /*str*/, CTextFile::UnicodeType /*encoding*/, CharT* /*dummy*/ = nullptr)
+{
+    return {};
+};
 
-template<>
+template <>
 std::basic_string<char> ConvertToString<char>(const std::wstring& str, CTextFile::UnicodeType encoding, char*)
 {
     switch (encoding)
@@ -4165,7 +4166,7 @@ std::basic_string<char> ConvertToString<char>(const std::wstring& str, CTextFile
     }
 };
 
-template<>
+template <>
 std::basic_string<wchar_t> ConvertToString<wchar_t>(const std::wstring& str, CTextFile::UnicodeType encoding, wchar_t*)
 {
     if (encoding == CTextFile::Unicode_Be)
@@ -4173,26 +4174,26 @@ std::basic_string<wchar_t> ConvertToString<wchar_t>(const std::wstring& str, CTe
     return str;
 };
 
-template<typename CharT>
+template <typename CharT>
 int CSearchDlg::SearchByFilePath(CSearchInfo& sInfo, const std::wstring& searchRoot, const std::wstring& searchExpression, const std::wstring& replaceExpression, UINT syntaxFlags, UINT matchFlags, bool misaligned, CharT*)
 {
-    std::string        filePathA = CUnicodeUtils::StdGetANSI(sInfo.filePath);
-    int                nFound    = 0;
+    std::string                          filePathA = CUnicodeUtils::StdGetANSI(sInfo.filePath);
+    int                                  nFound    = 0;
 
     boost::iostreams::mapped_file_source inFile(filePathA);
     if (!inFile.is_open())
         return -1;
 
-    const char*        inData   = inFile.data();
-    size_t             inSize   = inFile.size();
-    size_t             skipSize = 0;
-    size_t             workSize = inSize;
-    size_t             dropSize = 0;
-    const CharT*       fBeg     = reinterpret_cast<const CharT*>(inData);
-    const CharT*       start    = fBeg;
-    const CharT*       end      = fBeg + inSize / sizeof(CharT);
+    const char*       inData   = inFile.data();
+    size_t            inSize   = inFile.size();
+    size_t            skipSize = 0;
+    size_t            workSize = inSize;
+    size_t            dropSize = 0;
+    const CharT*      fBeg     = reinterpret_cast<const CharT*>(inData);
+    const CharT*      start    = fBeg;
+    const CharT*      end      = fBeg + inSize / sizeof(CharT);
 
-    TextOffset<CharT>  textOffset;
+    TextOffset<CharT> textOffset;
     if ((sInfo.encoding == CTextFile::UTF8) || (sInfo.encoding == CTextFile::Unicode_Le) || (sInfo.encoding == CTextFile::Unicode_Be))
     {
         start = textOffset.SkipBOM(fBeg, end);
@@ -4221,14 +4222,14 @@ int CSearchDlg::SearchByFilePath(CSearchInfo& sInfo, const std::wstring& searchR
         inFile.close();
         return 0;
     }
-    end = reinterpret_cast<const CharT*>(inData + skipSize + workSize);
+    end                           = reinterpret_cast<const CharT*>(inData + skipSize + workSize);
 
-    std::basic_string<CharT> expr                = ConvertToString<CharT>(searchExpression, sInfo.encoding);
+    std::basic_string<CharT> expr = ConvertToString<CharT>(searchExpression, sInfo.encoding);
 
     if (!m_bUseRegex && m_bWholeWords)
     {
         const CharT boundary[] = {'\\', 'b', 0};
-        expr = boundary + expr + boundary;
+        expr                   = boundary + expr + boundary;
     }
 
     boost::match_results<const CharT*> whatC;
@@ -4265,7 +4266,7 @@ int CSearchDlg::SearchByFilePath(CSearchInfo& sInfo, const std::wstring& searchR
         textOffset.CalculateLines(start, end, m_cancelled);
         for (size_t mp = 0; mp < sInfo.matchLinesNumbers.size(); ++mp)
         {
-            auto pos = sInfo.matchLinesNumbers[mp];
+            auto pos                      = sInfo.matchLinesNumbers[mp];
             sInfo.matchLinesNumbers[mp]   = textOffset.LineFromPosition(pos);
             sInfo.matchColumnsNumbers[mp] = textOffset.ColumnFromPosition(pos, sInfo.matchLinesNumbers[mp]);
         }
@@ -4359,7 +4360,7 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot)
         bLoadResult = textFile.Load(sInfo.filePath.c_str(), type, m_bUTF8, m_cancelled);
     }
 
-    sInfo.encoding = type;
+    sInfo.encoding                 = type;
 
     std::wstring searchExpression  = m_searchString;
     std::wstring replaceExpression = m_replaceString;
@@ -4372,10 +4373,10 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot)
         }
     }
 
-    UINT                   syntaxFlags = boost::regex::normal;
+    UINT syntaxFlags = boost::regex::normal;
     if (!m_bCaseSensitive)
         syntaxFlags |= boost::regbase::icase;
-    boost::match_flag_type matchFlags  = boost::match_default | boost::format_all;
+    boost::match_flag_type matchFlags = boost::match_default | boost::format_all;
     if (!m_bDotMatchesNewline)
         matchFlags |= boost::match_not_dot_newline;
 
@@ -4384,7 +4385,7 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot)
     if (type == CTextFile::AutoType) // reading the file failed
     {
         sInfo.readError = true;
-        nCount = -1;
+        nCount          = -1;
     }
     else if (bLoadResult && ((type != CTextFile::Binary) || m_bIncludeBinary)) // transcoded
     {
@@ -4396,7 +4397,7 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot)
         catch (const std::exception& ex)
         {
             sInfo.exception = CUnicodeUtils::StdGetUnicode(ex.what());
-            nCount = 1;
+            nCount          = 1;
         }
     }
     else if ((type != CTextFile::Binary) || m_bIncludeBinary || m_bForceBinary)
@@ -4528,9 +4529,9 @@ void CSearchDlg::formatDate(wchar_t dateNative[], const FILETIME& fileTime, bool
 
 void CSearchDlg::AutoSizeAllColumns()
 {
-    HWND             hListControl          = GetDlgItem(*this, IDC_RESULTLIST);
-    auto             headerCtrl            = ListView_GetHeader(hListControl);
-    int              nItemCount            = ListView_GetItemCount(hListControl);
+    HWND             hListControl      = GetDlgItem(*this, IDC_RESULTLIST);
+    auto             headerCtrl        = ListView_GetHeader(hListControl);
+    int              nItemCount        = ListView_GetItemCount(hListControl);
     wchar_t          textBuf[MAX_PATH] = {0};
     std::vector<int> colWidths;
     if (headerCtrl)
@@ -4810,9 +4811,9 @@ std::wstring CSearchDlg::ExpandString(const std::wstring& replaceString)
     GetTimeFormat(LOCALE_USER_DEFAULT, 0, nullptr, nullptr, buf, _countof(buf));
     dateStr += L" - ";
     dateStr += buf;
-    std::time_t                                        now          = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-    UINT                                               syntaxFlags  = boost::regex::normal;
-    boost::wregex                                      expression   = boost::wregex(L"\\$\\{now\\s*,?([^}]*)\\}", syntaxFlags);
+    std::time_t                                        now         = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+    UINT                                               syntaxFlags = boost::regex::normal;
+    boost::wregex                                      expression  = boost::wregex(L"\\$\\{now\\s*,?([^}]*)\\}", syntaxFlags);
     boost::match_results<std::wstring::const_iterator> whatC;
     boost::match_flag_type                             matchFlags   = boost::match_default | boost::format_all;
     auto                                               resultString = replaceString;
