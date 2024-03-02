@@ -52,6 +52,7 @@
 #include "ThreadPool.h"
 #include "UnicodeUtils.h"
 #include "version.h"
+#include "UTF16Facet.h"
 
 #include <algorithm>
 #include <Commdlg.h>
@@ -62,10 +63,10 @@
 #include <ranges>
 #include <string>
 
-#include <cvt/utf16> // `std::codecvt_utf16` is deprecated
 
 #pragma warning(push)
 #pragma warning(disable : 4996) // warning STL4010: Various members of std::allocator are deprecated in C++17
+
 #include <boost/regex.hpp>
 #include <boost/iostreams/device/mapped_file.hpp>
 #pragma warning(pop)
@@ -4302,12 +4303,10 @@ int CSearchDlg::SearchByFilePath(CSearchInfo& sInfo, const std::wstring& searchR
         inFile.close();
         return -1;
     }
-    if (sizeof(CharT) > 1)
+    if constexpr (sizeof(CharT) > 1)
     {
-        _STL_DISABLE_DEPRECATED_WARNING // align: `cvt/utf16` still uses `std::codecvt_mode`
-        std::locale LocUTF16LE(std::locale(), new stdext::cvt::codecvt_utf16<wchar_t, 0x10ffff, std::little_endian>);
-        _STL_RESTORE_CLANG_WARNINGS
-        outFileBufT.pubimbue(LocUTF16LE);
+        std::locale locUTF16Le(std::locale(), new UTF16Facet());
+        outFileBufT.pubimbue(locUTF16Le);
     }
     std::ostreambuf_iterator<CharT>            outIter(&outFileBufT);
     std::basic_string<CharT>                   repl = ConvertToString<CharT>(replaceExpression, sInfo.encoding);

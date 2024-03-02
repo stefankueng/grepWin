@@ -306,6 +306,7 @@
     <ClInclude Include="ShellContextMenu.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Theme.h" />
+    <ClInclude Include="UTF16Facet.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\default.build">
