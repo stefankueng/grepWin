@@ -296,6 +296,9 @@
     <ClInclude Include="UTF16Facet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TextOffset.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\grepWin.ico">
