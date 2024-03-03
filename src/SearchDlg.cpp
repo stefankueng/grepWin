@@ -4268,6 +4268,13 @@ int CSearchDlg::SearchByFilePath(CSearchInfo& sInfo, const std::wstring& searchR
     return nFound;
 }
 
+void CSearchDlg::SendResult(const CSearchInfo& sInfo, const int nCount)
+{
+    SendMessage(*this, SEARCH_PROGRESS, (nCount >= 0), 0);
+    bool bAsResult = m_bNotSearch ? (nCount <= 0) : (nCount > 0);
+    SendMessage(*this, SEARCH_FOUND, bAsResult, reinterpret_cast<LPARAM>(&sInfo));
+}
+
 void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot)
 {
     CTextFile              textFile;
@@ -4292,6 +4299,12 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot)
     }
 
     sInfo.encoding                 = type;
+    int          nCount            = -1; // >= 0: got results; -1: skipped
+    if (m_cancelled) // big file
+    {
+        SendResult(sInfo, nCount);
+        return;
+    }
 
     std::wstring searchExpression  = m_searchString;
     std::wstring replaceExpression = m_replaceString;
@@ -4311,12 +4324,9 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot)
     if (!m_bDotMatchesNewline)
         matchFlags |= boost::match_not_dot_newline;
 
-    int nCount = 0; // >= 0: got results; -1: skipped
-
     if (type == CTextFile::AutoType) // reading the file failed
     {
         sInfo.readError = true;
-        nCount          = -1;
     }
     else if (bLoadResult && ((type != CTextFile::Binary) || m_bIncludeBinary)) // transcoded
     {
@@ -4414,9 +4424,7 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot)
         // sInfo.encoding = type; // show the matched encoding
     }
 
-    SendMessage(*this, SEARCH_PROGRESS, (nCount >= 0), 0);
-    bool bAsResult = m_bNotSearch ? (nCount <= 0) : (nCount > 0);
-    SendMessage(*this, SEARCH_FOUND, bAsResult, reinterpret_cast<LPARAM>(&sInfo));
+    SendResult(sInfo, nCount);
 }
 
 DWORD WINAPI SearchThreadEntry(LPVOID lpParam)
