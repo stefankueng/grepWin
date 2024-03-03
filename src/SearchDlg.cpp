@@ -73,6 +73,7 @@
 
 #define GREPWIN_DATEBUFFER 100
 #define LABELUPDATETIMER   10
+#define SEARCHBLOCKSIZE    (1 << 26) // 64MB
 
 DWORD WINAPI     SearchThreadEntry(LPVOID lpParam);
 extern HANDLE    hInitProtection;
@@ -3953,60 +3954,71 @@ int CSearchDlg::SearchOnTextFile(CSearchInfo& sInfo, const std::wstring& searchR
     boost::wregex                                      wRegEx = boost::wregex(expr, syntaxFlags);
     boost::match_flag_type                             mFlags = static_cast<boost::match_flag_type>(matchFlags);
 
-    while (!m_cancelled && regex_search(start, end, whatC, wRegEx, mFlags))
+    long                         count     = textFile.GetFileString().size();
+    long                         remainder = count % (SEARCHBLOCKSIZE / 2);
+    std::wstring::const_iterator startIter = start;
+    std::wstring::const_iterator blockEnd  = start + remainder;
+
+    do
     {
-        if (whatC[0].matched)
+        while (!m_cancelled && (startIter < blockEnd) && regex_search(startIter, blockEnd, whatC, wRegEx, mFlags, start))
         {
-            nFound++;
-            if (m_bNotSearch)
-                break;
-            long posMatchHead = static_cast<long>(whatC[0].first - textFile.GetFileString().begin());
-            long posMatchTail = static_cast<long>(whatC[0].second - textFile.GetFileString().begin());
-            if (whatC[0].first < whatC[0].second) // m[0].second is not part of the match
-                --posMatchTail;
-            long lineStart = textFile.LineFromPosition(posMatchHead);
-            long lineEnd   = textFile.LineFromPosition(posMatchTail);
-            long colMatch  = textFile.ColumnFromPosition(posMatchHead, lineStart);
-            long lenMatch  = static_cast<long>(whatC[0].length());
-            for (long l = lineStart; l <= lineEnd; ++l)
+            if (whatC[0].matched)
             {
-                auto sLine        = textFile.GetLineString(l);
-                long lenLineMatch = static_cast<long>(sLine.length()) - colMatch + 1;
-                if (lenMatch < lenLineMatch)
+                nFound++;
+                if (m_bNotSearch)
+                    break;
+                long posMatchHead = static_cast<long>(whatC[0].first - textFile.GetFileString().begin());
+                long posMatchTail = static_cast<long>(whatC[0].second - textFile.GetFileString().begin());
+                if (whatC[0].first < whatC[0].second) // m[0].second is not part of the match
+                    --posMatchTail;
+                long lineStart = textFile.LineFromPosition(posMatchHead);
+                long lineEnd   = textFile.LineFromPosition(posMatchTail);
+                long colMatch  = textFile.ColumnFromPosition(posMatchHead, lineStart);
+                long lenMatch  = static_cast<long>(whatC[0].length());
+                for (long l = lineStart; l <= lineEnd; ++l)
                 {
-                    lenLineMatch = lenMatch;
+                    auto sLine        = textFile.GetLineString(l);
+                    long lenLineMatch = static_cast<long>(sLine.length()) - colMatch + 1;
+                    if (lenMatch < lenLineMatch)
+                    {
+                        lenLineMatch = lenMatch;
+                    }
+                    sInfo.matchLinesNumbers.push_back(l);
+                    sInfo.matchColumnsNumbers.push_back(colMatch);
+                    if (m_bCaptureSearch)
+                    {
+                        auto out = whatC.format(m_replaceString, mFlags);
+                        sInfo.matchLines.push_back(std::move(out));
+                        sInfo.matchLengths.push_back(static_cast<long>(out.length()));
+                    }
+                    else
+                    {
+                        sInfo.matchLines.push_back(std::move(sLine));
+                        sInfo.matchLengths.push_back(lenLineMatch);
+                    }
+                    if (lenMatch > lenLineMatch)
+                    {
+                        colMatch = 1;
+                        lenMatch -= lenLineMatch;
+                    }
                 }
-                sInfo.matchLinesNumbers.push_back(l);
-                sInfo.matchColumnsNumbers.push_back(colMatch);
-                if (m_bCaptureSearch)
-                {
-                    auto out = whatC.format(m_replaceString, mFlags);
-                    sInfo.matchLines.push_back(std::move(out));
-                    sInfo.matchLengths.push_back(static_cast<long>(out.length()));
-                }
-                else
-                {
-                    sInfo.matchLines.push_back(std::move(sLine));
-                    sInfo.matchLengths.push_back(lenLineMatch);
-                }
-                if (lenMatch > lenLineMatch)
-                {
-                    colMatch = 1;
-                    lenMatch -= lenLineMatch;
-                }
+                ++sInfo.matchCount;
             }
-            ++sInfo.matchCount;
+            // update search position:
+            startIter = whatC[0].second;
+            if (startIter == whatC[0].first) // ^$
+                ++startIter;
+            // update match flags:
+            mFlags |= boost::match_prev_avail;
+            mFlags |= boost::match_not_bob;
         }
-        // update search position:
-        start = whatC[0].second;
-        if (start == end)
+        startIter = blockEnd; // not found
+        if (blockEnd < end)
+            blockEnd += SEARCHBLOCKSIZE / 2;
+        else
             break;
-        if (start == whatC[0].first) // ^$
-            ++start;
-        // update match flags:
-        mFlags |= boost::match_prev_avail;
-        mFlags |= boost::match_not_bob;
-    }
+    } while (!m_cancelled);
 
     if (!m_bReplace || m_cancelled || nFound == 0)
     {
@@ -4142,25 +4154,36 @@ int CSearchDlg::SearchByFilePath(CSearchInfo& sInfo, const std::wstring& searchR
     boost::match_results<const CharT*> whatC;
     boost::basic_regex<CharT>          regEx     = boost::basic_regex<CharT>(expr, syntaxFlags);
     boost::match_flag_type             mFlags    = static_cast<boost::match_flag_type>(matchFlags);
+
+    size_t                             count     = workSize / sizeof(CharT);
+    size_t                             remainder = count % (SEARCHBLOCKSIZE / sizeof(CharT));
     const CharT*                       startIter = start;
-    while (!m_cancelled && boost::regex_search(startIter, end, whatC, regEx, mFlags))
+    const CharT*                       blockEnd  = start + remainder;
+
+    do
     {
-        nFound++;
-        if (m_bNotSearch)
+        while (!m_cancelled && (startIter < blockEnd) && boost::regex_search(startIter, blockEnd, whatC, regEx, mFlags, start))
+        {
+            nFound++;
+            if (m_bNotSearch)
+                break;
+            sInfo.matchLinesNumbers.push_back(static_cast<DWORD>(whatC[0].first - fBeg));
+            sInfo.matchColumnsNumbers.push_back(1);
+            ++sInfo.matchCount;
+            // update search position:
+            startIter = whatC[0].second;
+            if (startIter == whatC[0].first) // ^$
+                ++startIter;
+            // update match flags:
+            mFlags |= boost::match_prev_avail;
+            mFlags |= boost::match_not_bob;
+        }
+        startIter = blockEnd; // not found
+        if (blockEnd < end)
+            blockEnd += SEARCHBLOCKSIZE / sizeof(CharT);
+        else
             break;
-        sInfo.matchLinesNumbers.push_back(static_cast<DWORD>(whatC[0].first - fBeg));
-        sInfo.matchColumnsNumbers.push_back(1);
-        ++sInfo.matchCount;
-        // update search position:
-        startIter = whatC[0].second;
-        if (startIter == end)
-            break;
-        if (startIter == whatC[0].first) // ^$
-            ++startIter;
-        // update match flags:
-        mFlags |= boost::match_prev_avail;
-        mFlags |= boost::match_not_bob;
-    }
+    } while (!m_cancelled);
 
     if (nFound == 0)
     {
@@ -4168,11 +4191,12 @@ int CSearchDlg::SearchByFilePath(CSearchInfo& sInfo, const std::wstring& searchR
         return 0;
     }
 
-    if ((sInfo.encoding != CTextFile::Binary) && (sInfo.encoding != CTextFile::Unicode_Be) && !m_bNotSearch)
+    if ((sInfo.encoding != CTextFile::Binary) && (sInfo.encoding != CTextFile::Unicode_Be) && !m_cancelled && !m_bNotSearch)
     {
-        textOffset.CalculateLines(start, end, m_cancelled);
-        for (size_t mp = 0; mp < sInfo.matchLinesNumbers.size(); ++mp)
+        textOffset.CalculateLines(start, blockEnd, m_cancelled);
+        for (size_t mp = 0; mp < sInfo.matchLinesNumbers.size() && !m_cancelled; ++mp)
         {
+            // return the position to give some hints when cancelled
             auto pos                      = sInfo.matchLinesNumbers[mp];
             sInfo.matchLinesNumbers[mp]   = textOffset.LineFromPosition(pos);
             sInfo.matchColumnsNumbers[mp] = textOffset.ColumnFromPosition(pos, sInfo.matchLinesNumbers[mp]);
