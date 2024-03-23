@@ -69,6 +69,7 @@
 
 #include <boost/regex.hpp>
 #include <boost/iostreams/device/mapped_file.hpp>
+#include <boost/filesystem/path.hpp>
 #pragma warning(pop)
 
 #define GREPWIN_DATEBUFFER 100
@@ -4111,9 +4112,9 @@ std::basic_string<wchar_t> ConvertToString<wchar_t>(const std::wstring& str, CTe
 template <typename CharT>
 int CSearchDlg::SearchByFilePath(CSearchInfo& sInfo, const std::wstring& searchRoot, const std::wstring& searchExpression, const std::wstring& replaceExpression, UINT syntaxFlags, UINT matchFlags, bool misaligned, CharT*)
 {
-    std::string                          filePathA = CUnicodeUtils::StdGetANSI(sInfo.filePath);
 
-    boost::iostreams::mapped_file_source inFile(filePathA);
+    boost::iostreams::mapped_file_source inFile(boost::filesystem::path(sInfo.filePath));
+    //boost::iostreams::mapped_file_source inFile(filePathA);
     if (!inFile.is_open())
         return -1;
 

@@ -333,6 +333,7 @@
     <Import Project="..\packages\boost.1.84.0\build\boost.targets" Condition="Exists('..\packages\boost.1.84.0\build\boost.targets')" />
     <Import Project="..\packages\boost_iostreams-vc143.1.84.0\build\boost_iostreams-vc143.targets" Condition="Exists('..\packages\boost_iostreams-vc143.1.84.0\build\boost_iostreams-vc143.targets')" />
     <Import Project="..\packages\boost_regex-vc143.1.84.0\build\boost_regex-vc143.targets" Condition="Exists('..\packages\boost_regex-vc143.1.84.0\build\boost_regex-vc143.targets')" />
+    <Import Project="..\packages\boost_filesystem-vc143.1.84.0\build\boost_filesystem-vc143.targets" Condition="Exists('..\packages\boost_filesystem-vc143.1.84.0\build\boost_filesystem-vc143.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
@@ -341,5 +342,6 @@
     <Error Condition="!Exists('..\packages\boost.1.84.0\build\boost.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost.1.84.0\build\boost.targets'))" />
     <Error Condition="!Exists('..\packages\boost_iostreams-vc143.1.84.0\build\boost_iostreams-vc143.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_iostreams-vc143.1.84.0\build\boost_iostreams-vc143.targets'))" />
     <Error Condition="!Exists('..\packages\boost_regex-vc143.1.84.0\build\boost_regex-vc143.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_regex-vc143.1.84.0\build\boost_regex-vc143.targets'))" />
+    <Error Condition="!Exists('..\packages\boost_filesystem-vc143.1.84.0\build\boost_filesystem-vc143.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_filesystem-vc143.1.84.0\build\boost_filesystem-vc143.targets'))" />
   </Target>
 </Project>
