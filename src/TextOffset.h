@@ -86,6 +86,13 @@ public:
         return static_cast<long>(lbLine + 1);
     }
 
+    std::tuple<size_t, size_t> PositionsFromLine(long line) const
+    {
+        if (line > 0 && line <= linePositions.size())
+            return std::make_tuple(line > 1 ? linePositions[line - 2] : 0, linePositions[line - 1]);
+        return std::make_tuple(-1, -1);
+    }
+
     long ColumnFromPosition(long pos, long line) const
     {
         if (line < 0)
