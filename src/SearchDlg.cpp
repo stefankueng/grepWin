@@ -4114,7 +4114,6 @@ int CSearchDlg::SearchByFilePath(CSearchInfo& sInfo, const std::wstring& searchR
 {
 
     boost::iostreams::mapped_file_source inFile(boost::filesystem::path(sInfo.filePath));
-    //boost::iostreams::mapped_file_source inFile(filePathA);
     if (!inFile.is_open())
         return -1;
 
@@ -4220,7 +4219,7 @@ int CSearchDlg::SearchByFilePath(CSearchInfo& sInfo, const std::wstring& searchR
             mFlags |= boost::match_not_bob;
             //
             sInfo.matchLinesNumbers.push_back(static_cast<DWORD>(whatC[0].first - fBeg));
-            sInfo.matchColumnsNumbers.push_back(1);
+            sInfo.matchColumnsNumbers.push_back(static_cast<DWORD>(whatC[0].length()));
             ++sInfo.matchCount;
             if (m_bReplace)
             {
@@ -4268,7 +4267,35 @@ int CSearchDlg::SearchByFilePath(CSearchInfo& sInfo, const std::wstring& searchR
                 // return the nearest position to give some hints when cancelled
                 auto pos                      = sInfo.matchLinesNumbers[mp];
                 sInfo.matchLinesNumbers[mp]   = textOffset.LineFromPosition(pos);
+                auto lenMatchLength           = sInfo.matchColumnsNumbers[mp];
                 sInfo.matchColumnsNumbers[mp] = textOffset.ColumnFromPosition(pos, sInfo.matchLinesNumbers[mp]);
+                auto linePos                  = textOffset.PositionsFromLine(sInfo.matchLinesNumbers[mp]);
+                auto lineStart                = std::get<0>(linePos);
+                auto lineEnd                  = std::get<1>(linePos);
+                auto lineLength               = lineEnd - lineStart;
+                if (lineLength > 0 && lineLength < 4096) // ignore lines longer than 4kb
+                {
+                    if (lineStart > 0)
+                        ++lineStart;
+
+                    auto sLine     = std::basic_string<CharT>(static_cast<const CharT*>(start + lineStart), lineEnd - lineStart);
+                    lenMatchLength = min(lenMatchLength, static_cast<DWORD>(sLine.length() - sInfo.matchColumnsNumbers[mp]));
+                    if constexpr (std::is_same_v<CharT, wchar_t>)
+                    {
+                        sInfo.matchLines.push_back(std::move(sLine));
+                        sInfo.matchLengths.push_back(lenMatchLength);
+                    }
+                    else
+                    {
+                        sInfo.matchLines.push_back(sInfo.encoding == CTextFile::UnicodeType::Ansi ? MultibyteToWide(sLine) : UTF8ToWide(sLine));
+                        sInfo.matchLengths.push_back(lenMatchLength);
+                    }
+                }
+                else
+                {
+                    sInfo.matchLines.push_back(L"");
+                    sInfo.matchLengths.push_back(0);
+                }
             }
         }
 
