@@ -88,7 +88,7 @@ public:
 
     std::tuple<size_t, size_t> PositionsFromLine(long line) const
     {
-        if (line > 0 && line <= linePositions.size())
+        if (line > 0 && static_cast<size_t>(line) <= linePositions.size())
             return std::make_tuple(line > 1 ? linePositions[line - 2] : 0, linePositions[line - 1]);
         return std::make_tuple(-1, -1);
     }
