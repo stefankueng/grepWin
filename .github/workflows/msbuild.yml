@@ -20,6 +20,13 @@ env:
 jobs:
   build:
     runs-on: windows-latest
+    strategy:
+      matrix:
+        include:
+          - platform: Win32
+            dir: Release
+          - platform: x64
+            dir: Release64
 
     steps:
     - uses: actions/checkout@v4
@@ -34,11 +41,11 @@ jobs:
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: nuget restore ${{env.SOLUTION_FILE_PATH}}
 
-    - name: Build x64
+    - name: Build ${{matrix.platform}}
       working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} /p:Platform=x64 ${{env.SOLUTION_FILE_PATH}}
-    - name: Upload artifacts for x64
+      run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} /p:Platform=${{matrix.platform}} ${{env.SOLUTION_FILE_PATH}}
+    - name: Upload artifacts for ${{matrix.platform}}
       uses: actions/upload-artifact@v4
       with:
-          name: grepWin-x64
-          path: bin/Release64/grepWin.exe
+          name: grepWin-${{matrix.platform}}
+          path: bin/${{matrix.dir}}/grepWin.exe
