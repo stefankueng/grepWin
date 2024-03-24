@@ -4256,6 +4256,23 @@ int CSearchDlg::SearchByFilePath(CSearchInfo& sInfo, const std::wstring& searchR
     } while (!m_cancelled);
 
     bool bAdopt = false;
+    if (m_bReplace)
+    {
+        if (nFound > 0)
+        {
+            bAdopt = true;
+            if (dropSize > 0 && !m_cancelled)
+            {
+                outFileBufA.sputc(inData[inSize - 2]);
+            }
+        }
+        outFileBufA.close(); // reduce memory ASAP for huge files
+        if (!bAdopt)
+        {
+            // if cancelled or failed but found any, keep `filePathTemp` to give some hints
+            DeleteFile(filePathTemp.c_str());
+        }
+    }
     if (nFound > 0)
     {
         if ((sInfo.encoding != CTextFile::Binary) && (sInfo.encoding != CTextFile::Unicode_Be) && !m_bNotSearch)
@@ -4300,22 +4317,6 @@ int CSearchDlg::SearchByFilePath(CSearchInfo& sInfo, const std::wstring& searchR
                 }
             }
         }
-
-        if (m_bReplace)
-        {
-            bAdopt = true;
-            if (dropSize > 0 && !m_cancelled)
-            {
-                outFileBufA.sputc(inData[inSize - 2]);
-            }
-            outFileBufA.close();
-        }
-    }
-    else if (m_bReplace)
-    {
-        outFileBufA.close();
-        // if cancelled or failed but found any, keep `filePathTemp` to give some hints
-        DeleteFile(filePathTemp.c_str());
     }
 
     inFile.close();
