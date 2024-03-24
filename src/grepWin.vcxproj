@@ -307,7 +307,6 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="TextOffset.h" />
     <ClInclude Include="Theme.h" />
-    <ClInclude Include="UTF16Facet.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\default.build">

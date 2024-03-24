@@ -52,7 +52,6 @@
 #include "ThreadPool.h"
 #include "UnicodeUtils.h"
 #include "version.h"
-#include "UTF16Facet.h"
 #include "TextOffset.h"
 
 #include <algorithm>
@@ -4177,8 +4176,6 @@ int CSearchDlg::SearchByFilePath(CSearchInfo& sInfo, const std::wstring& searchR
     int                                        nFound       = 0;
     std::wstring                               filePathTemp = sInfo.filePath + L".grepwinreplaced";
     std::basic_filebuf<char>                   outFileBufA;
-    std::basic_filebuf<CharT>                  outFileBufT;
-    std::ostreambuf_iterator<CharT>            outIter(&outFileBufT);
     std::basic_string<CharT>                   repl         = ConvertToString<CharT>(replaceExpression, sInfo.encoding);
     RegexReplaceFormatter<CharT, const CharT*> replaceFmt(repl);
     if (m_bReplace) // synchronize Replace and Search for cancellation and reducing repetitive work on huge files
@@ -4192,19 +4189,6 @@ int CSearchDlg::SearchByFilePath(CSearchInfo& sInfo, const std::wstring& searchR
             return -1;
         }
         outFileBufA.sputn(inData, skipSize);
-        outFileBufA.close();
-
-        outFileBufT.open(filePathTemp, std::ios::out | std::ios::app | std::ios::binary);
-        if (!outFileBufT.is_open())
-        {
-            inFile.close();
-            return -1;
-        }
-        if constexpr (sizeof(CharT) > 1)
-        {
-            std::locale locUTF16Le(std::locale(), new UTF16Facet());
-            outFileBufT.pubimbue(locUTF16Le);
-        }
     }
 
     do
@@ -4223,8 +4207,20 @@ int CSearchDlg::SearchByFilePath(CSearchInfo& sInfo, const std::wstring& searchR
             ++sInfo.matchCount;
             if (m_bReplace)
             {
-                outFileBufT.sputn(startIter, whatC[0].first - startIter);
-                regex_replace(outIter, whatC[0].first, whatC[0].second, regEx, replaceFmt, mFlags);
+                if constexpr (sizeof(CharT) > 1)
+                {
+                    std::wstring replaced;
+                    auto         replacedIter = std::back_inserter(replaced);
+                    outFileBufA.sputn(reinterpret_cast<const char*>(startIter), (whatC[0].first - startIter) * 2);
+                    regex_replace(replacedIter, whatC[0].first, whatC[0].second, regEx, replaceFmt, mFlags);
+                    outFileBufA.sputn(reinterpret_cast<const char*>(replaced.c_str()), replaced.length() * 2);
+                }
+                else
+                {
+                    std::ostreambuf_iterator<char> outIter(&outFileBufA);
+                    outFileBufA.sputn(startIter, whatC[0].first - startIter);
+                    regex_replace(outIter, whatC[0].first, whatC[0].second, regEx, replaceFmt, mFlags);
+                }
             }
             //
             startIter = whatC[0].second;
@@ -4233,14 +4229,24 @@ int CSearchDlg::SearchByFilePath(CSearchInfo& sInfo, const std::wstring& searchR
                 if (startIter == blockEnd)
                     break;
                 if (m_bReplace)
-                    outFileBufT.sputc(*startIter);
+                {
+                    if constexpr (sizeof(CharT) > 1)
+                        outFileBufA.sputn(reinterpret_cast<const char*>(startIter), 2);
+                    else
+                        outFileBufA.sputc(*startIter);
+                }
                 ++startIter;
             }
         }
         if (startIter < blockEnd) // not found
         {
             if (m_bReplace)
-                outFileBufT.sputn(startIter, blockEnd - startIter);
+            {
+                if constexpr (sizeof(CharT) > 1)
+                    outFileBufA.sputn(reinterpret_cast<const char*>(startIter), (blockEnd - startIter) * 2);
+                else
+                    outFileBufA.sputn(startIter, blockEnd - startIter);
+            }
             startIter = blockEnd;
         }
         if (blockEnd < end)
@@ -4249,10 +4255,6 @@ int CSearchDlg::SearchByFilePath(CSearchInfo& sInfo, const std::wstring& searchR
             break;
     } while (!m_cancelled);
 
-    if (m_bReplace)
-    {
-        outFileBufT.close();
-    }
     bool bAdopt = false;
     if (nFound > 0)
     {
@@ -4304,19 +4306,14 @@ int CSearchDlg::SearchByFilePath(CSearchInfo& sInfo, const std::wstring& searchR
             bAdopt = true;
             if (dropSize > 0 && !m_cancelled)
             {
-                outFileBufA.open(filePathTemp, std::ios::out | std::ios::app | std::ios::binary);
-                if (outFileBufA.is_open())
-                {
-                    outFileBufA.sputc(inData[inSize - 2]);
-                    outFileBufA.close();
-                }
-                else
-                    bAdopt = false;
+                outFileBufA.sputc(inData[inSize - 2]);
             }
+            outFileBufA.close();
         }
     }
     else if (m_bReplace)
     {
+        outFileBufA.close();
         // if cancelled or failed but found any, keep `filePathTemp` to give some hints
         DeleteFile(filePathTemp.c_str());
     }
