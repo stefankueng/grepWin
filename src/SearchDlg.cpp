@@ -4063,7 +4063,9 @@ int CSearchDlg::SearchOnTextFile(CSearchInfo& sInfo, const std::wstring& searchR
     return nFound;
 }
 
-static std::wstring utf16Swap(const std::wstring& str)
+namespace
+{
+std::wstring utf16Swap(const std::wstring& str)
 {
     std::wstring swapped = str;
     for (size_t i = 0; i < swapped.length(); ++i)
@@ -4071,6 +4073,29 @@ static std::wstring utf16Swap(const std::wstring& str)
         swapped[i] = swapped[i] << 8 | (swapped[i] >> 8 & 0xff);
     }
     return swapped;
+}
+
+std::wstring ConvertToWstring(const std::string& str, CTextFile::UnicodeType encoding)
+{
+    std::wstring strW;
+    switch (encoding)
+    {
+        case CTextFile::Ansi:
+            strW = MultibyteToWide(str);
+            break;
+        case CTextFile::UTF8:
+            strW = UTF8ToWide(str);
+            break;
+        default:
+        {
+            strW = std::wstring(reinterpret_cast<const wchar_t*>(str.c_str()), str.length() / 2);
+            if (encoding == CTextFile::Unicode_Be)
+                strW = utf16Swap(strW);
+        }
+        break;
+    }
+    return strW;
+}
 }
 
 template <typename CharT = char>
@@ -4275,7 +4300,7 @@ int CSearchDlg::SearchByFilePath(CSearchInfo& sInfo, const std::wstring& searchR
     }
     if (nFound > 0)
     {
-        if ((sInfo.encoding != CTextFile::Binary) && (sInfo.encoding != CTextFile::Unicode_Be) && !m_bNotSearch)
+        if ((sInfo.encoding != CTextFile::Binary) && !m_bNotSearch)
         {
             if (blockEnd - start < 4 * SEARCHBLOCKSIZE)
                 textOffset.CalculateLines(start, blockEnd, false);
@@ -4294,19 +4319,30 @@ int CSearchDlg::SearchByFilePath(CSearchInfo& sInfo, const std::wstring& searchR
                 auto lineLength               = lineEnd - lineStart;
                 if (lineLength > 0 && lineLength < 4096) // ignore lines longer than 4kb
                 {
-                    if (lineStart > 0)
-                        ++lineStart;
-
-                    auto sLine     = std::basic_string<CharT>(static_cast<const CharT*>(start + lineStart), lineEnd - lineStart);
-                    lenMatchLength = min(lenMatchLength, static_cast<DWORD>(sLine.length() - sInfo.matchColumnsNumbers[mp]));
                     if constexpr (std::is_same_v<CharT, wchar_t>)
                     {
+                        auto sLine = std::basic_string<CharT>(static_cast<const CharT*>(start + lineStart), lineLength);
+                        if (sInfo.encoding == CTextFile::Unicode_Be)
+                            sLine = utf16Swap(sLine);
+                        lenMatchLength = min(lenMatchLength, static_cast<DWORD>(sLine.length() - sInfo.matchColumnsNumbers[mp]));
                         sInfo.matchLines.push_back(std::move(sLine));
                         sInfo.matchLengths.push_back(lenMatchLength);
                     }
                     else
                     {
-                        sInfo.matchLines.push_back(sInfo.encoding == CTextFile::UnicodeType::Ansi ? MultibyteToWide(sLine) : UTF8ToWide(sLine));
+                        auto         p = start + lineStart;
+                        auto         sLineAL = std::basic_string<CharT>(static_cast<const CharT*>(p), sInfo.matchColumnsNumbers[mp] - 1);
+                        p += sInfo.matchColumnsNumbers[mp] - 1;
+                        auto         sLineAM = std::basic_string<CharT>(static_cast<const CharT*>(p), lenMatchLength);
+                        p += lenMatchLength;
+                        auto         sLineAR = std::basic_string<CharT>(static_cast<const CharT*>(p), start + lineEnd - p);
+                        std::wstring sLineWL = ConvertToWstring(sLineAL, sInfo.encoding);
+                        sInfo.matchColumnsNumbers[mp] = sLineWL.length();
+                        if (sInfo.matchColumnsNumbers[mp] == 0)
+                            ++sInfo.matchColumnsNumbers[mp];
+                        std::wstring sLineWM = ConvertToWstring(sLineAM, sInfo.encoding);
+                        lenMatchLength = sLineWM.length();
+                        sInfo.matchLines.push_back(sLineWL + sLineWM + ConvertToWstring(sLineAR, sInfo.encoding));
                         sInfo.matchLengths.push_back(lenMatchLength);
                     }
                 }

@@ -6,16 +6,18 @@ template <typename CharT = char>
 class TextOffset
 {
 private:
-    long                lenBOM;
+    long                lenBOM; // by the encoding
+    bool                bBigEndian;
     std::vector<size_t> linePositions;
 
 public:
     TextOffset()
         : lenBOM(0)
+        , bBigEndian(false)
     {
     }
 
-    // UTF8
+    // forcibly treated as char
     const char* SkipBOM(const char* start, const char* end)
     {
         char BOM[] = "\xEF\xBB\xBF";
@@ -24,16 +26,28 @@ public:
             lenBOM = 3;
             return start + 3;
         }
+        else if (end - start > 1)
+        {
+            const wchar_t* startW = reinterpret_cast<const wchar_t*>(start);
+            if (*startW == 0xFEFF || (bBigEndian = *startW == 0xFFFE))
+            {
+                lenBOM = 2;
+                return start + 2;
+            }
+        }
         return start;
     }
 
     // UTF-16LE, UTF-16BE
     const wchar_t* SkipBOM(const wchar_t* start, const wchar_t* end)
     {
-        if (end - start > 1 && (*start == 0xFEFF || *start == 0xFFFE))
+        if (end > start)
         {
-            lenBOM = 1;
-            return start + 1;
+            if (*start == 0xFEFF || (bBigEndian = *start == 0xFFFE))
+            {
+                lenBOM = 1;
+                return start + 1;
+            }
         }
         return start;
     }
@@ -51,13 +65,13 @@ public:
         for (auto it = start; it < end && !bCancelled; ++it)
         {
             bGot = false;
-            if (*it == '\r')
+            if (*it == '\r' || (bBigEndian && *it == 0x0d00))
             {
                 // cr lineending
                 bGot = true;
                 if (it + 1 < end)
                 {
-                    if (it[1] == '\n')
+                    if (it[1] == '\n' || (bBigEndian && *it == 0x0a00))
                     {
                         // crlf lineending
                         ++it;
@@ -65,7 +79,7 @@ public:
                     }
                 }
             }
-            else if (*it == '\n')
+            else if (*it == '\n' || (bBigEndian && *it == 0x0a00))
             {
                 // lf lineending
                 bGot = true;
