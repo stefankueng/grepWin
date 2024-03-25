@@ -29,7 +29,7 @@ public:
         else if (end - start > 1)
         {
             const wchar_t* startW = reinterpret_cast<const wchar_t*>(start);
-            if (*startW == 0xFEFF || (bBigEndian = *startW == 0xFFFE))
+            if (*startW == 0xFEFF || (bBigEndian = *startW == 0xFFFE) == true)
             {
                 lenBOM = 2;
                 return start + 2;
@@ -43,7 +43,7 @@ public:
     {
         if (end > start)
         {
-            if (*start == 0xFEFF || (bBigEndian = *start == 0xFFFE))
+            if (*start == 0xFEFF || (bBigEndian = *start == 0xFFFE) == true)
             {
                 lenBOM = 1;
                 return start + 1;
