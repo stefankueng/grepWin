@@ -43,7 +43,7 @@ jobs:
 
     - name: Build ${{matrix.platform}}
       working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} /p:Platform=${{matrix.platform}} ${{env.SOLUTION_FILE_PATH}}
+      run: msbuild -m -p:Configuration=${{env.BUILD_CONFIGURATION}} -p:Platform=${{matrix.platform}} -warnAsError ${{env.SOLUTION_FILE_PATH}}
     - name: Upload artifacts for ${{matrix.platform}}
       uses: actions/upload-artifact@v4
       with:
