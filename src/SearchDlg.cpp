@@ -4337,11 +4337,11 @@ int CSearchDlg::SearchByFilePath(CSearchInfo& sInfo, const std::wstring& searchR
                         p += lenMatchLength;
                         auto         sLineAR = std::basic_string<CharT>(static_cast<const CharT*>(p), start + lineEnd - p);
                         std::wstring sLineWL = ConvertToWstring(sLineAL, sInfo.encoding);
-                        sInfo.matchColumnsNumbers[mp] = sLineWL.length();
+                        sInfo.matchColumnsNumbers[mp] = static_cast<long>(sLineWL.length());
                         if (sInfo.matchColumnsNumbers[mp] == 0)
                             ++sInfo.matchColumnsNumbers[mp];
                         std::wstring sLineWM = ConvertToWstring(sLineAM, sInfo.encoding);
-                        lenMatchLength = sLineWM.length();
+                        lenMatchLength = static_cast<long>(sLineWM.length());
                         sInfo.matchLines.push_back(sLineWL + sLineWM + ConvertToWstring(sLineAR, sInfo.encoding));
                         sInfo.matchLengths.push_back(lenMatchLength);
                     }
