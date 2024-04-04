@@ -3028,40 +3028,45 @@ void static OpenFileInProcess(LPWSTR lpCommandLine)
 
 void CSearchDlg::OpenFileAtListIndex(int listIndex)
 {
-    auto         tup      = m_listItems[listIndex];
-    int          iItem    = std::get<0>(tup);
-    CSearchInfo& inf      = m_items[iItem];
+    CSearchInfo* pInfo;
     auto         subIndex = 0;
-    wchar_t      line[32];
-    wchar_t      move[32];
 
     bool         fileList = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
-
-    if (!fileList)
+    if (fileList)
     {
+        pInfo = &m_items[listIndex];
+    }
+    else
+    {
+        auto tup   = m_listItems[listIndex];
+        int  iItem = std::get<0>(tup);
+        pInfo = &m_items[iItem];
         subIndex = std::get<1>(tup);
     }
 
-    swprintf_s(line, 32, L"%ld", inf.matchLinesNumbers[subIndex]);
-    swprintf_s(move, 32, L"%ld", inf.matchColumnsNumbers[subIndex]);
+    wchar_t      line[32];
+    wchar_t      move[32];
+
+    swprintf_s(line, 32, L"%ld", pInfo->matchLinesNumbers[subIndex]);
+    swprintf_s(move, 32, L"%ld", pInfo->matchColumnsNumbers[subIndex]);
 
     CRegStdString regEditorCmd(L"Software\\grepWin\\editorcmd");
     std::wstring  cmd = regEditorCmd;
     if (bPortable)
         cmd = g_iniFile.GetValue(L"global", L"editorcmd", L"");
-    if (!cmd.empty() && !inf.readError && inf.encoding != CTextFile::UnicodeType::Binary)
+    if (!cmd.empty() && !pInfo->readError && pInfo->encoding != CTextFile::UnicodeType::Binary)
     {
         SearchReplace(cmd, L"%line%", line);
         SearchReplace(cmd, L"%column%", move);
-        SearchReplace(cmd, L"%path%", inf.filePath);
+        SearchReplace(cmd, L"%path%", pInfo->filePath);
         OpenFileInProcess(const_cast<wchar_t*>(cmd.c_str()));
         return;
     }
 
-    size_t       dotPos = inf.filePath.rfind('.');
+    size_t       dotPos = pInfo->filePath.rfind('.');
     std::wstring ext;
     if (dotPos != std::wstring::npos)
-        ext = inf.filePath.substr(dotPos);
+        ext = pInfo->filePath.substr(dotPos);
 
     DWORD bufLen = 0;
     if (AssocQueryString(ASSOCF_INIT_DEFAULTTOSTAR, ASSOCSTR_DDECOMMAND, ext.c_str(), nullptr, nullptr, &bufLen) == S_OK)
@@ -3070,7 +3075,7 @@ void CSearchDlg::OpenFileAtListIndex(int listIndex)
         {
             // application requires DDE to open the file:
             // since we can't do this the easy way with CreateProcess, we use ShellExecute instead
-            ShellExecute(*this, nullptr, inf.filePath.c_str(), nullptr, nullptr, SW_SHOW);
+            ShellExecute(*this, nullptr, pInfo->filePath.c_str(), nullptr, nullptr, SW_SHOW);
             return;
         }
     }
@@ -3133,12 +3138,12 @@ void CSearchDlg::OpenFileAtListIndex(int listIndex)
     else if (appname.find(L"notepad2.exe") != std::wstring::npos)
     {
         std::wstring match;
-        if (inf.matchLines.size() > 0)
+        if (pInfo->matchLines.size() > 0)
         {
             // not binary
-            match = inf.matchLines[subIndex].substr(inf.matchColumnsNumbers[subIndex] - 1, inf.matchLengths[subIndex]);
+            match = pInfo->matchLines[subIndex].substr(pInfo->matchColumnsNumbers[subIndex] - 1, pInfo->matchLengths[subIndex]);
             escapeForRegexEx(match, 1);
-            if (match.length() > 32767 - 1 - 2 - 2 - 13 - inf.filePath.length() - reservedLength)
+            if (match.length() > 32767 - 1 - 2 - 2 - 13 - pInfo->filePath.length() - reservedLength)
             {
                 match.clear();
             }
@@ -3164,11 +3169,11 @@ void CSearchDlg::OpenFileAtListIndex(int listIndex)
 
     if (bDontQuotePath)
     {
-        params += inf.filePath;
+        params += pInfo->filePath;
     }
     else
     {
-        params += quote + inf.filePath + quote;
+        params += quote + pInfo->filePath + quote;
     }
     params += paramsSuffix;
 
