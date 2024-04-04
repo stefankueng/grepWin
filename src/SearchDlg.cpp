@@ -3087,9 +3087,9 @@ void CSearchDlg::OpenFileAtListIndex(int listIndex)
     std::wstring application = cmdBuf.get();
     // normalize application path
     DWORD        len         = ExpandEnvironmentStrings(application.c_str(), nullptr, 0);
-    cmdBuf                   = std::make_unique<wchar_t[]>(len + 1LL);
+    cmdBuf = std::make_unique<wchar_t[]>(len + 1LL);
     ExpandEnvironmentStrings(application.c_str(), cmdBuf.get(), len);
-    application          = cmdBuf.get();
+    application = cmdBuf.get();
 
     // resolve parameters
     std::wstring appname = application;
