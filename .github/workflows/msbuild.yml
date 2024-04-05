@@ -43,7 +43,9 @@ jobs:
 
     - name: Build ${{matrix.platform}}
       working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: msbuild -m -p:Configuration=${{env.BUILD_CONFIGURATION}} -p:Platform=${{matrix.platform}} -warnAsError ${{env.SOLUTION_FILE_PATH}}
+      run: |
+        sed -i "s/no date/$($env:GITHUB_SHA.Substring(0,7))/gm" ./src/last/version.h
+        msbuild -m -p:Configuration=${{env.BUILD_CONFIGURATION}} -p:Platform=${{matrix.platform}} -warnAsError ${{env.SOLUTION_FILE_PATH}}
     - name: Upload artifacts for ${{matrix.platform}}
       uses: actions/upload-artifact@v4
       with:
