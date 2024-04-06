@@ -4382,19 +4382,19 @@ int CSearchDlg::SearchByFilePath(CSearchInfo& sInfo, const std::wstring& searchR
                     }
                     else
                     {
-                        auto         p = start + lineStart;
-                        auto         sLineAL = std::basic_string<CharT>(static_cast<const CharT*>(p), sInfo.matchColumnsNumbers[mp] - 1);
+                        auto p       = start + lineStart;
+                        auto sLineAl = std::basic_string<CharT>(static_cast<const CharT*>(p), sInfo.matchColumnsNumbers[mp] - 1);
                         p += sInfo.matchColumnsNumbers[mp] - 1;
-                        auto         sLineAM = std::basic_string<CharT>(static_cast<const CharT*>(p), lenMatchLength);
+                        auto sLineAm = std::basic_string<CharT>(static_cast<const CharT*>(p), lenMatchLength);
                         p += lenMatchLength;
-                        auto         sLineAR = std::basic_string<CharT>(static_cast<const CharT*>(p), start + lineEnd - p);
-                        std::wstring sLineWL = ConvertToWstring(sLineAL, sInfo.encoding);
-                        sInfo.matchColumnsNumbers[mp] = static_cast<long>(sLineWL.length());
+                        auto         sLineAr          = std::basic_string<CharT>(static_cast<const CharT*>(p), start + lineEnd - p);
+                        std::wstring sLineWl          = ConvertToWstring(sLineAl, sInfo.encoding);
+                        sInfo.matchColumnsNumbers[mp] = static_cast<long>(sLineWl.length());
                         if (sInfo.matchColumnsNumbers[mp] == 0)
                             ++sInfo.matchColumnsNumbers[mp];
-                        std::wstring sLineWM = ConvertToWstring(sLineAM, sInfo.encoding);
-                        lenMatchLength = static_cast<long>(sLineWM.length());
-                        sInfo.matchLines.push_back(sLineWL + sLineWM + ConvertToWstring(sLineAR, sInfo.encoding));
+                        std::wstring sLineWm = ConvertToWstring(sLineAm, sInfo.encoding);
+                        lenMatchLength       = static_cast<long>(sLineWm.length());
+                        sInfo.matchLines.push_back(sLineWl + sLineWm + ConvertToWstring(sLineAr, sInfo.encoding));
                         sInfo.matchLengths.push_back(lenMatchLength);
                     }
                 }
