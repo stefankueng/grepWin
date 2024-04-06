@@ -3971,6 +3971,19 @@ int CSearchDlg::SearchOnTextFile(CSearchInfo& sInfo, const std::wstring& searchR
     if (m_bReplace) // synchronize Replace and Search for cancellation and reducing repetitive work on huge files
     {
         m_backupAndTempFiles.insert(filePathTemp);
+        replaceFmt.SetReplacePair(L"${filepath}", sInfo.filePath);
+        std::wstring fileNameFullW = sInfo.filePath.substr(sInfo.filePath.find_last_of('\\') + 1);
+        auto         dotPosW       = fileNameFullW.find_last_of('.');
+        if (dotPosW != std::string::npos)
+        {
+            std::wstring filename = fileNameFullW.substr(0, dotPosW);
+            replaceFmt.SetReplacePair(L"${filename}", filename);
+            if (fileNameFullW.size() > dotPosW)
+            {
+                std::wstring fileExt = fileNameFullW.substr(dotPosW + 1);
+                replaceFmt.SetReplacePair(L"${fileext}", fileExt);
+            }
+        }
     }
     do
     {
@@ -4219,6 +4232,40 @@ int CSearchDlg::SearchByFilePath(CSearchInfo& sInfo, const std::wstring& searchR
             return -1;
         }
         outFileBufA.sputn(inData, skipSize);
+
+        if constexpr (sizeof(CharT) > 1)
+        {
+            replaceFmt.SetReplacePair(L"${filepath}", sInfo.filePath);
+            std::wstring fileNameFullW = sInfo.filePath.substr(sInfo.filePath.find_last_of('\\') + 1);
+            auto         dotPosW       = fileNameFullW.find_last_of('.');
+            if (dotPosW != std::string::npos)
+            {
+                std::wstring filename = fileNameFullW.substr(0, dotPosW);
+                replaceFmt.SetReplacePair(L"${filename}", filename);
+                if (fileNameFullW.size() > dotPosW)
+                {
+                    std::wstring fileExt = fileNameFullW.substr(dotPosW + 1);
+                    replaceFmt.SetReplacePair(L"${fileext}", fileExt);
+                }
+            }
+        }
+        else
+        {
+            std::basic_string<CharT> filePathA = ConvertToString<CharT>(sInfo.filePath, sInfo.encoding);
+            replaceFmt.SetReplacePair("${filepath}", filePathA);
+            std::string fileNameFullA = filePathA.substr(filePathA.find_last_of('\\') + 1);
+            auto        dotPosA       = fileNameFullA.find_last_of('.');
+            if (dotPosA != std::string::npos)
+            {
+                std::string filename = fileNameFullA.substr(0, dotPosA);
+                replaceFmt.SetReplacePair("${filename}", filename);
+                if (fileNameFullA.size() > dotPosA)
+                {
+                    std::string fileExt = fileNameFullA.substr(dotPosA + 1);
+                    replaceFmt.SetReplacePair("${fileext}", fileExt);
+                }
+            }
+        }
     }
 
     do
