@@ -132,7 +132,6 @@ protected:
     void                ShowUpdateAvailable();
     static bool         IsVersionNewer(const std::wstring& sVer);
     bool                CloneWindow();
-    static std::wstring ExpandString(const std::wstring& replaceString);
 
 private:
     HWND                              m_hParent;

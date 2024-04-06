@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2011-2012, 2014-2015, 2021, 2023 - Stefan Kueng
+// Copyright (C) 2011-2012, 2014-2015, 2021, 2023-2024 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -45,6 +45,9 @@ public:
     int                      increment;
     std::basic_string<CharT> expression;
 };
+
+std::wstring ExpandString(const std::wstring &replaceString);
+
 
 // Iter is the same as the BidirectionalIterator in which `regex_replace` it is used
 template<typename CharT, typename Iter = std::basic_string<CharT>::const_iterator>

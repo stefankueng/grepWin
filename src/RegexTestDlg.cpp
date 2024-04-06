@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008, 2011-2013, 2019-2021 - Stefan Kueng
+// Copyright (C) 2007-2008, 2011-2013, 2019-2021, 2024 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -214,6 +214,7 @@ void CRegexTestDlg::DoRegex()
                 if (!bDotMatchesNewline)
                     rflags |= boost::match_not_dot_newline;
 
+                m_replaceText = ExpandString(m_replaceText);
                 RegexReplaceFormatter<wchar_t> replaceFmt(m_replaceText);
                 replaceFmt.SetReplacePair(L"${filepath}", L"c:\\grepwintest\\file.txt");
                 replaceFmt.SetReplacePair(L"${filename}", L"file");
