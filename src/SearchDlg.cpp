@@ -2596,7 +2596,7 @@ LRESULT CSearchDlg::ColorizeMatchResultProc(LPNMLVCUSTOMDRAW lpLVCD)
                 }
                 if (ListView_GetItem(hListControl, &lv))
                 {
-                    LPWSTR pMatch   = lv.pszText + colMatch - 1;
+                    LPWSTR pMatch   = lv.pszText + colMatch;
                     SIZE   textSize = {0, 0};
 
                     rc.left += 6;
@@ -2604,7 +2604,7 @@ LRESULT CSearchDlg::ColorizeMatchResultProc(LPNMLVCUSTOMDRAW lpLVCD)
 
                     // Not precise sometimes.
                     // We keep the text and draw a transparent rectangle only. So, will not break the text.
-                    GetTextExtentPoint32(hdc, lv.pszText, colMatch - 1, &textSize);
+                    GetTextExtentPoint32(hdc, lv.pszText, colMatch, &textSize);
                     rc.left += textSize.cx;
                     if (rc.left >= rc.right)
                     {
@@ -3040,12 +3040,12 @@ void CSearchDlg::OpenFileAtListIndex(int listIndex)
     {
         auto tup   = m_listItems[listIndex];
         int  iItem = std::get<0>(tup);
-        pInfo = &m_items[iItem];
-        subIndex = std::get<1>(tup);
+        pInfo      = &m_items[iItem];
+        subIndex   = std::get<1>(tup);
     }
 
-    wchar_t      line[32];
-    wchar_t      move[32];
+    wchar_t line[32];
+    wchar_t move[32];
 
     swprintf_s(line, 32, L"%ld", pInfo->matchLinesNumbers[subIndex]);
     swprintf_s(move, 32, L"%ld", pInfo->matchColumnsNumbers[subIndex]);
@@ -3087,9 +3087,9 @@ void CSearchDlg::OpenFileAtListIndex(int listIndex)
     std::wstring application = cmdBuf.get();
     // normalize application path
     DWORD        len         = ExpandEnvironmentStrings(application.c_str(), nullptr, 0);
-    cmdBuf = std::make_unique<wchar_t[]>(len + 1LL);
+    cmdBuf                   = std::make_unique<wchar_t[]>(len + 1LL);
     ExpandEnvironmentStrings(application.c_str(), cmdBuf.get(), len);
-    application = cmdBuf.get();
+    application          = cmdBuf.get();
 
     // resolve parameters
     std::wstring appname = application;
@@ -3956,18 +3956,18 @@ int CSearchDlg::SearchOnTextFile(CSearchInfo& sInfo, const std::wstring& searchR
     start = textFile.GetFileString().begin();
     end   = textFile.GetFileString().end();
     boost::match_results<std::wstring::const_iterator> whatC;
-    boost::wregex                                      wRegEx = boost::wregex(expr, syntaxFlags);
-    boost::match_flag_type                             mFlags = static_cast<boost::match_flag_type>(matchFlags);
+    boost::wregex                                      wRegEx       = boost::wregex(expr, syntaxFlags);
+    boost::match_flag_type                             mFlags       = static_cast<boost::match_flag_type>(matchFlags);
 
-    size_t                       count     = textFile.GetFileString().size();
-    size_t                       remainder = count % (SEARCHBLOCKSIZE / 2);
-    std::wstring::const_iterator startIter = start;
-    std::wstring::const_iterator blockEnd  = start + remainder;
+    size_t                                             count        = textFile.GetFileString().size();
+    size_t                                             remainder    = count % (SEARCHBLOCKSIZE / 2);
+    std::wstring::const_iterator                       startIter    = start;
+    std::wstring::const_iterator                       blockEnd     = start + remainder;
 
-    std::wstring                   filePathTemp = sInfo.filePath + L".grepwinreplaced";
-    RegexReplaceFormatter<wchar_t> replaceFmt(replaceExpression);
-    std::wstring                   replaced;
-    auto                           replacedIter = std::back_inserter(replaced);
+    std::wstring                                       filePathTemp = sInfo.filePath + L".grepwinreplaced";
+    RegexReplaceFormatter<wchar_t>                     replaceFmt(replaceExpression);
+    std::wstring                                       replaced;
+    auto                                               replacedIter = std::back_inserter(replaced);
     if (m_bReplace) // synchronize Replace and Search for cancellation and reducing repetitive work on huge files
     {
         m_backupAndTempFiles.insert(filePathTemp);
@@ -4114,7 +4114,7 @@ std::wstring ConvertToWstring(const std::string& str, CTextFile::UnicodeType enc
     }
     return strW;
 }
-}
+} // namespace
 
 template <typename CharT = char>
 std::basic_string<CharT> ConvertToString(const std::wstring& /*str*/, CTextFile::UnicodeType /*encoding*/, CharT* /*dummy*/ = nullptr)
@@ -4154,7 +4154,6 @@ std::basic_string<wchar_t> ConvertToString<wchar_t>(const std::wstring& str, CTe
 template <typename CharT>
 int CSearchDlg::SearchByFilePath(CSearchInfo& sInfo, const std::wstring& searchRoot, const std::wstring& searchExpression, const std::wstring& replaceExpression, UINT syntaxFlags, UINT matchFlags, bool misaligned, CharT*)
 {
-
     boost::iostreams::mapped_file_source inFile(boost::filesystem::path(sInfo.filePath));
     if (!inFile.is_open())
         return -1;
@@ -4169,12 +4168,7 @@ int CSearchDlg::SearchByFilePath(CSearchInfo& sInfo, const std::wstring& searchR
     const CharT*      end      = fBeg + inSize / sizeof(CharT);
 
     TextOffset<CharT> textOffset;
-    if ((sInfo.encoding == CTextFile::UTF8) || (sInfo.encoding == CTextFile::Unicode_Le) || (sInfo.encoding == CTextFile::Unicode_Be))
-    {
-        start = textOffset.SkipBOM(fBeg, end);
-    }
-    else
-        start = fBeg;
+    start    = fBeg;
 
     skipSize = reinterpret_cast<const char*>(start) - inData;
     workSize = inSize - skipSize;
@@ -4219,7 +4213,7 @@ int CSearchDlg::SearchByFilePath(CSearchInfo& sInfo, const std::wstring& searchR
     int                                        nFound       = 0;
     std::wstring                               filePathTemp = sInfo.filePath + L".grepwinreplaced";
     std::basic_filebuf<char>                   outFileBufA;
-    std::basic_string<CharT>                   repl         = ConvertToString<CharT>(replaceExpression, sInfo.encoding);
+    std::basic_string<CharT>                   repl = ConvertToString<CharT>(replaceExpression, sInfo.encoding);
     RegexReplaceFormatter<CharT, const CharT*> replaceFmt(repl);
     if (m_bReplace) // synchronize Replace and Search for cancellation and reducing repetitive work on huge files
     {
@@ -4382,19 +4376,10 @@ int CSearchDlg::SearchByFilePath(CSearchInfo& sInfo, const std::wstring& searchR
                     }
                     else
                     {
-                        auto p       = start + lineStart;
-                        auto sLineAl = std::basic_string<CharT>(static_cast<const CharT*>(p), sInfo.matchColumnsNumbers[mp] - 1);
-                        p += sInfo.matchColumnsNumbers[mp] - 1;
-                        auto sLineAm = std::basic_string<CharT>(static_cast<const CharT*>(p), lenMatchLength);
-                        p += lenMatchLength;
-                        auto         sLineAr          = std::basic_string<CharT>(static_cast<const CharT*>(p), start + lineEnd - p);
-                        std::wstring sLineWl          = ConvertToWstring(sLineAl, sInfo.encoding);
-                        sInfo.matchColumnsNumbers[mp] = static_cast<long>(sLineWl.length());
-                        if (sInfo.matchColumnsNumbers[mp] == 0)
-                            ++sInfo.matchColumnsNumbers[mp];
-                        std::wstring sLineWm = ConvertToWstring(sLineAm, sInfo.encoding);
-                        lenMatchLength       = static_cast<long>(sLineWm.length());
-                        sInfo.matchLines.push_back(sLineWl + sLineWm + ConvertToWstring(sLineAr, sInfo.encoding));
+                        auto sLineA    = std::basic_string<CharT>(static_cast<const CharT*>(start + lineStart), lineLength);
+                        lenMatchLength = min(lenMatchLength, static_cast<DWORD>(sLineA.length() - sInfo.matchColumnsNumbers[mp]));
+                        auto sLine     = ConvertToWstring(sLineA, sInfo.encoding);
+                        sInfo.matchLines.push_back(std::move(sLine));
                         sInfo.matchLengths.push_back(lenMatchLength);
                     }
                 }
@@ -4446,9 +4431,9 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot)
         bLoadResult = textFile.Load(sInfo.filePath.c_str(), type, m_bUTF8, m_cancelled);
     }
 
-    sInfo.encoding                 = type;
-    int          nCount            = -1; // >= 0: got results; -1: skipped
-    if (m_cancelled) // big file
+    sInfo.encoding = type;
+    int nCount     = -1; // >= 0: got results; -1: skipped
+    if (m_cancelled)     // big file
     {
         SendResult(sInfo, nCount);
         return;
@@ -4888,4 +4873,3 @@ bool CSearchDlg::CloneWindow()
     ShellExecuteEx(&sei);
     return true;
 }
-

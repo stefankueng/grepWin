@@ -38,20 +38,6 @@ public:
         return start;
     }
 
-    // UTF-16LE, UTF-16BE
-    const wchar_t* SkipBOM(const wchar_t* start, const wchar_t* end)
-    {
-        if (end > start)
-        {
-            if (*start == 0xFEFF || (bBigEndian = *start == 0xFFFE) == true)
-            {
-                lenBOM = 1;
-                return start + 1;
-            }
-        }
-        return start;
-    }
-
     bool CalculateLines(const CharT* start, const CharT* end, const std::atomic_bool& bCancelled)
     {
         if (start >= end)
@@ -84,9 +70,9 @@ public:
                 // lf lineending
                 bGot = true;
             }
+            ++pos;
             if (bGot)
                 linePositions.push_back(pos);
-            ++pos;
         }
         if (!bGot)
             linePositions.push_back(pos);
@@ -95,7 +81,7 @@ public:
 
     long LineFromPosition(long pos) const
     {
-        auto lb     = std::lower_bound(linePositions.begin(), linePositions.end(), static_cast<size_t>(pos));
+        auto lb     = std::ranges::lower_bound(linePositions, static_cast<size_t>(pos));
         auto lbLine = lb - linePositions.begin();
         return static_cast<long>(lbLine + 1);
     }
@@ -103,7 +89,7 @@ public:
     std::tuple<size_t, size_t> PositionsFromLine(long line) const
     {
         if (line > 0 && static_cast<size_t>(line) <= linePositions.size())
-            return std::make_tuple(line > 1 ? linePositions[line - 2] : 0, linePositions[line - 1]);
+            return std::make_tuple(line > 1 ? linePositions[line - 2] - lenBOM : 0, linePositions[line - 1] - lenBOM);
         return std::make_tuple(-1, -1);
     }
 
@@ -113,9 +99,9 @@ public:
             line = LineFromPosition(pos);
         long lastLineEnd = -1;
         if (line > 1)
-            lastLineEnd = static_cast<long>(linePositions[line - 2]);
+            lastLineEnd = static_cast<long>(linePositions[line - 2]) - lenBOM;
         else
-            lastLineEnd += lenBOM;
+            lastLineEnd = lenBOM;
         return pos - lastLineEnd;
     }
 };
