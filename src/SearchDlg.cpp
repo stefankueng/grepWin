@@ -1065,6 +1065,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             AutoSizeAllColumns();
             UpdateInfoLabel();
             ::SetDlgItemText(*this, IDOK, TranslatedString(hResource, IDS_SEARCH).c_str());
+            AddToolTip(IDOK, TranslatedString(hResource, IDS_SHIFT_NOTSEARCH).c_str());
             DialogEnableWindow(IDC_RESULTFILES, true);
             DialogEnableWindow(IDC_RESULTCONTENT, true);
             ShowWindow(GetDlgItem(*this, IDC_PROGRESS), SW_HIDE);
@@ -1399,6 +1400,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 m_dwThreadRunning = true;
                 m_cancelled       = false;
                 SetDlgItemText(*this, IDOK, TranslatedString(hResource, IDS_STOP).c_str());
+                AddToolTip(IDOK, L"");
                 ShowWindow(GetDlgItem(*this, IDC_PROGRESS), SW_SHOW);
                 SendDlgItemMessage(*this, IDC_PROGRESS, PBM_SETMARQUEE, 1, 0);
                 if (m_pTaskbarList)
