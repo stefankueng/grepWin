@@ -44,7 +44,7 @@ msgid "%ld more matches"
 msgstr "... %ld więcej dopasowań"
 
 #. Resource IDs: (1069)
-msgid "%path% is replaced with the path of the file, %line% with the line to jump to"
+msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset"
 msgstr ""
 
 #. Resource IDs: (119)
@@ -117,15 +117,19 @@ msgid "Cancel"
 msgstr "Anuluj"
 
 #. Resource IDs: (169)
-msgid "Capture search"
-msgstr "Przechwyć wyszukiwanie"
+msgid "Capture search (Shows replaced text)"
+msgstr ""
 
 #. Resource IDs: (1088)
 msgid "Check for updates"
 msgstr "Sprawdź aktualizacje"
 
+#. Resource IDs: (180)
+msgid "Column"
+msgstr ""
+
 #. Resource IDs: (1068)
-msgid "Command line to start an editor at a specific line:"
+msgid "Command line to start an editor at a specific line and in line offset:"
 msgstr ""
 
 #. Resource IDs: (1060)
@@ -282,8 +286,8 @@ msgid "Invalid path!"
 msgstr "Niewłaściwa ścieżka!"
 
 #. Resource IDs: (161)
-msgid "Inverse search (NOT searchstring)"
-msgstr "Odwróć wyszukiwanie (NIE zawiera szukanego tekstu)"
+msgid "Inverse search"
+msgstr ""
 
 #. Resource IDs: (1019)
 msgid "KB"
@@ -307,7 +311,7 @@ msgstr "Linia"
 
 #. Resource IDs: (150)
 #, c-format
-msgid "Line %5ld : %30s\n"
+msgid "Line %5ld : %s\n"
 msgstr ""
 
 #. Resource IDs: (135)
@@ -604,7 +608,7 @@ msgid "number of NULL bytes per MB allowed for a file to still be considered tex
 msgstr "ilość znakó/bajtów NULL na każdy MB pozwalający nadal uznać plik jako tekstowy, zamiast binarny"
 
 #. Resource IDs: (112)
-msgid "only files that match this pattern are searched.\r\nUse \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
+msgid "only files that match this pattern are searched.\r\nText match extended. Use \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
 msgstr ""
 
 #. Resource IDs: (176)
