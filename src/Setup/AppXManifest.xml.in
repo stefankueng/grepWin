@@ -12,7 +12,7 @@
   xmlns:com="http://schemas.microsoft.com/appx/manifest/com/windows10"
   IgnorableNamespaces="uap uap2 uap3 rescap desktop uap10">
   <Identity Name="7BE7C3C4-6740-4AB4-9C5B-DD64067515BF" ProcessorArchitecture="x64"
-            Publisher="E=tortoisesvn@gmail.com, CN=&quot;Open Source Developer, Stefan KUENG&quot;, O=Open Source Developer, L=Altstätten, C=CH"
+            Publisher="CN=&quot;Open Source Developer, Stefan Kueng&quot;, O=Open Source Developer, L=Altstätten, S=St. Gallen, C=CH"
             Version="$Version$" />
   <Properties>
     <DisplayName>grepWin</DisplayName>
