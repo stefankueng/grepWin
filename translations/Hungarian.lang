@@ -45,7 +45,7 @@ msgstr "%ld további találat"
 
 #. Resource IDs: (1069)
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset"
-msgstr ""
+msgstr "%path% helyébe a fájl elérési útvonala, %line% helyébe az a sor lép, amelyre ugrani kell"
 
 #. Resource IDs: (119)
 msgid "&About grepWin..."
@@ -118,7 +118,7 @@ msgstr "Mégsem"
 
 #. Resource IDs: (169)
 msgid "Capture search (Shows replaced text)"
-msgstr ""
+msgstr "Keresés rögzítése (mutassa a lecserélt szöveget)"
 
 #. Resource IDs: (1088)
 msgid "Check for updates"
@@ -126,11 +126,11 @@ msgstr "Frissítések ellenőrzése"
 
 #. Resource IDs: (180)
 msgid "Column"
-msgstr ""
+msgstr "Oszlop"
 
 #. Resource IDs: (1068)
 msgid "Command line to start an editor at a specific line and in line offset:"
-msgstr ""
+msgstr "Parancs, ami a szerkesztőt egy bizonyos sornál nyitja meg:"
 
 #. Resource IDs: (1060)
 msgid "Content"
@@ -138,11 +138,11 @@ msgstr "Tartalom"
 
 #. Resource IDs: (177)
 msgid "Copy column for all items"
-msgstr ""
+msgstr "Oszlop másolása az összes elemhez"
 
 #. Resource IDs: (178)
 msgid "Copy column for selected items"
-msgstr ""
+msgstr "Oszlop másolása a kiválasztott elemekhez"
 
 #. Resource IDs: (145)
 msgid "Copy filename to clipboard"
@@ -287,7 +287,7 @@ msgstr "Érvénytelen útvonal!"
 
 #. Resource IDs: (161)
 msgid "Inverse search"
-msgstr ""
+msgstr "Fordított keresés"
 
 #. Resource IDs: (1019)
 msgid "KB"
@@ -312,7 +312,7 @@ msgstr "Sor"
 #. Resource IDs: (150)
 #, c-format
 msgid "Line %5ld : %s\n"
-msgstr ""
+msgstr "%5ld : %30s sor\n"
 
 #. Resource IDs: (135)
 msgid "Matches"
@@ -400,7 +400,7 @@ msgstr "Regex keresési szöveg:"
 
 #. Resource IDs: (179)
 msgid "Regex stack error"
-msgstr ""
+msgstr "Regex verem hiba"
 
 #. Resource IDs: (152)
 msgid "Relative paths are not allowed. Please enter an absolute path!"
@@ -609,7 +609,7 @@ msgstr "a NULL bájtok MB-onként megengedett száma, hogy egy fájl még mindig
 
 #. Resource IDs: (112)
 msgid "only files that match this pattern are searched.\r\nText match extended. Use \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
-msgstr ""
+msgstr "csak a mintának megfelelő fájlokat keresi a rendszer.\r\n\"|\" jelet használja elválasztójelként.\r\nPélda: *.cpp|*.h"
 
 #. Resource IDs: (176)
 msgid "open list with recent entries"
@@ -650,7 +650,7 @@ msgstr "kizárhat könyvtárakat, például a CVS-t és a képeket.\r\Példa: ^(
 
 #. Resource IDs: (1064, 1066, 1067)
 msgid "|"
-msgstr ""
+msgstr "|"
 
 #. Resource IDs: (1024)
 msgid "⑂"
