@@ -156,11 +156,11 @@ msgstr "Copia i nomi dei file"
 
 #. Resource IDs: (143)
 msgid "Copy path to clipboard"
-msgstr "Copia il percorso"
+msgstr "Copia il percorso completo"
 
 #. Resource IDs: (144)
 msgid "Copy paths to clipboard"
-msgstr "Copia i percorsi"
+msgstr "Copia i percorsi completi"
 
 #. Resource IDs: (147)
 msgid "Copy text result to clipboard"
@@ -224,7 +224,7 @@ msgstr "Il tasto Escape chiude grepWin"
 
 #. Resource IDs: (1041)
 msgid "Exclude dirs (Regex):"
-msgstr "Escludi cartelle (espr. regolare):"
+msgstr "Escludi cartelle (Regex):"
 
 #. Resource IDs: (164)
 msgid "Export resultlist"
@@ -265,7 +265,7 @@ msgstr "Includi file binari"
 
 #. Resource IDs: (1010)
 msgid "Include hidden items"
-msgstr "Includi elementi nascosti"
+msgstr "Includi i nascosti"
 
 #. Resource IDs: (1062)
 msgid "Include search path"
@@ -281,7 +281,7 @@ msgstr "Includi collegamenti simbolici"
 
 #. Resource IDs: (1009)
 msgid "Include system items"
-msgstr "Includi elementi di sistema"
+msgstr "Includi file di sistema"
 
 #. Resource IDs: (153)
 msgid "Invalid path!"
@@ -297,7 +297,7 @@ msgstr "KB"
 
 #. Resource IDs: (1062)
 msgid "Keep file date when replacing"
-msgstr "Non cambiare data ai file modificati"
+msgstr "Mantieni data ai file modificati"
 
 #. Resource IDs: (1075)
 msgid "Language:"
@@ -346,7 +346,7 @@ msgstr "Solo un'istanza"
 
 #. Resource IDs: (142)
 msgid "Open containing folder"
-msgstr "Apri la cartella di appartenenza"
+msgstr "Apri percorso"
 
 #. Resource IDs: (141)
 msgid "Open with Editor"
@@ -370,7 +370,7 @@ msgstr "Preimpostate"
 
 #. Resource IDs: (1065)
 msgid "Press F1 for help"
-msgstr "Premi F1 per l'aiuto."
+msgstr "  Premi F1 per l'aiuto."
 
 #. Resource IDs: (154)
 msgid "Programs"
@@ -480,7 +480,7 @@ msgstr "Dimensione"
 
 #. Resource IDs: (1006)
 msgid "Size is"
-msgstr "Dimensione"
+msgstr "Solo se"
 
 #. Resource IDs: (1028)
 msgid "Test regex"
@@ -492,7 +492,7 @@ msgstr "Testo"
 
 #. Resource IDs: (1048)
 msgid "Text match"
-msgstr "Modello di testo"
+msgstr "Testo"
 
 #. Resource IDs: (1002)
 msgid "Text search"
@@ -526,7 +526,7 @@ msgstr "L'opzione \"%s\" è abilitata.\r\nDurante la sostituzione, questa opzion
 
 #. Resource IDs: (1025)
 msgid "\\"
-msgstr "\\"
+msgstr "/"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
@@ -657,4 +657,3 @@ msgstr "|"
 #. Resource IDs: (1024)
 msgid "⑂"
 msgstr "⑂"
-
