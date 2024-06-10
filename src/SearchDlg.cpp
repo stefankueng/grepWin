@@ -3521,7 +3521,7 @@ DWORD CSearchDlg::SearchThread()
                         bRecurse = bSearch;
                         if (bSearch && !m_patternRegex.empty())
                         {
-                            bSearch = false;
+                            bSearch = MatchPath(pathBuf.get());
                         }
                     }
                     else
