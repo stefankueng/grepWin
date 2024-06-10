@@ -93,7 +93,7 @@ void           drawRedEditBox(HWND hWnd, WPARAM wParam)
         hdc = GetDC(hWnd);
     else
         hdc = GetDCEx(hWnd, reinterpret_cast<HRGN>(wParam), DCX_WINDOW | DCX_INTERSECTRGN);
-    RECT rc = {0};
+    RECT rc = {};
     GetWindowRect(hWnd, &rc);
     MapWindowPoints(nullptr, hWnd, reinterpret_cast<LPPOINT>(&rc), 2);
     ::SetBkColor(hdc, RGB(236, 93, 93));
@@ -228,7 +228,7 @@ void removeGrepWinExtVariables(std::wstring& str)
     }
 }
 
-void replaceGrepWinFilePathVariables(std::wstring& str, std::wstring& filePath)
+void replaceGrepWinFilePathVariables(std::wstring& str, const std::wstring& filePath)
 {
     // those variables are for regex mode only
     std::wstring fullPath = filePath;
@@ -319,8 +319,8 @@ CSearchDlg::CSearchDlg(HWND hParent)
     , m_executeImmediately(ExecuteAction::None)
     , m_dateLimit(0)
     , m_bDateLimitC(false)
-    , m_date1({0})
-    , m_date2({0})
+    , m_date1({})
+    , m_date2({})
     , m_bNoSaveSettings(false)
     , m_bReplace(false)
     , m_bConfirmationOnReplace(true)
@@ -491,7 +491,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             m_pDropTarget    = new CFileDropTarget(hSearchPath);
             RegisterDragDrop(hSearchPath, m_pDropTarget);
             // create the supported formats:
-            FORMATETC ftEtc = {0};
+            FORMATETC ftEtc = {};
             ftEtc.cfFormat  = CF_TEXT;
             ftEtc.dwAspect  = DVASPECT_CONTENT;
             ftEtc.lindex    = -1;
@@ -526,7 +526,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                 }
             }
 
-            wchar_t buf[MAX_PATH] = {0};
+            wchar_t buf[MAX_PATH] = {};
             if (m_bSizeC && (m_lSize != static_cast<uint64_t>(-1)))
             {
                 swprintf_s(buf, _countof(buf), L"%I64u", m_lSize);
@@ -792,7 +792,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 
             InitDialog(hwndDlg, IDI_GREPWIN);
 
-            WINDOWPLACEMENT wpl       = {0};
+            WINDOWPLACEMENT wpl       = {};
             DWORD           size      = sizeof(wpl);
             std::wstring    winPosKey = L"windowpos_" + GetMonitorSetupHash();
             if (bPortable)
@@ -1025,7 +1025,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             m_selectedItems = 0;
             UpdateInfoLabel();
             // reset the sort indicator
-            HDITEM hd         = {0};
+            HDITEM hd         = {};
             hd.mask           = HDI_FORMAT;
             HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
             HWND hHeader      = ListView_GetHeader(hListControl);
@@ -1592,9 +1592,9 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 RedrawWindow(GetDlgItem(*this, IDC_SEARCHPATH), nullptr, nullptr, RDW_FRAME | RDW_INVALIDATE);
 
                 // change the dialog title to "grepWin : search/path"
-                wchar_t compactPath[100] = {0};
+                wchar_t compactPath[100] = {};
                 PathCompactPathEx(compactPath, path, 40, 0);
-                wchar_t titleBuf[MAX_PATH] = {0};
+                wchar_t titleBuf[MAX_PATH] = {};
                 swprintf_s(titleBuf, _countof(titleBuf), L"grepWin : %s", compactPath);
                 SetWindowText(*this, titleBuf);
             }
@@ -1697,7 +1697,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
         {
             if (msg == EN_CHANGE)
             {
-                wchar_t buf[20] = {0};
+                wchar_t buf[20] = {};
                 ::GetDlgItemText(*this, IDC_SIZEEDIT, buf, _countof(buf));
                 if (wcslen(buf))
                 {
@@ -1966,7 +1966,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                         exportLineNumbers      = includeMatchLineNumbers ? 1 : 0;
                         exportLineContent      = includeMatchLineTexts ? 1 : 0;
                     }
-                    SHELLEXECUTEINFO sei = {0};
+                    SHELLEXECUTEINFO sei = {};
                     sei.cbSize           = sizeof(SHELLEXECUTEINFO);
                     sei.lpVerb           = TEXT("open");
                     sei.lpFile           = path.c_str();
@@ -1996,7 +1996,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
 
 void CSearchDlg::SaveWndPosition()
 {
-    WINDOWPLACEMENT wpl = {0};
+    WINDOWPLACEMENT wpl = {};
     wpl.length          = sizeof(WINDOWPLACEMENT);
     GetWindowPlacement(*this, &wpl);
     std::wstring winPosKey = L"windowpos_" + GetMonitorSetupHash();
@@ -2018,7 +2018,7 @@ void CSearchDlg::SaveWndPosition()
 void CSearchDlg::UpdateInfoLabel()
 {
     std::wstring sText;
-    wchar_t      buf[1024] = {0};
+    wchar_t      buf[1024] = {};
     if (m_searchString.empty())
     {
         if (m_selectedItems)
@@ -2067,7 +2067,7 @@ bool CSearchDlg::InitResultList()
     std::wstring sDateModified = TranslatedString(hResource, IDS_DATEMODIFIED);
     std::wstring sExtension    = TranslatedString(hResource, IDS_FILEEXT);
 
-    LVCOLUMN     lvc           = {0};
+    LVCOLUMN     lvc           = {};
     lvc.mask                   = LVCF_TEXT | LVCF_FMT;
     lvc.fmt                    = LVCFMT_LEFT;
     lvc.cx                     = -1;
@@ -2451,10 +2451,10 @@ bool CSearchDlg::PreTranslateMessage(MSG* pMsg)
                     std::wstring clipBoardText;
                     HWND         hHeader       = ListView_GetHeader(hListControl);
                     int          columns       = Header_GetItemCount(hHeader);
-                    WCHAR        buf[MAX_PATH] = {0};
+                    WCHAR        buf[MAX_PATH] = {};
                     for (int i = 0; i < columns; ++i)
                     {
-                        HD_ITEM hdi    = {0};
+                        HD_ITEM hdi    = {};
                         hdi.mask       = HDI_TEXT;
                         hdi.pszText    = buf;
                         hdi.cchTextMax = _countof(buf);
@@ -2566,13 +2566,13 @@ LRESULT CSearchDlg::ColorizeMatchResultProc(LPNMLVCUSTOMDRAW lpLVCD)
                 int subIndex = std::get<1>(tup);
                 if (static_cast<int>(pInfo->matchLines.size()) <= subIndex)
                 {
-                    // no those details for large files
+                    // don't have those details for large files
                     break;
                 }
                 int   lenText           = static_cast<int>(pInfo->matchLines[subIndex].length());
 
                 auto  colMatch          = pInfo->matchColumnsNumbers[subIndex];
-                WCHAR textBuf[MAX_PATH] = {0};
+                WCHAR textBuf[MAX_PATH] = {};
                 if (colMatch + pInfo->matchLengths[subIndex] >= MAX_PATH)
                 {
                     // LV_ITEM: Allows any length string to be stored as item text, only the first 259 TCHARs are displayed.
@@ -2581,7 +2581,7 @@ LRESULT CSearchDlg::ColorizeMatchResultProc(LPNMLVCUSTOMDRAW lpLVCD)
                 }
 
                 HWND   hListControl = GetDlgItem(*this, IDC_RESULTLIST);
-                LVITEM lv           = {0};
+                LVITEM lv           = {};
                 lv.iItem            = iRow;
                 lv.iSubItem         = 3;
                 lv.mask             = LVIF_TEXT;
@@ -2782,7 +2782,7 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
         ListView_SetItemCountEx(hListControl, fileList ? m_items.size() : m_listItems.size(), LVSICF_NOINVALIDATEALL | LVSICF_NOSCROLL);
 
         AutoSizeAllColumns();
-        HDITEM hd    = {0};
+        HDITEM hd    = {};
         hd.mask      = HDI_FORMAT;
         HWND hHeader = ListView_GetHeader(hListControl);
         int  iCount  = Header_GetItemCount(hHeader);
@@ -3285,7 +3285,7 @@ bool CSearchDlg::SaveSettings()
         m_dateLimit = IDC_RADIO_DATE_OLDER - IDC_RADIO_DATE_ALL;
     if (IsDlgButtonChecked(*this, IDC_RADIO_DATE_BETWEEN) == BST_CHECKED)
         m_dateLimit = IDC_RADIO_DATE_BETWEEN - IDC_RADIO_DATE_ALL;
-    SYSTEMTIME sysTime = {0};
+    SYSTEMTIME sysTime = {};
     DateTime_GetSystemtime(GetDlgItem(*this, IDC_DATEPICK1), &sysTime);
     SystemTimeToFileTime(&sysTime, &m_date1);
     DateTime_GetSystemtime(GetDlgItem(*this, IDC_DATEPICK2), &sysTime);
@@ -4048,7 +4048,7 @@ int CSearchDlg::SearchOnTextFile(CSearchInfo& sInfo, const std::wstring& searchR
                 if (startIter == blockEnd)
                     break;
                 if (m_bReplace)
-                    std::copy(startIter, startIter + 1, replacedIter);
+                    std::copy_n(startIter, 1, replacedIter);
                 ++startIter;
             }
         }
@@ -4483,7 +4483,7 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot)
         std::vector<CTextFile::UnicodeType> encodingTries;
         if (!m_bUseRegex || type == CTextFile::Binary)
         {
-            // Treating a multi-byte char as single byte chars:
+            // Treating a multibyte char as single byte chars:
             //  yields part of it may be matched as a standalone char,
             //  so requires it grouped for repeats to get accurate results.
             //  Unicode_Le and Unicode_Be in Regex mode are turned into wchar_t branch. UTF8 is still here.
@@ -4585,8 +4585,8 @@ void CSearchDlg::formatDate(wchar_t dateNative[], const FILETIME& fileTime, bool
     SYSTEMTIME localSystime;
     SystemTimeToTzSpecificLocalTime(&timeZone, &systemTime, &localSystime);
 
-    wchar_t timeBuf[GREPWIN_DATEBUFFER] = {0};
-    wchar_t dateBuf[GREPWIN_DATEBUFFER] = {0};
+    wchar_t timeBuf[GREPWIN_DATEBUFFER] = {};
+    wchar_t dateBuf[GREPWIN_DATEBUFFER] = {};
 
     LCID    locale                      = MAKELCID(MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), SORT_DEFAULT);
 
@@ -4606,7 +4606,7 @@ void CSearchDlg::AutoSizeAllColumns()
     HWND             hListControl      = GetDlgItem(*this, IDC_RESULTLIST);
     auto             headerCtrl        = ListView_GetHeader(hListControl);
     int              nItemCount        = ListView_GetItemCount(hListControl);
-    wchar_t          textBuf[MAX_PATH] = {0};
+    wchar_t          textBuf[MAX_PATH] = {};
     std::vector<int> colWidths;
     if (headerCtrl)
     {
@@ -4621,7 +4621,7 @@ void CSearchDlg::AutoSizeAllColumns()
         }
         for (int col = 0; col <= maxCol; col++)
         {
-            HDITEM hdi     = {0};
+            HDITEM hdi     = {};
             hdi.mask       = HDI_TEXT;
             hdi.pszText    = textBuf;
             hdi.cchTextMax = _countof(textBuf);
@@ -4866,7 +4866,7 @@ bool CSearchDlg::CloneWindow()
     arguments += L" /new";
     auto             file = CPathUtils::GetModulePath();
 
-    SHELLEXECUTEINFO sei  = {0};
+    SHELLEXECUTEINFO sei  = {};
     sei.cbSize            = sizeof(SHELLEXECUTEINFO);
     sei.lpVerb            = TEXT("open");
     sei.lpFile            = file.c_str();
