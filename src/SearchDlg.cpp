@@ -903,7 +903,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             {
                 case IDC_RESULTLIST:
                 {
-                    if (reinterpret_cast<LPNMHDR>(lParam)->code == NM_CUSTOMDRAW)
+                    if (reinterpret_cast<LPNMHDR>(lParam)->code == NM_CUSTOMDRAW && !m_bCaptureSearch)
                     {
                         return ColorizeMatchResultProc(reinterpret_cast<LPNMLVCUSTOMDRAW>(lParam));
                     }
