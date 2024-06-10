@@ -693,9 +693,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 
             SetFocus(GetDlgItem(hwndDlg, IDC_SEARCHTEXT));
 
-            AdjustControlSize(IDC_BINARY);
             AdjustControlSize(IDC_UTF8);
-
             AdjustControlSize(IDC_REGEXRADIO);
             AdjustControlSize(IDC_TEXTRADIO);
             AdjustControlSize(IDC_WHOLEWORDS);
@@ -747,7 +745,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             m_resizer.AddControl(hwndDlg, IDC_CREATEBACKUP, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_KEEPFILEDATECHECK, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_UTF8, RESIZER_TOPLEFT);
-            m_resizer.AddControl(hwndDlg, IDC_BINARY, RESIZER_TOPLEFTRIGHT);
+            m_resizer.AddControl(hwndDlg, IDC_BINARY, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_TESTREGEX, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_ADDTOBOOKMARKS, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_BOOKMARKS, RESIZER_TOPLEFT);
