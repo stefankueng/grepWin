@@ -3422,6 +3422,8 @@ DWORD CSearchDlg::SearchThread()
         // pre-cleaned for history
         if (!s.empty() && PathFileExists(s.c_str()))
         {
+            if (s.size() == 2 && s[1] == L':')
+                s += L'\\'; // ensure root paths have a backslash
             pathVector.push_back(s);
         }
         pBufSearchPath += pos;
