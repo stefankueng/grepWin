@@ -217,7 +217,7 @@ private:
     CDlgResizer                       m_resizer;
     int                               m_themeCallbackId;
 
-    CFileDropTarget*                  m_pDropTarget;
+    std::unique_ptr<CFileDropTarget>  m_pDropTarget;
 
     static UINT                       m_grepwinStartupmsg;
 

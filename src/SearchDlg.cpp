@@ -381,8 +381,6 @@ CSearchDlg::CSearchDlg(HWND hParent)
 
 CSearchDlg::~CSearchDlg()
 {
-    if (m_pDropTarget)
-        delete m_pDropTarget;
 }
 
 bool CSearchDlg::isSearchPathValid() const
@@ -488,8 +486,8 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 
             // the path edit control should work as a drop target for files and folders
             HWND hSearchPath = GetDlgItem(hwndDlg, IDC_SEARCHPATH);
-            m_pDropTarget    = new CFileDropTarget(hSearchPath);
-            RegisterDragDrop(hSearchPath, m_pDropTarget);
+            m_pDropTarget    = std::make_unique<CFileDropTarget>(hSearchPath);
+            RegisterDragDrop(hSearchPath, m_pDropTarget.get());
             // create the supported formats:
             FORMATETC ftEtc = {};
             ftEtc.cfFormat  = CF_TEXT;

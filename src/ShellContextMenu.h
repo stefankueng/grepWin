@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008, 2011-2015, 2021, 2023 - Stefan Kueng
+// Copyright (C) 2007-2008, 2011-2015, 2021, 2023-2024 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -17,6 +17,7 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 #pragma once
+#include <memory>
 #include <vector>
 #include <shobjidl.h>
 #include <shlobj.h>
@@ -35,22 +36,22 @@ public:
     virtual ~CShellContextMenu();
 
 private:
-    BOOL                     bDelete;
-    HMENU                    m_menu;
-    IShellFolder *           m_psfFolder;
-    LPITEMIDLIST *           m_pidlArray;
-    int                      m_pidlArrayItems;
-    std::vector<CSearchInfo> m_strVector;
-    std::vector<LineData>    m_lineVector;
+    BOOL                               bDelete;
+    HMENU                              m_menu;
+    IShellFolder                      *m_psfFolder;
+    LPITEMIDLIST                      *m_pidlArray;
+    int                                m_pidlArrayItems;
+    std::vector<CSearchInfo>           m_strVector;
+    std::vector<LineData>              m_lineVector;
 
-    static void             InvokeCommand(LPCONTEXTMENU pContextMenu, UINT idCommand);
-    BOOL                    GetContextMenu(HWND hWnd, void **ppContextMenu, int &iMenuType);
-    static LRESULT CALLBACK HookWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
-    static void             FreePIDLArray(LPITEMIDLIST *pidlArray, int nItems);
+    static void                        InvokeCommand(LPCONTEXTMENU pContextMenu, UINT idCommand);
+    BOOL                               GetContextMenu(HWND hWnd, void **ppContextMenu, int &iMenuType);
+    static LRESULT CALLBACK            HookWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+    static void                        FreePIDLArray(LPITEMIDLIST *pidlArray, int nItems);
 
-    static HRESULT CALLBACK dfmCallback(IShellFolder *psf, HWND hwnd, IDataObject *pdtobj, UINT uMsg, WPARAM wParam, LPARAM lParam);
+    static HRESULT CALLBACK            dfmCallback(IShellFolder *psf, HWND hwnd, IDataObject *pdtobj, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-    CIShellFolderHook *m_pFolderHook;
+    std::unique_ptr<CIShellFolderHook> m_pFolderHook;
 
     friend class CIShellFolderHook;
 };

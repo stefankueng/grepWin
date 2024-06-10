@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2015, 2017, 2020-2021, 2023 - Stefan Kueng
+// Copyright (C) 2007-2015, 2017, 2020-2021, 2023-2024 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -56,7 +56,6 @@ CShellContextMenu::CShellContextMenu()
 CShellContextMenu::~CShellContextMenu()
 {
     // free all allocated data
-    delete m_pFolderHook;
     if (m_psfFolder && bDelete)
         m_psfFolder->Release();
     m_psfFolder = nullptr;
@@ -112,11 +111,10 @@ BOOL CShellContextMenu::GetContextMenu(HWND hWnd, void** ppContextMenu, int& iMe
         }
     }
 
-    delete m_pFolderHook;
-    m_pFolderHook      = new CIShellFolderHook(m_psfFolder, this);
+    m_pFolderHook      = std::make_unique<CIShellFolderHook>(m_psfFolder, this);
 
     LPCONTEXTMENU icm1 = nullptr;
-    if (FAILED(CDefFolderMenu_Create2(NULL, hWnd, static_cast<UINT>(m_pidlArrayItems), const_cast<LPCITEMIDLIST*>(m_pidlArray), m_pFolderHook, dfmCallback, numkeys, ahkeys, &icm1)))
+    if (FAILED(CDefFolderMenu_Create2(NULL, hWnd, static_cast<UINT>(m_pidlArrayItems), const_cast<LPCITEMIDLIST*>(m_pidlArray), m_pFolderHook.get(), dfmCallback, numkeys, ahkeys, &icm1)))
         return FALSE;
     for (int i = 0; i < numkeys; ++i)
         RegCloseKey(ahkeys[i]);
@@ -392,9 +390,8 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
     }
 
     pContextMenu->Release();
-    g_iContext2 = nullptr;
-    g_iContext3 = nullptr;
-    delete m_pFolderHook;
+    g_iContext2   = nullptr;
+    g_iContext3   = nullptr;
     m_pFolderHook = nullptr;
     return (idCommand);
 }
