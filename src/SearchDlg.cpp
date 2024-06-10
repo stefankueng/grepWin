@@ -932,6 +932,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                                 bool bIsDir = PathIsDirectory(buf.get());
                                 if ((!bIsDir) && wcschr(buf.get(), L'|'))
                                     bIsDir = true; // assume directories in case of multiple paths
+                                m_bUseRegex              = (IsDlgButtonChecked(*this, IDC_REGEXRADIO) == BST_CHECKED);
 
                                 auto sInverseSearch      = TranslatedString(hResource, IDS_INVERSESEARCH);
                                 auto sSearchInFoundFiles = TranslatedString(hResource, IDS_SEARCHINFOUNDFILES);
