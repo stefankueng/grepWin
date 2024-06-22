@@ -26,6 +26,10 @@ class CSearchInfo
 public:
     CSearchInfo();
     CSearchInfo(const std::wstring& path);
+    CSearchInfo(const CSearchInfo& other) = default;
+    CSearchInfo& operator=(const CSearchInfo& other) = default;
+    CSearchInfo(CSearchInfo&& other) = default;
+    CSearchInfo& operator=(CSearchInfo&& other) = default;
     ~CSearchInfo();
 
     static bool               NameCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2);
