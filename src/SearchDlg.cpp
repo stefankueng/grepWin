@@ -3042,8 +3042,14 @@ void CSearchDlg::OpenFileAtListIndex(int listIndex)
         subIndex   = std::get<1>(tup);
     }
 
-    auto line = std::to_wstring(pInfo->matchLinesNumbers[subIndex]);
-    auto move = std::to_wstring(pInfo->matchColumnsNumbers[subIndex]);
+    std::wstring line = L"1";
+    std::wstring move = L"0";
+    if (subIndex < static_cast<int>(pInfo->matchLinesNumbers.size()) &&
+        subIndex < static_cast<int>(pInfo->matchColumnsNumbers.size()))
+    {
+        line = std::to_wstring(pInfo->matchLinesNumbers[subIndex]);
+        move = std::to_wstring(pInfo->matchColumnsNumbers[subIndex]);
+    }
 
     {
         CRegStdString regEditorCmd(L"Software\\grepWin\\editorcmd");
