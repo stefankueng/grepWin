@@ -58,7 +58,6 @@
 #include <Commdlg.h>
 #include <fstream>
 #include <iterator>
-#include <map>
 #include <numeric>
 #include <ranges>
 #include <string>
@@ -3043,11 +3042,8 @@ void CSearchDlg::OpenFileAtListIndex(int listIndex)
         subIndex   = std::get<1>(tup);
     }
 
-    wchar_t line[32];
-    wchar_t move[32];
-
-    swprintf_s(line, 32, L"%ld", pInfo->matchLinesNumbers[subIndex]);
-    swprintf_s(move, 32, L"%ld", pInfo->matchColumnsNumbers[subIndex]);
+    auto line = std::to_wstring(pInfo->matchLinesNumbers[subIndex]);
+    auto move = std::to_wstring(pInfo->matchColumnsNumbers[subIndex]);
 
     CRegStdString regEditorCmd(L"Software\\grepWin\\editorcmd");
     std::wstring  cmd = regEditorCmd;
@@ -3121,17 +3117,17 @@ void CSearchDlg::OpenFileAtListIndex(int listIndex)
     // and add extra params to the "%1" for better locating.
     if (appname.find(L"notepad++.exe") != std::wstring::npos)
     {
-        params = CStringUtils::Format(L"-n%s -c%s ", line, move);
+        params = CStringUtils::Format(L"-n%s -c%s ", line.c_str(), move.c_str());
     }
     else if (appname.find(L"xemacs.exe") != std::wstring::npos)
     {
-        params = CStringUtils::Format(L"+%s ", line);
+        params = CStringUtils::Format(L"+%s ", line.c_str());
     }
     else if ((appname.find(L"uedit32.exe") != std::wstring::npos) || (appname.find(L"uedit64.exe") != std::wstring::npos))
     {
         // UltraEdit, `/<ln>/<cn>` covers more (old) versions than `-l<ln> -c<ln>`
         params         = quote;
-        paramsSuffix   = CStringUtils::Format(L"/%s/%s\"", line, move);
+        paramsSuffix   = CStringUtils::Format(L"/%s/%s\"", line.c_str(), move.c_str());
         bDontQuotePath = TRUE;
     }
     else if (appname.find(L"notepad2.exe") != std::wstring::npos)
@@ -3147,17 +3143,17 @@ void CSearchDlg::OpenFileAtListIndex(int listIndex)
                 match.clear();
             }
         }
-        params = CStringUtils::Format(L"/g %s,%s /mr \"%s\" ", line, move, match.c_str());
+        params = CStringUtils::Format(L"/g %s,%s /mr \"%s\" ", line.c_str(), move.c_str(), match.c_str());
     }
     else if ((appname.find(L"bowpad.exe") != std::wstring::npos) || (appname.find(L"bowpad64.exe") != std::wstring::npos))
     {
-        paramsSuffix = CStringUtils::Format(L" /line:%s", line);
+        paramsSuffix = CStringUtils::Format(L" /line:%s", line.c_str());
     }
     else if (appname.find(L"code.exe") != std::wstring::npos)
     {
         // Visual Studio Code
         params       = L"-g ";
-        paramsSuffix = CStringUtils::Format(L":%s:%s", line, move);
+        paramsSuffix = CStringUtils::Format(L":%s:%s", line.c_str(), move.c_str());
     }
     else if (application.find(L"-single-argument") != std::wstring::npos)
     {

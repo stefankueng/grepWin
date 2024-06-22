@@ -337,11 +337,10 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
                         {
                             std::wstring cmd = editorCmd;
                             SearchReplace(cmd, L"%path%", it->path.c_str());
-                            wchar_t buf[40] = {0};
-                            swprintf_s(buf, L"%ld", it2->number);
-                            SearchReplace(cmd, L"%line%", buf);
-                            swprintf_s(buf, L"%ld", it2->column);
-                            SearchReplace(cmd, L"%column%", buf);
+                            auto number = std::to_wstring(it2->number);
+                            auto column = std::to_wstring(it2->column);
+                            SearchReplace(cmd, L"%line%", number);
+                            SearchReplace(cmd, L"%column%", column);
 
                             STARTUPINFO         startupInfo;
                             PROCESS_INFORMATION processInfo;
@@ -362,11 +361,10 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
                         SearchReplace(cmd, L"%path%", it->filePath.c_str());
                         if (!it->matchLinesNumbers.empty())
                         {
-                            wchar_t buf[40] = {0};
-                            swprintf_s(buf, L"%ld", it->matchLinesNumbers[0]);
-                            SearchReplace(cmd, L"%line%", buf);
-                            swprintf_s(buf, L"%ld", it->matchColumnsNumbers[0]);
-                            SearchReplace(cmd, L"%column%", buf);
+                            auto line = std::to_wstring(it->matchLinesNumbers[0]);
+                            auto move = std::to_wstring(it->matchColumnsNumbers[0]);
+                            SearchReplace(cmd, L"%line%", line);
+                            SearchReplace(cmd, L"%column%", move);
                         }
                         else
                         {
