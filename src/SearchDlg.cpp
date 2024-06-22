@@ -3045,17 +3045,19 @@ void CSearchDlg::OpenFileAtListIndex(int listIndex)
     auto line = std::to_wstring(pInfo->matchLinesNumbers[subIndex]);
     auto move = std::to_wstring(pInfo->matchColumnsNumbers[subIndex]);
 
-    CRegStdString regEditorCmd(L"Software\\grepWin\\editorcmd");
-    std::wstring  cmd = regEditorCmd;
-    if (bPortable)
-        cmd = g_iniFile.GetValue(L"global", L"editorcmd", L"");
-    if (!cmd.empty() && !pInfo->readError && pInfo->encoding != CTextFile::UnicodeType::Binary)
     {
-        SearchReplace(cmd, L"%line%", line);
-        SearchReplace(cmd, L"%column%", move);
-        SearchReplace(cmd, L"%path%", pInfo->filePath);
-        OpenFileInProcess(const_cast<wchar_t*>(cmd.c_str()));
-        return;
+        CRegStdString regEditorCmd(L"Software\\grepWin\\editorcmd");
+        std::wstring  cmd = regEditorCmd;
+        if (bPortable)
+            cmd = g_iniFile.GetValue(L"global", L"editorcmd", L"");
+        if (!cmd.empty() && !pInfo->readError && pInfo->encoding != CTextFile::UnicodeType::Binary)
+        {
+            SearchReplace(cmd, L"%line%", line);
+            SearchReplace(cmd, L"%column%", move);
+            SearchReplace(cmd, L"%path%", pInfo->filePath);
+            OpenFileInProcess(const_cast<wchar_t*>(cmd.c_str()));
+            return;
+        }
     }
 
     size_t       dotPos = pInfo->filePath.rfind('.');
@@ -3064,7 +3066,7 @@ void CSearchDlg::OpenFileAtListIndex(int listIndex)
         ext = pInfo->filePath.substr(dotPos);
 
     DWORD bufLen = 0;
-    if (AssocQueryString(ASSOCF_INIT_DEFAULTTOSTAR, ASSOCSTR_DDECOMMAND, ext.c_str(), nullptr, nullptr, &bufLen) == S_OK)
+    if (SUCCEEDED(AssocQueryString(ASSOCF_INIT_DEFAULTTOSTAR, ASSOCSTR_DDECOMMAND, ext.c_str(), nullptr, nullptr, &bufLen)))
     {
         if (bufLen)
         {
@@ -3077,6 +3079,12 @@ void CSearchDlg::OpenFileAtListIndex(int listIndex)
 
     bufLen = 0;
     AssocQueryString(ASSOCF_INIT_DEFAULTTOSTAR, ASSOCSTR_COMMAND, ext.c_str(), nullptr, nullptr, &bufLen);
+    if (bufLen == 0)
+    {
+        // fall back to using ShellExecute
+        ShellExecute(*this, nullptr, pInfo->filePath.c_str(), nullptr, nullptr, SW_SHOW);
+        return;
+    }
     auto cmdBuf = std::make_unique<wchar_t[]>(bufLen + 1LL);
     AssocQueryString(ASSOCF_INIT_DEFAULTTOSTAR, ASSOCSTR_COMMAND, ext.c_str(), nullptr, cmdBuf.get(), &bufLen);
     std::wstring application = cmdBuf.get();
