@@ -127,7 +127,9 @@ std::wstring GetModuleDir(HMODULE hMod /*= nullptr*/)
     return GetParentDirectory(GetModulePath(hMod));
 }
 
-class ExplorerCommandBase : public RuntimeClass<RuntimeClassFlags<WinRtClassicComMix | InhibitRoOriginateError>, IExplorerCommand, IObjectWithSite>
+// note: for the top context menu, 'ClassicCom' is required since 'WinRtClassicComMix' will lead to
+// IOleWindow->GetWindow(&hWnd) to return a null hwnd.
+class ExplorerCommandBase : public RuntimeClass<RuntimeClassFlags<ClassicCom | InhibitRoOriginateError>, IExplorerCommand, IObjectWithSite>
 {
 public:
     virtual const wchar_t* Title(IShellItemArray* items) = 0;
@@ -291,9 +293,9 @@ public:
                     }
                 }
 
-                path                        = L"/searchpath:\"" + path + L"\"";
+                path = L"/searchpath:\"" + path + L"\"";
 
-                                        // try to launch the exe with the explorer instance:
+                // try to launch the exe with the explorer instance:
                 // this avoids that the exe is started with the identity of this dll,
                 // starting it as if it was started the normal way.
                 bool                     execSucceeded = false;
