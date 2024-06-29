@@ -3041,7 +3041,10 @@ LRESULT CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
             }
             if (pFindItem->lvfi.flags & LVFI_WRAP)
             {
-                for (size_t i = 0; i < min(pFindItem->iStart, m_items.size()); ++i)
+                size_t end = pFindItem->iStart;
+                if (end > m_items.size())
+                    end = static_cast<size_t>(m_items.size());
+                for (size_t i = 0; i < end; ++i)
                 {
                     auto name = m_items[i].filePath.substr(m_items[i].filePath.find_last_of('\\') + 1);
                     ;
