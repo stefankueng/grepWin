@@ -904,8 +904,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                     {
                         return ColorizeMatchResultProc(reinterpret_cast<LPNMLVCUSTOMDRAW>(lParam));
                     }
-                    DoListNotify(reinterpret_cast<LPNMITEMACTIVATE>(lParam));
-                    break;
+                    return DoListNotify(reinterpret_cast<LPNMITEMACTIVATE>(lParam));
                 }
                 case IDOK:
                     switch (reinterpret_cast<LPNMHDR>(lParam)->code)
@@ -2636,7 +2635,7 @@ LRESULT CSearchDlg::ColorizeMatchResultProc(LPNMLVCUSTOMDRAW lpLVCD)
     return CDRF_DODEFAULT;
 }
 
-void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
+LRESULT CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
 {
     if (lpNMItemActivate->hdr.code == NM_DBLCLK)
     {
@@ -2673,7 +2672,8 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
         HWND       hListControl = GetDlgItem(*this, IDC_RESULTLIST);
         int        nCount       = ListView_GetItemCount(hListControl);
         if (nCount == 0)
-            return;
+            return 0L;
+        ;
 
         int  iItem    = -1;
         bool fileList = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
@@ -3024,6 +3024,37 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
             }
         }
     }
+    else if (lpNMItemActivate->hdr.code == LVN_ODFINDITEM)
+    {
+        NMLVFINDITEM* pFindItem = reinterpret_cast<NMLVFINDITEM*>(lpNMItemActivate);
+        if (pFindItem->lvfi.flags & LVFI_STRING)
+        {
+            auto findLen = wcslen(pFindItem->lvfi.psz);
+            for (size_t i = pFindItem->iStart; i < m_items.size(); ++i)
+            {
+                auto name = m_items[i].filePath.substr(m_items[i].filePath.find_last_of('\\') + 1);
+                ;
+                if (_wcsnicmp(name.c_str(), pFindItem->lvfi.psz, findLen) == 0)
+                {
+                    return i;
+                }
+            }
+            if (pFindItem->lvfi.flags & LVFI_WRAP)
+            {
+                for (size_t i = 0; i < min(pFindItem->iStart, m_items.size()); ++i)
+                {
+                    auto name = m_items[i].filePath.substr(m_items[i].filePath.find_last_of('\\') + 1);
+                    ;
+                    if (_wcsnicmp(name.c_str(), pFindItem->lvfi.psz, findLen) == 0)
+                    {
+                        return i;
+                    }
+                }
+            }
+        }
+        return -1L;
+    }
+    return 0L;
 }
 
 void static OpenFileInProcess(LPWSTR lpCommandLine)
