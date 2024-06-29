@@ -4020,7 +4020,7 @@ int CSearchDlg::SearchOnTextFile(CSearchInfo& sInfo, const std::wstring& searchR
                 auto out = whatC.format(m_replaceString, mFlags);
                 sInfo.matchLines.push_back(out);
                 sInfo.matchLinesNumbers.push_back(lineStart);
-                sInfo.matchColumnsNumbers.push_back(colMatch);
+                sInfo.matchColumnsNumbers.push_back(colMatch - 1);
                 sInfo.matchLengths.push_back(static_cast<long>(out.length()));
             }
             else
@@ -4035,7 +4035,7 @@ int CSearchDlg::SearchOnTextFile(CSearchInfo& sInfo, const std::wstring& searchR
                     }
                     sInfo.matchLines.push_back(std::move(sLine));
                     sInfo.matchLinesNumbers.push_back(l);
-                    sInfo.matchColumnsNumbers.push_back(colMatch);
+                    sInfo.matchColumnsNumbers.push_back(colMatch - 1);
                     sInfo.matchLengths.push_back(lenLineMatch);
                     if (lenMatch > lenLineMatch)
                     {
