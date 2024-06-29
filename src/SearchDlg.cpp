@@ -2990,9 +2990,11 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
                             std::wstring line;
                             if (pInfo->matchLines.size() > static_cast<size_t>(subIndex))
                                 line = pInfo->matchLines[subIndex];
-                            std::ranges::replace(line, '\t', ' ');
-                            std::ranges::replace(line, '\n', ' ');
-                            std::ranges::replace(line, '\r', ' ');
+                            for (auto& c : line)
+                            {
+                                if (c < 32)
+                                    c = c + 0x2400;
+                            }
                             wcsncpy_s(pItem->pszText, pItem->cchTextMax, line.c_str(), pItem->cchTextMax - 1LL);
                         }
                         break;
@@ -4110,10 +4112,10 @@ std::wstring ConvertToWstring(const std::string& str, CTextFile::UnicodeType enc
     switch (encoding)
     {
         case CTextFile::Ansi:
-            strW = MultibyteToWide(str);
+            strW = MultibyteToWide(str, false);
             break;
         case CTextFile::UTF8:
-            strW = UTF8ToWide(str);
+            strW = UTF8ToWide(str, false);
             break;
         default:
         {
