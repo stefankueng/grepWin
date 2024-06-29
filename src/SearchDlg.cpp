@@ -2732,10 +2732,20 @@ void CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
                 }
                 break;
             case 4:
-                if (m_bAscending)
-                    std::ranges::sort(m_items, CSearchInfo::ExtCompareAsc);
+                if (fileList)
+                {
+                    if (m_bAscending)
+                        std::ranges::sort(m_items, CSearchInfo::ExtCompareAsc);
+                    else
+                        std::ranges::sort(m_items, CSearchInfo::ExtCompareDesc);
+                }
                 else
-                    std::ranges::sort(m_items, CSearchInfo::ExtCompareDesc);
+                {
+                    if (m_bAscending)
+                        std::ranges::sort(m_items, CSearchInfo::PathCompareAsc);
+                    else
+                        std::ranges::sort(m_items, CSearchInfo::PathCompareDesc);
+                }
                 bDidSort = true;
                 break;
             case 5:
