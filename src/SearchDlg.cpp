@@ -1311,7 +1311,6 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 ShowWindow(GetDlgItem(*this, IDC_EXPORT), SW_HIDE);
                 m_items.clear();
                 m_listItems.clear();
-                m_listItems.reserve(500000);
                 m_backupAndTempFiles.clear();
 
                 HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
@@ -1934,7 +1933,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                                 {
                                     if (needSeparator)
                                         file << separator;
-                                    auto line = item.matchLines[i];
+                                    auto line = item.matchLinesMap.at(item.matchLinesNumbers[i]);
                                     CStringUtils::rtrim(line, L"\r\n");
                                     file << CUnicodeUtils::StdGetUTF8(line);
                                 }
@@ -2303,9 +2302,9 @@ void CSearchDlg::ShowContextMenu(HWND hWnd, int x, int y)
                                 case 3: // line
                                 {
                                     std::wstring line;
-                                    if (pInfo->matchLines.size() > static_cast<size_t>(subIndex))
+                                    if (pInfo->matchLinesMap.contains(pInfo->matchLinesNumbers[subIndex]))
                                     {
-                                        line = pInfo->matchLines[subIndex];
+                                        line = pInfo->matchLinesMap.at(pInfo->matchLinesNumbers[subIndex]);
                                         std::ranges::replace(line, '\n', ' ');
                                         std::ranges::replace(line, '\r', ' ');
                                     }
@@ -2352,8 +2351,8 @@ void CSearchDlg::ShowContextMenu(HWND hWnd, int x, int y)
                 dataLine.number = info.matchLinesNumbers[subIdx];
                 dataLine.column = info.matchColumnsNumbers[subIdx];
             }
-            if (static_cast<int>(info.matchLines.size()) > subIdx)
-                dataLine.text = info.matchLines[subIdx];
+            if (info.matchLinesMap.contains(info.matchLinesNumbers[subIdx]))
+                dataLine.text = info.matchLinesMap.at(info.matchLinesNumbers[subIdx]);
             data.lines.push_back(dataLine);
             lines.push_back(data);
         }
@@ -2561,12 +2560,12 @@ LRESULT CSearchDlg::ColorizeMatchResultProc(LPNMLVCUSTOMDRAW lpLVCD)
                 }
 
                 int subIndex = std::get<1>(tup);
-                if (static_cast<int>(pInfo->matchLines.size()) <= subIndex)
+                if (!pInfo->matchLinesMap.contains(pInfo->matchLinesNumbers[index]))
                 {
                     // don't have those details for large files
                     break;
                 }
-                int   lenText           = static_cast<int>(pInfo->matchLines[subIndex].length());
+                int   lenText           = static_cast<int>(pInfo->matchLinesMap[pInfo->matchLinesNumbers[index]].length());
 
                 auto  colMatch          = pInfo->matchColumnsNumbers[subIndex];
                 WCHAR textBuf[MAX_PATH] = {};
@@ -2767,9 +2766,7 @@ LRESULT CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
         }
         if (bDidSort)
         {
-            auto size = m_listItems.size();
             m_listItems.clear();
-            m_listItems.reserve(size);
 
             int index = 0;
             for (const auto& item : m_items)
@@ -2837,11 +2834,11 @@ LRESULT CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
         }
 
         std::wstring sFormat = TranslatedString(hResource, IDS_CONTEXTLINE);
-        int          leftMax = static_cast<int>(pInfo->matchLines.size());
+        int          leftMax = static_cast<int>(pInfo->matchLinesMap.size());
         int          showMax = min(leftMax, subIndex + 5);
         for (; subIndex < showMax; ++subIndex)
         {
-            std::wstring matchText = pInfo->matchLines[subIndex];
+            std::wstring matchText = pInfo->matchLinesMap[pInfo->matchLinesNumbers[subIndex]];
             CStringUtils::rtrim(matchText);
             DWORD iShow = 0;
             if (pInfo->matchColumnsNumbers[subIndex] > 8)
@@ -2998,8 +2995,8 @@ LRESULT CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
                         case 3: // line
                         {
                             std::wstring line;
-                            if (pInfo->matchLines.size() > static_cast<size_t>(subIndex))
-                                line = pInfo->matchLines[subIndex];
+                            if (pInfo->matchLinesMap.contains(pInfo->matchLinesNumbers[subIndex]))
+                                line = pInfo->matchLinesMap.at(pInfo->matchLinesNumbers[subIndex]);
                             for (auto& c : line)
                             {
                                 if (c < 32)
@@ -3227,10 +3224,10 @@ void CSearchDlg::OpenFileAtListIndex(int listIndex)
     else if (appname.find(L"notepad2.exe") != std::wstring::npos)
     {
         std::wstring match;
-        if (pInfo->matchLines.size() > 0)
+        if (!pInfo->matchLinesMap.empty())
         {
             // not binary
-            match = pInfo->matchLines[subIndex].substr(pInfo->matchColumnsNumbers[subIndex] - 1, pInfo->matchLengths[subIndex]);
+            match = pInfo->matchLinesMap[pInfo->matchLinesNumbers[subIndex]].substr(pInfo->matchColumnsNumbers[subIndex] - 1, pInfo->matchLengths[subIndex]);
             escapeForRegexEx(match, 1);
             if (match.length() > 32767 - 1 - 2 - 2 - 13 - pInfo->filePath.length() - reservedLength)
             {
@@ -4097,23 +4094,29 @@ int CSearchDlg::SearchOnTextFile(CSearchInfo& sInfo, const std::wstring& searchR
             long lenMatch  = static_cast<long>(whatC[0].length());
             if (m_bCaptureSearch)
             {
-                auto out = whatC.format(m_replaceString, mFlags);
-                sInfo.matchLines.push_back(out);
+                if (!sInfo.matchLinesMap.contains(lineStart))
+                {
+                    auto out                       = whatC.format(m_replaceString, mFlags);
+                    sInfo.matchLinesMap[lineStart] = out;
+                }
                 sInfo.matchLinesNumbers.push_back(lineStart);
                 sInfo.matchColumnsNumbers.push_back(colMatch - 1);
-                sInfo.matchLengths.push_back(static_cast<long>(out.length()));
+                sInfo.matchLengths.push_back(static_cast<long>(sInfo.matchLinesMap.at(lineStart).length()));
             }
             else
             {
                 for (long l = lineStart; l <= lineEnd; ++l)
                 {
-                    auto sLine        = textFile.GetLineString(l);
-                    long lenLineMatch = static_cast<long>(sLine.length()) - colMatch + 1;
-                    if (lenMatch < lenLineMatch)
+                    if (!sInfo.matchLinesMap.contains(l))
                     {
-                        lenLineMatch = lenMatch;
+                        auto sLine             = textFile.GetLineString(l);
+                        sInfo.matchLinesMap[l] = sLine;
                     }
-                    sInfo.matchLines.push_back(std::move(sLine));
+                    const auto& sLine        = sInfo.matchLinesMap.at(l);
+                    long        lenLineMatch = static_cast<long>(sLine.length()) - colMatch + 1;
+                    if (lenMatch < lenLineMatch)
+                        lenLineMatch = lenMatch;
+
                     sInfo.matchLinesNumbers.push_back(l);
                     sInfo.matchColumnsNumbers.push_back(colMatch - 1);
                     sInfo.matchLengths.push_back(lenLineMatch);
@@ -4184,7 +4187,7 @@ std::wstring utf16Swap(const std::wstring& str)
     return swapped;
 }
 
-std::wstring ConvertToWstring(const std::string& str, CTextFile::UnicodeType encoding)
+std::wstring ConvertToWstring(const std::string_view& str, CTextFile::UnicodeType encoding)
 {
     std::wstring strW;
     switch (encoding)
@@ -4197,7 +4200,7 @@ std::wstring ConvertToWstring(const std::string& str, CTextFile::UnicodeType enc
             break;
         default:
         {
-            strW = std::wstring(reinterpret_cast<const wchar_t*>(str.c_str()), str.length() / 2);
+            strW = std::wstring(reinterpret_cast<const wchar_t*>(str.data()), str.length() / 2);
             if (encoding == CTextFile::Unicode_Be)
                 strW = utf16Swap(strW);
         }
@@ -4458,25 +4461,32 @@ int CSearchDlg::SearchByFilePath(CSearchInfo& sInfo, const std::wstring& searchR
                 {
                     if constexpr (std::is_same_v<CharT, wchar_t>)
                     {
-                        auto sLine = std::basic_string<CharT>(static_cast<const CharT*>(start + lineStart), lineLength);
-                        if (sInfo.encoding == CTextFile::Unicode_Be)
-                            sLine = utf16Swap(sLine);
-                        lenMatchLength = min(lenMatchLength, static_cast<DWORD>(sLine.length() - sInfo.matchColumnsNumbers[mp]));
-                        sInfo.matchLines.push_back(std::move(sLine));
+                        if (!sInfo.matchLinesMap.contains(pos))
+                        {
+                            auto sLine = std::basic_string<CharT>(static_cast<const CharT*>(start + lineStart), lineLength);
+                            if (sInfo.encoding == CTextFile::Unicode_Be)
+                                sLine = utf16Swap(sLine);
+                            sInfo.matchLinesMap[pos] = sLine;
+                        }
+                        const auto& sLine = sInfo.matchLinesMap[pos];
+                        lenMatchLength    = min(lenMatchLength, static_cast<DWORD>(sLine.length() - sInfo.matchColumnsNumbers[mp]));
                         sInfo.matchLengths.push_back(lenMatchLength);
                     }
                     else
                     {
-                        auto sLineA    = std::basic_string<CharT>(static_cast<const CharT*>(start + lineStart), lineLength);
+                        auto sLineA    = std::basic_string_view<CharT>(static_cast<const CharT*>(start + lineStart), lineLength);
                         lenMatchLength = min(lenMatchLength, static_cast<DWORD>(sLineA.length() - sInfo.matchColumnsNumbers[mp]));
-                        auto sLine     = ConvertToWstring(sLineA, sInfo.encoding);
-                        sInfo.matchLines.push_back(std::move(sLine));
+                        if (!sInfo.matchLinesMap.contains(pos))
+                        {
+                            auto sLine               = ConvertToWstring(sLineA, sInfo.encoding);
+                            sInfo.matchLinesMap[pos] = sLine;
+                        }
                         sInfo.matchLengths.push_back(lenMatchLength);
                     }
                 }
                 else
                 {
-                    sInfo.matchLines.push_back(L"");
+                    sInfo.matchLinesMap[pos] = L"";
                     sInfo.matchLengths.push_back(0);
                 }
             }

@@ -22,26 +22,24 @@
 CSearchInfo::CSearchInfo()
     : fileSize(0)
     , matchCount(0)
+    , modifiedTime{}
     , encoding(CTextFile::UnicodeType::AutoType)
     , hasBackedup(false)
     , readError(false)
     , folder(false)
 {
-    modifiedTime.dwHighDateTime = 0;
-    modifiedTime.dwLowDateTime  = 0;
 }
 
 CSearchInfo::CSearchInfo(const std::wstring& path)
     : filePath(path)
     , fileSize(0)
     , matchCount(0)
+    , modifiedTime{}
     , encoding(CTextFile::UnicodeType::AutoType)
     , hasBackedup(false)
     , readError(false)
     , folder(false)
 {
-    modifiedTime.dwHighDateTime = 0;
-    modifiedTime.dwLowDateTime  = 0;
 }
 
 CSearchInfo::~CSearchInfo()
@@ -146,8 +144,7 @@ bool CSearchInfo::ExtCompareDesc(const CSearchInfo& entry1, const CSearchInfo& e
 
 bool CSearchInfo::operator<(const CSearchInfo& other) const
 {
-    auto res = _wcsicmp(filePath.c_str(), other.filePath.c_str());
-    if (res != 0)
+    if (auto res = _wcsicmp(filePath.c_str(), other.filePath.c_str()))
         return res < 0;
     if (fileSize != other.fileSize)
         return fileSize < other.fileSize;
@@ -161,7 +158,7 @@ bool CSearchInfo::operator<(const CSearchInfo& other) const
         return CompareFileTime(&modifiedTime, &other.modifiedTime) < 0;
     if (matchLinesNumbers != other.matchLinesNumbers)
         return matchLinesNumbers < other.matchLinesNumbers;
-    if (matchLines != other.matchLines)
-        return matchLines < other.matchLines;
+    if (matchLinesMap != other.matchLinesMap)
+        return matchLinesMap < other.matchLinesMap;
     return false;
 }

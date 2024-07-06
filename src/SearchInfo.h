@@ -18,7 +18,8 @@
 //
 #pragma once
 #include <string>
-#include <vector>
+#include <deque>
+#include <map>
 #include "TextFile.h"
 
 class CSearchInfo
@@ -26,41 +27,41 @@ class CSearchInfo
 public:
     CSearchInfo();
     CSearchInfo(const std::wstring& path);
-    CSearchInfo(const CSearchInfo& other) = default;
+    CSearchInfo(const CSearchInfo& other)            = default;
     CSearchInfo& operator=(const CSearchInfo& other) = default;
-    CSearchInfo(CSearchInfo&& other) = default;
-    CSearchInfo& operator=(CSearchInfo&& other) = default;
+    CSearchInfo(CSearchInfo&& other)                 = default;
+    CSearchInfo& operator=(CSearchInfo&& other)      = default;
     ~CSearchInfo();
 
-    static bool               NameCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2);
-    static bool               SizeCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2);
-    static bool               MatchesCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2);
-    static bool               PathCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2);
-    static bool               EncodingCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2);
-    static bool               ModifiedTimeCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2);
-    static bool               ExtCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2);
+    static bool                   NameCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2);
+    static bool                   SizeCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2);
+    static bool                   MatchesCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2);
+    static bool                   PathCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2);
+    static bool                   EncodingCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2);
+    static bool                   ModifiedTimeCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2);
+    static bool                   ExtCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2);
 
-    static bool               NameCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2);
-    static bool               SizeCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2);
-    static bool               MatchesCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2);
-    static bool               PathCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2);
-    static bool               EncodingCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2);
-    static bool               ModifiedTimeCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2);
-    static bool               ExtCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2);
+    static bool                   NameCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2);
+    static bool                   SizeCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2);
+    static bool                   MatchesCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2);
+    static bool                   PathCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2);
+    static bool                   EncodingCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2);
+    static bool                   ModifiedTimeCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2);
+    static bool                   ExtCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2);
 
-    bool                      operator<(const CSearchInfo& other) const;
+    bool                          operator<(const CSearchInfo& other) const;
 
-    std::wstring              filePath;
-    __int64                   fileSize;
-    std::vector<DWORD>        matchLinesNumbers;
-    std::vector<DWORD>        matchColumnsNumbers;
-    std::vector<DWORD>        matchLengths;
-    std::vector<std::wstring> matchLines;
-    __int64                   matchCount;
-    CTextFile::UnicodeType    encoding;
-    FILETIME                  modifiedTime;
-    bool                      hasBackedup;
-    bool                      readError;
-    bool                      folder;
-    std::wstring              exception;
+    std::wstring                  filePath;
+    __int64                       fileSize;
+    std::deque<DWORD>             matchLinesNumbers;
+    std::deque<DWORD>             matchColumnsNumbers;
+    std::deque<DWORD>             matchLengths;
+    std::map<DWORD, std::wstring> matchLinesMap;
+    __int64                       matchCount;
+    FILETIME                      modifiedTime;
+    CTextFile::UnicodeType        encoding;
+    bool                          hasBackedup;
+    bool                          readError;
+    bool                          folder;
+    std::wstring                  exception;
 };

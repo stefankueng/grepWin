@@ -195,8 +195,8 @@ private:
     bool                              m_bConfirmationOnReplace;
     bool                              m_showContent;
     bool                              m_showContentSet;
-    std::vector<CSearchInfo>          m_items;
-    std::vector<std::tuple<int, int>> m_listItems;
+    std::deque<CSearchInfo>           m_items;
+    std::deque<std::tuple<int, int>>  m_listItems;
     std::set<std::wstring>            m_backupAndTempFiles;
     int                               m_totalItems;
     int                               m_searchedItems;
