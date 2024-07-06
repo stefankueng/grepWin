@@ -3029,28 +3029,62 @@ LRESULT CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
         NMLVFINDITEM* pFindItem = reinterpret_cast<NMLVFINDITEM*>(lpNMItemActivate);
         if (pFindItem->lvfi.flags & LVFI_STRING)
         {
-            auto findLen = wcslen(pFindItem->lvfi.psz);
-            for (size_t i = pFindItem->iStart; i < m_items.size(); ++i)
+            bool fileList = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
+
+            auto findLen  = wcslen(pFindItem->lvfi.psz);
+            if (fileList)
             {
-                auto name = m_items[i].filePath.substr(m_items[i].filePath.find_last_of('\\') + 1);
-                ;
-                if (_wcsnicmp(name.c_str(), pFindItem->lvfi.psz, findLen) == 0)
-                {
-                    return i;
-                }
-            }
-            if (pFindItem->lvfi.flags & LVFI_WRAP)
-            {
-                size_t end = pFindItem->iStart;
-                if (end > m_items.size())
-                    end = static_cast<size_t>(m_items.size());
-                for (size_t i = 0; i < end; ++i)
+                for (size_t i = pFindItem->iStart; i < m_items.size(); ++i)
                 {
                     auto name = m_items[i].filePath.substr(m_items[i].filePath.find_last_of('\\') + 1);
                     ;
                     if (_wcsnicmp(name.c_str(), pFindItem->lvfi.psz, findLen) == 0)
                     {
                         return i;
+                    }
+                }
+                if (pFindItem->lvfi.flags & LVFI_WRAP)
+                {
+                    size_t end = pFindItem->iStart;
+                    if (end > m_items.size())
+                        end = static_cast<size_t>(m_items.size());
+                    for (size_t i = 0; i < end; ++i)
+                    {
+                        auto name = m_items[i].filePath.substr(m_items[i].filePath.find_last_of('\\') + 1);
+                        ;
+                        if (_wcsnicmp(name.c_str(), pFindItem->lvfi.psz, findLen) == 0)
+                        {
+                            return i;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                for (size_t i = pFindItem->iStart; i < m_listItems.size(); ++i)
+                {
+                    auto index = std::get<0>(m_listItems[i]);
+                    auto name  = m_items[index].filePath.substr(m_items[index].filePath.find_last_of('\\') + 1);
+                    ;
+                    if (_wcsnicmp(name.c_str(), pFindItem->lvfi.psz, findLen) == 0)
+                    {
+                        return i;
+                    }
+                }
+                if (pFindItem->lvfi.flags & LVFI_WRAP)
+                {
+                    size_t end = pFindItem->iStart;
+                    if (end > m_listItems.size())
+                        end = static_cast<size_t>(m_listItems.size());
+                    for (size_t i = 0; i < end; ++i)
+                    {
+                        auto index = std::get<0>(m_listItems[i]);
+                        auto name  = m_items[index].filePath.substr(m_items[index].filePath.find_last_of('\\') + 1);
+                        ;
+                        if (_wcsnicmp(name.c_str(), pFindItem->lvfi.psz, findLen) == 0)
+                        {
+                            return i;
+                        }
                     }
                 }
             }
