@@ -243,6 +243,12 @@
         <include name="website.url" />
       </fileset>
     </zip>
+    <!-- zip all pdbs -->
+    <zip zipfile="bin\grepWin-${verstring}_pdbs.zip" ziplevel="9">
+      <fileset basedir="bin">
+        <include name="release*/grepWin.pdb" />
+      </fileset>
+    </zip>
 
     <exec program="checksum" output="bin\checksum.txt">
       <arg value="-t" />

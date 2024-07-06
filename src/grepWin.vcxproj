@@ -1,5 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Microsoft.SourceLink.GitHub.8.0.0\build\Microsoft.SourceLink.GitHub.props" Condition="Exists('..\packages\Microsoft.SourceLink.GitHub.8.0.0\build\Microsoft.SourceLink.GitHub.props')" />
+  <Import Project="..\packages\Microsoft.SourceLink.Common.8.0.0\build\Microsoft.SourceLink.Common.props" Condition="Exists('..\packages\Microsoft.SourceLink.Common.8.0.0\build\Microsoft.SourceLink.Common.props')" />
+  <Import Project="..\packages\Microsoft.Build.Tasks.Git.8.0.0\build\Microsoft.Build.Tasks.Git.props" Condition="Exists('..\packages\Microsoft.Build.Tasks.Git.8.0.0\build\Microsoft.Build.Tasks.Git.props')" />
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -333,6 +336,9 @@
     <Import Project="..\packages\boost_filesystem-vc143.1.85.0\build\boost_filesystem-vc143.targets" Condition="Exists('..\packages\boost_filesystem-vc143.1.85.0\build\boost_filesystem-vc143.targets')" />
     <Import Project="..\packages\boost_iostreams-vc143.1.85.0\build\boost_iostreams-vc143.targets" Condition="Exists('..\packages\boost_iostreams-vc143.1.85.0\build\boost_iostreams-vc143.targets')" />
     <Import Project="..\packages\boost_regex-vc143.1.85.0\build\boost_regex-vc143.targets" Condition="Exists('..\packages\boost_regex-vc143.1.85.0\build\boost_regex-vc143.targets')" />
+    <Import Project="..\packages\Microsoft.Build.Tasks.Git.8.0.0\build\Microsoft.Build.Tasks.Git.targets" Condition="Exists('..\packages\Microsoft.Build.Tasks.Git.8.0.0\build\Microsoft.Build.Tasks.Git.targets')" />
+    <Import Project="..\packages\Microsoft.SourceLink.Common.8.0.0\build\Microsoft.SourceLink.Common.targets" Condition="Exists('..\packages\Microsoft.SourceLink.Common.8.0.0\build\Microsoft.SourceLink.Common.targets')" />
+    <Import Project="..\packages\Microsoft.SourceLink.GitHub.8.0.0\build\Microsoft.SourceLink.GitHub.targets" Condition="Exists('..\packages\Microsoft.SourceLink.GitHub.8.0.0\build\Microsoft.SourceLink.GitHub.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
@@ -342,5 +348,11 @@
     <Error Condition="!Exists('..\packages\boost_filesystem-vc143.1.85.0\build\boost_filesystem-vc143.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_filesystem-vc143.1.85.0\build\boost_filesystem-vc143.targets'))" />
     <Error Condition="!Exists('..\packages\boost_iostreams-vc143.1.85.0\build\boost_iostreams-vc143.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_iostreams-vc143.1.85.0\build\boost_iostreams-vc143.targets'))" />
     <Error Condition="!Exists('..\packages\boost_regex-vc143.1.85.0\build\boost_regex-vc143.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_regex-vc143.1.85.0\build\boost_regex-vc143.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.Build.Tasks.Git.8.0.0\build\Microsoft.Build.Tasks.Git.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Build.Tasks.Git.8.0.0\build\Microsoft.Build.Tasks.Git.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.Build.Tasks.Git.8.0.0\build\Microsoft.Build.Tasks.Git.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Build.Tasks.Git.8.0.0\build\Microsoft.Build.Tasks.Git.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.SourceLink.Common.8.0.0\build\Microsoft.SourceLink.Common.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.SourceLink.Common.8.0.0\build\Microsoft.SourceLink.Common.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.SourceLink.Common.8.0.0\build\Microsoft.SourceLink.Common.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.SourceLink.Common.8.0.0\build\Microsoft.SourceLink.Common.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.SourceLink.GitHub.8.0.0\build\Microsoft.SourceLink.GitHub.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.SourceLink.GitHub.8.0.0\build\Microsoft.SourceLink.GitHub.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.SourceLink.GitHub.8.0.0\build\Microsoft.SourceLink.GitHub.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.SourceLink.GitHub.8.0.0\build\Microsoft.SourceLink.GitHub.targets'))" />
   </Target>
 </Project>
