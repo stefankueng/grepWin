@@ -45,7 +45,7 @@ msgstr "%ld meer overeenkomsten"
 
 #. Resource IDs: (1069)
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset"
-msgstr ""
+msgstr "%path% wordt vervangen door het pad van het bestand, %line% met de lijn om naar te springen, %column% met regelverschuiving"
 
 #. Resource IDs: (119)
 msgid "&About grepWin..."
@@ -118,7 +118,7 @@ msgstr "Afbreken"
 
 #. Resource IDs: (169)
 msgid "Capture search (Shows replaced text)"
-msgstr ""
+msgstr "Zoekopdracht vastleggen (vervangen tekst weergegeven)"
 
 #. Resource IDs: (1088)
 msgid "Check for updates"
@@ -126,11 +126,11 @@ msgstr "Controleren op updates"
 
 #. Resource IDs: (180)
 msgid "Column"
-msgstr ""
+msgstr "Kolom"
 
 #. Resource IDs: (1068)
 msgid "Command line to start an editor at a specific line and in line offset:"
-msgstr ""
+msgstr "Opdrachtregel om een editor te starten op een specifieke regel en regelverschuiving:"
 
 #. Resource IDs: (1060)
 msgid "Content"
@@ -138,11 +138,11 @@ msgstr "Inhoud"
 
 #. Resource IDs: (177)
 msgid "Copy column for all items"
-msgstr ""
+msgstr "Kopieer kolom voor alle items"
 
 #. Resource IDs: (178)
 msgid "Copy column for selected items"
-msgstr ""
+msgstr "Kopieer kolom voor geselecteerde items"
 
 #. Resource IDs: (145)
 msgid "Copy filename to clipboard"
@@ -275,7 +275,7 @@ msgstr "Inclusief submappen"
 
 #. Resource IDs: (1092)
 msgid "Include symbolic links"
-msgstr ""
+msgstr "Inclusief symbolische links"
 
 #. Resource IDs: (1009)
 msgid "Include system items"
@@ -287,7 +287,7 @@ msgstr "Ongeldig pad!"
 
 #. Resource IDs: (161)
 msgid "Inverse search"
-msgstr ""
+msgstr "Omgekeerde zoekrichting"
 
 #. Resource IDs: (1019)
 msgid "KB"
@@ -295,7 +295,7 @@ msgstr "KB"
 
 #. Resource IDs: (1062)
 msgid "Keep file date when replacing"
-msgstr ""
+msgstr "Bestandsdatum behouden"
 
 #. Resource IDs: (1075)
 msgid "Language:"
@@ -312,7 +312,7 @@ msgstr "Regel"
 #. Resource IDs: (150)
 #, c-format
 msgid "Line %5ld : %s\n"
-msgstr ""
+msgstr "Regel %5ld : %s\n"
 
 #. Resource IDs: (135)
 msgid "Matches"
@@ -400,7 +400,7 @@ msgstr "Regex tekenreeks"
 
 #. Resource IDs: (179)
 msgid "Regex stack error"
-msgstr ""
+msgstr "Regex stack error"
 
 #. Resource IDs: (152)
 msgid "Relative paths are not allowed. Please enter an absolute path!"
@@ -499,7 +499,7 @@ msgstr "Tekst zoeken"
 #. Resource IDs: (160)
 #, c-format
 msgid "The path \"%s\" does not exist or is not accessible!"
-msgstr ""
+msgstr "Het pad \"%s\" bestaat niet of is niet toegankelijk!"
 
 #. Resource IDs: (65535)
 msgid "The regex search string matches:"
@@ -524,7 +524,7 @@ msgstr "De optie \"%s\" is ingeschakeld.\r\nBij het vervangen kan deze optie lei
 
 #. Resource IDs: (1025)
 msgid "\\"
-msgstr ""
+msgstr "\\"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
@@ -613,7 +613,7 @@ msgstr ""
 
 #. Resource IDs: (176)
 msgid "open list with recent entries"
-msgstr ""
+msgstr "open lijst met recente vermeldingen"
 
 #. Resource IDs: (129)
 msgid "read error"
@@ -650,7 +650,7 @@ msgstr "Je kunt mappen uitsluiten, bijv. CVS en afbeeldingen.\r\nVoorbeeld: ^(CV
 
 #. Resource IDs: (1064, 1066, 1067)
 msgid "|"
-msgstr ""
+msgstr "|"
 
 #. Resource IDs: (1024)
 msgid "⑂"
