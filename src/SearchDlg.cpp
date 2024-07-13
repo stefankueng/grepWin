@@ -2010,7 +2010,6 @@ void CSearchDlg::SaveWndPosition()
 
 void CSearchDlg::UpdateInfoLabel()
 {
-    auto         formatNum = [](auto num) { return std::format(L"{:L}", num); };
     std::wstring sText;
     wchar_t      buf[1024] = {};
     if (m_searchString.empty())
