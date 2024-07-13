@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008, 2012-2013, 2019-2021 - Stefan Kueng
+// Copyright (C) 2007-2008, 2012-2013, 2019-2021, 2024 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -22,10 +22,7 @@
 #include "Theme.h"
 #include <string>
 
-#pragma warning(push)
-#pragma warning(disable : 4996) // warning STL4010: Various members of std::allocator are deprecated in C++17
 #include <boost/regex.hpp>
-#pragma warning(pop)
 
 CNameDlg::CNameDlg(HWND hParent)
     : m_hParent(hParent)

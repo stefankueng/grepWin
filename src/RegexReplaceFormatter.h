@@ -22,10 +22,7 @@
 #include <algorithm>
 #include <map>
 #include "StringUtils.h"
-#pragma warning(push)
-#pragma warning(disable : 4996) // warning STL4010: Various members of std::allocator are deprecated in C++17
 #include <boost/regex.hpp>
-#pragma warning(pop)
 
 template<typename CharT>
 class NumberReplacer
