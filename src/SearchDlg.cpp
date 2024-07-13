@@ -2362,11 +2362,12 @@ void CSearchDlg::ShowContextMenu(HWND hWnd, int x, int y)
         return;
 
     std::vector<CSearchInfo> vPaths;
+    vPaths.reserve(pathMap.size());
     for (const auto& idx : pathMap | std::views::keys)
     {
         vPaths.push_back(m_items[idx]);
     }
-    shellMenu.SetObjects(vPaths, lines);
+    shellMenu.SetObjects(std::move(vPaths), std::move(lines));
 
     if ((x == -1) && (y == -1))
     {

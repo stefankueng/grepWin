@@ -30,7 +30,7 @@ struct LineData;
 class CShellContextMenu
 {
 public:
-    void SetObjects(const std::vector<CSearchInfo> &strVector, const std::vector<LineData> &lineVector);
+    void SetObjects(std::vector<CSearchInfo>&& strVector,  std::vector<LineData>&& lineVector);
     UINT ShowContextMenu(HWND hWnd, POINT pt);
     CShellContextMenu();
     virtual ~CShellContextMenu();
