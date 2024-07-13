@@ -24,7 +24,7 @@
 #include "StringUtils.h"
 #include <boost/regex.hpp>
 
-template<typename CharT>
+template <typename CharT>
 class NumberReplacer
 {
 public:
@@ -43,11 +43,10 @@ public:
     std::basic_string<CharT> expression;
 };
 
-std::wstring ExpandString(const std::wstring &replaceString);
-
+std::wstring ExpandString(const std::wstring& replaceString);
 
 // Iter is the same as the BidirectionalIterator in which `regex_replace` it is used
-template<typename CharT, typename Iter = std::basic_string<CharT>::const_iterator>
+template <typename CharT, typename Iter = typename std::basic_string<CharT>::const_iterator>
 class RegexReplaceFormatter
 {
 public:
@@ -65,40 +64,39 @@ public:
         // 0 and L are optional and specify the size of the right-aligned
         // number string. If 0 is specified, zeros are used for padding, otherwise spaces.
         // expr: "\\$\\{count(?<leadzero>0)?(?<length>\\d+)?(\\((?<startval>[-0-9]+)\\)||\\((?<startval>[-0-9]+),(?<increment>[-0-9]+)\\))?\\}"
-        CharT expr[] = {
+        constexpr CharT expr[] = {
             '\\', '$', '\\', '{',
-                'c', 'o', 'u', 'n', 't',
-                '(', '?', '<', 'l', 'e', 'a', 'd', 'z', 'e', 'r', 'o', '>', '0', ')', '?',
-                '(', '?', '<', 'l', 'e', 'n', 'g', 't', 'h', '>', '\\', 'd', '+', ')', '?',
-                '(',
-                    '\\', '(', '(', '?', '<', 's', 't', 'a', 'r', 't', 'v', 'a', 'l', '>', '[', '-', '0', '-', '9', ']', '+', ')', '\\', ')', '|', '|',
-                    '\\', '(', '(', '?', '<', 's', 't', 'a', 'r', 't', 'v', 'a', 'l', '>', '[', '-', '0', '-', '9', ']', '+', ')', ',',
-                               '(', '?', '<', 'i', 'n', 'c', 'r', 'e', 'm', 'e', 'n', 't', '>', '[', '-', '0', '-', '9', ']', '+', ')',
-                    '\\', ')',
-                ')', '?',
-            '\\', '}', 0
-        };
-        boost::basic_regex<CharT>                                      regEx = boost::basic_regex<CharT>(expr, boost::regex::normal);
-        boost::match_results<std::basic_string<CharT>::const_iterator> whatC;
-        typename std::basic_string<CharT>::const_iterator              start = m_sReplace.begin();
-        typename std::basic_string<CharT>::const_iterator              end   = m_sReplace.end();
-        boost::match_flag_type                                         flags = boost::match_default | boost::format_all;
+            'c', 'o', 'u', 'n', 't',
+            '(', '?', '<', 'l', 'e', 'a', 'd', 'z', 'e', 'r', 'o', '>', '0', ')', '?',
+            '(', '?', '<', 'l', 'e', 'n', 'g', 't', 'h', '>', '\\', 'd', '+', ')', '?',
+            '(',
+            '\\', '(', '(', '?', '<', 's', 't', 'a', 'r', 't', 'v', 'a', 'l', '>', '[', '-', '0', '-', '9', ']', '+', ')', '\\', ')', '|', '|',
+            '\\', '(', '(', '?', '<', 's', 't', 'a', 'r', 't', 'v', 'a', 'l', '>', '[', '-', '0', '-', '9', ']', '+', ')', ',',
+            '(', '?', '<', 'i', 'n', 'c', 'r', 'e', 'm', 'e', 'n', 't', '>', '[', '-', '0', '-', '9', ']', '+', ')',
+            '\\', ')',
+            ')', '?',
+            '\\', '}', 0};
+        boost::basic_regex<CharT>                                               regEx = boost::basic_regex<CharT>(expr, boost::regex::normal);
+        boost::match_results<typename std::basic_string<CharT>::const_iterator> whatC;
+        typename std::basic_string<CharT>::const_iterator                       start = m_sReplace.begin();
+        typename std::basic_string<CharT>::const_iterator                       end   = m_sReplace.end();
+        boost::match_flag_type                                                  flags = boost::match_default | boost::format_all;
         while (boost::regex_search(start, end, whatC, regEx, flags))
         {
             if (whatC[0].matched)
             {
                 NumberReplacer<CharT> nr;
-                CharT leadzero[]      = {'l', 'e', 'a', 'd', 'z', 'e', 'r', 'o', 0};
-                CharT zero[]          = {'0', 0};
-                nr.leadZero    = (static_cast<std::basic_string<CharT>>(whatC[leadzero]) == zero);
-                CharT length[] = {'l', 'e', 'n', 'g', 't', 'h', 0};
-                nr.padding     = t_ttoi(static_cast<std::basic_string<CharT>>(whatC[length]).c_str());
-                CharT startval[] = {'s', 't', 'a', 'r', 't', 'v', 'a', 'l', 0};
-                std::basic_string<CharT> s = static_cast<std::basic_string<CharT>>(whatC[startval]);
+                constexpr CharT       leadzero[]    = {'l', 'e', 'a', 'd', 'z', 'e', 'r', 'o', 0};
+                constexpr CharT       zero[]        = {'0', 0};
+                nr.leadZero                         = (static_cast<std::basic_string<CharT>>(whatC[leadzero]) == zero);
+                constexpr CharT length[]            = {'l', 'e', 'n', 'g', 't', 'h', 0};
+                nr.padding                          = t_ttoi(static_cast<std::basic_string<CharT>>(whatC[length]).c_str());
+                constexpr CharT          startval[] = {'s', 't', 'a', 'r', 't', 'v', 'a', 'l', 0};
+                std::basic_string<CharT> s          = static_cast<std::basic_string<CharT>>(whatC[startval]);
                 if (!s.empty())
                     nr.start = t_ttoi(s.c_str());
-                CharT increment[] = {'i', 'n', 'c', 'r', 'e', 'm', 'e', 'n', 't', 0};
-                s = static_cast<std::basic_string<CharT>>(whatC[increment]);
+                constexpr CharT increment[] = {'i', 'n', 'c', 'r', 'e', 'm', 'e', 'n', 't', 0};
+                s                           = static_cast<std::basic_string<CharT>>(whatC[increment]);
                 if (!s.empty())
                     nr.increment = t_ttoi(s.c_str());
                 if (nr.increment == 0)
@@ -131,64 +129,64 @@ public:
         std::basic_string<CharT> sReplace = what.format(m_sReplace);
         if (!m_replaceMap.empty())
         {
-            for (auto it = m_replaceMap.cbegin(); it != m_replaceMap.cend(); ++it)
+            for (const auto& [key, value] : m_replaceMap)
             {
-                auto itBegin = std::search(sReplace.begin(), sReplace.end(), it->first.begin(), it->first.end());
+                auto itBegin = std::search(sReplace.begin(), sReplace.end(), key.begin(), key.end());
                 while (itBegin != sReplace.end())
                 {
                     if ((itBegin == sReplace.begin()) || ((*(itBegin - 1)) != '\\'))
                     {
-                        auto itEnd = itBegin + it->first.size();
-                        sReplace.replace(itBegin, itEnd, it->second);
+                        auto itEnd = itBegin + key.size();
+                        sReplace.replace(itBegin, itEnd, value);
                     }
                     else if ((*(itBegin - 1)) == '\\')
                     {
                         sReplace.erase(itBegin - 1);
                     };
-                    itBegin = std::search(sReplace.begin(), sReplace.end(), it->first.begin(), it->first.end());
+                    itBegin = std::search(sReplace.begin(), sReplace.end(), key.begin(), key.end());
                 }
             }
         }
         if (!m_incVec.empty())
         {
-            for (auto it = m_incVec.begin(); it != m_incVec.end(); ++it)
+            for (auto& numberReplacer : m_incVec)
             {
-                auto itBegin = std::search(sReplace.begin(), sReplace.end(), it->expression.begin(), it->expression.end());
+                auto itBegin = std::search(sReplace.begin(), sReplace.end(), numberReplacer.expression.begin(), numberReplacer.expression.end());
                 if (itBegin != sReplace.end())
                 {
                     if ((itBegin == sReplace.begin()) || ((*(itBegin - 1)) != '\\'))
                     {
-                        auto    itEnd      = itBegin + it->expression.size();
-                        CharT   format[20] = {0};
-                        if (it->padding)
+                        auto  itEnd      = itBegin + numberReplacer.expression.size();
+                        CharT format[30] = {0};
+                        if (numberReplacer.padding)
                         {
-                            CharT *fmt;
-                            CharT fmt1[] = {'%', '%', '0', '%', 'd', 'd', 0};
-                            CharT fmt2[] = {'%', '%', '%', 'd', 'd', 0};
-                            if (it->leadZero)
+                            const CharT*    fmt;
+                            constexpr CharT fmt1[] = {'%', '%', '0', '%', 'd', 'd', 0};
+                            constexpr CharT fmt2[] = {'%', '%', '%', 'd', 'd', 0};
+                            if (numberReplacer.leadZero)
                                 fmt = fmt1;
                             else
                                 fmt = fmt2;
-                            t_stprintf_s(format, _countof(format), fmt, it->padding);
+                            t_stprintf_s(format, _countof(format), fmt, numberReplacer.padding);
                         }
                         else
                         {
-                            CharT fmt[] = {'%', 'd', 0};
+                            constexpr CharT fmt[] = {'%', 'd', 0};
                             t_tcscpy_s(format, fmt);
                         }
-                        if (it->padding < 50)
+                        if (numberReplacer.padding < 50)
                         {
                             // for small strings, reserve space on the stack
                             CharT buf[128] = {0};
-                            t_stprintf_s(buf, _countof(buf), format, it->start);
+                            t_stprintf_s(buf, _countof(buf), format, numberReplacer.start);
                             sReplace.replace(itBegin, itEnd, buf);
                         }
                         else
                         {
-                            auto s = CStringUtils::Format(format, it->start);
+                            auto s = CStringUtils::Format(format, numberReplacer.start);
                             sReplace.replace(itBegin, itEnd, s);
                         }
-                        it->start += it->increment;
+                        numberReplacer.start += numberReplacer.increment;
                     }
                     else if ((*(itBegin - 1)) == '\\')
                     {
@@ -202,49 +200,46 @@ public:
     }
 
 private:
-    int t_ttoi(const wchar_t *str)
+    static int t_ttoi(const wchar_t* str)
     {
         return _wtoi(str);
     }
 
-    int t_ttoi(const char *str)
+    static int t_ttoi(const char* str)
     {
         return atoi(str);
     }
 
-    int t_stprintf_s(wchar_t *buffer, size_t sizeOfBuffer, const wchar_t *format, ...)
+    static int t_stprintf_s(wchar_t* buffer, size_t sizeOfBuffer, const wchar_t* format, ...)
     {
-        int _Result;
-        va_list _ArgList;
-        __crt_va_start(_ArgList, format);
-        _Result = _vswprintf_s_l(buffer, sizeOfBuffer, format, NULL, _ArgList);
-        __crt_va_end(_ArgList);
-        return _Result;
+        va_list argList;
+        __crt_va_start(argList, format);
+        int result = _vswprintf_s_l(buffer, sizeOfBuffer, format, nullptr, argList);
+        __crt_va_end(argList);
+        return result;
     }
 
-    int t_stprintf_s(char *buffer, size_t sizeOfBuffer, const char *format, ...)
+    static int t_stprintf_s(char* buffer, size_t sizeOfBuffer, const char* format, ...)
     {
-        int _Result;
-        va_list _ArgList;
-        __crt_va_start(_ArgList, format);
-        _Result = _vsprintf_s_l(buffer, sizeOfBuffer, format, NULL, _ArgList);
-        __crt_va_end(_ArgList);
-        return _Result;
+        va_list argList;
+        __crt_va_start(argList, format);
+        int result = _vsprintf_s_l(buffer, sizeOfBuffer, format, nullptr, argList);
+        __crt_va_end(argList);
+        return result;
     }
 
-    template <size_t size>
-    errno_t t_tcscpy_s(wchar_t (&dest)[size], const wchar_t *src)
+    template <size_t Size>
+    static errno_t t_tcscpy_s(wchar_t (&dest)[Size], const wchar_t* src)
     {
-        return wcscpy_s(dest, size, src);
+        return wcscpy_s(dest, Size, src);
     }
 
-    template <size_t size>
-    errno_t t_tcscpy_s(char (&dest)[size], const char *src)
+    template <size_t Size>
+    static errno_t t_tcscpy_s(char (&dest)[Size], const char* src)
     {
-        return strcpy_s(dest, size, src);
+        return strcpy_s(dest, Size, src);
     }
 
-private:
     std::vector<NumberReplacer<CharT>>                           m_incVec;
     std::basic_string<CharT>                                     m_sReplace;
     std::map<std::basic_string<CharT>, std::basic_string<CharT>> m_replaceMap;
