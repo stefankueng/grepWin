@@ -2441,37 +2441,59 @@ bool CSearchDlg::PreTranslateMessage(MSG* pMsg)
             break;
             case 'C':
             {
-                if ((GetFocus() == hListControl) && bCtrl && !bShift && !bAlt)
+                if ((GetFocus() == hListControl) && bCtrl )
                 {
                     // copy all selected entries to the clipboard
-                    std::wstring clipBoardText;
-                    HWND         hHeader       = ListView_GetHeader(hListControl);
-                    int          columns       = Header_GetItemCount(hHeader);
-                    WCHAR        buf[MAX_PATH] = {};
-                    for (int i = 0; i < columns; ++i)
+                        std::wstring clipBoardText;
+                    if (bShift) // Ctrl+Shift+C : copy text of all columns
                     {
-                        HD_ITEM hdi    = {};
-                        hdi.mask       = HDI_TEXT;
-                        hdi.pszText    = buf;
-                        hdi.cchTextMax = _countof(buf);
-                        Header_GetItem(hHeader, i, &hdi);
-                        if (i > 0)
-                            clipBoardText += L"\t";
-                        clipBoardText += hdi.pszText;
-                    }
-                    clipBoardText += L"\r\n";
-
-                    int iItem = -1;
-                    while ((iItem = ListView_GetNextItem(hListControl, iItem, LVNI_SELECTED)) != (-1))
-                    {
+                        HWND         hHeader       = ListView_GetHeader(hListControl);
+                        int          columns       = Header_GetItemCount(hHeader);
+                        WCHAR        buf[MAX_PATH] = {};
                         for (int i = 0; i < columns; ++i)
                         {
-                            ListView_GetItemText(hListControl, iItem, i, buf, _countof(buf));
+                            HD_ITEM hdi    = {};
+                            hdi.mask       = HDI_TEXT;
+                            hdi.pszText    = buf;
+                            hdi.cchTextMax = _countof(buf);
+                            Header_GetItem(hHeader, i, &hdi);
                             if (i > 0)
                                 clipBoardText += L"\t";
-                            clipBoardText += buf;
+                            clipBoardText += hdi.pszText;
                         }
                         clipBoardText += L"\r\n";
+
+                        int iItem = -1;
+                        while ((iItem = ListView_GetNextItem(hListControl, iItem, LVNI_SELECTED)) != (-1))
+                        {
+                            for (int i = 0; i < columns; ++i)
+                            {
+                                ListView_GetItemText(hListControl, iItem, i, buf, _countof(buf));
+                                if (i > 0)
+                                    clipBoardText += L"\t";
+                                clipBoardText += buf;
+                            }
+                            clipBoardText += L"\r\n";
+                        }
+                    }
+                    else
+                    {
+                        // Ctrl+C : copy file paths
+                        // Ctrol+Alt+C : copy file names
+                        int  iItem    = -1;
+                        bool fileList = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
+                        while ((iItem = ListView_GetNextItem(hListControl, iItem, LVNI_SELECTED)) != (-1))
+                        {
+                            int selIndex = GetSelectedListIndex(fileList, iItem);
+                            if ((selIndex < 0) || (selIndex >= static_cast<int>(m_items.size())))
+                                continue;
+                            auto path = m_items[GetSelectedListIndex(fileList, iItem)].filePath;
+                            if (bAlt)
+                                path = path.substr(path.find_last_of('\\') + 1);
+                            clipBoardText += path;
+                            clipBoardText += L"\r\n";
+                        }
+
                     }
                     WriteAsciiStringToClipboard(clipBoardText.c_str(), *this);
                 }
