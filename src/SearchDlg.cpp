@@ -56,6 +56,7 @@
 
 #include <algorithm>
 #include <Commdlg.h>
+#include <format>
 #include <fstream>
 #include <iterator>
 #include <numeric>
@@ -2009,25 +2010,36 @@ void CSearchDlg::SaveWndPosition()
 
 void CSearchDlg::UpdateInfoLabel()
 {
+    auto         formatNum = [](auto num) { return std::format(L"{:L}", num); };
     std::wstring sText;
     wchar_t      buf[1024] = {};
     if (m_searchString.empty())
     {
         if (m_selectedItems)
             swprintf_s(buf, _countof(buf), TranslatedString(hResource, IDS_INFOLABELSELEMPTY).c_str(),
-                       m_items.size(), m_totalItems - m_searchedItems, m_selectedItems);
+                       std::format(L"{:L}", m_items.size()).c_str(),
+                       std::format(L"{:L}", m_totalItems - m_searchedItems).c_str(),
+                       std::format(L"{:L}", m_selectedItems).c_str());
         else
             swprintf_s(buf, _countof(buf), TranslatedString(hResource, IDS_INFOLABELEMPTY).c_str(),
-                       m_items.size(), m_totalItems - m_searchedItems);
+                       std::format(L"{:L}", m_items.size()).c_str(),
+                       std::format(L"{:L}", m_totalItems - m_searchedItems).c_str());
     }
     else
     {
         if (m_selectedItems)
             swprintf_s(buf, _countof(buf), TranslatedString(hResource, IDS_INFOLABELSEL).c_str(),
-                       m_searchedItems, m_totalItems - m_searchedItems, m_totalMatches, m_items.size(), m_selectedItems);
+                       std::format(L"{:L}", m_searchedItems).c_str(),
+                       std::format(L"{:L}", m_totalItems - m_searchedItems).c_str(),
+                       std::format(L"{:L}", m_totalMatches).c_str(),
+                       std::format(L"{:L}", m_items.size()).c_str(),
+                       std::format(L"{:L}", m_selectedItems).c_str());
         else
             swprintf_s(buf, _countof(buf), TranslatedString(hResource, IDS_INFOLABEL).c_str(),
-                       m_searchedItems, m_totalItems - m_searchedItems, m_totalMatches, m_items.size());
+                       std::format(L"{:L}", m_searchedItems).c_str(),
+                       std::format(L"{:L}", m_totalItems - m_searchedItems).c_str(),
+                       std::format(L"{:L}", m_totalMatches).c_str(),
+                       std::format(L"{:L}", m_items.size()).c_str());
     }
     sText = buf;
 
@@ -2438,15 +2450,15 @@ bool CSearchDlg::PreTranslateMessage(MSG* pMsg)
             break;
             case 'C':
             {
-                if ((GetFocus() == hListControl) && bCtrl )
+                if ((GetFocus() == hListControl) && bCtrl)
                 {
                     // copy all selected entries to the clipboard
-                        std::wstring clipBoardText;
+                    std::wstring clipBoardText;
                     if (bShift) // Ctrl+Shift+C : copy text of all columns
                     {
-                        HWND         hHeader       = ListView_GetHeader(hListControl);
-                        int          columns       = Header_GetItemCount(hHeader);
-                        WCHAR        buf[MAX_PATH] = {};
+                        HWND  hHeader       = ListView_GetHeader(hListControl);
+                        int   columns       = Header_GetItemCount(hHeader);
+                        WCHAR buf[MAX_PATH] = {};
                         for (int i = 0; i < columns; ++i)
                         {
                             HD_ITEM hdi    = {};
@@ -2490,7 +2502,6 @@ bool CSearchDlg::PreTranslateMessage(MSG* pMsg)
                             clipBoardText += path;
                             clipBoardText += L"\r\n";
                         }
-
                     }
                     WriteAsciiStringToClipboard(clipBoardText.c_str(), *this);
                 }

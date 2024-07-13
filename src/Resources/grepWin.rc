@@ -369,7 +369,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_INFOLABEL           "Searched %ld files, skipped %ld files. Found %ld matches in %ld files."
+    IDS_INFOLABEL           "Searched %s files, skipped %s files. Found %s matches in %s files."
     IDS_READERROR           "read error"
     IDS_BINARY              "binary"
     IDS_REGEXOK             "regex ok"
@@ -431,9 +431,9 @@ BEGIN
     IDS_CLONE               "start new grepWin window"
     IDS_NEWINSTANCE_TT      "start new grepWin window"
     IDS_REPLACEUTF8         "You have the option ""%s"" enabled.\r\nWhen replacing, this option can lead to corrupted files.\r\nDo you want to proceed anyway?"
-    IDS_INFOLABELSEL        "Searched %ld files, skipped %ld files. Found %ld matches in %ld files. %ld results selected."
-    IDS_INFOLABELEMPTY      "Found %ld files, skipped %ld files."
-    IDS_INFOLABELSELEMPTY   "%ld files, skipped %ld files. %ld results selected."
+    IDS_INFOLABELSEL        "Searched %s files, skipped %s files. Found %s matches in %s files. %s results selected."
+    IDS_INFOLABELEMPTY      "Found %s files, skipped %s files."
+    IDS_INFOLABELSELEMPTY   "%s files, skipped %s files. %s results selected."
 END
 
 #endif    // English (United States) resources

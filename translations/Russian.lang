@@ -33,11 +33,6 @@ msgstr ""
 # ONLY change the msgstr field. Do NOT change any other.
 # If you do not want to change an Accelerator Key, copy msgid to msgstr
 
-#. Resource IDs: (175)
-#, c-format
-msgid "%ld files, skipped %ld files. %ld results selected."
-msgstr "%ld файлов, пропущено %ld файлов, выбрано %ld результатов."
-
 #. Resource IDs: (149)
 #, c-format
 msgid "%ld more matches"
@@ -46,6 +41,11 @@ msgstr "больше %ld совпадений"
 #. Resource IDs: (1069)
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset"
 msgstr ""
+
+#. Resource IDs: (175)
+#, c-format
+msgid "%s files, skipped %s files. %s results selected."
+msgstr "%s файлов, пропущено %s файлов, выбрано %s результатов."
 
 #. Resource IDs: (119)
 msgid "&About grepWin..."
@@ -246,8 +246,8 @@ msgstr "Файлы"
 
 #. Resource IDs: (174)
 #, c-format
-msgid "Found %ld files, skipped %ld files."
-msgstr "Всего %ld файлов, пропущено %ld файлов."
+msgid "Found %s files, skipped %s files."
+msgstr "Всего %s файлов, пропущено %s файлов."
 
 #. Resource IDs: (109)
 msgid "GREPWIN"
@@ -452,13 +452,13 @@ msgstr "Строка поиска"
 
 #. Resource IDs: (128)
 #, c-format
-msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files."
-msgstr "Найдено %ld файлов, пропущено %ld файлов. Найдено %ld совпадений в %ld файлах."
+msgid "Searched %s files, skipped %s files. Found %s matches in %s files."
+msgstr "Найдено %s файлов, пропущено %s файлов. Найдено %s совпадений в %s файлах."
 
 #. Resource IDs: (173)
 #, c-format
-msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files. %ld results selected."
-msgstr "Найдено %ld файлов, пропущено %ld файлов. Найдено %ld совпадений в %ld файлах. Выбрано %ld результатов."
+msgid "Searched %s files, skipped %s files. Found %s matches in %s files. %s results selected."
+msgstr "Найдено %s файлов, пропущено %s файлов. Найдено %s совпадений в %s файлах. Выбрано %s результатов."
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."

@@ -33,11 +33,6 @@ msgstr ""
 # ONLY change the msgstr field. Do NOT change any other.
 # If you do not want to change an Accelerator Key, copy msgid to msgstr
 
-#. Resource IDs: (175)
-#, c-format
-msgid "%ld files, skipped %ld files. %ld results selected."
-msgstr "%ld fichier(s). Ignoré %ld fichier(s). %ld results selected."
-
 #. Resource IDs: (149)
 #, c-format
 msgid "%ld more matches"
@@ -46,6 +41,11 @@ msgstr "%ld autres correspondances"
 #. Resource IDs: (1069)
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset"
 msgstr ""
+
+#. Resource IDs: (175)
+#, c-format
+msgid "%s files, skipped %s files. %s results selected."
+msgstr "%s fichier(s). Ignoré %s fichier(s). %s results selected."
 
 #. Resource IDs: (119)
 msgid "&About grepWin..."
@@ -246,8 +246,8 @@ msgstr "fichiers"
 
 #. Resource IDs: (174)
 #, c-format
-msgid "Found %ld files, skipped %ld files."
-msgstr "Trouvé %ld fichier(s). Ignoré %ld fichier(s)."
+msgid "Found %s files, skipped %s files."
+msgstr "Trouvé %s fichier(s). Ignoré %s fichier(s)."
 
 #. Resource IDs: (109)
 msgid "GREPWIN"
@@ -452,13 +452,13 @@ msgstr "Motif de recherche"
 
 #. Resource IDs: (128)
 #, c-format
-msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files."
-msgstr "Cherché dans %ld fichier(s). Ignoré %ld fichier(s). Trouvé %ld correspondance(s) dans %ld fichier(s)."
+msgid "Searched %s files, skipped %s files. Found %s matches in %s files."
+msgstr "Cherché dans %s fichier(s). Ignoré %s fichier(s). Trouvé %s correspondance(s) dans %s fichier(s)."
 
 #. Resource IDs: (173)
 #, c-format
-msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files. %ld results selected."
-msgstr "Cherché dans %ld fichier(s). Ignoré %ld fichier(s). Trouvé %ld correspondance(s) dans %ld fichier(s). %ld results selected."
+msgid "Searched %s files, skipped %s files. Found %s matches in %s files. %s results selected."
+msgstr "Cherché dans %s fichier(s). Ignoré %s fichier(s). Trouvé %s correspondance(s) dans %s fichier(s). %s results selected."
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."

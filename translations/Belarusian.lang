@@ -33,11 +33,6 @@ msgstr ""
 # ONLY change the msgstr field. Do NOT change any other.
 # If you do not want to change an Accelerator Key, copy msgid to msgstr
 
-#. Resource IDs: (175)
-#, c-format
-msgid "%ld files, skipped %ld files. %ld results selected."
-msgstr "%ld файлаў, прапушчана %ld файлаў. %ld results selected."
-
 #. Resource IDs: (149)
 #, c-format
 msgid "%ld more matches"
@@ -46,6 +41,11 @@ msgstr "больш %ld супадзенняў"
 #. Resource IDs: (1069)
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset"
 msgstr ""
+
+#. Resource IDs: (175)
+#, c-format
+msgid "%s files, skipped %s files. %s results selected."
+msgstr "%s файлаў, прапушчана %s файлаў. %s results selected."
 
 #. Resource IDs: (119)
 msgid "&About grepWin..."
@@ -246,8 +246,8 @@ msgstr "Файлы"
 
 #. Resource IDs: (174)
 #, c-format
-msgid "Found %ld files, skipped %ld files."
-msgstr "Found %ld файлаў, прапушчана %ld файлаў."
+msgid "Found %s files, skipped %s files."
+msgstr "Found %s файлаў, прапушчана %s файлаў."
 
 #. Resource IDs: (109)
 msgid "GREPWIN"
@@ -452,13 +452,13 @@ msgstr "Пошук радка"
 
 #. Resource IDs: (128)
 #, c-format
-msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files."
-msgstr "Знойдзена %ld файлаў, прапушчана %ld файлаў. Ёсць %ld супадзенняў у %ld файлах."
+msgid "Searched %s files, skipped %s files. Found %s matches in %s files."
+msgstr "Знойдзена %s файлаў, прапушчана %s файлаў. Ёсць %s супадзенняў у %s файлах."
 
 #. Resource IDs: (173)
 #, c-format
-msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files. %ld results selected."
-msgstr "Знойдзена %ld файлаў, прапушчана %ld файлаў. Ёсць %ld супадзенняў у %ld файлах. %ld results selected."
+msgid "Searched %s files, skipped %s files. Found %s matches in %s files. %s results selected."
+msgstr "Знойдзена %s файлаў, прапушчана %s файлаў. Ёсць %s супадзенняў у %s файлах. %s results selected."
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."

@@ -33,11 +33,6 @@ msgstr ""
 # ONLY change the msgstr field. Do NOT change any other.
 # If you do not want to change an Accelerator Key, copy msgid to msgstr
 
-#. Resource IDs: (175)
-#, c-format
-msgid "%ld files, skipped %ld files. %ld results selected."
-msgstr "%ld bestanden, %ld bestanden overgeslagen. %ld resultaten geselecteerd."
-
 #. Resource IDs: (149)
 #, c-format
 msgid "%ld more matches"
@@ -46,6 +41,11 @@ msgstr "%ld meer overeenkomsten"
 #. Resource IDs: (1069)
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset"
 msgstr "%path% wordt vervangen door het pad van het bestand, %line% met de lijn om naar te springen, %column% met regelverschuiving"
+
+#. Resource IDs: (175)
+#, c-format
+msgid "%s files, skipped %s files. %s results selected."
+msgstr "%s bestanden, %s bestanden overgeslagen. %s resultaten geselecteerd."
 
 #. Resource IDs: (119)
 msgid "&About grepWin..."
@@ -246,8 +246,8 @@ msgstr "Bestanden"
 
 #. Resource IDs: (174)
 #, c-format
-msgid "Found %ld files, skipped %ld files."
-msgstr "%ld bestanden gevonden, %ld bestanden overgeslagen."
+msgid "Found %s files, skipped %s files."
+msgstr "%s bestanden gevonden, %s bestanden overgeslagen."
 
 #. Resource IDs: (109)
 msgid "GREPWIN"
@@ -452,13 +452,13 @@ msgstr "Tekenreeks"
 
 #. Resource IDs: (128)
 #, c-format
-msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files."
-msgstr "%ld bestanden doorzocht, %ld bestanden overgeslagen. %ld overeenkomsten gevonden in %ld bestanden."
+msgid "Searched %s files, skipped %s files. Found %s matches in %s files."
+msgstr "%s bestanden doorzocht, %s bestanden overgeslagen. %s overeenkomsten gevonden in %s bestanden."
 
 #. Resource IDs: (173)
 #, c-format
-msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files. %ld results selected."
-msgstr "%ld bestanden doorzocht, %ld bestanden overgeslagen. %ld overeenkomsten gevonden in %ld bestanden. %ld resultaten geselecteerd."
+msgid "Searched %s files, skipped %s files. Found %s matches in %s files. %s results selected."
+msgstr "%s bestanden doorzocht, %s bestanden overgeslagen. %s overeenkomsten gevonden in %s bestanden. %s resultaten geselecteerd."
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."

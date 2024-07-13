@@ -1,21 +1,21 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# VenusGirl <venusgirl@outlook.com>, 2019.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: grepWin\n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 1900-01-01 00:00+0000\n"
-"PO-Revision-Date: 2024-06-04 01:42+0900\n"
-"Last-Translator: VenusGirl: https://venusgirls.tistory.com/\n"
-"Language-Team: 비너스걸: https://venusgirls.tistory.com/\n"
-"Language: ko\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
 
 # msgid/msgstr fields for Accelerator keys
 # Format is: "ID:xxxxxx:VACS+X" where:
@@ -26,14 +26,12 @@ msgstr ""
 #    S = Shift key   (or blank if not used)
 #    X = upper case character
 # e.g. "V CS+Q" == Ctrl + Shift + 'Q'
+
 # ONLY Accelerator Keys with corresponding alphanumeric characters can be
 # updated i.e. function keys (F2), special keys (Delete, HoMe) etc. will not.
+
 # ONLY change the msgstr field. Do NOT change any other.
 # If you do not want to change an Accelerator Key, copy msgid to msgstr
-#. Resource IDs: (175)
-#, c-format
-msgid "%ld files, skipped %ld files. %ld results selected."
-msgstr "%ld 파일, %ld 파일을 건너뛰었습니다. %ld 결과가 선택되었습니다."
 
 #. Resource IDs: (149)
 #, c-format
@@ -43,6 +41,11 @@ msgstr "%ld개 더 많은 일치"
 #. Resource IDs: (1069)
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset"
 msgstr "%path%는 파일 경로로, %line%은 이동하려는 줄로, %column%은 줄 내 오프셋으로 대체됩니다"
+
+#. Resource IDs: (175)
+#, c-format
+msgid "%s files, skipped %s files. %s results selected."
+msgstr "%s 파일, %s 파일을 건너뛰었습니다. %s 결과가 선택되었습니다."
 
 #. Resource IDs: (119)
 msgid "&About grepWin..."
@@ -256,8 +259,8 @@ msgstr "파일"
 
 #. Resource IDs: (174)
 #, c-format
-msgid "Found %ld files, skipped %ld files."
-msgstr "%ld 파일을 찾았습니다 %ld 파일을 건너뜁니다."
+msgid "Found %s files, skipped %s files."
+msgstr "%s 파일을 찾았습니다 %s 파일을 건너뜁니다."
 
 #. Resource IDs: (109)
 msgid "GREPWIN"
@@ -466,13 +469,13 @@ msgstr "검색 문자열"
 
 #. Resource IDs: (128)
 #, c-format
-msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files."
-msgstr "%ld개 파일을 검색하고 %ld개 파일을 건너뛰었습니다. %ld파일에서 %ld 일치를 찾았습니다."
+msgid "Searched %s files, skipped %s files. Found %s matches in %s files."
+msgstr "%s개 파일을 검색하고 %s개 파일을 건너뛰었습니다. %s파일에서 %s 일치를 찾았습니다."
 
 #. Resource IDs: (173)
 #, c-format
-msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files. %ld results selected."
-msgstr "%ld 파일을 검색하여 %ld 파일을 건너뜁니다. %ld 파일에서 %ld 일치 항목을 찾았습니다. %ld 결과가 선택되었습니다."
+msgid "Searched %s files, skipped %s files. Found %s matches in %s files. %s results selected."
+msgstr "%s 파일을 검색하여 %s 파일을 건너뜁니다. %s 파일에서 %s 일치 항목을 찾았습니다. %s 결과가 선택되었습니다."
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."
@@ -533,14 +536,8 @@ msgstr "파일을 바이너리로 취급"
 
 #. Resource IDs: (172)
 #, c-format
-msgid ""
-"You have the option \"%s\" enabled.\r\n"
-"When replacing, this option can lead to corrupted files.\r\n"
-"Do you want to proceed anyway?"
-msgstr ""
-"%s 옵션을 사용하도록 설정했습니다.\n"
-"바꿀 때 이 옵션을 사용하면 파일이 손상될 수 있습니다.\n"
-"그래도 계속 진행하시겠습니까?"
+msgid "You have the option \"%s\" enabled.\r\nWhen replacing, this option can lead to corrupted files.\r\nDo you want to proceed anyway?"
+msgstr "%s 옵션을 사용하도록 설정했습니다.\n바꿀 때 이 옵션을 사용하면 파일이 손상될 수 있습니다.\n그래도 계속 진행하시겠습니까?"
 
 #. Resource IDs: (1025)
 msgid "\\"
@@ -628,14 +625,8 @@ msgid "number of NULL bytes per MB allowed for a file to still be considered tex
 msgstr "파일이 바이너리 대신 텍스트로 간주되도록 허용되는 MB 당 NULL 바이트 수"
 
 #. Resource IDs: (112)
-msgid ""
-"only files that match this pattern are searched.\r\n"
-"Text match extended. Use \"|\" as the delimiter.\r\n"
-"Example: *.cpp|*.h"
-msgstr ""
-"이 패턴과 일치하는 파일만 검색됩니다.\r\n"
-"텍스트 일치 확장. 구분 기호로 “|”를 사용합니다.\r\n"
-"예시: *.cpp|*.h"
+msgid "only files that match this pattern are searched.\r\nText match extended. Use \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
+msgstr "이 패턴과 일치하는 파일만 검색됩니다.\r\n텍스트 일치 확장. 구분 기호로 “|”를 사용합니다.\r\n예시: *.cpp|*.h"
 
 #. Resource IDs: (176)
 msgid "open list with recent entries"
@@ -667,24 +658,12 @@ msgid "start new grepWin window"
 msgstr "새 grepWinNP 창을 시작합니다"
 
 #. Resource IDs: (114)
-msgid ""
-"the path(s) which is searched recursively.\r\n"
-"Separate paths with the | symbol.\r\n"
-"Example: c:\\temp|d:\\logs"
-msgstr ""
-"재귀적으로 검색되는 경로입니다.\n"
-"'|' 기호로 경로를 구분합니다.\n"
-"예제: c:\\temp|d:\\logs"
+msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"
+msgstr "재귀적으로 검색되는 경로입니다.\n'|' 기호로 경로를 구분합니다.\n예제: c:\\temp|d:\\logs"
 
 #. Resource IDs: (113)
-msgid ""
-"you can exclude directories, e.g. CVS and images.\r\n"
-"Example: ^(CVS|images)$\r\n"
-"Note, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
-msgstr ""
-"디렉터리를 제외할 수 있고, 예를 들어 CVS 및 이미지입니다.\n"
-"예제: ^(CVS|images)$\n"
-"참고: '.svn'폴더는 Windows에서 '숨겨져' 있으므로 일반적으로 검색되지 않습니다."
+msgid "you can exclude directories, e.g. CVS and images.\r\nExample: ^(CVS|images)$\r\nNote, '.svn' folders are 'hidden' on Windows, so they usually are not scanned."
+msgstr "디렉터리를 제외할 수 있고, 예를 들어 CVS 및 이미지입니다.\n예제: ^(CVS|images)$\n참고: '.svn'폴더는 Windows에서 '숨겨져' 있으므로 일반적으로 검색되지 않습니다."
 
 #. Resource IDs: (1064, 1066, 1067)
 msgid "|"
@@ -693,3 +672,4 @@ msgstr "|"
 #. Resource IDs: (1024)
 msgid "⑂"
 msgstr "⑂"
+

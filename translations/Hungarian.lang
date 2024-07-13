@@ -33,11 +33,6 @@ msgstr ""
 # ONLY change the msgstr field. Do NOT change any other.
 # If you do not want to change an Accelerator Key, copy msgid to msgstr
 
-#. Resource IDs: (175)
-#, c-format
-msgid "%ld files, skipped %ld files. %ld results selected."
-msgstr "%ld fájlban, kihagyva %ld fájl. %ld eredmény kiválasztva."
-
 #. Resource IDs: (149)
 #, c-format
 msgid "%ld more matches"
@@ -46,6 +41,11 @@ msgstr "%ld további találat"
 #. Resource IDs: (1069)
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset"
 msgstr "%path% helyébe a fájl elérési útvonala, %line% helyébe az a sor lép, amelyre ugrani kell"
+
+#. Resource IDs: (175)
+#, c-format
+msgid "%s files, skipped %s files. %s results selected."
+msgstr "%s fájlban, kihagyva %s fájl. %s eredmény kiválasztva."
 
 #. Resource IDs: (119)
 msgid "&About grepWin..."
@@ -246,8 +246,8 @@ msgstr "Fájlok"
 
 #. Resource IDs: (174)
 #, c-format
-msgid "Found %ld files, skipped %ld files."
-msgstr "Talált %ld fájlban, kihagyva %ld fájl."
+msgid "Found %s files, skipped %s files."
+msgstr "Talált %s fájlban, kihagyva %s fájl."
 
 #. Resource IDs: (109)
 msgid "GREPWIN"
@@ -452,13 +452,13 @@ msgstr "Keresett szöveg"
 
 #. Resource IDs: (128)
 #, c-format
-msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files."
-msgstr "Keresés %ld fájlban, kihagyva %ld fájl. Lett %ld találat %ld fájlban."
+msgid "Searched %s files, skipped %s files. Found %s matches in %s files."
+msgstr "Keresés %s fájlban, kihagyva %s fájl. Lett %s találat %s fájlban."
 
 #. Resource IDs: (173)
 #, c-format
-msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files. %ld results selected."
-msgstr "Keresés %ld fájlban, kihagyva %ld fájl. %ld egyezést talált %ld fájlban. %ld eredmény kiválasztva."
+msgid "Searched %s files, skipped %s files. Found %s matches in %s files. %s results selected."
+msgstr "Keresés %s fájlban, kihagyva %s fájl. %s egyezést talált %s fájlban. %s eredmény kiválasztva."
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."

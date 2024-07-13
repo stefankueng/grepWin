@@ -33,11 +33,6 @@ msgstr ""
 # ONLY change the msgstr field. Do NOT change any other.
 # If you do not want to change an Accelerator Key, copy msgid to msgstr
 
-#. Resource IDs: (175)
-#, c-format
-msgid "%ld files, skipped %ld files. %ld results selected."
-msgstr "%ld 个文件, 已跳过 %ld 个文件. 已选择 %ld 个结果."
-
 #. Resource IDs: (149)
 #, c-format
 msgid "%ld more matches"
@@ -46,6 +41,11 @@ msgstr "还有 %ld 个匹配"
 #. Resource IDs: (1069)
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset"
 msgstr ""
+
+#. Resource IDs: (175)
+#, c-format
+msgid "%s files, skipped %s files. %s results selected."
+msgstr "%s 个文件, 已跳过 %s 个文件. 已选择 %s 个结果."
 
 #. Resource IDs: (119)
 msgid "&About grepWin..."
@@ -246,8 +246,8 @@ msgstr "文件"
 
 #. Resource IDs: (174)
 #, c-format
-msgid "Found %ld files, skipped %ld files."
-msgstr "已找到 %ld 个文件, 已跳过 %ld 个文件."
+msgid "Found %s files, skipped %s files."
+msgstr "已找到 %s 个文件, 已跳过 %s 个文件."
 
 #. Resource IDs: (109)
 msgid "GREPWIN"
@@ -452,13 +452,13 @@ msgstr "搜索字符串"
 
 #. Resource IDs: (128)
 #, c-format
-msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files."
-msgstr "已搜索 %ld 个文件, 已跳过 %ld 个文件. 已找到 %ld 个匹配于 %ld 个文件中."
+msgid "Searched %s files, skipped %s files. Found %s matches in %s files."
+msgstr "已搜索 %s 个文件, 已跳过 %s 个文件. 已找到 %s 个匹配于 %s 个文件中."
 
 #. Resource IDs: (173)
 #, c-format
-msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files. %ld results selected."
-msgstr "已搜索 %ld 个文件, 已跳过 %ld 个文件. 已找到 %ld 个匹配于 %ld 个文件中. 已选择 %ld 个结果."
+msgid "Searched %s files, skipped %s files. Found %s matches in %s files. %s results selected."
+msgstr "已搜索 %s 个文件, 已跳过 %s 个文件. 已找到 %s 个匹配于 %s 个文件中. 已选择 %s 个结果."
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."
