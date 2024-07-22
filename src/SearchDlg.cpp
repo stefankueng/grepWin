@@ -2579,22 +2579,20 @@ LRESULT CSearchDlg::ColorizeMatchResultProc(LPNMLVCUSTOMDRAW lpLVCD)
                     break;
                 }
 
-                int          iRow  = static_cast<int>(lpLVCD->nmcd.dwItemSpec);
-                auto         tup   = m_listItems[iRow];
-                int          index = std::get<0>(tup);
-                CSearchInfo* pInfo = &m_items[index];
+                int iRow               = static_cast<int>(lpLVCD->nmcd.dwItemSpec);
+                auto [index, subIndex] = m_listItems[iRow];
+                CSearchInfo* pInfo     = &m_items[index];
                 if (pInfo->encoding == CTextFile::Binary)
                 {
                     break;
                 }
 
-                int subIndex = std::get<1>(tup);
-                if (!pInfo->matchLinesMap.contains(pInfo->matchLinesNumbers[index]))
+                if (!pInfo->matchLinesMap.contains(pInfo->matchLinesNumbers[subIndex]))
                 {
                     // don't have those details for large files
                     break;
                 }
-                int   lenText           = static_cast<int>(pInfo->matchLinesMap[pInfo->matchLinesNumbers[index]].length());
+                int   lenText           = static_cast<int>(pInfo->matchLinesMap[pInfo->matchLinesNumbers[subIndex]].length());
 
                 auto  colMatch          = pInfo->matchColumnsNumbers[subIndex];
                 WCHAR textBuf[MAX_PATH] = {};
@@ -2648,9 +2646,10 @@ LRESULT CSearchDlg::ColorizeMatchResultProc(LPNMLVCUSTOMDRAW lpLVCD)
                     BLENDFUNCTION blend   = {AC_SRC_OVER, 0, 92, 0}; // 36%
                     HBITMAP       hBitmap = CreateDIBSection(hcdc, &bmi, DIB_RGB_COLORS, nullptr, nullptr, 0x0);
                     RECT          rc2     = {0, 0, width, height};
-                    SelectObject(hcdc, hBitmap);
+                    auto          oldBmp  = SelectObject(hcdc, hBitmap);
                     FillRect(hcdc, &rc2, CreateSolidBrush(RGB(255, 255, 0)));
                     AlphaBlend(hdc, rc.left, rc.top, width, height, hcdc, 0, 0, width, height, blend);
+                    SelectObject(hcdc, oldBmp);
                     DeleteObject(hBitmap);
                     DeleteDC(hcdc);
                 }
