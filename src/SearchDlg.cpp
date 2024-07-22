@@ -4530,7 +4530,8 @@ void CSearchDlg::SendResult(const CSearchInfo& sInfo, const int nCount)
 {
     SendMessage(*this, SEARCH_PROGRESS, (nCount >= 0), 0);
     bool bAsResult = m_bNotSearch ? (nCount <= 0) : (nCount > 0);
-    SendMessage(*this, SEARCH_FOUND, bAsResult, reinterpret_cast<LPARAM>(&sInfo));
+    if (bAsResult)
+        SendMessage(*this, SEARCH_FOUND, bAsResult, reinterpret_cast<LPARAM>(&sInfo));
 }
 
 void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot)
