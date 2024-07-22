@@ -3522,7 +3522,6 @@ DWORD CSearchDlg::SearchThread()
 {
     ProfileTimer              profile(L"SearchThread");
 
-
     // split the path string into single paths and
     // add them to an array
     const auto*               pBufSearchPath = m_searchPath.c_str();
@@ -3568,23 +3567,23 @@ DWORD CSearchDlg::SearchThread()
 
     for (const auto& cSearchPath : pathVector)
     {
-        bool         bHasLimits;
+        bool         searchRootIsDir;
         std::wstring searchRoot;
         if (PathIsDirectory(cSearchPath.c_str()))
         {
-            bHasLimits = true;
-            searchRoot = cSearchPath;
+            searchRootIsDir = true;
+            searchRoot      = cSearchPath;
         }
         else
         {
-            bHasLimits = false;
-            searchRoot = cSearchPath.substr(0, cSearchPath.find_last_of('\\'));
+            searchRootIsDir = false;
+            searchRoot      = cSearchPath.substr(0, cSearchPath.find_last_of('\\'));
         }
 
         CDirFileEnum fileEnumerator(cSearchPath.c_str());
         if (!m_bIncludeSymLinks)
             fileEnumerator.SetAttributesToIgnore(FILE_ATTRIBUTE_REPARSE_POINT);
-        bool         bRecurse     = bHasLimits && m_bIncludeSubfolders;
+        bool         bRecurse     = searchRootIsDir && m_bIncludeSubfolders;
         bool         bIsDirectory = false;
         std::wstring sPath;
 
@@ -3599,7 +3598,7 @@ DWORD CSearchDlg::SearchThread()
 
             bool                   bSearch      = true;
 
-            if (bHasLimits)
+            if (searchRootIsDir)
             {
                 bSearch = (m_bIncludeHidden || ((pFindData->dwFileAttributes & FILE_ATTRIBUTE_HIDDEN) == 0)) &&
                           (m_bIncludeSystem || ((pFindData->dwFileAttributes & FILE_ATTRIBUTE_SYSTEM) == 0));
