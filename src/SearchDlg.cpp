@@ -3522,7 +3522,6 @@ DWORD CSearchDlg::SearchThread()
 {
     ProfileTimer              profile(L"SearchThread");
 
-    auto                      pathBuf        = std::make_unique<wchar_t[]>(MAX_PATH_NEW);
 
     // split the path string into single paths and
     // add them to an array
@@ -3594,7 +3593,6 @@ DWORD CSearchDlg::SearchThread()
             if (m_backupAndTempFiles.contains(sPath))
                 continue;
 
-            wcscpy_s(pathBuf.get(), MAX_PATH_NEW, sPath.c_str());
             const WIN32_FIND_DATA* pFindData    = fileEnumerator.GetFileInfo();
             FILETIME               fileTime     = pFindData->ftLastWriteTime;
             uint64_t               fullFileSize = (static_cast<uint64_t>(pFindData->nFileSizeHigh) << 32) | pFindData->nFileSizeLow;
@@ -3616,10 +3614,10 @@ DWORD CSearchDlg::SearchThread()
                             if (!bSearch)
                             {
                                 bool bExcluded = grepWinMatchI(m_excludeDirsPatternRegex, pFindData->cFileName) ||
-                                                 grepWinMatchI(m_excludeDirsPatternRegex, pathBuf.get());
+                                                 grepWinMatchI(m_excludeDirsPatternRegex, sPath.c_str());
                                 if (!bExcluded)
                                 {
-                                    std::wstring relPath = pathBuf.get() + cSearchPath.size() + 1;
+                                    std::wstring relPath = sPath.substr(cSearchPath.size() + 1);
                                     if (relPath.find(L'\\') != std::wstring::npos)
                                     {
                                         bExcluded = grepWinMatchI(m_excludeDirsPatternRegex, relPath.c_str());
@@ -3635,13 +3633,13 @@ DWORD CSearchDlg::SearchThread()
                         bRecurse = bSearch;
                         if (bSearch && !m_patternRegex.empty())
                         {
-                            bSearch = MatchPath(pathBuf.get());
+                            bSearch = MatchPath(sPath.c_str());
                         }
                     }
                     else
                     {
                         // name match
-                        bSearch  = MatchPath(pathBuf.get());
+                        bSearch  = MatchPath(sPath.c_str());
                         bRecurse = false;
                     }
 
@@ -3689,7 +3687,7 @@ DWORD CSearchDlg::SearchThread()
 
             if (bSearch)
             {
-                CSearchInfo sInfo(pathBuf.get());
+                CSearchInfo sInfo(sPath);
                 sInfo.modifiedTime = fileTime;
                 sInfo.folder       = bIsDirectory;
                 sInfo.fileSize     = fullFileSize;
