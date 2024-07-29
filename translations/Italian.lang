@@ -44,8 +44,8 @@ msgstr "%path% viene sostituito con il percorso del file, %line% con la linea a 
 
 #. Resource IDs: (175)
 #, c-format
-msgid "%ld files, skipped %ld files. %ld results selected."
-msgstr "%ld file, saltati %ld file. %ld risultati selezionati."
+msgid "%s files, skipped %s files. %s results selected."
+msgstr "%s file, saltati %s file. %s risultati selezionati."
 
 #. Resource IDs: (119)
 msgid "&About grepWin..."
@@ -246,8 +246,8 @@ msgstr "File"
 
 #. Resource IDs: (174)
 #, c-format
-msgid "Found %ld files, skipped %ld files."
-msgstr "Trovati %ld file, saltati %ld file."
+msgid "Found %s files, skipped %s files."
+msgstr "Trovati %s file, saltati %s file."
 
 #. Resource IDs: (109)
 msgid "GREPWIN"
@@ -452,13 +452,13 @@ msgstr "Stringa di ricerca"
 
 #. Resource IDs: (128)
 #, c-format
-msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files."
-msgstr "Controllati %ld file, saltati %ld file. Trovate %ld corrispondenze in %ld file."
+msgid "Searched %s files, skipped %s files. Found %s matches in %s files."
+msgstr "Controllati %s file, saltati %s file. Trovate %s corrispondenze in %sfile."
 
 #. Resource IDs: (173)
 #, c-format
-msgid "Searched %ld files, skipped %ld files. Found %ld matches in %ld files. %ld results selected."
-msgstr "Controllati %ld file, saltati %ld file. Trovate %ld corrispondenze in %ld file. %ld risultati selezionati."
+msgid "Searched %s files, skipped %s files. Found %s matches in %s files. %s results selected."
+msgstr "Controllati %s file, saltati %s file. Trovate %s corrispondenze in %s file. %s risultati selezionati."
 
 #. Resource IDs: (140)
 msgid "Select Editor Application..."
