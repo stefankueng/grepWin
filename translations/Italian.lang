@@ -453,7 +453,7 @@ msgstr "Stringa di ricerca"
 #. Resource IDs: (128)
 #, c-format
 msgid "Searched %s files, skipped %s files. Found %s matches in %s files."
-msgstr "Controllati %s file, saltati %s file. Trovate %s corrispondenze in %sfile."
+msgstr "Controllati %s file, saltati %s file. Trovate %s corrispondenze in %s file."
 
 #. Resource IDs: (173)
 #, c-format
