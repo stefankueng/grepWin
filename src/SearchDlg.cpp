@@ -3249,7 +3249,9 @@ void CSearchDlg::OpenFileAtListIndex(int listIndex)
         paramsSuffix   = CStringUtils::Format(L"/%s/%s\"", line.c_str(), move.c_str());
         bDontQuotePath = TRUE;
     }
-    else if (appname.find(L"notepad2.exe") != std::wstring::npos)
+    else if ((appname.find(L"notepad4.exe") != std::wstring::npos) ||
+             (appname.find(L"notepad3.exe") != std::wstring::npos) ||
+             (appname.find(L"notepad2.exe") != std::wstring::npos))
     {
         std::wstring match;
         if (!pInfo->matchLinesMap.empty())
