@@ -2594,7 +2594,7 @@ LRESULT CSearchDlg::ColorizeMatchResultProc(LPNMLVCUSTOMDRAW lpLVCD)
                 }
                 int   lenText           = static_cast<int>(pInfo->matchLinesMap[pInfo->matchLinesNumbers[subIndex]].length());
 
-                auto  colMatch          = pInfo->matchColumnsNumbers[subIndex];
+                auto  colMatch          = pInfo->matchColumnsNumbers[subIndex] - 1;
                 WCHAR textBuf[MAX_PATH] = {};
                 if (colMatch + pInfo->matchLengths[subIndex] >= MAX_PATH)
                 {
@@ -4129,7 +4129,7 @@ int CSearchDlg::SearchOnTextFile(CSearchInfo& sInfo, const std::wstring& searchR
                     sInfo.matchLinesMap[lineStart] = out;
                 }
                 sInfo.matchLinesNumbers.push_back(lineStart);
-                sInfo.matchColumnsNumbers.push_back(colMatch - 1);
+                sInfo.matchColumnsNumbers.push_back(colMatch);
                 sInfo.matchLengths.push_back(static_cast<long>(sInfo.matchLinesMap.at(lineStart).length()));
             }
             else
@@ -4147,7 +4147,7 @@ int CSearchDlg::SearchOnTextFile(CSearchInfo& sInfo, const std::wstring& searchR
                         lenLineMatch = lenMatch;
 
                     sInfo.matchLinesNumbers.push_back(l);
-                    sInfo.matchColumnsNumbers.push_back(colMatch - 1);
+                    sInfo.matchColumnsNumbers.push_back(colMatch);
                     sInfo.matchLengths.push_back(lenLineMatch);
                     if (lenMatch > lenLineMatch)
                     {
