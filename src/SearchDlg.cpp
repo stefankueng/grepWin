@@ -3629,6 +3629,7 @@ DWORD CSearchDlg::SearchThread()
                         {
                             bSearch = false;
                         }
+                        bRecurse = bSearch;
                         if (bSearch && !m_patternRegex.empty())
                         {
                             bSearch = MatchPath(sPath.c_str());
@@ -3638,6 +3639,7 @@ DWORD CSearchDlg::SearchThread()
                     {
                         // name match
                         bSearch  = MatchPath(sPath.c_str());
+                        bRecurse = false;
                     }
 
                     if (bSearch && (!bIsDirectory || bCountingOnly))
@@ -3680,8 +3682,11 @@ DWORD CSearchDlg::SearchThread()
                         }
                     }
                 }
+                else
+                {
+                    bRecurse = false;
+                }
             }
-            bRecurse = bSearch;
 
             if (bSearch)
             {
