@@ -33,8 +33,6 @@ msgstr ""
 # ONLY change the msgstr field. Do NOT change any other.
 # If you do not want to change an Accelerator Key, copy msgid to msgstr
 
-# ONLY change the msgstr field. Do NOT change any other.
-# If you do not want to change an Accelerator Key, copy msgid to msgstr
 #. Resource IDs: (149)
 #, c-format
 msgid "%ld more matches"
@@ -42,7 +40,7 @@ msgstr "%ld ulteriori risultati"
 
 #. Resource IDs: (1069)
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset"
-msgstr ""
+msgstr "%path% viene sostituito con il percorso del file, %line% con la linea a cui saltare, %column% con la posizione sulla linea."
 
 #. Resource IDs: (175)
 #, c-format
@@ -120,7 +118,7 @@ msgstr "Annulla"
 
 #. Resource IDs: (169)
 msgid "Capture search (Shows replaced text)"
-msgstr ""
+msgstr "Ricerca per cattura (mostra testo sostituito)"
 
 #. Resource IDs: (1088)
 msgid "Check for updates"
@@ -128,11 +126,11 @@ msgstr "Controlla aggiornamenti"
 
 #. Resource IDs: (180)
 msgid "Column"
-msgstr ""
+msgstr "Colonna"
 
 #. Resource IDs: (1068)
 msgid "Command line to start an editor at a specific line and in line offset:"
-msgstr ""
+msgstr "Riga di comando per avviare un editor alla linea e posizione specificata:"
 
 #. Resource IDs: (1060)
 msgid "Content"
@@ -289,7 +287,7 @@ msgstr "Percorso non valido!"
 
 #. Resource IDs: (161)
 msgid "Inverse search"
-msgstr ""
+msgstr "Ricerca inversa"
 
 #. Resource IDs: (1019)
 msgid "KB"
@@ -297,7 +295,7 @@ msgstr "KB"
 
 #. Resource IDs: (1062)
 msgid "Keep file date when replacing"
-msgstr "Mantieni data ai file modificati"
+msgstr "Mantieni la data dei file modificati"
 
 #. Resource IDs: (1075)
 msgid "Language:"
@@ -309,12 +307,12 @@ msgstr "Limita la ricerca"
 
 #. Resource IDs: (134)
 msgid "Line"
-msgstr "Riga"
+msgstr "Linea"
 
 #. Resource IDs: (150)
 #, c-format
 msgid "Line %5ld : %s\n"
-msgstr ""
+msgstr "Linea %5ld: %s\n"
 
 #. Resource IDs: (135)
 msgid "Matches"
@@ -402,7 +400,7 @@ msgstr "Espressione regolare della stringa di ricerca:"
 
 #. Resource IDs: (179)
 msgid "Regex stack error"
-msgstr ""
+msgstr "Errore stack Regex"
 
 #. Resource IDs: (152)
 msgid "Relative paths are not allowed. Please enter an absolute path!"
@@ -579,7 +577,7 @@ msgstr "Includi percorsi dei file"
 
 #. Resource IDs: (166)
 msgid "include match line numbers"
-msgstr "Includi i numeri di riga delle corrispondenze"
+msgstr "Includi i numeri di linea delle corrispondenze"
 
 #. Resource IDs: (167)
 msgid "include match line text"
@@ -611,7 +609,7 @@ msgstr "Numero consentito di byte NULL per MB in un file\nper essere ancora cons
 
 #. Resource IDs: (112)
 msgid "only files that match this pattern are searched.\r\nText match extended. Use \"|\" as the delimiter.\r\nExample: *.cpp|*.h"
-msgstr ""
+msgstr "La ricerca avverrà solo sui file corrispondenti a questo schema.\r\nCorrispondenza testi estesa. Usa \"|\" come delimitatore.\r\nEsempio: *.cpp|*.h"
 
 #. Resource IDs: (176)
 msgid "open list with recent entries"
@@ -657,4 +655,3 @@ msgstr "|"
 #. Resource IDs: (1024)
 msgid "⑂"
 msgstr "⑂"
-
