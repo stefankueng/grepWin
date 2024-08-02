@@ -69,6 +69,7 @@
     
     <exec program="candle">
       <arg value="-nologo" />
+      <arg value="-dPlatform=Win32" />
       <arg value="-out" />
       <arg value="..\..\bin\" />
       <arg value="Setup.wxs" />
@@ -85,9 +86,10 @@
     </exec>
     <exec program="candle">
       <arg value="-nologo" />
+      <arg value="-dPlatform=x64" />
       <arg value="-out" />
-      <arg value="..\..\bin\" />
-      <arg value="Setup64.wxs" />
+      <arg value="..\..\bin\Setup64.wixobj" />
+      <arg value="Setup.wxs" />
     </exec>
     <exec program="light">
       <arg value="-nologo" />

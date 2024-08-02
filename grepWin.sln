@@ -18,7 +18,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Setup", "Setup", "{89723F04
 		src\Setup\AppXManifest.xml.in = src\Setup\AppXManifest.xml.in
 		src\Setup\setup.build = src\Setup\setup.build
 		src\Setup\Setup.wxs = src\Setup\Setup.wxs
-		src\Setup\Setup64.wxs = src\Setup\Setup64.wxs
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CustomActions", "src\Setup\CustomActions\CustomActions.vcxproj", "{454D5FCC-E25A-4B45-9CA2-01ABB0FA5181}"
