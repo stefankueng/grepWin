@@ -31,7 +31,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
       with:
-        fetch-depth: 2
+        fetch-depth: 0
         submodules: recursive
 
     - name: Add MSBuild to PATH
@@ -44,10 +44,40 @@ jobs:
     - name: Build ${{matrix.platform}}
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: |
-        sed -i "s/no date/$($env:GITHUB_SHA.Substring(0,7))/gm" ./src/last/version.h
+        Select-Xml -Path ./version.build.in 'project/target/setenv/variable' | ForEach-Object { Set-Variable -Name $_.Node.name -Value $_.Node.value }
+        $WCREV = git rev-list --count HEAD
+        $WCDATE = "$($env:GITHUB_SHA.Substring(0,7))" # more specific
+        $Version = "$MajorVersion.$MinorVersion.$MicroVersion.$WCREV"
+        Copy-Item "./src/version.in" -Destination "./src/last/version.h"
+        Copy-Item "./src/Setup/VersionNumberInclude.in.wxi" -Destination "./src/Setup/VersionNumberInclude.wxi"
+        sed -i "s/\`$MajorVersion\`$/$MajorVersion/gm" ./src/last/version.h ./src/Setup/VersionNumberInclude.wxi
+        sed -i "s/\`$MinorVersion\`$/$MinorVersion/gm" ./src/last/version.h ./src/Setup/VersionNumberInclude.wxi
+        sed -i "s/\`$MicroVersion\`$/$MicroVersion/gm" ./src/last/version.h ./src/Setup/VersionNumberInclude.wxi
+        sed -i "s/\`$WCREV\`$/$WCREV/gm" ./src/last/version.h ./src/Setup/VersionNumberInclude.wxi
+        sed -i "s/\`$WCDATE\`$/$WCDATE/gm" ./src/last/version.h
         msbuild -m -p:Configuration=${{env.BUILD_CONFIGURATION}} -p:Platform=${{matrix.platform}} -warnAsError ${{env.SOLUTION_FILE_PATH}}
+        Set-Location -Path "./src/Setup"
+        if ("${{matrix.platform}}" -eq "x64") {
+          New-Item -ItemType "directory" -Path . -Name "x64"
+          sed "s/\`$Version\`$/$Version/gm" AppXManifest.xml.in > x64\AppxManifest.xml
+          $MSVCRoot = vswhere -property installationPath
+          & "${env:COMSPEC}" /s /c "`"$MSVCRoot\Common7\Tools\vsdevcmd.bat`" -no_logo -arch=amd64 && set" | ForEach-Object {
+            $name, $value = $_ -split '=', 2
+            set-content env:"$name" $value
+          }
+          MakeAppX pack /o /d x64 -p ..\..\bin\release64\package.msix /nv
+          # unsigned
+        }
+        candle -nologo -dPlatform=${{matrix.platform}} -out ..\..\bin\Setup-${{matrix.platform}}.wixobj Setup.wxs
+        light -nologo -sice:ICE57 -ext WixUIExtension -cultures:en-us -out ..\..\bin\grepWin-${{matrix.platform}}.msi ..\..\bin\Setup-${{matrix.platform}}.wixobj
+
     - name: Upload artifacts for ${{matrix.platform}}
       uses: actions/upload-artifact@v4
       with:
           name: grepWin-${{matrix.platform}}
           path: bin/${{matrix.dir}}/grepWin.exe
+    - name: Upload artifacts for ${{matrix.platform}} msi
+      uses: actions/upload-artifact@v4
+      with:
+          name: grepWin-${{matrix.platform}}-msi
+          path: bin/*.msi
