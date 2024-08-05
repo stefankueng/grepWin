@@ -56,6 +56,7 @@ jobs:
         sed -i "s/\`$WCREV\`$/$WCREV/gm" ./src/last/version.h ./src/Setup/VersionNumberInclude.wxi
         sed -i "s/\`$WCDATE\`$/$WCDATE/gm" ./src/last/version.h
         msbuild -m -p:Configuration=${{env.BUILD_CONFIGURATION}} -p:Platform=${{matrix.platform}} -warnAsError ${{env.SOLUTION_FILE_PATH}}
+        Copy-Item "./bin/${{matrix.dir}}/grepWin.exe" -Destination "./bin/${{matrix.dir}}/grepWin-${{matrix.platform}}_portable.exe"
         Set-Location -Path "./src/Setup"
         if ("${{matrix.platform}}" -eq "x64") {
           New-Item -ItemType "directory" -Path . -Name "x64"
@@ -74,8 +75,8 @@ jobs:
     - name: Upload artifacts for ${{matrix.platform}}
       uses: actions/upload-artifact@v4
       with:
-          name: grepWin-${{matrix.platform}}
-          path: bin/${{matrix.dir}}/grepWin.exe
+          name: grepWin-${{matrix.platform}}_portable
+          path: bin/${{matrix.dir}}/grepWin-${{matrix.platform}}_portable.exe
     - name: Upload artifacts for ${{matrix.platform}} msi
       uses: actions/upload-artifact@v4
       with:
