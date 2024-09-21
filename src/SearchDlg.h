@@ -29,6 +29,7 @@
 #include <string>
 #include <vector>
 #include <set>
+#include <mutex>
 #include <thread>
 
 #include <wrl.h>
@@ -198,6 +199,7 @@ private:
     std::deque<CSearchInfo>           m_items;
     std::deque<std::tuple<int, int>>  m_listItems;
     std::set<std::wstring>            m_backupAndTempFiles;
+    std::mutex                        m_backupAndTempFiles_Mutex;
     int                               m_totalItems;
     int                               m_searchedItems;
     int                               m_totalMatches;

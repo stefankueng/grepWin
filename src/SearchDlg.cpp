@@ -3591,8 +3591,11 @@ DWORD CSearchDlg::SearchThread()
 
         while ((fileEnumerator.NextFile(sPath, &bIsDirectory, bRecurse)) && !m_cancelled)
         {
-            if (m_backupAndTempFiles.contains(sPath))
-                continue;
+            {
+                std::lock_guard<std::mutex> lock(m_backupAndTempFiles_Mutex);
+                if (m_backupAndTempFiles.contains(sPath))
+                    continue;
+            }
 
             const WIN32_FIND_DATA* pFindData    = fileEnumerator.GetFileInfo();
             FILETIME               fileTime     = pFindData->ftLastWriteTime;
@@ -3986,7 +3989,10 @@ std::wstring CSearchDlg::BackupFile(const std::wstring& destParentDir, const std
     {
         return L"";
     }
-    m_backupAndTempFiles.insert(backupFile);
+    {
+        std::lock_guard<std::mutex> lock(m_backupAndTempFiles_Mutex);
+        m_backupAndTempFiles.insert(backupFile);
+    }
 
     return backupFile;
 }
@@ -4089,7 +4095,10 @@ int CSearchDlg::SearchOnTextFile(CSearchInfo& sInfo, const std::wstring& searchR
     auto                                               replacedIter = std::back_inserter(replaced);
     if (m_bReplace) // synchronize Replace and Search for cancellation and reducing repetitive work on huge files
     {
-        m_backupAndTempFiles.insert(filePathTemp);
+        {
+            std::lock_guard<std::mutex> lock(m_backupAndTempFiles_Mutex);
+            m_backupAndTempFiles.insert(filePathTemp);
+        }
         replaceFmt.SetReplacePair(L"${filepath}", sInfo.filePath);
         std::wstring fileNameFullW = sInfo.filePath.substr(sInfo.filePath.find_last_of('\\') + 1);
         auto         dotPosW       = fileNameFullW.find_last_of('.');
@@ -4342,7 +4351,10 @@ int CSearchDlg::SearchByFilePath(CSearchInfo& sInfo, const std::wstring& searchR
     RegexReplaceFormatter<CharT, const CharT*> replaceFmt(repl);
     if (m_bReplace) // synchronize Replace and Search for cancellation and reducing repetitive work on huge files
     {
-        m_backupAndTempFiles.insert(filePathTemp);
+        {
+            std::lock_guard<std::mutex> lock(m_backupAndTempFiles_Mutex);
+            m_backupAndTempFiles.insert(filePathTemp);
+        }
 
         outFileBufA.open(filePathTemp, std::ios::out | std::ios::trunc | std::ios::binary); // overwrite
         if (!outFileBufA.is_open())
