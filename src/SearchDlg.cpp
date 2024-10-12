@@ -2880,15 +2880,22 @@ LRESULT CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
         {
             std::wstring matchText = pInfo->matchLinesMap[pInfo->matchLinesNumbers[subIndex]];
             CStringUtils::rtrim(matchText);
-            DWORD iShow = 0;
-            if (pInfo->matchColumnsNumbers[subIndex] > 8)
+            constexpr size_t maxLineLength = 240;
+            size_t           iShow         = 0;
+            if (pInfo->matchColumnsNumbers[subIndex] > maxLineLength && matchText.size() > maxLineLength)
             {
-                // 6 + 1 prefix chars would give a context
+                // the match is outside the line length, trim the line string so that the match
+                // is inside the max line length
                 iShow = pInfo->matchColumnsNumbers[subIndex] - 8;
+                if (iShow + maxLineLength > matchText.size())
+                    iShow = matchText.size() - maxLineLength;
             }
             if (iShow < matchText.size()) // tricky including binary files that with leading L'\x00'
             {
-                matchText = matchText.substr(iShow, 50);
+                auto trimmedMatchText = matchText.substr(iShow, maxLineLength);
+                matchText = (iShow > 0 ? L"..." : L"") +
+                            trimmedMatchText +
+                            (trimmedMatchText.size() < matchText.size() ? L"..." : L"");
             }
             matchString += CStringUtils::Format(sFormat.c_str(), pInfo->matchLinesNumbers[subIndex], matchText.c_str());
         }
