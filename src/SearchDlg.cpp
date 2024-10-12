@@ -1337,9 +1337,21 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                     auto noWarnIfNoBackup = bPortable ? !!_wtoi(g_iniFile.GetValue(L"settings", L"nowarnifnobackup", L"0")) : static_cast<DWORD>(CRegStdDWORD(L"Software\\grepWin\\nowarnifnobackup", FALSE));
                     if (!noWarnIfNoBackup)
                     {
-                        auto msgText = CStringUtils::Format(static_cast<LPCWSTR>(TranslatedString(hResource, IDS_REPLACECONFIRM).c_str()),
-                                                            m_searchString.c_str(),
-                                                            m_replaceString.empty() ? static_cast<LPCWSTR>(TranslatedString(hResource, IDS_ANEMPTYSTRING).c_str()) : m_replaceString.c_str());
+                        // compact the search and replace strings for the message box
+                        auto compactStrings = [](const std::wstring& str, size_t n) {
+                            if (str.length() > n)
+                            {
+                                size_t half = n / 2;
+                                return str.substr(0, half - 3) + L"  ...  " + str.substr(str.length() - half + 3);
+                            }
+                            return str;
+                        };
+
+                        auto compactSearchString  = compactStrings(m_searchString, 60);
+                        auto compactReplaceString = compactStrings(m_replaceString, 60);
+                        auto msgText              = CStringUtils::Format(static_cast<LPCWSTR>(TranslatedString(hResource, IDS_REPLACECONFIRM).c_str()),
+                                                                         compactSearchString.c_str(),
+                                                            compactReplaceString.empty() ? static_cast<LPCWSTR>(TranslatedString(hResource, IDS_ANEMPTYSTRING).c_str()) : compactReplaceString.c_str());
                         if (::MessageBox(*this, msgText.c_str(), L"grepWin", MB_ICONQUESTION | MB_YESNO) != IDYES)
                         {
                             break;
