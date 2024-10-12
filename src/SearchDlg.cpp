@@ -2874,7 +2874,7 @@ LRESULT CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
         }
 
         std::wstring sFormat = TranslatedString(hResource, IDS_CONTEXTLINE);
-        int          leftMax = static_cast<int>(pInfo->matchLinesMap.size());
+        int          leftMax = static_cast<int>(pInfo->matchLinesNumbers.size());
         int          showMax = min(leftMax, subIndex + 5);
         for (; subIndex < showMax; ++subIndex)
         {
