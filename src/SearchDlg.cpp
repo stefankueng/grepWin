@@ -69,6 +69,7 @@
 
 #define GREPWIN_DATEBUFFER 100
 #define LABELUPDATETIMER   10
+#define FILTERTIMER        11
 #define SEARCHBLOCKSIZE    (1 << 26) // 64MB
 
 DWORD WINAPI     SearchThreadEntry(LPVOID lpParam);
@@ -473,6 +474,8 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             AddToolTip(IDC_PATTERNMRU, TranslatedString(hResource, IDS_OPEN_MRU).c_str());
             AddToolTip(IDC_REPLACETEXT, LPSTR_TEXTCALLBACK);
 
+            SendMessage(GetDlgItem(*this, IDC_FILTER), EM_SETCUEBANNER, TRUE, reinterpret_cast<LPARAM>(TranslatedString(hResource, IDS_FILTER_CUE).c_str()));
+
             SetWindowSubclass(GetDlgItem(*this, IDC_SEARCHPATH), SearchPathWndProc, SearchEditSubclassID, reinterpret_cast<DWORD_PTR>(this));
             SetWindowSubclass(GetDlgItem(*this, IDC_SEARCHTEXT), SearchEditWndProc, SearchEditSubclassID, reinterpret_cast<DWORD_PTR>(this));
             SetWindowSubclass(GetDlgItem(*this, IDC_EXCLUDEDIRSPATTERN), ExcludeDirEditWndProc, SearchEditSubclassID, reinterpret_cast<DWORD_PTR>(this));
@@ -500,6 +503,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             m_editSearchPatterns.Subclass(hwndDlg, IDC_SEARCHTEXT);
             m_editReplacePatterns.Subclass(hwndDlg, IDC_REPLACETEXT);
             m_editSearchPaths.Subclass(hwndDlg, IDC_SEARCHPATH);
+            m_editFilter.Subclass(hwndDlg, IDC_FILTER);
 
             // add an "About" entry to the system menu
             HMENU hSysMenu = GetSystemMenu(hwndDlg, FALSE);
@@ -774,6 +778,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             m_resizer.AddControl(hwndDlg, IDC_FILEPATTERNTEXT, RESIZER_TOPLEFT);
 
             m_resizer.AddControl(hwndDlg, IDC_SETTINGSBUTTON, RESIZER_TOPLEFT);
+            m_resizer.AddControl(hwndDlg, IDC_FILTER, RESIZER_TOPLEFTRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_PROGRESS, RESIZER_TOPLEFTRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_REPLACE, RESIZER_TOPRIGHT);
             m_resizer.AddControl(hwndDlg, IDOK, RESIZER_TOPRIGHT);
@@ -1054,12 +1059,14 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
         case SEARCH_END:
         {
             AddFoundEntry(nullptr, true);
+            doFilter();
             AutoSizeAllColumns();
             UpdateInfoLabel();
             ::SetDlgItemText(*this, IDOK, TranslatedString(hResource, IDS_SEARCH).c_str());
             AddToolTip(IDOK, TranslatedString(hResource, IDS_SHIFT_NOTSEARCH).c_str());
             DialogEnableWindow(IDC_RESULTFILES, true);
             DialogEnableWindow(IDC_RESULTCONTENT, true);
+            ShowWindow(GetDlgItem(*this, IDC_FILTER), m_items.empty() ? SW_HIDE : SW_SHOW);
             ShowWindow(GetDlgItem(*this, IDC_PROGRESS), SW_HIDE);
             SendDlgItemMessage(*this, IDC_PROGRESS, PBM_SETMARQUEE, 0, 0);
             if (m_pTaskbarList)
@@ -1074,6 +1081,11 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             {
                 AddFoundEntry(nullptr, true);
                 UpdateInfoLabel();
+            }
+            else if (wParam == FILTERTIMER)
+            {
+                KillTimer(*this, FILTERTIMER);
+                doFilter();
             }
         }
         break;
@@ -1176,6 +1188,11 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                     m_autoCompleteSearchPaths.SetOptions(ACO_UPDOWNKEYDROPSLIST | ACO_AUTOSUGGEST | ACO_NOPREFIXFILTERING);
                     ::SetFocus(GetDlgItem(*this, IDC_SEARCHPATH));
                     SendDlgItemMessage(*this, IDC_SEARCHPATH, WM_KEYDOWN, VK_DOWN, 0);
+                }
+                break;
+                case IDC_FILTER:
+                {
+                    SetDlgItemText(*this, IDC_FILTER, L"");
                 }
                 break;
                 default:
@@ -1298,7 +1315,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                     {
                         if (!m_searchPath.empty())
                             m_searchPath += L"|";
-                        m_searchPath += item.filePath;
+                        m_searchPath += item->filePath;
                     }
                 }
 
@@ -1306,9 +1323,11 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 m_totalItems    = 0;
 
                 ShowWindow(GetDlgItem(*this, IDC_EXPORT), SW_HIDE);
+                m_origItems.clear();
                 m_items.clear();
                 m_listItems.clear();
                 m_backupAndTempFiles.clear();
+                SetDlgItemText(*this, IDC_FILTER, L"");
 
                 HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
                 ListView_SetItemCount(hListControl, 0);
@@ -1404,6 +1423,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                 m_cancelled       = false;
                 SetDlgItemText(*this, IDOK, TranslatedString(hResource, IDS_STOP).c_str());
                 AddToolTip(IDOK, L"");
+                ShowWindow(GetDlgItem(*this, IDC_FILTER), SW_HIDE);
                 ShowWindow(GetDlgItem(*this, IDC_PROGRESS), SW_SHOW);
                 SendDlgItemMessage(*this, IDC_PROGRESS, PBM_SETMARQUEE, 1, 0);
                 if (m_pTaskbarList)
@@ -1775,6 +1795,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
         case IDC_RESULTFILES:
         case IDC_RESULTCONTENT:
         {
+            doFilter();
             InitResultList();
             FillResultList();
         }
@@ -1915,7 +1936,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                     {
                         for (const auto& item : m_items)
                         {
-                            file << CUnicodeUtils::StdGetUTF8(item.filePath) << std::endl;
+                            file << CUnicodeUtils::StdGetUTF8(item->filePath) << std::endl;
                         }
                     }
                     else
@@ -1923,26 +1944,26 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                         constexpr char separator = '*';
                         for (const auto& item : m_items)
                         {
-                            for (size_t i = 0; i < item.matchLinesNumbers.size(); ++i)
+                            for (size_t i = 0; i < item->matchLinesNumbers.size(); ++i)
                             {
                                 bool needSeparator = false;
                                 if (includePaths)
                                 {
-                                    file << CUnicodeUtils::StdGetUTF8(item.filePath);
+                                    file << CUnicodeUtils::StdGetUTF8(item->filePath);
                                     needSeparator = true;
                                 }
                                 if (includeMatchLineNumbers)
                                 {
                                     if (needSeparator)
                                         file << separator;
-                                    file << CStringUtils::Format("%lu", item.matchLinesNumbers[i]);
+                                    file << CStringUtils::Format("%lu", item->matchLinesNumbers[i]);
                                     needSeparator = true;
                                 }
                                 if (includeMatchLineTexts)
                                 {
                                     if (needSeparator)
                                         file << separator;
-                                    auto line = item.matchLinesMap.at(item.matchLinesNumbers[i]);
+                                    auto line = item->matchLinesMap.at(item->matchLinesNumbers[i]);
                                     CStringUtils::rtrim(line, L"\r\n");
                                     file << CUnicodeUtils::StdGetUTF8(line);
                                 }
@@ -1991,6 +2012,15 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
         {
             if (IsDlgButtonChecked(*this, IDC_BINARY))
                 CheckDlgButton(*this, IDC_UTF8, BST_UNCHECKED);
+        }
+        break;
+        case IDC_FILTER:
+        {
+            if (msg == EN_CHANGE)
+            {
+                if (!m_origItems.empty() && IsWindowVisible(GetDlgItem(*this, IDC_FILTER)))
+                    SetTimer(*this, FILTERTIMER, 200, nullptr);
+            }
         }
         break;
         default:
@@ -2136,13 +2166,14 @@ bool CSearchDlg::AddFoundEntry(const CSearchInfo* pInfo, bool bOnlyListControl)
 {
     if (!bOnlyListControl)
     {
-        m_items.push_back(*pInfo);
-        int index    = static_cast<int>(m_items.size() - 1);
+        m_origItems.push_back(*pInfo);
+        m_items.push_back(&m_origItems.back());
+        int index    = static_cast<int>(m_origItems.size() - 1);
         int subIndex = 0;
         for (const auto& lineNumber : pInfo->matchLinesNumbers)
         {
             UNREFERENCED_PARAMETER(lineNumber);
-            m_listItems.push_back(std::make_tuple(index, subIndex));
+            m_listItems.push_back({index, subIndex});
             ++subIndex;
         }
     }
@@ -2159,7 +2190,6 @@ bool CSearchDlg::AddFoundEntry(const CSearchInfo* pInfo, bool bOnlyListControl)
 
 void CSearchDlg::FillResultList()
 {
-    ProfileTimer profile(L"FillResultList");
     SetCursor(LoadCursor(nullptr, IDC_APPSTARTING));
     // refresh cursor
     POINT pt;
@@ -2233,7 +2263,7 @@ void CSearchDlg::ShowContextMenu(HWND hWnd, int x, int y)
                             copyText += L"\r\n";
                         if (fileList)
                         {
-                            const auto* pInfo = &m_items[selIndex];
+                            const auto* pInfo = m_items[selIndex];
                             switch (clickedCol)
                             {
                                 case 0: // name of the file
@@ -2302,28 +2332,26 @@ void CSearchDlg::ShowContextMenu(HWND hWnd, int x, int y)
                         }
                         else
                         {
-                            auto        tup      = m_listItems[iItem];
-                            auto        index    = std::get<0>(tup);
-                            auto        subIndex = std::get<1>(tup);
-                            const auto& item     = m_items[index];
-                            const auto& pInfo    = &item;
+                            auto [itemsIndex, itemsSubIndex] = m_listItems[iItem];
+                            const auto& item                 = m_items[itemsIndex];
+                            const auto& pInfo                = item;
                             switch (clickedCol)
                             {
                                 case 0: // name of the file
                                     copyText += pInfo->filePath.substr(pInfo->filePath.find_last_of('\\') + 1);
                                     break;
                                 case 1: // line number
-                                    copyText += std::to_wstring(pInfo->matchLinesNumbers[subIndex]);
+                                    copyText += std::to_wstring(pInfo->matchLinesNumbers[itemsSubIndex]);
                                     break;
                                 case 2: // column number
-                                    copyText += std::to_wstring(pInfo->matchColumnsNumbers[subIndex]);
+                                    copyText += std::to_wstring(pInfo->matchColumnsNumbers[itemsSubIndex]);
                                     break;
                                 case 3: // line
                                 {
                                     std::wstring line;
-                                    if (pInfo->matchLinesMap.contains(pInfo->matchLinesNumbers[subIndex]))
+                                    if (pInfo->matchLinesMap.contains(pInfo->matchLinesNumbers[itemsSubIndex]))
                                     {
-                                        line = pInfo->matchLinesMap.at(pInfo->matchLinesNumbers[subIndex]);
+                                        line = pInfo->matchLinesMap.at(pInfo->matchLinesNumbers[itemsSubIndex]);
                                         std::ranges::replace(line, '\n', ' ');
                                         std::ranges::replace(line, '\r', ' ');
                                     }
@@ -2357,21 +2385,20 @@ void CSearchDlg::ShowContextMenu(HWND hWnd, int x, int y)
         if ((selIndex < 0) || (selIndex >= static_cast<int>(m_items.size())))
             continue;
         const auto& info  = m_items[selIndex];
-        pathMap[selIndex] = info.filePath;
+        pathMap[selIndex] = info->filePath;
         if (!fileList)
         {
             LineData data;
-            auto     tup    = m_listItems[iItem];
-            auto     subIdx = std::get<1>(tup);
-            data.path       = info.filePath;
+            auto [itemsIndex, itemsSubIndex] = m_listItems[iItem];
+            data.path                        = info->filePath;
             LineDataLine dataLine;
-            if (static_cast<int>(info.matchLinesNumbers.size()) > subIdx)
+            if (static_cast<int>(info->matchLinesNumbers.size()) > itemsSubIndex)
             {
-                dataLine.number = info.matchLinesNumbers[subIdx];
-                dataLine.column = info.matchColumnsNumbers[subIdx];
+                dataLine.number = info->matchLinesNumbers[itemsSubIndex];
+                dataLine.column = info->matchColumnsNumbers[itemsSubIndex];
             }
-            if (info.matchLinesMap.contains(info.matchLinesNumbers[subIdx]))
-                dataLine.text = info.matchLinesMap.at(info.matchLinesNumbers[subIdx]);
+            if (info->matchLinesMap.contains(info->matchLinesNumbers[itemsSubIndex]))
+                dataLine.text = info->matchLinesMap.at(info->matchLinesNumbers[itemsSubIndex]);
             data.lines.push_back(dataLine);
             lines.push_back(data);
         }
@@ -2384,7 +2411,7 @@ void CSearchDlg::ShowContextMenu(HWND hWnd, int x, int y)
     vPaths.reserve(pathMap.size());
     for (const auto& idx : pathMap | std::views::keys)
     {
-        vPaths.push_back(m_items[idx]);
+        vPaths.push_back(*m_items[idx]);
     }
     shellMenu.SetObjects(std::move(vPaths), std::move(lines));
 
@@ -2507,7 +2534,7 @@ bool CSearchDlg::PreTranslateMessage(MSG* pMsg)
                             int selIndex = GetSelectedListIndex(fileList, iItem);
                             if ((selIndex < 0) || (selIndex >= static_cast<int>(m_items.size())))
                                 continue;
-                            auto path = m_items[GetSelectedListIndex(fileList, iItem)].filePath;
+                            auto path = m_items[GetSelectedListIndex(fileList, iItem)]->filePath;
                             if (bAlt)
                                 path = path.substr(path.find_last_of('\\') + 1);
                             clipBoardText += path;
@@ -2591,9 +2618,9 @@ LRESULT CSearchDlg::ColorizeMatchResultProc(LPNMLVCUSTOMDRAW lpLVCD)
                     break;
                 }
 
-                int iRow               = static_cast<int>(lpLVCD->nmcd.dwItemSpec);
-                auto [index, subIndex] = m_listItems[iRow];
-                CSearchInfo* pInfo     = &m_items[index];
+                int iRow                 = static_cast<int>(lpLVCD->nmcd.dwItemSpec);
+                auto [index, subIndex]   = m_listItems[iRow];
+                const CSearchInfo* pInfo = m_items[index];
                 if (pInfo->encoding == CTextFile::Binary)
                 {
                     break;
@@ -2604,7 +2631,7 @@ LRESULT CSearchDlg::ColorizeMatchResultProc(LPNMLVCUSTOMDRAW lpLVCD)
                     // don't have those details for large files
                     break;
                 }
-                int   lenText           = static_cast<int>(pInfo->matchLinesMap[pInfo->matchLinesNumbers[subIndex]].length());
+                int   lenText           = static_cast<int>(pInfo->matchLinesMap.at(pInfo->matchLinesNumbers[subIndex]).length());
 
                 auto  colMatch          = pInfo->matchColumnsNumbers[subIndex] - 1;
                 WCHAR textBuf[MAX_PATH] = {};
@@ -2718,7 +2745,7 @@ LRESULT CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
         bool fileList = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
         while ((iItem = ListView_GetNextItem(hListControl, iItem, LVNI_SELECTED)) != (-1))
         {
-            dropFiles.AddFile(m_items[GetSelectedListIndex(fileList, iItem)].filePath);
+            dropFiles.AddFile(m_items[GetSelectedListIndex(fileList, iItem)]->filePath);
         }
 
         if (dropFiles.GetCount() > 0)
@@ -2807,19 +2834,8 @@ LRESULT CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
         if (bDidSort)
         {
             m_listItems.clear();
-
-            int index = 0;
-            for (const auto& item : m_items)
-            {
-                int subIndex = 0;
-                for (const auto& lineNumber : item.matchLinesNumbers)
-                {
-                    UNREFERENCED_PARAMETER(lineNumber);
-                    m_listItems.push_back(std::make_tuple(index, subIndex));
-                    ++subIndex;
-                }
-                ++index;
-            }
+            auto filterText = GetDlgItemText(IDC_FILTER);
+            filterItemsList(filterText.get());
         }
 
         HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
@@ -2848,22 +2864,21 @@ LRESULT CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
     }
     else if (lpNMItemActivate->hdr.code == LVN_GETINFOTIP)
     {
-        bool            fileList  = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
-        NMLVGETINFOTIP* pInfoTip  = reinterpret_cast<NMLVGETINFOTIP*>(lpNMItemActivate);
-        size_t          listIndex = pInfoTip->iItem;
-        CSearchInfo*    pInfo;
-        int             subIndex = 0;
+        bool               fileList  = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
+        NMLVGETINFOTIP*    pInfoTip  = reinterpret_cast<NMLVGETINFOTIP*>(lpNMItemActivate);
+        size_t             listIndex = pInfoTip->iItem;
+        const CSearchInfo* pInfo     = nullptr;
+        int                subIndex  = 0;
 
         if (fileList)
         {
-            pInfo = &m_items[listIndex];
+            pInfo = m_items[listIndex];
         }
         else
         {
-            auto tup   = m_listItems[listIndex];
-            int  iItem = std::get<0>(tup);
-            pInfo      = &m_items[iItem];
-            subIndex   = std::get<1>(tup);
+            auto [itemsIndex, itemsSubIndex] = m_listItems[listIndex];
+            pInfo                            = m_items[itemsIndex];
+            subIndex                         = itemsSubIndex;
         }
 
         std::wstring matchString = pInfo->filePath + L"\n";
@@ -2878,7 +2893,7 @@ LRESULT CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
         int          showMax = min(leftMax, subIndex + 5);
         for (; subIndex < showMax; ++subIndex)
         {
-            std::wstring matchText = pInfo->matchLinesMap[pInfo->matchLinesNumbers[subIndex]];
+            std::wstring matchText = pInfo->matchLinesMap.at(pInfo->matchLinesNumbers[subIndex]);
             CStringUtils::rtrim(matchText);
             constexpr size_t maxLineLength = 240;
             size_t           iShow         = 0;
@@ -2893,7 +2908,7 @@ LRESULT CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
             if (iShow < matchText.size()) // tricky including binary files that with leading L'\x00'
             {
                 auto trimmedMatchText = matchText.substr(iShow, maxLineLength);
-                matchText = (iShow > 0 ? L"..." : L"") +
+                matchText             = (iShow > 0 ? L"..." : L"") +
                             trimmedMatchText +
                             (trimmedMatchText.size() < matchText.size() ? L"..." : L"");
             }
@@ -2922,7 +2937,7 @@ LRESULT CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
 
         if (fileList)
         {
-            const auto& pInfo = &m_items[iItem];
+            const auto& pInfo = m_items[iItem];
             if (pItem->mask & LVIF_TEXT)
             {
                 switch (pItem->iSubItem)
@@ -2993,13 +3008,11 @@ LRESULT CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
         }
         else
         {
-            auto        tup      = m_listItems[iItem];
-            auto        index    = std::get<0>(tup);
-            auto        subIndex = std::get<1>(tup);
+            auto [itemsIndex, itemsSubIndex] = m_listItems[iItem];
 
-            const auto& item     = m_items[index];
-            const auto& pInfo    = &item;
-            if (item.encoding == CTextFile::Binary)
+            const auto& item                 = m_items[itemsIndex];
+            const auto& pInfo                = item;
+            if (item->encoding == CTextFile::Binary)
             {
                 if (pItem->mask & LVIF_TEXT)
                 {
@@ -3034,16 +3047,16 @@ LRESULT CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
                             wcsncpy_s(pItem->pszText, pItem->cchTextMax, pInfo->filePath.substr(pInfo->filePath.find_last_of('\\') + 1).c_str(), pItem->cchTextMax - 1LL);
                             break;
                         case 1: // line number
-                            swprintf_s(pItem->pszText, pItem->cchTextMax, L"%ld", pInfo->matchLinesNumbers[subIndex]);
+                            swprintf_s(pItem->pszText, pItem->cchTextMax, L"%ld", pInfo->matchLinesNumbers[itemsSubIndex]);
                             break;
                         case 2: // column number
-                            swprintf_s(pItem->pszText, pItem->cchTextMax, L"%ld", pInfo->matchColumnsNumbers[subIndex]);
+                            swprintf_s(pItem->pszText, pItem->cchTextMax, L"%ld", pInfo->matchColumnsNumbers[itemsSubIndex]);
                             break;
                         case 3: // line
                         {
                             std::wstring line;
-                            if (pInfo->matchLinesMap.contains(pInfo->matchLinesNumbers[subIndex]))
-                                line = pInfo->matchLinesMap.at(pInfo->matchLinesNumbers[subIndex]);
+                            if (pInfo->matchLinesMap.contains(pInfo->matchLinesNumbers[itemsSubIndex]))
+                                line = pInfo->matchLinesMap.at(pInfo->matchLinesNumbers[itemsSubIndex]);
                             for (auto& c : line)
                             {
                                 if (c < 32)
@@ -3080,7 +3093,7 @@ LRESULT CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
             {
                 for (size_t i = pFindItem->iStart; i < m_items.size(); ++i)
                 {
-                    auto name = m_items[i].filePath.substr(m_items[i].filePath.find_last_of('\\') + 1);
+                    auto name = m_items[i]->filePath.substr(m_items[i]->filePath.find_last_of('\\') + 1);
                     ;
                     if (_wcsnicmp(name.c_str(), pFindItem->lvfi.psz, findLen) == 0)
                     {
@@ -3094,7 +3107,7 @@ LRESULT CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
                         end = static_cast<size_t>(m_items.size());
                     for (size_t i = 0; i < end; ++i)
                     {
-                        auto name = m_items[i].filePath.substr(m_items[i].filePath.find_last_of('\\') + 1);
+                        auto name = m_items[i]->filePath.substr(m_items[i]->filePath.find_last_of('\\') + 1);
                         ;
                         if (_wcsnicmp(name.c_str(), pFindItem->lvfi.psz, findLen) == 0)
                         {
@@ -3107,8 +3120,8 @@ LRESULT CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
             {
                 for (size_t i = pFindItem->iStart; i < m_listItems.size(); ++i)
                 {
-                    auto index = std::get<0>(m_listItems[i]);
-                    auto name  = m_items[index].filePath.substr(m_items[index].filePath.find_last_of('\\') + 1);
+                    auto [itemsIndex, itemsSubIndex] = m_listItems[i];
+                    auto name                        = m_items[itemsIndex]->filePath.substr(m_items[itemsIndex]->filePath.find_last_of('\\') + 1);
                     ;
                     if (_wcsnicmp(name.c_str(), pFindItem->lvfi.psz, findLen) == 0)
                     {
@@ -3122,8 +3135,8 @@ LRESULT CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
                         end = static_cast<size_t>(m_listItems.size());
                     for (size_t i = 0; i < end; ++i)
                     {
-                        auto index = std::get<0>(m_listItems[i]);
-                        auto name  = m_items[index].filePath.substr(m_items[index].filePath.find_last_of('\\') + 1);
+                        auto [itemsIndex, itemsSubIndex] = m_listItems[i];
+                        auto name                        = m_items[itemsIndex]->filePath.substr(m_items[itemsIndex]->filePath.find_last_of('\\') + 1);
                         ;
                         if (_wcsnicmp(name.c_str(), pFindItem->lvfi.psz, findLen) == 0)
                         {
@@ -3150,20 +3163,19 @@ void static OpenFileInProcess(LPWSTR lpCommandLine)
 
 void CSearchDlg::OpenFileAtListIndex(int listIndex)
 {
-    CSearchInfo* pInfo;
-    auto         subIndex = 0;
+    const CSearchInfo* pInfo    = nullptr;
+    auto               subIndex = 0;
 
-    bool         fileList = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
+    bool               fileList = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
     if (fileList)
     {
-        pInfo = &m_items[listIndex];
+        pInfo = m_items[listIndex];
     }
     else
     {
-        auto tup   = m_listItems[listIndex];
-        int  iItem = std::get<0>(tup);
-        pInfo      = &m_items[iItem];
-        subIndex   = std::get<1>(tup);
+        auto [itemsIndex, itemsSubIndex] = m_listItems[listIndex];
+        pInfo                            = m_items[itemsIndex];
+        subIndex                         = itemsSubIndex;
     }
 
     std::wstring line = L"1";
@@ -3276,7 +3288,7 @@ void CSearchDlg::OpenFileAtListIndex(int listIndex)
         if (!pInfo->matchLinesMap.empty())
         {
             // not binary
-            match = pInfo->matchLinesMap[pInfo->matchLinesNumbers[subIndex]].substr(pInfo->matchColumnsNumbers[subIndex] - 1, pInfo->matchLengths[subIndex]);
+            match = pInfo->matchLinesMap.at(pInfo->matchLinesNumbers[subIndex]).substr(pInfo->matchColumnsNumbers[subIndex] - 1, pInfo->matchLengths[subIndex]);
             escapeForRegexEx(match, 1);
             if (match.length() > 32767 - 1 - 2 - 2 - 13 - pInfo->filePath.length() - reservedLength)
             {
@@ -3611,7 +3623,7 @@ DWORD CSearchDlg::SearchThread()
         while ((fileEnumerator.NextFile(sPath, &bIsDirectory, bRecurse)) && !m_cancelled)
         {
             {
-                std::lock_guard<std::mutex> lock(m_backupAndTempFiles_Mutex);
+                std::lock_guard<std::mutex> lock(m_backupAndTempFilesMutex);
                 if (m_backupAndTempFiles.contains(sPath))
                     continue;
             }
@@ -4009,7 +4021,7 @@ std::wstring CSearchDlg::BackupFile(const std::wstring& destParentDir, const std
         return L"";
     }
     {
-        std::lock_guard<std::mutex> lock(m_backupAndTempFiles_Mutex);
+        std::lock_guard<std::mutex> lock(m_backupAndTempFilesMutex);
         m_backupAndTempFiles.insert(backupFile);
     }
 
@@ -4115,7 +4127,7 @@ int CSearchDlg::SearchOnTextFile(CSearchInfo& sInfo, const std::wstring& searchR
     if (m_bReplace) // synchronize Replace and Search for cancellation and reducing repetitive work on huge files
     {
         {
-            std::lock_guard<std::mutex> lock(m_backupAndTempFiles_Mutex);
+            std::lock_guard<std::mutex> lock(m_backupAndTempFilesMutex);
             m_backupAndTempFiles.insert(filePathTemp);
         }
         replaceFmt.SetReplacePair(L"${filepath}", sInfo.filePath);
@@ -4371,7 +4383,7 @@ int CSearchDlg::SearchByFilePath(CSearchInfo& sInfo, const std::wstring& searchR
     if (m_bReplace) // synchronize Replace and Search for cancellation and reducing repetitive work on huge files
     {
         {
-            std::lock_guard<std::mutex> lock(m_backupAndTempFiles_Mutex);
+            std::lock_guard<std::mutex> lock(m_backupAndTempFilesMutex);
             m_backupAndTempFiles.insert(filePathTemp);
         }
 
@@ -4853,8 +4865,8 @@ int CSearchDlg::GetSelectedListIndex(bool fileList, int index) const
 {
     if (fileList)
         return index;
-    auto tup = m_listItems[index];
-    return std::get<0>(tup);
+    auto [itemsIndex, itemsSubIndex] = m_listItems[index];
+    return itemsIndex;
 }
 
 bool CSearchDlg::FailedShowMessage(HRESULT hr)
@@ -5036,4 +5048,55 @@ bool CSearchDlg::CloneWindow()
     sei.nShow             = SW_SHOWNORMAL;
     ShellExecuteEx(&sei);
     return true;
+}
+void CSearchDlg::doFilter()
+{
+    HWND hListControl = GetDlgItem(*this, IDC_RESULTLIST);
+    SendMessage(hListControl, WM_SETREDRAW, FALSE, 0);
+
+    auto filterText = GetDlgItemText(IDC_FILTER);
+    bool noFilter   = wcslen(filterText.get()) == 0;
+    m_items.clear();
+    for (const auto& item : m_origItems)
+    {
+        if (noFilter || StrStrI(item.filePath.c_str(), filterText.get()))
+            m_items.push_back(&item);
+        else
+        {
+            for (const auto& text : item.matchLinesMap | std::views::values)
+            {
+                if (StrStrI(text.c_str(), filterText.get()))
+                {
+                    m_items.push_back(&item);
+                    break;
+                }
+            }
+        }
+    }
+    filterItemsList(filterText.get());
+    ShowWindow(GetDlgItem(*this, IDC_EXPORT), m_items.empty() ? SW_HIDE : SW_SHOW);
+    bool fileList     = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
+    ListView_SetItemCountEx(hListControl, fileList ? m_items.size() : m_listItems.size(), LVSICF_NOINVALIDATEALL | LVSICF_NOSCROLL);
+    SendMessage(hListControl, WM_SETREDRAW, TRUE, 0);
+    RedrawWindow(hListControl, nullptr, nullptr, RDW_ERASE | RDW_FRAME | RDW_INVALIDATE | RDW_ALLCHILDREN);
+}
+void CSearchDlg::filterItemsList(const wchar_t* filterString)
+{
+    m_listItems.clear();
+    bool noFilter = wcslen(filterString) == 0;
+    int  index    = 0;
+    for (const auto& item : m_items)
+    {
+        int subIndex = 0;
+        for (const auto& lineNumber : item->matchLinesNumbers)
+        {
+            const auto text = item->matchLinesMap.at(lineNumber);
+            if (noFilter || StrStrI(text.c_str(), filterString))
+            {
+                m_listItems.push_back({index, subIndex});
+            }
+            ++subIndex;
+        }
+        ++index;
+    }
 }

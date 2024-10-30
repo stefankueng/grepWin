@@ -92,6 +92,7 @@
 #define IDS_COPY_COLUMN_SEL             178
 #define IDS_REGEXEXCEPTION              179
 #define IDS_COLUMN                      180
+#define IDS_FILTER_CUE                  181
 #define IDC_SEARCHTEXT                  1000
 #define IDC_REGEXRADIO                  1001
 #define IDC_TEXTRADIO                   1002
@@ -191,6 +192,7 @@
 #define IDC_CAPTURESEARCH               1089
 #define IDC_EDIT1                       1090
 #define IDC_NUMNULL                     1090
+#define IDC_FILTER                      1090
 #define IDC_SYSLINK1                    1091
 #define IDC_INCLUDESYMLINK              1092
 #define ID_REMOVEBOOKMARK               32771
