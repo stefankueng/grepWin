@@ -113,6 +113,7 @@
             <File Id="Spanish.lang" Name="Spanish.lang" DiskId="1" Source="../../translations/Spanish.lang" />
             <File Id="Spanish_Mexican.lang" Name="Spanish Mexican.lang" DiskId="1" Source="../../translations/Spanish Mexican.lang" />
             <File Id="Swedish.lang" Name="Swedish.lang" DiskId="1" Source="../../translations/Swedish.lang" />
+            <File Id="Tamil.lang" Name="Tamil.lang" DiskId="1" Source="../../translations/Tamil.lang" />
             <File Id="Turkish.lang" Name="Turkish.lang" DiskId="1" Source="../../translations/Turkish.lang" />
 
 <?foreach it in Directory;Directory\Background;LibraryFolder\background;Folder;Drive;*?>

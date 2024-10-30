@@ -83,7 +83,12 @@
     <exec program="tools\restext.exe" >
       <arg value="extract" />
       <arg value="bin\release\grepWin.exe" />
-      <arg value="translations\German.lang" />
+      <arg value="translations\Afrikaans.lang" />
+    </exec>
+    <exec program="tools\restext.exe" >
+      <arg value="extract" />
+      <arg value="bin\release\grepWin.exe" />
+      <arg value="translations\Belarusian.lang" />
     </exec>
     <exec program="tools\restext.exe" >
       <arg value="extract" />
@@ -103,12 +108,67 @@
     <exec program="tools\restext.exe" >
       <arg value="extract" />
       <arg value="bin\release\grepWin.exe" />
+      <arg value="translations\French.lang" />
+    </exec>
+    <exec program="tools\restext.exe" >
+      <arg value="extract" />
+      <arg value="bin\release\grepWin.exe" />
+      <arg value="translations\German.lang" />
+    </exec>
+    <exec program="tools\restext.exe" >
+      <arg value="extract" />
+      <arg value="bin\release\grepWin.exe" />
+      <arg value="translations\Greek.lang" />
+    </exec>
+    <exec program="tools\restext.exe" >
+      <arg value="extract" />
+      <arg value="bin\release\grepWin.exe" />
       <arg value="translations\Hindi.lang" />
     </exec>
     <exec program="tools\restext.exe" >
       <arg value="extract" />
       <arg value="bin\release\grepWin.exe" />
+      <arg value="translations\Hungarian.lang" />
+    </exec>
+    <exec program="tools\restext.exe" >
+      <arg value="extract" />
+      <arg value="bin\release\grepWin.exe" />
+      <arg value="translations\Italian.lang" />
+    </exec>
+    <exec program="tools\restext.exe" >
+      <arg value="extract" />
+      <arg value="bin\release\grepWin.exe" />
+      <arg value="translations\Japanese.lang" />
+    </exec>
+    <exec program="tools\restext.exe" >
+      <arg value="extract" />
+      <arg value="bin\release\grepWin.exe" />
+      <arg value="translations\Korean.lang" />
+    </exec>
+    <exec program="tools\restext.exe" >
+      <arg value="extract" />
+      <arg value="bin\release\grepWin.exe" />
       <arg value="translations\Polish.lang" />
+    </exec>
+    <exec program="tools\restext.exe" >
+      <arg value="extract" />
+      <arg value="bin\release\grepWin.exe" />
+      <arg value="translations\Portuguese.lang" />
+    </exec>
+    <exec program="tools\restext.exe" >
+      <arg value="extract" />
+      <arg value="bin\release\grepWin.exe" />
+      <arg value="translations\Portuguese Brazilian.lang" />
+    </exec>
+    <exec program="tools\restext.exe" >
+      <arg value="extract" />
+      <arg value="bin\release\grepWin.exe" />
+      <arg value="translations\Russian.lang" />
+    </exec>
+    <exec program="tools\restext.exe" >
+      <arg value="extract" />
+      <arg value="bin\release\grepWin.exe" />
+      <arg value="translations\Slovak.lang" />
     </exec>
     <exec program="tools\restext.exe" >
       <arg value="extract" />
@@ -123,72 +183,17 @@
     <exec program="tools\restext.exe" >
       <arg value="extract" />
       <arg value="bin\release\grepWin.exe" />
-      <arg value="translations\Italian.lang" />
-    </exec>
-    <exec program="tools\restext.exe" >
-      <arg value="extract" />
-      <arg value="bin\release\grepWin.exe" />
-      <arg value="translations\Portuguese Brazilian.lang" />
-    </exec>
-    <exec program="tools\restext.exe" >
-      <arg value="extract" />
-      <arg value="bin\release\grepWin.exe" />
-      <arg value="translations\Japanese.lang" />
-    </exec>
-    <exec program="tools\restext.exe" >
-      <arg value="extract" />
-      <arg value="bin\release\grepWin.exe" />
-      <arg value="translations\French.lang" />
-    </exec>
-    <exec program="tools\restext.exe" >
-      <arg value="extract" />
-      <arg value="bin\release\grepWin.exe" />
-      <arg value="translations\Turkish.lang" />
-    </exec>
-    <exec program="tools\restext.exe" >
-      <arg value="extract" />
-      <arg value="bin\release\grepWin.exe" />
-      <arg value="translations\Russian.lang" />
-    </exec>
-    <exec program="tools\restext.exe" >
-      <arg value="extract" />
-      <arg value="bin\release\grepWin.exe" />
-      <arg value="translations\Greek.lang" />
-    </exec>
-    <exec program="tools\restext.exe" >
-      <arg value="extract" />
-      <arg value="bin\release\grepWin.exe" />
-      <arg value="translations\Belarusian.lang" />
-    </exec>
-    <exec program="tools\restext.exe" >
-      <arg value="extract" />
-      <arg value="bin\release\grepWin.exe" />
-      <arg value="translations\Hungarian.lang" />
-    </exec>
-    <exec program="tools\restext.exe" >
-      <arg value="extract" />
-      <arg value="bin\release\grepWin.exe" />
-      <arg value="translations\Portuguese.lang" />
-    </exec>
-    <exec program="tools\restext.exe" >
-      <arg value="extract" />
-      <arg value="bin\release\grepWin.exe" />
-      <arg value="translations\Slovak.lang" />
-    </exec>
-    <exec program="tools\restext.exe" >
-      <arg value="extract" />
-      <arg value="bin\release\grepWin.exe" />
       <arg value="translations\Swedish.lang" />
     </exec>
     <exec program="tools\restext.exe" >
       <arg value="extract" />
       <arg value="bin\release\grepWin.exe" />
-      <arg value="translations\Afrikaans.lang" />
+      <arg value="translations\Tamil.lang" />
     </exec>
     <exec program="tools\restext.exe" >
       <arg value="extract" />
       <arg value="bin\release\grepWin.exe" />
-      <arg value="translations\Korean.lang" />
+      <arg value="translations\Turkish.lang" />
     </exec>
   </target>
 
