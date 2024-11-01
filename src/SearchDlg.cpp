@@ -2893,7 +2893,9 @@ LRESULT CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
         int          showMax = min(leftMax, subIndex + 5);
         for (; subIndex < showMax; ++subIndex)
         {
-            std::wstring matchText = pInfo->matchLinesMap.at(pInfo->matchLinesNumbers[subIndex]);
+            std::wstring matchText;
+            if (pInfo->matchLinesMap.contains(pInfo->matchLinesNumbers[subIndex]))
+                matchText = pInfo->matchLinesMap.at(pInfo->matchLinesNumbers[subIndex]);
             CStringUtils::rtrim(matchText);
             constexpr size_t maxLineLength = 240;
             size_t           iShow         = 0;
@@ -5075,7 +5077,7 @@ void CSearchDlg::doFilter()
     }
     filterItemsList(filterText.get());
     ShowWindow(GetDlgItem(*this, IDC_EXPORT), m_items.empty() ? SW_HIDE : SW_SHOW);
-    bool fileList     = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
+    bool fileList = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
     ListView_SetItemCountEx(hListControl, fileList ? m_items.size() : m_listItems.size(), LVSICF_NOINVALIDATEALL | LVSICF_NOSCROLL);
     SendMessage(hListControl, WM_SETREDRAW, TRUE, 0);
     RedrawWindow(hListControl, nullptr, nullptr, RDW_ERASE | RDW_FRAME | RDW_INVALIDATE | RDW_ALLCHILDREN);
@@ -5090,7 +5092,9 @@ void CSearchDlg::filterItemsList(const wchar_t* filterString)
         int subIndex = 0;
         for (const auto& lineNumber : item->matchLinesNumbers)
         {
-            const auto text = item->matchLinesMap.at(lineNumber);
+            std::wstring text;
+            if (item->matchLinesMap.contains(lineNumber))
+                text = item->matchLinesMap.at(lineNumber);
             if (noFilter || StrStrI(text.c_str(), filterString))
             {
                 m_listItems.push_back({index, subIndex});
