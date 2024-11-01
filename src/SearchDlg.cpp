@@ -2491,7 +2491,8 @@ bool CSearchDlg::PreTranslateMessage(MSG* pMsg)
                 if ((GetFocus() == hListControl) && bCtrl)
                 {
                     // copy all selected entries to the clipboard
-                    std::wstring clipBoardText;
+                    std::wstring           clipBoardText;
+                    std::set<std::wstring> uniquePaths;
                     if (bShift) // Ctrl+Shift+C : copy text of all columns
                     {
                         HWND  hHeader       = ListView_GetHeader(hListControl);
@@ -2535,6 +2536,7 @@ bool CSearchDlg::PreTranslateMessage(MSG* pMsg)
                             if ((selIndex < 0) || (selIndex >= static_cast<int>(m_items.size())))
                                 continue;
                             auto path = m_items[GetSelectedListIndex(fileList, iItem)]->filePath;
+                            uniquePaths.insert(path);
                             if (bAlt)
                                 path = path.substr(path.find_last_of('\\') + 1);
                             clipBoardText += path;
@@ -2542,6 +2544,52 @@ bool CSearchDlg::PreTranslateMessage(MSG* pMsg)
                         }
                     }
                     WriteAsciiStringToClipboard(clipBoardText.c_str(), *this);
+                    if (!uniquePaths.empty())
+                    {
+                        int nLength = 0;
+                        for (auto it = uniquePaths.cbegin(); it != uniquePaths.cend(); ++it)
+                        {
+                            nLength += static_cast<int>(it->size());
+                            nLength += 1; // '\0' separator
+                        }
+                        int  nBufferSize = sizeof(DROPFILES) + ((nLength + 5) * sizeof(wchar_t));
+                        auto pBuffer     = std::make_unique<char[]>(nBufferSize);
+                        SecureZeroMemory(pBuffer.get(), nBufferSize);
+                        DROPFILES* df             = reinterpret_cast<DROPFILES*>(pBuffer.get());
+                        df->pFiles                = sizeof(DROPFILES);
+                        df->fWide                 = 1;
+                        wchar_t* pFileNames       = reinterpret_cast<wchar_t*>(reinterpret_cast<BYTE*>(pBuffer.get()) + sizeof(DROPFILES));
+                        wchar_t* pCurrentFilename = pFileNames;
+
+                        for (auto it = uniquePaths.cbegin(); it != uniquePaths.cend(); ++it)
+                        {
+                            wcscpy_s(pCurrentFilename, it->size() + 1, it->c_str());
+                            pCurrentFilename += it->size();
+                            *pCurrentFilename = '\0'; // separator between file names
+                            pCurrentFilename++;
+                        }
+                        *pCurrentFilename = '\0'; // terminate array
+                        pCurrentFilename++;
+                        *pCurrentFilename = '\0'; // terminate array
+                        STGMEDIUM medium  = {0};
+                        medium.tymed      = TYMED_HGLOBAL;
+                        medium.hGlobal    = GlobalAlloc(GMEM_ZEROINIT | GMEM_MOVEABLE, nBufferSize + 20);
+                        if (medium.hGlobal)
+                        {
+                            LPVOID pMem = ::GlobalLock(medium.hGlobal);
+                            if (pMem)
+                            {
+                                memcpy(pMem, pBuffer.get(), nBufferSize);
+                                GlobalUnlock(medium.hGlobal);
+                                if (OpenClipboard(*this))
+                                {
+                                    OnOutOfScope(
+                                        CloseClipboard(););
+                                    SetClipboardData(CF_HDROP, pMem);
+                                }
+                            }
+                        }
+                    }
                 }
             }
             break;
