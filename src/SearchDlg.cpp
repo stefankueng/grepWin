@@ -3061,7 +3061,9 @@ LRESULT CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
                                 line = pInfo->matchLinesMap.at(pInfo->matchLinesNumbers[itemsSubIndex]);
                             for (auto& c : line)
                             {
-                                if (c < 32)
+                                if (c == '\t')
+                                    c = ' ';
+                                else if (c < 32)
                                     c = c + 0x2400;
                             }
                             wcsncpy_s(pItem->pszText, pItem->cchTextMax, line.c_str(), pItem->cchTextMax - 1LL);
