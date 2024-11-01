@@ -107,7 +107,7 @@ BEGIN
     PUSHBUTTON      "|",IDC_PATTERNMRU,554,155,12,12
     CONTROL         "Regex match",IDC_FILEPATTERNREGEX,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,432,174,66,10
     CONTROL         "Text match",IDC_FILEPATTERNTEXT,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,504,174,62,10
-    PUSHBUTTON      "Settings",IDC_SETTINGSBUTTON,7,206,94,14
+    PUSHBUTTON      "⚙ Settings",IDC_SETTINGSBUTTON,7,206,94,14
     EDITTEXT        IDC_FILTER,115,206,310,14,ES_AUTOHSCROLL | NOT WS_VISIBLE
     PUSHBUTTON      "&Replace",IDC_REPLACE,432,206,67,14
     CONTROL         "Search",IDOK,"Button",BS_DEFSPLITBUTTON | WS_TABSTOP,506,206,67,14
@@ -361,7 +361,7 @@ BEGIN
     IDS_LESSTHAN            "less than"
     IDS_EQUALTO             "equal to"
     IDS_GREATERTHAN         "greater than"
-    IDS_SEARCH              "&Search"
+    IDS_SEARCH              "🔎 &Search"
     IDS_REPLACECONFIRM      "Are you sure you want to replace\n%s\nwith\n%s\nwithout creating backups?"
     IDS_ANEMPTYSTRING       "an empty string"
     IDS_STOP                "S&top"
