@@ -214,7 +214,6 @@ private:
     int                              m_totalMatches;
     int                              m_selectedItems;
     bool                             m_bAscending;
-    std::wstring                     m_resultString;
     std::wstring                     m_toolTipReplaceString;
     std::unique_ptr<CInfoRtfDialog>  m_rtfDialog;
 
