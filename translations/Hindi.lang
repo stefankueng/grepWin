@@ -55,10 +55,6 @@ msgstr "grepWin परिचय (&A)..."
 msgid "&Replace"
 msgstr "बदलें (&R)"
 
-#. Resource IDs: (123)
-msgid "&Search"
-msgstr "खोज (&S)"
-
 #. Resource IDs: (1003)
 msgid "&Whole word"
 msgstr ""
@@ -243,6 +239,10 @@ msgstr "फ़ाइल नाम मिलान:\nएक से ज्याद�
 #. Resource IDs: (1059)
 msgid "Files"
 msgstr "फ़ाइलें"
+
+#. Resource IDs: (181)
+msgid "Filter results"
+msgstr ""
 
 #. Resource IDs: (174)
 #, c-format
@@ -468,10 +468,6 @@ msgstr "संपादित करने के लिए एप्लिक�
 msgid "Select path to search"
 msgstr "खोज के लिए पथ चुनें"
 
-#. Resource IDs: (1071)
-msgid "Settings"
-msgstr "सेटिंग्स"
-
 #. Resource IDs: (133)
 msgid "Size"
 msgstr "आकार"
@@ -655,4 +651,12 @@ msgstr ""
 #. Resource IDs: (1024)
 msgid "⑂"
 msgstr "⑂"
+
+#. Resource IDs: (1071)
+msgid "⚙ Settings"
+msgstr "⚙ सेटिंग्स"
+
+#. Resource IDs: (123)
+msgid "🔎 &Search"
+msgstr "🔎 खोज (&S)"
 

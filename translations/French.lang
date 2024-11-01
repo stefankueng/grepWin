@@ -55,10 +55,6 @@ msgstr "&À propos de grepWin..."
 msgid "&Replace"
 msgstr "&Remplacer"
 
-#. Resource IDs: (123)
-msgid "&Search"
-msgstr "Re&chercher"
-
 #. Resource IDs: (1003)
 msgid "&Whole word"
 msgstr ""
@@ -243,6 +239,10 @@ msgstr "Motif des noms de fichiers :\n'|' pour ajouter des motifs.\n'-' pour exc
 #. Resource IDs: (1059)
 msgid "Files"
 msgstr "fichiers"
+
+#. Resource IDs: (181)
+msgid "Filter results"
+msgstr ""
 
 #. Resource IDs: (174)
 #, c-format
@@ -468,10 +468,6 @@ msgstr "Choisir l'éditeur..."
 msgid "Select path to search"
 msgstr "Choisir le chemin où chercher"
 
-#. Resource IDs: (1071)
-msgid "Settings"
-msgstr "Configuration"
-
 #. Resource IDs: (133)
 msgid "Size"
 msgstr "Taille"
@@ -655,4 +651,12 @@ msgstr ""
 #. Resource IDs: (1024)
 msgid "⑂"
 msgstr "⑂"
+
+#. Resource IDs: (1071)
+msgid "⚙ Settings"
+msgstr "⚙ Configuration"
+
+#. Resource IDs: (123)
+msgid "🔎 &Search"
+msgstr "🔎 Re&chercher"
 

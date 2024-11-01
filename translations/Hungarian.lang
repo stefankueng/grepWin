@@ -55,10 +55,6 @@ msgstr "&A grepWin névjegye"
 msgid "&Replace"
 msgstr "&Csere"
 
-#. Resource IDs: (123)
-msgid "&Search"
-msgstr "&Keresés"
-
 #. Resource IDs: (1003)
 msgid "&Whole word"
 msgstr "&Teljes szó"
@@ -243,6 +239,10 @@ msgstr "Illeszkedő fájlnevek:\nHasználja a '|' jelet a különböző illeszke
 #. Resource IDs: (1059)
 msgid "Files"
 msgstr "Fájlok"
+
+#. Resource IDs: (181)
+msgid "Filter results"
+msgstr ""
 
 #. Resource IDs: (174)
 #, c-format
@@ -468,10 +468,6 @@ msgstr "Válasszon szerkesztő alkalmazást..."
 msgid "Select path to search"
 msgstr "Válassza ki a keresés útvonalát"
 
-#. Resource IDs: (1071)
-msgid "Settings"
-msgstr "Beállítások"
-
 #. Resource IDs: (133)
 msgid "Size"
 msgstr "Méret"
@@ -655,4 +651,12 @@ msgstr "|"
 #. Resource IDs: (1024)
 msgid "⑂"
 msgstr "⑂"
+
+#. Resource IDs: (1071)
+msgid "⚙ Settings"
+msgstr "⚙ Beállítások"
+
+#. Resource IDs: (123)
+msgid "🔎 &Search"
+msgstr "🔎 &Keresés"
 

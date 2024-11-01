@@ -55,10 +55,6 @@ msgstr "&Informazioni su grepWin..."
 msgid "&Replace"
 msgstr "&Sostituisci"
 
-#. Resource IDs: (123)
-msgid "&Search"
-msgstr "&Cerca"
-
 #. Resource IDs: (1003)
 msgid "&Whole word"
 msgstr "Pa&rola intera"
@@ -243,6 +239,10 @@ msgstr "Corrispondenze nomi file\n(usa '|' per separare più modelli di corrispo
 #. Resource IDs: (1059)
 msgid "Files"
 msgstr "File"
+
+#. Resource IDs: (181)
+msgid "Filter results"
+msgstr ""
 
 #. Resource IDs: (174)
 #, c-format
@@ -468,10 +468,6 @@ msgstr "Seleziona l'applicazione da usare come editor..."
 msgid "Select path to search"
 msgstr "Seleziona percorso di ricerca"
 
-#. Resource IDs: (1071)
-msgid "Settings"
-msgstr "Impostazioni"
-
 #. Resource IDs: (133)
 msgid "Size"
 msgstr "Dimensione"
@@ -655,3 +651,12 @@ msgstr "|"
 #. Resource IDs: (1024)
 msgid "⑂"
 msgstr "⑂"
+
+#. Resource IDs: (1071)
+msgid "⚙ Settings"
+msgstr "⚙ Impostazioni"
+
+#. Resource IDs: (123)
+msgid "🔎 &Search"
+msgstr "🔎 &Cerca"
+

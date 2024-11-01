@@ -55,10 +55,6 @@ msgstr ""
 msgid "&Replace"
 msgstr ""
 
-#. Resource IDs: (123)
-msgid "&Search"
-msgstr ""
-
 #. Resource IDs: (1003)
 msgid "&Whole word"
 msgstr ""
@@ -242,6 +238,10 @@ msgstr ""
 
 #. Resource IDs: (1059)
 msgid "Files"
+msgstr ""
+
+#. Resource IDs: (181)
+msgid "Filter results"
 msgstr ""
 
 #. Resource IDs: (174)
@@ -468,10 +468,6 @@ msgstr ""
 msgid "Select path to search"
 msgstr ""
 
-#. Resource IDs: (1071)
-msgid "Settings"
-msgstr ""
-
 #. Resource IDs: (133)
 msgid "Size"
 msgstr ""
@@ -655,4 +651,12 @@ msgstr ""
 #. Resource IDs: (1024)
 msgid "⑂"
 msgstr "⑂"
+
+#. Resource IDs: (1071)
+msgid "⚙ Settings"
+msgstr ""
+
+#. Resource IDs: (123)
+msgid "🔎 &Search"
+msgstr ""
 

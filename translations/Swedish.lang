@@ -55,10 +55,6 @@ msgstr "Om grepWin..."
 msgid "&Replace"
 msgstr "Ersätt"
 
-#. Resource IDs: (123)
-msgid "&Search"
-msgstr "Sök"
-
 #. Resource IDs: (1003)
 msgid "&Whole word"
 msgstr ""
@@ -243,6 +239,10 @@ msgstr "Filnamn matchar:\nanvänd '|' för att separera multipla textmatchningsm
 #. Resource IDs: (1059)
 msgid "Files"
 msgstr "Filer"
+
+#. Resource IDs: (181)
+msgid "Filter results"
+msgstr ""
 
 #. Resource IDs: (174)
 #, c-format
@@ -468,10 +468,6 @@ msgstr "Välj editor ..."
 msgid "Select path to search"
 msgstr "Välj mapp att söka i"
 
-#. Resource IDs: (1071)
-msgid "Settings"
-msgstr "Inställningar"
-
 #. Resource IDs: (133)
 msgid "Size"
 msgstr "Storlek"
@@ -655,4 +651,12 @@ msgstr ""
 #. Resource IDs: (1024)
 msgid "⑂"
 msgstr "⑂"
+
+#. Resource IDs: (1071)
+msgid "⚙ Settings"
+msgstr "⚙ Inställningar"
+
+#. Resource IDs: (123)
+msgid "🔎 &Search"
+msgstr "🔎 &Sök"
 

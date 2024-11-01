@@ -55,10 +55,6 @@ msgstr "关于 grepWin(&A)..."
 msgid "&Replace"
 msgstr "替换(&R)"
 
-#. Resource IDs: (123)
-msgid "&Search"
-msgstr "搜索(&S)"
-
 #. Resource IDs: (1003)
 msgid "&Whole word"
 msgstr "全字"
@@ -243,6 +239,10 @@ msgstr "文件名称匹配:\n使用 \"|\" 号来分隔多个文本匹配规则, 
 #. Resource IDs: (1059)
 msgid "Files"
 msgstr "文件"
+
+#. Resource IDs: (181)
+msgid "Filter results"
+msgstr ""
 
 #. Resource IDs: (174)
 #, c-format
@@ -468,10 +468,6 @@ msgstr "选择编辑器应用程序..."
 msgid "Select path to search"
 msgstr "选择要搜索的路径"
 
-#. Resource IDs: (1071)
-msgid "Settings"
-msgstr "设置"
-
 #. Resource IDs: (133)
 msgid "Size"
 msgstr "大小"
@@ -655,4 +651,12 @@ msgstr "|"
 #. Resource IDs: (1024)
 msgid "⑂"
 msgstr "⑂"
+
+#. Resource IDs: (1071)
+msgid "⚙ Settings"
+msgstr "⚙ 设置"
+
+#. Resource IDs: (123)
+msgid "🔎 &Search"
+msgstr "🔎 搜索(&S)"
 

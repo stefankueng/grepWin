@@ -55,10 +55,6 @@ msgstr "&О grepWin..."
 msgid "&Replace"
 msgstr "&Замена"
 
-#. Resource IDs: (123)
-msgid "&Search"
-msgstr "&Найти"
-
 #. Resource IDs: (1003)
 msgid "&Whole word"
 msgstr "&Слово целиком"
@@ -243,6 +239,10 @@ msgstr "Совпадения имен:\n'|' для разделения,\n'-' в
 #. Resource IDs: (1059)
 msgid "Files"
 msgstr "Файлы"
+
+#. Resource IDs: (181)
+msgid "Filter results"
+msgstr ""
 
 #. Resource IDs: (174)
 #, c-format
@@ -468,10 +468,6 @@ msgstr "Выбор редактора..."
 msgid "Select path to search"
 msgstr "Выбор пути поиска"
 
-#. Resource IDs: (1071)
-msgid "Settings"
-msgstr "Настройки"
-
 #. Resource IDs: (133)
 msgid "Size"
 msgstr "Размер"
@@ -655,4 +651,12 @@ msgstr "|"
 #. Resource IDs: (1024)
 msgid "⑂"
 msgstr "О"
+
+#. Resource IDs: (1071)
+msgid "⚙ Settings"
+msgstr "⚙ Настройки"
+
+#. Resource IDs: (123)
+msgid "🔎 &Search"
+msgstr "🔎 &Найти"
 

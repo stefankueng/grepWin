@@ -55,10 +55,6 @@ msgstr "&Over grepWin..."
 msgid "&Replace"
 msgstr "&Vervangen"
 
-#. Resource IDs: (123)
-msgid "&Search"
-msgstr "&Zoeken"
-
 #. Resource IDs: (1003)
 msgid "&Whole word"
 msgstr "Heel &woord"
@@ -243,6 +239,10 @@ msgstr "Bestandnamen komen overeen:\ngebruik '|' om meerdere patronen te scheide
 #. Resource IDs: (1059)
 msgid "Files"
 msgstr "Bestanden"
+
+#. Resource IDs: (181)
+msgid "Filter results"
+msgstr ""
 
 #. Resource IDs: (174)
 #, c-format
@@ -468,10 +468,6 @@ msgstr "Kies Editor programma..."
 msgid "Select path to search"
 msgstr "Kies zoekpad"
 
-#. Resource IDs: (1071)
-msgid "Settings"
-msgstr "Instellingen"
-
 #. Resource IDs: (133)
 msgid "Size"
 msgstr "Grootte"
@@ -655,4 +651,12 @@ msgstr "|"
 #. Resource IDs: (1024)
 msgid "⑂"
 msgstr "⑂"
+
+#. Resource IDs: (1071)
+msgid "⚙ Settings"
+msgstr "⚙ Instellingen"
+
+#. Resource IDs: (123)
+msgid "🔎 &Search"
+msgstr "🔎 &Zoeken"
 

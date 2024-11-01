@@ -55,10 +55,6 @@ msgstr ""
 msgid "&Replace"
 msgstr "&Substituir"
 
-#. Resource IDs: (123)
-msgid "&Search"
-msgstr "&Procurar"
-
 #. Resource IDs: (1003)
 msgid "&Whole word"
 msgstr ""
@@ -243,6 +239,10 @@ msgstr "Ficheiros correspondentes:\nusar '|' p/ separar padrões de texto corres
 #. Resource IDs: (1059)
 msgid "Files"
 msgstr "Ficheiros"
+
+#. Resource IDs: (181)
+msgid "Filter results"
+msgstr ""
 
 #. Resource IDs: (174)
 #, c-format
@@ -468,10 +468,6 @@ msgstr "Seleccionar programa Editor..."
 msgid "Select path to search"
 msgstr "Seleccionar o caminho para procurar"
 
-#. Resource IDs: (1071)
-msgid "Settings"
-msgstr "Definições"
-
 #. Resource IDs: (133)
 msgid "Size"
 msgstr "Tamanho"
@@ -655,4 +651,12 @@ msgstr ""
 #. Resource IDs: (1024)
 msgid "⑂"
 msgstr "⑂"
+
+#. Resource IDs: (1071)
+msgid "⚙ Settings"
+msgstr "⚙ Definições"
+
+#. Resource IDs: (123)
+msgid "🔎 &Search"
+msgstr "🔎 &Procurar"
 

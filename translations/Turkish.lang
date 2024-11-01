@@ -55,10 +55,6 @@ msgstr "%GrepWin hakkında ..."
 msgid "&Replace"
 msgstr "&Değiştir"
 
-#. Resource IDs: (123)
-msgid "&Search"
-msgstr "&Ara"
-
 #. Resource IDs: (1003)
 msgid "&Whole word"
 msgstr ""
@@ -243,6 +239,10 @@ msgstr "Dosya adları eşleşiyorsa:\n Çoklu desenleri ayırmak için '|', hari
 #. Resource IDs: (1059)
 msgid "Files"
 msgstr "Dosyalar"
+
+#. Resource IDs: (181)
+msgid "Filter results"
+msgstr ""
 
 #. Resource IDs: (174)
 #, c-format
@@ -468,10 +468,6 @@ msgstr "Editör Uygulamasını Seçin ..."
 msgid "Select path to search"
 msgstr "Aranacak Yolu Seçin"
 
-#. Resource IDs: (1071)
-msgid "Settings"
-msgstr "Ayarlar"
-
 #. Resource IDs: (133)
 msgid "Size"
 msgstr "Boyut"
@@ -655,4 +651,12 @@ msgstr ""
 #. Resource IDs: (1024)
 msgid "⑂"
 msgstr "⑂"
+
+#. Resource IDs: (1071)
+msgid "⚙ Settings"
+msgstr "⚙ Ayarlar"
+
+#. Resource IDs: (123)
+msgid "🔎 &Search"
+msgstr "🔎 &Ara"
 

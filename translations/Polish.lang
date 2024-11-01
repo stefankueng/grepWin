@@ -55,10 +55,6 @@ msgstr "&O grepWin..."
 msgid "&Replace"
 msgstr "&Zamień"
 
-#. Resource IDs: (123)
-msgid "&Search"
-msgstr "&Szukaj"
-
 #. Resource IDs: (1003)
 msgid "&Whole word"
 msgstr "&Całe słowo"
@@ -243,6 +239,10 @@ msgstr "Dopasuj nazwy plików, użyj:\n'|' rozdziela wzorce dopasowania tekstu\n
 #. Resource IDs: (1059)
 msgid "Files"
 msgstr "Pliki"
+
+#. Resource IDs: (181)
+msgid "Filter results"
+msgstr ""
 
 #. Resource IDs: (174)
 #, c-format
@@ -468,10 +468,6 @@ msgstr "Wybierz Edytor aplikacji..."
 msgid "Select path to search"
 msgstr "Wybierz ścieżkę do wyszukiwania"
 
-#. Resource IDs: (1071)
-msgid "Settings"
-msgstr "Ustawienia"
-
 #. Resource IDs: (133)
 msgid "Size"
 msgstr "Rozmiar"
@@ -655,4 +651,12 @@ msgstr ""
 #. Resource IDs: (1024)
 msgid "⑂"
 msgstr "⑂"
+
+#. Resource IDs: (1071)
+msgid "⚙ Settings"
+msgstr "⚙ Ustawienia"
+
+#. Resource IDs: (123)
+msgid "🔎 &Search"
+msgstr "🔎 &Szukaj"
 

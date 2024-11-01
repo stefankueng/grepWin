@@ -55,10 +55,6 @@ msgstr "&Πληροφορίες για το grepWin..."
 msgid "&Replace"
 msgstr "&Αντικατάσταση"
 
-#. Resource IDs: (123)
-msgid "&Search"
-msgstr "&Αναζήτηση"
-
 #. Resource IDs: (1003)
 msgid "&Whole word"
 msgstr ""
@@ -243,6 +239,10 @@ msgstr "Μάσκα ονομάτων αρχείων:\nχρήση του '|' γι�
 #. Resource IDs: (1059)
 msgid "Files"
 msgstr "Αρχεία"
+
+#. Resource IDs: (181)
+msgid "Filter results"
+msgstr ""
 
 #. Resource IDs: (174)
 #, c-format
@@ -468,10 +468,6 @@ msgstr "Επιλέξτε επεξεργαστή κειμένου ..."
 msgid "Select path to search"
 msgstr "Επιλέξτε διαδρομή για έρευνα"
 
-#. Resource IDs: (1071)
-msgid "Settings"
-msgstr "Ρυθμίσεις"
-
 #. Resource IDs: (133)
 msgid "Size"
 msgstr "Μέγεθος"
@@ -655,4 +651,12 @@ msgstr ""
 #. Resource IDs: (1024)
 msgid "⑂"
 msgstr "⑂"
+
+#. Resource IDs: (1071)
+msgid "⚙ Settings"
+msgstr "⚙ Ρυθμίσεις"
+
+#. Resource IDs: (123)
+msgid "🔎 &Search"
+msgstr "🔎 &Αναζήτηση"
 

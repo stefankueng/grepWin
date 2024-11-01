@@ -55,10 +55,6 @@ msgstr "Ü&ber grepWin ..."
 msgid "&Replace"
 msgstr "&Ersetzen"
 
-#. Resource IDs: (123)
-msgid "&Search"
-msgstr "&Suchen"
-
 #. Resource IDs: (1003)
 msgid "&Whole word"
 msgstr "&Ganzes Wort"
@@ -243,6 +239,10 @@ msgstr "Datei-Suchmaske:\n'|' zum Trennen mehfacher Suchmasken, zum Ausschließe
 #. Resource IDs: (1059)
 msgid "Files"
 msgstr "Dateien"
+
+#. Resource IDs: (181)
+msgid "Filter results"
+msgstr "Ergebnisse filtern"
 
 #. Resource IDs: (174)
 #, c-format
@@ -468,10 +468,6 @@ msgstr "Editor-Applikation auswählen ..."
 msgid "Select path to search"
 msgstr "Pfad zum Suchen auswählen"
 
-#. Resource IDs: (1071)
-msgid "Settings"
-msgstr "Einstellungen"
-
 #. Resource IDs: (133)
 msgid "Size"
 msgstr "Größe"
@@ -655,4 +651,12 @@ msgstr "|"
 #. Resource IDs: (1024)
 msgid "⑂"
 msgstr "⑂"
+
+#. Resource IDs: (1071)
+msgid "⚙ Settings"
+msgstr "⚙ Einstellungen"
+
+#. Resource IDs: (123)
+msgid "🔎 &Search"
+msgstr "🔎 &Suchen"
 

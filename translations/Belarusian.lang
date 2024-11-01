@@ -55,10 +55,6 @@ msgstr ""
 msgid "&Replace"
 msgstr "&Замена"
 
-#. Resource IDs: (123)
-msgid "&Search"
-msgstr "&Пошук"
-
 #. Resource IDs: (1003)
 msgid "&Whole word"
 msgstr ""
@@ -243,6 +239,10 @@ msgstr "Супадзенні імён:\n'|' для раздзелу некаль
 #. Resource IDs: (1059)
 msgid "Files"
 msgstr "Файлы"
+
+#. Resource IDs: (181)
+msgid "Filter results"
+msgstr ""
 
 #. Resource IDs: (174)
 #, c-format
@@ -468,10 +468,6 @@ msgstr "Выбар редактара..."
 msgid "Select path to search"
 msgstr "Выбар шляху пошуку"
 
-#. Resource IDs: (1071)
-msgid "Settings"
-msgstr "Налады"
-
 #. Resource IDs: (133)
 msgid "Size"
 msgstr "Памер"
@@ -655,4 +651,12 @@ msgstr ""
 #. Resource IDs: (1024)
 msgid "⑂"
 msgstr "⑂"
+
+#. Resource IDs: (1071)
+msgid "⚙ Settings"
+msgstr "⚙ Налады"
+
+#. Resource IDs: (123)
+msgid "🔎 &Search"
+msgstr "🔎 &Пошук"
 

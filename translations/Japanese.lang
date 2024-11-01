@@ -55,10 +55,6 @@ msgstr "grepWin について(&A)..."
 msgid "&Replace"
 msgstr "置換(&R)"
 
-#. Resource IDs: (123)
-msgid "&Search"
-msgstr "検索(&S)"
-
 #. Resource IDs: (1003)
 msgid "&Whole word"
 msgstr "単語全体(&W)"
@@ -243,6 +239,10 @@ msgstr "ファイル名が一致(&D):\n「|」で複数の文字列一致パタ�
 #. Resource IDs: (1059)
 msgid "Files"
 msgstr "ファイル"
+
+#. Resource IDs: (181)
+msgid "Filter results"
+msgstr ""
 
 #. Resource IDs: (174)
 #, c-format
@@ -468,10 +468,6 @@ msgstr "エディタを選択..."
 msgid "Select path to search"
 msgstr "検索するパスを選択"
 
-#. Resource IDs: (1071)
-msgid "Settings"
-msgstr "設定"
-
 #. Resource IDs: (133)
 msgid "Size"
 msgstr "サイズ"
@@ -655,4 +651,12 @@ msgstr "|"
 #. Resource IDs: (1024)
 msgid "⑂"
 msgstr "⑂"
+
+#. Resource IDs: (1071)
+msgid "⚙ Settings"
+msgstr "⚙ 設定"
+
+#. Resource IDs: (123)
+msgid "🔎 &Search"
+msgstr "🔎 検索(&S)"
 

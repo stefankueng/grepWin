@@ -55,10 +55,6 @@ msgstr "%Acerca de grepWin..."
 msgid "&Replace"
 msgstr "&Reemplazar"
 
-#. Resource IDs: (123)
-msgid "&Search"
-msgstr "&Buscar"
-
 #. Resource IDs: (1003)
 msgid "&Whole word"
 msgstr ""
@@ -243,6 +239,10 @@ msgstr "Nombres de Archivo:\nutilice 's' para separar multiples patrones, prepon
 #. Resource IDs: (1059)
 msgid "Files"
 msgstr "Archivos"
+
+#. Resource IDs: (181)
+msgid "Filter results"
+msgstr ""
 
 #. Resource IDs: (174)
 #, c-format
@@ -468,10 +468,6 @@ msgstr "Seleccione Aplicacion Editora..."
 msgid "Select path to search"
 msgstr "Seleccione ruta a buscar"
 
-#. Resource IDs: (1071)
-msgid "Settings"
-msgstr "Configuracion:"
-
 #. Resource IDs: (133)
 msgid "Size"
 msgstr "Tamaño"
@@ -655,4 +651,12 @@ msgstr ""
 #. Resource IDs: (1024)
 msgid "⑂"
 msgstr "⑂"
+
+#. Resource IDs: (1071)
+msgid "⚙ Settings"
+msgstr "⚙ Configuracion"
+
+#. Resource IDs: (123)
+msgid "🔎 &Search"
+msgstr "🔎 &Buscar"
 

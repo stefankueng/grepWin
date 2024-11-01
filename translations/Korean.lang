@@ -55,10 +55,6 @@ msgstr "grepWin 정보(&A)..."
 msgid "&Replace"
 msgstr "바꾸기(&R)"
 
-#. Resource IDs: (123)
-msgid "&Search"
-msgstr "검색(&S)"
-
 #. Resource IDs: (1003)
 msgid "&Whole word"
 msgstr "전체 단어(&W)"
@@ -105,17 +101,8 @@ msgstr "모든 크기"
 
 #. Resource IDs: (124)
 #, c-format
-msgid ""
-"Are you sure you want to replace\n"
-"%s\n"
-"with\n"
-"%s\n"
-"without creating backups?"
-msgstr ""
-"백업을 생성하지 않고\n"
-"%s\n"
-"을(를)\n"
-"%s로 바꾸시겠습니까?"
+msgid "Are you sure you want to replace\n%s\nwith\n%s\nwithout creating backups?"
+msgstr "백업을 생성하지 않고\n%s\n을(를)\n%s로 바꾸시겠습니까?"
 
 #. Resource IDs: (1081)
 msgid "Between"
@@ -246,16 +233,16 @@ msgid "Ext"
 msgstr "확장자"
 
 #. Resource IDs: (1039)
-msgid ""
-"File Names match:\n"
-"use '|' to separate multiple text match patterns, prepen&d '-' to exclude"
-msgstr ""
-"파일 이름 일치:\n"
-"'|'로 여러 텍스트 패턴을 구분하고, '-'를 앞에 붙여 제외합니다(&D)"
+msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
+msgstr "파일 이름 일치:\n'|'로 여러 텍스트 패턴을 구분하고, '-'를 앞에 붙여 제외합니다(&D)"
 
 #. Resource IDs: (1059)
 msgid "Files"
 msgstr "파일"
+
+#. Resource IDs: (181)
+msgid "Filter results"
+msgstr ""
 
 #. Resource IDs: (174)
 #, c-format
@@ -428,12 +415,8 @@ msgid "Replace string"
 msgstr "문자열 바꾸기"
 
 #. Resource IDs: (1027)
-msgid ""
-"Replace with/\n"
-"Capture format:"
-msgstr ""
-"바꿀 문자열/\n"
-"캡쳐 형식:"
+msgid "Replace with/\nCapture format:"
+msgstr "바꿀 문자열/\n캡쳐 형식:"
 
 #. Resource IDs: (126)
 msgid "S&top"
@@ -484,10 +467,6 @@ msgstr "편집기 프로그램을 선택하세요..."
 #. Resource IDs: (127)
 msgid "Select path to search"
 msgstr "검색할 경로를 선택하세요"
-
-#. Resource IDs: (1071)
-msgid "Settings"
-msgstr "설정"
 
 #. Resource IDs: (133)
 msgid "Size"
@@ -672,4 +651,12 @@ msgstr "|"
 #. Resource IDs: (1024)
 msgid "⑂"
 msgstr "⑂"
+
+#. Resource IDs: (1071)
+msgid "⚙ Settings"
+msgstr "⚙ 설정"
+
+#. Resource IDs: (123)
+msgid "🔎 &Search"
+msgstr "🔎 검색(&S)"
 

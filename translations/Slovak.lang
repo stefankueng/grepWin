@@ -55,10 +55,6 @@ msgstr ""
 msgid "&Replace"
 msgstr "&Zameniť"
 
-#. Resource IDs: (123)
-msgid "&Search"
-msgstr "&Hľadať"
-
 #. Resource IDs: (1003)
 msgid "&Whole word"
 msgstr ""
@@ -243,6 +239,10 @@ msgstr "Zhoda názvov súborov:\nznak '|' oddelí viac vzorov text. zhody, na &z
 #. Resource IDs: (1059)
 msgid "Files"
 msgstr "Súbory"
+
+#. Resource IDs: (181)
+msgid "Filter results"
+msgstr ""
 
 #. Resource IDs: (174)
 #, c-format
@@ -468,10 +468,6 @@ msgstr "Výber aplikácie editora..."
 msgid "Select path to search"
 msgstr "Výber cesty na vyhľadávanie"
 
-#. Resource IDs: (1071)
-msgid "Settings"
-msgstr "Nastavenia"
-
 #. Resource IDs: (133)
 msgid "Size"
 msgstr "Veľkosť"
@@ -655,4 +651,12 @@ msgstr ""
 #. Resource IDs: (1024)
 msgid "⑂"
 msgstr "⑂"
+
+#. Resource IDs: (1071)
+msgid "⚙ Settings"
+msgstr "⚙ Nastavenia"
+
+#. Resource IDs: (123)
+msgid "🔎 &Search"
+msgstr "🔎 &Hľadať"
 

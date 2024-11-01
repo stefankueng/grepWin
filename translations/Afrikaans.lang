@@ -55,10 +55,6 @@ msgstr "&Oor grepWin..."
 msgid "&Replace"
 msgstr "&Vervang"
 
-#. Resource IDs: (123)
-msgid "&Search"
-msgstr "&Soek"
-
 #. Resource IDs: (1003)
 msgid "&Whole word"
 msgstr ""
@@ -243,6 +239,10 @@ msgstr "Lêernaam ooreenstem:\nGebruik '|' om verskillende teks-paspatrone te sk
 #. Resource IDs: (1059)
 msgid "Files"
 msgstr "Lêers"
+
+#. Resource IDs: (181)
+msgid "Filter results"
+msgstr ""
 
 #. Resource IDs: (174)
 #, c-format
@@ -468,10 +468,6 @@ msgstr "Kies Editor Programma..."
 msgid "Select path to search"
 msgstr "Kies Soekpad"
 
-#. Resource IDs: (1071)
-msgid "Settings"
-msgstr "Instellings"
-
 #. Resource IDs: (133)
 msgid "Size"
 msgstr "Grote"
@@ -655,4 +651,12 @@ msgstr ""
 #. Resource IDs: (1024)
 msgid "⑂"
 msgstr "⑂"
+
+#. Resource IDs: (1071)
+msgid "⚙ Settings"
+msgstr "⚙ Instellings"
+
+#. Resource IDs: (123)
+msgid "🔎 &Search"
+msgstr "🔎 &Soek"
 
