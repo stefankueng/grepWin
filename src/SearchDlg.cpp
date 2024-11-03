@@ -3646,7 +3646,10 @@ DWORD CSearchDlg::SearchThread()
     // use 2 threads less than processors are available,
     // because we already have two threads in use:
     // the UI thread and this one.
-    ThreadPool tp(max(std::thread::hardware_concurrency() - 2, 1));
+    auto hardwareConcurrency = std::thread::hardware_concurrency();
+    if (hardwareConcurrency < 2)
+        hardwareConcurrency = 2;
+    ThreadPool tp(max(hardwareConcurrency - 2, 1));
 
     bool       bCountingOnly = m_searchString.empty();
 
