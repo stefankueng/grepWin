@@ -13,19 +13,23 @@
   <?define MainEXEGuid = "6EB3126A-B40B-43D8-96A7-8C171591E01F" ?>
   <?define ShortCutGuid = "83F25E6F-0EE0-4ca8-BF92-FCAD9709037E" ?>
   <?define Win64YesNo = "yes" ?>
+  <?define Win64NoYes = "no" ?>
   <?define MsiPlatform = "x64" ?>
   <?define Name = "grepWin x64" ?>
   <?define Description = "Stefans grepWin x64" ?>
   <?define PFilesFolder = "ProgramFiles64Folder" ?>
+  <?define BinFolder = "bin/release64" ?>
 <?else ?>
   <?define UpgradeCode = "$(var.UpgradeCode32)" ?>
   <?define MainEXEGuid = "A9818B4B-B626-4455-AA31-588EAFAFA213" ?>
   <?define ShortCutGuid = "5760DCF9-B699-436c-8F8C-C7469630C0ED" ?>
   <?define Win64YesNo = "no" ?>
+  <?define Win64NoYes = "yes" ?>
   <?define MsiPlatform = "x86" ?>
   <?define Name = "grepWin" ?>
   <?define Description = "Stefans grepWin" ?>
   <?define PFilesFolder = "ProgramFilesFolder" ?>
+  <?define BinFolder = "bin/release" ?>
 <?endif ?>
 
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
@@ -77,20 +81,22 @@
     <Icon Id="grepWinIcon" SourceFile="..\Resources\grepWin.ico" />
     <Property Id="ARPPRODUCTICON">grepWinIcon</Property>
 
-    <!-- WixUI_Advanced requires: APPLICATIONFOLDER, ApplicationFolderName and WixAppFolder. -->
-    <Property Id="ApplicationFolderName" Value="grepWin" />
+    <UIRef Id="WixUI_ErrorProgressText" />
+    <WixVariable Id="WixUILicenseRtf" Value="License.rtf" />
+    <WixVariable Id="WixUIBannerBmp" Value="Banner.jpg" />
+    <WixVariable Id="WixUIDialogBmp" Value="Dialog.jpg" />
 
+    <!-- WixUI_Advanced requires: APPLICATIONFOLDER, ApplicationFolderName and WixAppFolder. -->
+    <!-- WixUI_Advanced prerequisite 1 -->
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="$(var.PFilesFolder)" Name="PFiles">
         <Directory Id="APPLICATIONFOLDER" Name="grepWin">
 
           <Component Id="MainEXE" Guid="$(var.MainEXEGuid)" Win64="$(var.Win64YesNo)">
+            <File Id="grepWin.exe" Name="grepWin.exe" DiskId="1" Source="../../$(var.BinFolder)/grepWin.exe" Vital="yes" />
 <?if $(var.Platform) = "x64" ?>
-            <File Id="grepWin.exe" Name="grepWin.exe" DiskId="1" Source="../../bin/release64/grepWin.exe" Vital="yes" />
             <File Id="package.msix" Name="package.msix" DiskId="1" Source="../../bin/release64/package.msix" Vital="yes" />
             <File Id="shelldll" Name="ExplorerCommandVerb.dll" DiskId="1" Source="../../bin/release64/ExplorerCommandVerb.dll" Vital="yes" />
-<?else ?>
-            <File Id="grepWin.exe" Name="grepWin.exe" DiskId="1" Source="../../bin/release/grepWin.exe" Vital="yes" />
 <?endif ?>
             <File Id="Afrikaans.lang" Name="Afrikaans.lang" DiskId="1" Source="../../translations/Afrikaans.lang" />
             <File Id="Belarusian.lang" Name="Belarusian.lang" DiskId="1" Source="../../translations/Belarusian.lang" />
@@ -152,13 +158,6 @@
       </Feature>
     </Feature>
 
-    <UIRef Id="WixUI_ErrorProgressText" />
-    <UIRef Id="WixUI_Advanced" />
-    <WixVariable Id="WixUILicenseRtf" Value="License.rtf" />
-    <WixVariable Id="WixUIBannerBmp" Value="Banner.jpg" />
-    <WixVariable Id="WixUIDialogBmp" Value="Dialog.jpg" />
-
-
 <?if $(var.Platform) = "x64" ?>
     <!-- properties for the custom actions to (un)register the sparse package -->
     <Property Id="SPARSEPACKAGEFILE" Value="package.msix"  Secure="yes"/>
@@ -178,13 +177,18 @@
     </Property>
 <?endif ?>
 
-    <!-- ALLUSERS for new installation `FindRelatedProducts`:
+    <!-- WixUI_Advanced prerequisite 2 -->
+    <Property Id="ApplicationFolderName" Value="grepWin" />
+
+    <!-- WixUI_Advanced prerequisite 3 -->
+    <Property Id="WixAppFolder" Value="WixPerUserFolder" />
+
+    <!-- Prepare for dual-mode installation.
          https://learn.microsoft.com/en-us/windows/win32/msi/allusers
          https://learn.microsoft.com/en-us/windows/win32/msi/installation-context -->
     <!-- Prefer default installation type as per-user to per-machine. -->
-    <!-- ALLUSERS = "" -->
-    <!-- WixUI_Advanced, existing installation -->
-    <Property Id="WixAppFolder" Value="WixPerUserFolder" />
+    <Property Id='ALLUSERS' Value='2' />
+    <Property Id='MSIINSTALLPERUSER' Value='1'/>
 
     <!-- AppSearch -->
     <!-- Cross permissions test. Prefer the last installation type. Detect first. -->
@@ -192,35 +196,28 @@
       <RegistrySearch Id="FindPerMachineLocation" Root="HKLM" Key="Software\grepWin" Name="APPLICATIONFOLDER" Type="raw" Win64="$(var.Win64YesNo)" />
     </Property>
     <!-- cross bits test -->
-<?if $(var.Platform) = "x64" ?>
     <Property Id="LASTPERMACHINEFOLDERCROSS" Secure="yes">
-      <RegistrySearch Id="FindPerMachineLocationCross" Root="HKLM" Key="Software\grepWin" Name="APPLICATIONFOLDER" Type="raw" Win64="no" />
+      <RegistrySearch Id="FindPerMachineLocationCross" Root="HKLM" Key="Software\grepWin" Name="APPLICATIONFOLDER" Type="raw" Win64="$(var.Win64NoYes)" />
     </Property>
-<?else ?>
-    <Property Id="LASTPERMACHINEFOLDERCROSS" Secure="yes">
-      <RegistrySearch Id="FindPerMachineLocationCross" Root="HKLM" Key="Software\grepWin" Name="APPLICATIONFOLDER" Type="raw" Win64="yes" />
-    </Property>
-<?endif ?>
     <SetProperty Id="LASTPERMACHINEFOLDER" Value="[LASTPERMACHINEFOLDERCROSS]" Before="SetALLUSERS">LASTPERMACHINEFOLDERCROSS</SetProperty>
+
     <!-- Dynamically set `ALLUSERS` before `FindRelatedProducts` for better matching, to keep only one instance! Overwrite CLI `ALLUSERS`. -->
+    <!-- Do NOT allow per-user installation on top of per-machine installation! Uninstall first. -->
     <SetProperty Id="ALLUSERS" Value="1" After="AppSearch">LASTPERMACHINEFOLDER</SetProperty>
-    <!-- Set in case of skipping WixUI_Advanced, value can be:
+    <!-- Set `APPLICATIONFOLDER` in case of skipping WixUI_Advanced, value can be:
          1. CLI APPLICATIONFOLDER,
          2. user chose a new APPLICATIONFOLDER in child InstallDirDlg,
          3. the last customized path for per-machine. -->
     <SetProperty Id="APPLICATIONFOLDER" Value="[LASTPERMACHINEFOLDER]" After="AppSearch">NOT APPLICATIONFOLDER</SetProperty>
-    <!-- WixUI_Advanced, existing installation -->
+    <!-- Reset `WixAppFolder` for WixUI_Advanced -->
     <SetProperty Id="WixAppFolder" Value="WixPerMachineFolder" After="AppSearch">LASTPERMACHINEFOLDER</SetProperty>
 
     <!-- Tweak WixUI_Advanced's default APPLICATIONFOLDER -->
-    <!-- Per-user, solid path, overwrite [LocalAppDataFolder]Apps\[ApplicationFolderName], Apps for UWP -->
+    <!-- Per-user, solid path, overwrite [LocalAppDataFolder]Apps\[ApplicationFolderName], Apps folder is for UWP -->
     <CustomAction Id="Overwrite_WixDefaultPerUserFolder" Property="WixPerUserFolder" Value="[LocalAppDataFolder]Programs\[ApplicationFolderName]" Execute="immediate" />
     <InstallExecuteSequence>
       <Custom Action="Overwrite_WixDefaultPerUserFolder" After="WixSetDefaultPerUserFolder" />
     </InstallExecuteSequence>
-    <InstallUISequence>
-      <Custom Action="Overwrite_WixDefaultPerUserFolder" After="WixSetDefaultPerUserFolder" />
-    </InstallUISequence>
     <!-- Per-machine, overwrite [ProgramFilesFolder][ApplicationFolderName] of WixUI_Advanced -->
     <CustomAction Id="Overwrite_WixDefaultPerMachineFolderO" Property="WixPerMachineFolder" Value="[LASTPERMACHINEFOLDER]" Execute="immediate" />
     <CustomAction Id="Overwrite_WixDefaultPerMachineFolderN" Property="WixPerMachineFolder" Value="[$(var.PFilesFolder)][ApplicationFolderName]" Execute="immediate" />
@@ -228,10 +225,17 @@
       <Custom Action="Overwrite_WixDefaultPerMachineFolderO" After="WixSetDefaultPerMachineFolder">LASTPERMACHINEFOLDER</Custom>
       <Custom Action="Overwrite_WixDefaultPerMachineFolderN" After="WixSetDefaultPerMachineFolder">NOT LASTPERMACHINEFOLDER</Custom>
     </InstallExecuteSequence>
-    <InstallUISequence>
-      <Custom Action="Overwrite_WixDefaultPerMachineFolderO" After="WixSetDefaultPerMachineFolder">LASTPERMACHINEFOLDER</Custom>
-      <Custom Action="Overwrite_WixDefaultPerMachineFolderN" After="WixSetDefaultPerMachineFolder">NOT LASTPERMACHINEFOLDER</Custom>
-    </InstallUISequence>
+
+    <!-- Customize WixUI_Advanced -->
+    <UI>
+      <UIRef Id="WixUI_Advanced" />
+      <Publish Dialog="InstallScopeDlg" Control="Next" Property="MSIINSTALLPERUSER" Value="{}">WixAppFolder = "WixPerMachineFolder"</Publish>
+      <Publish Dialog="InstallScopeDlg" Control="Next" Property="MSIINSTALLPERUSER" Value="1">WixAppFolder = "WixPerUserFolder"</Publish>
+      <Publish Dialog="InstallScopeDlg" Control="Next" Event="DoAction" Value="Overwrite_WixDefaultPerMachineFolderO">WixAppFolder = "WixPerMachineFolder" And LASTPERMACHINEFOLDER</Publish>
+      <Publish Dialog="InstallScopeDlg" Control="Next" Event="DoAction" Value="Overwrite_WixDefaultPerMachineFolderN">WixAppFolder = "WixPerMachineFolder" And NOT LASTPERMACHINEFOLDER</Publish>
+      <Publish Dialog="InstallScopeDlg" Control="Next" Event="DoAction" Value="Overwrite_WixDefaultPerUserFolder">WixAppFolder = "WixPerUserFolder"</Publish>
+      <Publish Dialog="InstallDirDlg" Control="Next" Event="DoAction" Value="FindRelatedProducts">1</Publish>
+    </UI>
 
     <SetProperty Id="ARPINSTALLLOCATION" Value="[APPLICATIONFOLDER]" After="CostFinalize" />
 
