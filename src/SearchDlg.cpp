@@ -405,8 +405,6 @@ void CSearchDlg::SetSearchModeUI(bool isTextMode)
 {
     DialogEnableWindow(IDC_WHOLEWORDS, isTextMode);
     DialogEnableWindow(IDC_TESTREGEX, !isTextMode);
-    DialogEnableWindow(IDC_EDITMULTILINE1, isTextMode);
-    DialogEnableWindow(IDC_EDITMULTILINE2, isTextMode);
 }
 
 LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -1811,15 +1809,19 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
         case IDC_EDITMULTILINE2:
         {
             int               uID      = (id == IDC_EDITMULTILINE1 ? IDC_SEARCHTEXT : IDC_REPLACETEXT);
-            auto              buf      = GetDlgItemText(static_cast<int>(uID));
+            auto              buf      = GetDlgItemText(uID);
             std::wstring      ctrlText = buf.get();
             CMultiLineEditDlg editDlg(*this);
             editDlg.SetString(ctrlText);
+            if (uID == IDC_REPLACETEXT)
+                editDlg.setForReplace();
+            if (IsDlgButtonChecked(*this, IDC_REGEXRADIO) == BST_CHECKED)
+                editDlg.setForRegex();
 
             if (editDlg.DoModal(hResource, IDD_MULTILINEEDIT, *this) == IDOK)
             {
                 std::wstring text = editDlg.GetSearchString();
-                SetDlgItemText(*this, static_cast<int>(uID), text.c_str());
+                SetDlgItemText(*this, uID, text.c_str());
             }
             ::SetFocus(GetDlgItem(*this, uID));
         }

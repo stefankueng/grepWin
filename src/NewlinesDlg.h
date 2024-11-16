@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2011-2013, 2019-2021, 2024 - Stefan Kueng
+// Copyright (C) 2024 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -18,24 +18,24 @@
 //
 #pragma once
 #include "BaseDialog.h"
-#include "DlgResizer.h"
-#include <string>
 
-#define ID_REGEXTIMER 100
+enum class eNewlines
+{
+    None,
+    Linux,
+    Windows,
+    Both,
+};
 
-/**
- * regex test dialog.
- */
-class CMultiLineEditDlg : public CDialog
+class CNewlinesDlg : public CDialog
 {
 public:
-    CMultiLineEditDlg(HWND hParent);
-    ~CMultiLineEditDlg() override;
+    CNewlinesDlg(HWND hParent);
+    ~CNewlinesDlg() override;
 
-    void         SetString(const std::wstring& search) { m_regexText = search; }
-    std::wstring GetSearchString() const { return m_regexText; }
-    void         setForReplace();
-    void         setForRegex();
+    void setNewLines(eNewlines nl);
+    eNewlines getNewLines() const;
+    void      setShowBoth(bool show);
 
 protected:
     LRESULT CALLBACK DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) override;
@@ -43,9 +43,7 @@ protected:
 
 private:
     HWND         m_hParent;
-    std::wstring m_regexText;
     int          m_themeCallbackId;
-    CDlgResizer  m_resizer;
-    bool         m_forReplace;
-    bool         m_forRegex;
+    eNewlines    m_newLines;
+    bool         m_showBoth;
 };

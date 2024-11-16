@@ -52,6 +52,7 @@
 #define IDR_RTF1                        139
 #define IDR_INFODLG                     139
 #define IDS_SELECTEDITOR                140
+#define IDD_NEWLINESDLG                 140
 #define IDS_OPENWITHEDITOR              141
 #define IDS_OPENCONTAININGFOLDER        142
 #define IDS_COPYPATH                    143
@@ -150,9 +151,9 @@
 #define IDC_RESULTFILES                 1059
 #define IDC_RADIO2                      1060
 #define IDC_RESULTCONTENT               1060
-#define IDC_BUTTON1                     1061
 #define IDC_HELPBUTTON                  1061
 #define IDC_EDITMULTILINE1              1061
+#define IDC_CONVERTNEWLINES_BTN         1061
 #define IDC_CHECK1                      1062
 #define IDC_ESCKEY                      1062
 #define IDC_INCLUDEPATH                 1062
@@ -195,6 +196,9 @@
 #define IDC_FILTER                      1090
 #define IDC_SYSLINK1                    1091
 #define IDC_INCLUDESYMLINK              1092
+#define IDC_CRLF                        1093
+#define IDC_LF                          1094
+#define IDC_BOTH                        1095
 #define ID_REMOVEBOOKMARK               32771
 #define ID_DUMMY_RENAMEPRESET           32774
 #define ID_RENAMEBOOKMARK               32775
@@ -205,9 +209,9 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
-#define _APS_NEXT_RESOURCE_VALUE        140
+#define _APS_NEXT_RESOURCE_VALUE        141
 #define _APS_NEXT_COMMAND_VALUE         32776
-#define _APS_NEXT_CONTROL_VALUE         1093
+#define _APS_NEXT_CONTROL_VALUE         1097
 #define _APS_NEXT_SYMED_VALUE           110
 #endif
 #endif

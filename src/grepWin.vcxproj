@@ -249,6 +249,7 @@
     <ClCompile Include="grepWin.cpp" />
     <ClCompile Include="MultiLineEditDlg.cpp" />
     <ClCompile Include="NameDlg.cpp" />
+    <ClCompile Include="NewlinesDlg.cpp" />
     <ClCompile Include="RegexReplaceFormatter.cpp" />
     <ClCompile Include="RegexTestDlg.cpp" />
     <ClCompile Include="SearchDlg.cpp" />
@@ -300,6 +301,7 @@
     <ClInclude Include="LineData.h" />
     <ClInclude Include="MultiLineEditDlg.h" />
     <ClInclude Include="NameDlg.h" />
+    <ClInclude Include="NewlinesDlg.h" />
     <ClInclude Include="RegexReplaceFormatter.h" />
     <ClInclude Include="RegexTestDlg.h" />
     <ClInclude Include="resource.h" />
