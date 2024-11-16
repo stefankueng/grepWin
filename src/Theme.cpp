@@ -463,7 +463,6 @@ LRESULT CTheme::ComboBoxSubclassProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM
         {
             auto hbrBkgnd = reinterpret_cast<HBRUSH*>(dwRefData);
             HDC  hdc      = reinterpret_cast<HDC>(wParam);
-            SetBkMode(hdc, TRANSPARENT);
             SetTextColor(hdc, darkTextColor);
             SetBkColor(hdc, darkBkColor);
             if (!*hbrBkgnd)
@@ -491,7 +490,6 @@ LRESULT CTheme::MainSubclassProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPa
         {
             auto hbrBkgnd = reinterpret_cast<HBRUSH*>(dwRefData);
             HDC  hdc      = reinterpret_cast<HDC>(wParam);
-            SetBkMode(hdc, TRANSPARENT);
             SetTextColor(hdc, darkTextColor);
             SetBkColor(hdc, darkBkColor);
             if (!*hbrBkgnd)
