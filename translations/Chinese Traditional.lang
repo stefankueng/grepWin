@@ -51,6 +51,10 @@ msgstr "%s 個檔案, 已跳過 %s 個檔案. 已選擇 %s 個結果."
 msgid "&About grepWin..."
 msgstr "關於 grepWin(&A)..."
 
+#. Resource IDs: (1061)
+msgid "&Convert newlines"
+msgstr ""
+
 #. Resource IDs: (1049)
 msgid "&Replace"
 msgstr "取代(&R)"
@@ -108,6 +112,14 @@ msgstr "您確定想要將\n%s\n取代為\n%s\n而不建立備份嗎?"
 msgid "Between"
 msgstr "介於"
 
+#. Resource IDs: (1095)
+msgid "Both"
+msgstr ""
+
+#. Resource IDs: (1093)
+msgid "CRLF (Windows)"
+msgstr ""
+
 #. Resource IDs: (2)
 msgid "Cancel"
 msgstr "取消"
@@ -131,6 +143,10 @@ msgstr ""
 #. Resource IDs: (1060)
 msgid "Content"
 msgstr "內容"
+
+#. Resource IDs: (65535)
+msgid "Convert newlines to regex newline tags:"
+msgstr ""
 
 #. Resource IDs: (177)
 msgid "Copy column for all items"
@@ -179,10 +195,6 @@ msgstr "暗黑模式"
 #. Resource IDs: (139)
 msgid "Date modified"
 msgstr "修改日期"
-
-#. Resource IDs: (137)
-msgid "Dialog"
-msgstr "對話框"
 
 #. Resource IDs: (1078)
 msgid "Don't warn when replacing without creating backups"
@@ -297,6 +309,10 @@ msgstr "KB"
 msgid "Keep file date when replacing"
 msgstr "取代時保留檔案日期"
 
+#. Resource IDs: (1094)
+msgid "LF (Linux)"
+msgstr ""
+
 #. Resource IDs: (1075)
 msgid "Language:"
 msgstr "語言:"
@@ -318,6 +334,10 @@ msgstr ""
 msgid "Matches"
 msgstr "匹配"
 
+#. Resource IDs: (137)
+msgid "Multiline editor"
+msgstr ""
+
 #. Resource IDs: (104)
 msgid "Name"
 msgstr "名稱"
@@ -329,6 +349,14 @@ msgstr "晚於"
 #. Resource IDs: (115)
 msgid "Newline is matched by '.'"
 msgstr "新行使用 '.' 號匹配"
+
+#. Resource IDs: (140)
+msgid "Newlines"
+msgstr ""
+
+#. Resource IDs: (1056)
+msgid "Note: newlines in the text are ignored, used for formatting only. To convert the formatting newlines to proper regex newlines use the button below."
+msgstr ""
 
 #. Resource IDs: (1)
 msgid "OK"

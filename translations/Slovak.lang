@@ -51,6 +51,10 @@ msgstr "%s súborov, vynechané %s súborov. %s results selected."
 msgid "&About grepWin..."
 msgstr ""
 
+#. Resource IDs: (1061)
+msgid "&Convert newlines"
+msgstr ""
+
 #. Resource IDs: (1049)
 msgid "&Replace"
 msgstr "&Zameniť"
@@ -108,6 +112,14 @@ msgstr "Naozaj chcete nahradiť\n%s\ns\n%s\nbez vytvárania záloh?"
 msgid "Between"
 msgstr "Medzi"
 
+#. Resource IDs: (1095)
+msgid "Both"
+msgstr ""
+
+#. Resource IDs: (1093)
+msgid "CRLF (Windows)"
+msgstr ""
+
 #. Resource IDs: (2)
 msgid "Cancel"
 msgstr "Zrušiť"
@@ -131,6 +143,10 @@ msgstr ""
 #. Resource IDs: (1060)
 msgid "Content"
 msgstr "Obsah"
+
+#. Resource IDs: (65535)
+msgid "Convert newlines to regex newline tags:"
+msgstr ""
 
 #. Resource IDs: (177)
 msgid "Copy column for all items"
@@ -179,10 +195,6 @@ msgstr "Tmavý režim"
 #. Resource IDs: (139)
 msgid "Date modified"
 msgstr "Zmena dátumu"
-
-#. Resource IDs: (137)
-msgid "Dialog"
-msgstr "Dialóg"
 
 #. Resource IDs: (1078)
 msgid "Don't warn when replacing without creating backups"
@@ -297,6 +309,10 @@ msgstr "kB"
 msgid "Keep file date when replacing"
 msgstr ""
 
+#. Resource IDs: (1094)
+msgid "LF (Linux)"
+msgstr ""
+
 #. Resource IDs: (1075)
 msgid "Language:"
 msgstr "Jazyk:"
@@ -318,6 +334,10 @@ msgstr ""
 msgid "Matches"
 msgstr "Výskyty"
 
+#. Resource IDs: (137)
+msgid "Multiline editor"
+msgstr ""
+
 #. Resource IDs: (104)
 msgid "Name"
 msgstr "Názov"
@@ -329,6 +349,14 @@ msgstr "Novšie ako"
 #. Resource IDs: (115)
 msgid "Newline is matched by '.'"
 msgstr "Nový riadok je uzavretý '.'"
+
+#. Resource IDs: (140)
+msgid "Newlines"
+msgstr ""
+
+#. Resource IDs: (1056)
+msgid "Note: newlines in the text are ignored, used for formatting only. To convert the formatting newlines to proper regex newlines use the button below."
+msgstr ""
 
 #. Resource IDs: (1)
 msgid "OK"

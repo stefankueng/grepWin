@@ -51,6 +51,10 @@ msgstr "%s bestanden, %s bestanden overgeslagen. %s resultaten geselecteerd."
 msgid "&About grepWin..."
 msgstr "&Over grepWin..."
 
+#. Resource IDs: (1061)
+msgid "&Convert newlines"
+msgstr ""
+
 #. Resource IDs: (1049)
 msgid "&Replace"
 msgstr "&Vervangen"
@@ -108,6 +112,14 @@ msgstr "Wilt u echt\n%s\ndoor\n%s\nvervangen zonder een back-up te maken?"
 msgid "Between"
 msgstr "Tussen"
 
+#. Resource IDs: (1095)
+msgid "Both"
+msgstr ""
+
+#. Resource IDs: (1093)
+msgid "CRLF (Windows)"
+msgstr ""
+
 #. Resource IDs: (2)
 msgid "Cancel"
 msgstr "Afbreken"
@@ -131,6 +143,10 @@ msgstr "Opdrachtregel om een editor te starten op een specifieke regel en regelv
 #. Resource IDs: (1060)
 msgid "Content"
 msgstr "Inhoud"
+
+#. Resource IDs: (65535)
+msgid "Convert newlines to regex newline tags:"
+msgstr ""
 
 #. Resource IDs: (177)
 msgid "Copy column for all items"
@@ -179,10 +195,6 @@ msgstr "Donker thema"
 #. Resource IDs: (139)
 msgid "Date modified"
 msgstr "Datum gewijzigd"
-
-#. Resource IDs: (137)
-msgid "Dialog"
-msgstr "Dialoog"
 
 #. Resource IDs: (1078)
 msgid "Don't warn when replacing without creating backups"
@@ -297,6 +309,10 @@ msgstr "KB"
 msgid "Keep file date when replacing"
 msgstr "Bestandsdatum behouden"
 
+#. Resource IDs: (1094)
+msgid "LF (Linux)"
+msgstr ""
+
 #. Resource IDs: (1075)
 msgid "Language:"
 msgstr "Taal (language):"
@@ -318,6 +334,10 @@ msgstr "Regel %5ld : %s\n"
 msgid "Matches"
 msgstr "Komt overeen met"
 
+#. Resource IDs: (137)
+msgid "Multiline editor"
+msgstr ""
+
 #. Resource IDs: (104)
 msgid "Name"
 msgstr "Naam"
@@ -329,6 +349,14 @@ msgstr "Nieuwer dan"
 #. Resource IDs: (115)
 msgid "Newline is matched by '.'"
 msgstr "Regeleinde komt overeen met '.'"
+
+#. Resource IDs: (140)
+msgid "Newlines"
+msgstr ""
+
+#. Resource IDs: (1056)
+msgid "Note: newlines in the text are ignored, used for formatting only. To convert the formatting newlines to proper regex newlines use the button below."
+msgstr ""
 
 #. Resource IDs: (1)
 msgid "OK"

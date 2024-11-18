@@ -51,6 +51,10 @@ msgstr "%s arquivos, %s arquivos ignorados. %s resultados selecionados."
 msgid "&About grepWin..."
 msgstr "&Sobre grepWin..."
 
+#. Resource IDs: (1061)
+msgid "&Convert newlines"
+msgstr ""
+
 #. Resource IDs: (1049)
 msgid "&Replace"
 msgstr "&Substituir"
@@ -108,6 +112,14 @@ msgstr "Tem certeza de que deseja substituir\n%s\ncom\n%s\n sem criar backups?"
 msgid "Between"
 msgstr "Entre"
 
+#. Resource IDs: (1095)
+msgid "Both"
+msgstr ""
+
+#. Resource IDs: (1093)
+msgid "CRLF (Windows)"
+msgstr ""
+
 #. Resource IDs: (2)
 msgid "Cancel"
 msgstr "Cancelar"
@@ -131,6 +143,10 @@ msgstr ""
 #. Resource IDs: (1060)
 msgid "Content"
 msgstr "Conteúdo"
+
+#. Resource IDs: (65535)
+msgid "Convert newlines to regex newline tags:"
+msgstr ""
 
 #. Resource IDs: (177)
 msgid "Copy column for all items"
@@ -179,10 +195,6 @@ msgstr "Modo escuro"
 #. Resource IDs: (139)
 msgid "Date modified"
 msgstr "Modificado"
-
-#. Resource IDs: (137)
-msgid "Dialog"
-msgstr "Diálogo"
 
 #. Resource IDs: (1078)
 msgid "Don't warn when replacing without creating backups"
@@ -297,6 +309,10 @@ msgstr "KB"
 msgid "Keep file date when replacing"
 msgstr "Manter data do arquivo ao substituir"
 
+#. Resource IDs: (1094)
+msgid "LF (Linux)"
+msgstr ""
+
 #. Resource IDs: (1075)
 msgid "Language:"
 msgstr "Idioma:"
@@ -318,6 +334,10 @@ msgstr ""
 msgid "Matches"
 msgstr "Correspondente"
 
+#. Resource IDs: (137)
+msgid "Multiline editor"
+msgstr ""
+
 #. Resource IDs: (104)
 msgid "Name"
 msgstr "Nome"
@@ -329,6 +349,14 @@ msgstr "Mais novo que"
 #. Resource IDs: (115)
 msgid "Newline is matched by '.'"
 msgstr "Nova linha corresponde a '.'"
+
+#. Resource IDs: (140)
+msgid "Newlines"
+msgstr ""
+
+#. Resource IDs: (1056)
+msgid "Note: newlines in the text are ignored, used for formatting only. To convert the formatting newlines to proper regex newlines use the button below."
+msgstr ""
 
 #. Resource IDs: (1)
 msgid "OK"

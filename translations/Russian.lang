@@ -51,6 +51,10 @@ msgstr "%s файлов, пропущено %s файлов, выбрано %s �
 msgid "&About grepWin..."
 msgstr "&О grepWin..."
 
+#. Resource IDs: (1061)
+msgid "&Convert newlines"
+msgstr ""
+
 #. Resource IDs: (1049)
 msgid "&Replace"
 msgstr "&Замена"
@@ -108,6 +112,14 @@ msgstr "Вы действительно хотите заменить\n%s\nна\
 msgid "Between"
 msgstr "Между"
 
+#. Resource IDs: (1095)
+msgid "Both"
+msgstr ""
+
+#. Resource IDs: (1093)
+msgid "CRLF (Windows)"
+msgstr ""
+
 #. Resource IDs: (2)
 msgid "Cancel"
 msgstr "Отмена"
@@ -131,6 +143,10 @@ msgstr ""
 #. Resource IDs: (1060)
 msgid "Content"
 msgstr "Контент"
+
+#. Resource IDs: (65535)
+msgid "Convert newlines to regex newline tags:"
+msgstr ""
 
 #. Resource IDs: (177)
 msgid "Copy column for all items"
@@ -179,10 +195,6 @@ msgstr "Темная тема"
 #. Resource IDs: (139)
 msgid "Date modified"
 msgstr "Изменен"
-
-#. Resource IDs: (137)
-msgid "Dialog"
-msgstr "Диалог"
 
 #. Resource IDs: (1078)
 msgid "Don't warn when replacing without creating backups"
@@ -297,6 +309,10 @@ msgstr "КБ"
 msgid "Keep file date when replacing"
 msgstr "Сохранять дату файла при замене"
 
+#. Resource IDs: (1094)
+msgid "LF (Linux)"
+msgstr ""
+
 #. Resource IDs: (1075)
 msgid "Language:"
 msgstr "Язык:"
@@ -318,6 +334,10 @@ msgstr ""
 msgid "Matches"
 msgstr "Совпадения"
 
+#. Resource IDs: (137)
+msgid "Multiline editor"
+msgstr ""
+
 #. Resource IDs: (104)
 msgid "Name"
 msgstr "Имя"
@@ -329,6 +349,14 @@ msgstr "Новее чем"
 #. Resource IDs: (115)
 msgid "Newline is matched by '.'"
 msgstr "Новая строка соответствует '.'"
+
+#. Resource IDs: (140)
+msgid "Newlines"
+msgstr ""
+
+#. Resource IDs: (1056)
+msgid "Note: newlines in the text are ignored, used for formatting only. To convert the formatting newlines to proper regex newlines use the button below."
+msgstr ""
 
 #. Resource IDs: (1)
 msgid "OK"

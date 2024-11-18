@@ -51,6 +51,10 @@ msgstr "Gefunden %s Dateien, übersprungen %s Dateien. %s Ergebnisse ausgewählt
 msgid "&About grepWin..."
 msgstr "Ü&ber grepWin ..."
 
+#. Resource IDs: (1061)
+msgid "&Convert newlines"
+msgstr "Enden konvertieren"
+
 #. Resource IDs: (1049)
 msgid "&Replace"
 msgstr "&Ersetzen"
@@ -108,6 +112,14 @@ msgstr "Sind Sie sicher, dass Sie\n%s\ndurch\n%s\n ersetzen wollen, ohne Backups
 msgid "Between"
 msgstr "Zwischen"
 
+#. Resource IDs: (1095)
+msgid "Both"
+msgstr "Beide"
+
+#. Resource IDs: (1093)
+msgid "CRLF (Windows)"
+msgstr "CRLF (Windows)"
+
 #. Resource IDs: (2)
 msgid "Cancel"
 msgstr "Abbrechen"
@@ -131,6 +143,10 @@ msgstr "Kommandozeile um einen Editor an einer spezifischen Zeile und Spalte zu 
 #. Resource IDs: (1060)
 msgid "Content"
 msgstr "Content"
+
+#. Resource IDs: (65535)
+msgid "Convert newlines to regex newline tags:"
+msgstr "Konvertiere Zeilenenden zu Regex-Zeilenenden-Marker"
 
 #. Resource IDs: (177)
 msgid "Copy column for all items"
@@ -179,10 +195,6 @@ msgstr "Dunkelmodus"
 #. Resource IDs: (139)
 msgid "Date modified"
 msgstr "Modifiziert am"
-
-#. Resource IDs: (137)
-msgid "Dialog"
-msgstr "Dialog"
 
 #. Resource IDs: (1078)
 msgid "Don't warn when replacing without creating backups"
@@ -297,6 +309,10 @@ msgstr "KB"
 msgid "Keep file date when replacing"
 msgstr "Datei-Datum beibehalten"
 
+#. Resource IDs: (1094)
+msgid "LF (Linux)"
+msgstr "LF (Linux)"
+
 #. Resource IDs: (1075)
 msgid "Language:"
 msgstr "Sprache:"
@@ -318,6 +334,10 @@ msgstr "Zeile %5ld : %s\n"
 msgid "Matches"
 msgstr "Übereinstimmungen"
 
+#. Resource IDs: (137)
+msgid "Multiline editor"
+msgstr "Mehrzeilen-Editor"
+
 #. Resource IDs: (104)
 msgid "Name"
 msgstr "Name"
@@ -329,6 +349,14 @@ msgstr "Neuer als"
 #. Resource IDs: (115)
 msgid "Newline is matched by '.'"
 msgstr "Zeilenvorschub entspricht in '.'"
+
+#. Resource IDs: (140)
+msgid "Newlines"
+msgstr "Zeilenenden"
+
+#. Resource IDs: (1056)
+msgid "Note: newlines in the text are ignored, used for formatting only. To convert the formatting newlines to proper regex newlines use the button below."
+msgstr "Hinweis: Zeilenenden im Text werden nur für die Formattierung verwendet. Um die formattierenden Zeilenenden zu echten Regex-Zeilenenden zu konvertieren, benutzen Sie den Button unten links."
 
 #. Resource IDs: (1)
 msgid "OK"

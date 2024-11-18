@@ -64,6 +64,10 @@ msgstr "%s கோப்புகள், %s கோப்புகளைத் த
 msgid "&About grepWin..."
 msgstr "வழக்கவெளிசாளரம் பற்றி ..."
 
+#. Resource IDs: (1061)
+msgid "&Convert newlines"
+msgstr ""
+
 #. Resource IDs: (1049)
 msgid "&Replace"
 msgstr "மாற்று "
@@ -121,6 +125,14 @@ msgstr "நீங்கள் நிச்சயமாக மாற்ற வி
 msgid "Between"
 msgstr "இடையில்"
 
+#. Resource IDs: (1095)
+msgid "Both"
+msgstr ""
+
+#. Resource IDs: (1093)
+msgid "CRLF (Windows)"
+msgstr ""
+
 #. Resource IDs: (2)
 msgid "Cancel"
 msgstr "ரத்துசெய்"
@@ -144,6 +156,10 @@ msgstr "ஒரு குறிப்பிட்ட வரியில் ஒர
 #. Resource IDs: (1060)
 msgid "Content"
 msgstr "உள்ளடக்கம்"
+
+#. Resource IDs: (65535)
+msgid "Convert newlines to regex newline tags:"
+msgstr ""
 
 #. Resource IDs: (177)
 msgid "Copy column for all items"
@@ -192,10 +208,6 @@ msgstr "இருண்ட முறை"
 #. Resource IDs: (139)
 msgid "Date modified"
 msgstr "மாற்றிய தேதி"
-
-#. Resource IDs: (137)
-msgid "Dialog"
-msgstr "உரையாடல்"
 
 #. Resource IDs: (1078)
 msgid "Don't warn when replacing without creating backups"
@@ -310,6 +322,10 @@ msgstr "கே.பி."
 msgid "Keep file date when replacing"
 msgstr "மாற்றும் போது கோப்பு தேதியை வைத்திருங்கள்"
 
+#. Resource IDs: (1094)
+msgid "LF (Linux)"
+msgstr ""
+
 #. Resource IDs: (1075)
 msgid "Language:"
 msgstr "மொழி:"
@@ -331,6 +347,10 @@ msgstr "வரி %5ld: %s\n"
 msgid "Matches"
 msgstr "பொருத்தங்கள்"
 
+#. Resource IDs: (137)
+msgid "Multiline editor"
+msgstr ""
+
 #. Resource IDs: (104)
 msgid "Name"
 msgstr "பெயர்"
@@ -342,6 +362,14 @@ msgstr "விட புதியது"
 #. Resource IDs: (115)
 msgid "Newline is matched by '.'"
 msgstr "நியூவரி '' உடன் பொருந்துகிறது."
+
+#. Resource IDs: (140)
+msgid "Newlines"
+msgstr ""
+
+#. Resource IDs: (1056)
+msgid "Note: newlines in the text are ignored, used for formatting only. To convert the formatting newlines to proper regex newlines use the button below."
+msgstr ""
 
 #. Resource IDs: (1)
 msgid "OK"
