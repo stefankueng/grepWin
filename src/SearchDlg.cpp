@@ -4266,7 +4266,7 @@ int CSearchDlg::SearchOnTextFile(CSearchInfo& sInfo, const std::wstring& searchR
             if (m_bReplace)
             {
                 std::copy(startIter, whatC[0].first, replacedIter);
-                regex_replace(replacedIter, whatC[0].first, whatC[0].second, wRegEx, replaceFmt, mFlags);
+                regex_replace(replacedIter, whatC[0].first, whatC[0].second, wRegEx, std::ref(replaceFmt), mFlags);
             }
             //
             startIter = whatC[0].second;
@@ -4515,14 +4515,14 @@ int CSearchDlg::SearchByFilePath(CSearchInfo& sInfo, const std::wstring& searchR
                     std::wstring replaced;
                     auto         replacedIter = std::back_inserter(replaced);
                     outFileBufA.sputn(reinterpret_cast<const char*>(startIter), (whatC[0].first - startIter) * 2);
-                    regex_replace(replacedIter, whatC[0].first, whatC[0].second, regEx, replaceFmt, mFlags);
+                    regex_replace(replacedIter, whatC[0].first, whatC[0].second, regEx, std::ref(replaceFmt), mFlags);
                     outFileBufA.sputn(reinterpret_cast<const char*>(replaced.c_str()), replaced.length() * 2);
                 }
                 else
                 {
                     std::ostreambuf_iterator<char> outIter(&outFileBufA);
                     outFileBufA.sputn(startIter, whatC[0].first - startIter);
-                    regex_replace(outIter, whatC[0].first, whatC[0].second, regEx, replaceFmt, mFlags);
+                    regex_replace(outIter, whatC[0].first, whatC[0].second, regEx, std::ref(replaceFmt), mFlags);
                 }
             }
             //
