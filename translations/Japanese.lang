@@ -53,7 +53,7 @@ msgstr "grepWin について(&A)..."
 
 #. Resource IDs: (1061)
 msgid "&Convert newlines"
-msgstr ""
+msgstr "改行を変換(&C)"
 
 #. Resource IDs: (1049)
 msgid "&Replace"
@@ -114,7 +114,7 @@ msgstr "期間内"
 
 #. Resource IDs: (1095)
 msgid "Both"
-msgstr ""
+msgstr "両方"
 
 #. Resource IDs: (1093)
 msgid "CRLF (Windows)"
@@ -146,7 +146,7 @@ msgstr "内容"
 
 #. Resource IDs: (65535)
 msgid "Convert newlines to regex newline tags:"
-msgstr ""
+msgstr "改行を正規表現用のタグに変換"
 
 #. Resource IDs: (177)
 msgid "Copy column for all items"
@@ -254,7 +254,7 @@ msgstr "ファイル"
 
 #. Resource IDs: (181)
 msgid "Filter results"
-msgstr ""
+msgstr "検索結果を絞り込む"
 
 #. Resource IDs: (174)
 #, c-format
@@ -336,7 +336,7 @@ msgstr "一致数"
 
 #. Resource IDs: (137)
 msgid "Multiline editor"
-msgstr ""
+msgstr "複数行用エディター"
 
 #. Resource IDs: (104)
 msgid "Name"
@@ -352,11 +352,11 @@ msgstr "「.」を改行にも一致させます。"
 
 #. Resource IDs: (140)
 msgid "Newlines"
-msgstr ""
+msgstr "改行"
 
 #. Resource IDs: (1056)
 msgid "Note: newlines in the text are ignored, used for formatting only. To convert the formatting newlines to proper regex newlines use the button below."
-msgstr ""
+msgstr "注: 文字列中の改行は無視され、整形にのみ使用されます。改行を適切に正規表現の改行に変換するには、下のボタンを使ってください。"
 
 #. Resource IDs: (1)
 msgid "OK"
