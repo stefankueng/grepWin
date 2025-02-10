@@ -337,10 +337,10 @@
     <Import Project="..\packages\Microsoft.Build.Tasks.Git.8.0.0\build\Microsoft.Build.Tasks.Git.targets" Condition="Exists('..\packages\Microsoft.Build.Tasks.Git.8.0.0\build\Microsoft.Build.Tasks.Git.targets')" />
     <Import Project="..\packages\Microsoft.SourceLink.Common.8.0.0\build\Microsoft.SourceLink.Common.targets" Condition="Exists('..\packages\Microsoft.SourceLink.Common.8.0.0\build\Microsoft.SourceLink.Common.targets')" />
     <Import Project="..\packages\Microsoft.SourceLink.GitHub.8.0.0\build\Microsoft.SourceLink.GitHub.targets" Condition="Exists('..\packages\Microsoft.SourceLink.GitHub.8.0.0\build\Microsoft.SourceLink.GitHub.targets')" />
-    <Import Project="..\packages\boost.1.86.0\build\boost.targets" Condition="Exists('..\packages\boost.1.86.0\build\boost.targets')" />
-    <Import Project="..\packages\boost_filesystem-vc143.1.86.0\build\boost_filesystem-vc143.targets" Condition="Exists('..\packages\boost_filesystem-vc143.1.86.0\build\boost_filesystem-vc143.targets')" />
-    <Import Project="..\packages\boost_iostreams-vc143.1.86.0\build\boost_iostreams-vc143.targets" Condition="Exists('..\packages\boost_iostreams-vc143.1.86.0\build\boost_iostreams-vc143.targets')" />
-    <Import Project="..\packages\boost_regex-vc143.1.86.0\build\boost_regex-vc143.targets" Condition="Exists('..\packages\boost_regex-vc143.1.86.0\build\boost_regex-vc143.targets')" />
+    <Import Project="..\packages\boost.1.87.0\build\boost.targets" Condition="Exists('..\packages\boost.1.87.0\build\boost.targets')" />
+    <Import Project="..\packages\boost_filesystem-vc143.1.87.0\build\boost_filesystem-vc143.targets" Condition="Exists('..\packages\boost_filesystem-vc143.1.87.0\build\boost_filesystem-vc143.targets')" />
+    <Import Project="..\packages\boost_iostreams-vc143.1.87.0\build\boost_iostreams-vc143.targets" Condition="Exists('..\packages\boost_iostreams-vc143.1.87.0\build\boost_iostreams-vc143.targets')" />
+    <Import Project="..\packages\boost_regex-vc143.1.87.0\build\boost_regex-vc143.targets" Condition="Exists('..\packages\boost_regex-vc143.1.87.0\build\boost_regex-vc143.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
@@ -352,9 +352,9 @@
     <Error Condition="!Exists('..\packages\Microsoft.SourceLink.Common.8.0.0\build\Microsoft.SourceLink.Common.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.SourceLink.Common.8.0.0\build\Microsoft.SourceLink.Common.targets'))" />
     <Error Condition="!Exists('..\packages\Microsoft.SourceLink.GitHub.8.0.0\build\Microsoft.SourceLink.GitHub.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.SourceLink.GitHub.8.0.0\build\Microsoft.SourceLink.GitHub.props'))" />
     <Error Condition="!Exists('..\packages\Microsoft.SourceLink.GitHub.8.0.0\build\Microsoft.SourceLink.GitHub.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.SourceLink.GitHub.8.0.0\build\Microsoft.SourceLink.GitHub.targets'))" />
-    <Error Condition="!Exists('..\packages\boost.1.86.0\build\boost.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost.1.86.0\build\boost.targets'))" />
-    <Error Condition="!Exists('..\packages\boost_filesystem-vc143.1.86.0\build\boost_filesystem-vc143.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_filesystem-vc143.1.86.0\build\boost_filesystem-vc143.targets'))" />
-    <Error Condition="!Exists('..\packages\boost_iostreams-vc143.1.86.0\build\boost_iostreams-vc143.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_iostreams-vc143.1.86.0\build\boost_iostreams-vc143.targets'))" />
-    <Error Condition="!Exists('..\packages\boost_regex-vc143.1.86.0\build\boost_regex-vc143.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_regex-vc143.1.86.0\build\boost_regex-vc143.targets'))" />
+    <Error Condition="!Exists('..\packages\boost.1.87.0\build\boost.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost.1.87.0\build\boost.targets'))" />
+    <Error Condition="!Exists('..\packages\boost_filesystem-vc143.1.87.0\build\boost_filesystem-vc143.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_filesystem-vc143.1.87.0\build\boost_filesystem-vc143.targets'))" />
+    <Error Condition="!Exists('..\packages\boost_iostreams-vc143.1.87.0\build\boost_iostreams-vc143.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_iostreams-vc143.1.87.0\build\boost_iostreams-vc143.targets'))" />
+    <Error Condition="!Exists('..\packages\boost_regex-vc143.1.87.0\build\boost_regex-vc143.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_regex-vc143.1.87.0\build\boost_regex-vc143.targets'))" />
   </Target>
 </Project>
