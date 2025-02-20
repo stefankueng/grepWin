@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2011, 2015, 2024 - Stefan Kueng
+// Copyright (C) 2011, 2015, 2024-2025 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -18,6 +18,7 @@
 //
 #include "stdafx.h"
 #include "RegexReplaceFormatter.h"
+#include  <chrono>
 
 std::wstring ExpandString(const std::wstring& replaceString)
 {
