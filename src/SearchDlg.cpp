@@ -2743,9 +2743,11 @@ LRESULT CSearchDlg::ColorizeMatchResultProc(LPNMLVCUSTOMDRAW lpLVCD)
                     HBITMAP       hBitmap = CreateDIBSection(hcdc, &bmi, DIB_RGB_COLORS, nullptr, nullptr, 0x0);
                     RECT          rc2     = {0, 0, width, height};
                     auto          oldBmp  = SelectObject(hcdc, hBitmap);
-                    FillRect(hcdc, &rc2, CreateSolidBrush(RGB(255, 255, 0)));
+                    auto          brush   = CreateSolidBrush(RGB(255, 255, 0));
+                    FillRect(hcdc, &rc2, brush);
                     AlphaBlend(hdc, rc.left, rc.top, width, height, hcdc, 0, 0, width, height, blend);
                     SelectObject(hcdc, oldBmp);
+                    DeleteObject(brush);
                     DeleteObject(hBitmap);
                     DeleteDC(hcdc);
                 }
