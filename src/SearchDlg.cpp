@@ -4597,6 +4597,7 @@ int CSearchDlg::SearchByFilePath(CSearchInfo& sInfo, const std::wstring& searchR
                 auto lineStart                = std::get<0>(linePos);
                 auto lineEnd                  = std::get<1>(linePos);
                 auto lineLength               = lineEnd - lineStart;
+                pos                           = sInfo.matchLinesNumbers[mp];
                 if (lineLength > 0 && lineLength < 4096) // ignore lines longer than 4kb
                 {
                     if constexpr (std::is_same_v<CharT, wchar_t>)
