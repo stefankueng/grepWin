@@ -301,10 +301,8 @@ https://tools.stefankueng.com/grepWin.html
     </loadfile>
     <echo file="choco\package\tools\chocolateyInstall.ps1" message="${cinstfile}" />
     <echo>
-      now start an admin console in choco\package and then run
-      choco pack
-      to upload the package, run
-      cpush grepWin-x.x.x.nupkg
+      to update the package on chocolatey.org, run
+      nant choco
     </echo>
   </target>
 
@@ -319,5 +317,18 @@ https://tools.stefankueng.com/grepWin.html
     </nant>
   </target>
 
+  <target name="choco" depends="VersionInfo">
+    <description>
+      updates the info on chocolatey.org for the new release
+    </description>
+    <property name="verstring" value="${environment::get-variable('MajorVersion')}.${environment::get-variable('MinorVersion')}.${environment::get-variable('MicroVersion')}" />
+    <exec program="choco" workingdir="choco\package">
+      <arg value="pack" />
+    </exec>
+    <exec program="choco" workingdir="choco\package">
+      <arg value="push" />
+      <arg value="grepWin.${verstring}.nupkg" />
+    </exec>
+  </target>
 
 </project>
