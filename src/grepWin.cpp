@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008, 2010-2023 - Stefan Kueng
+// Copyright (C) 2007-2008, 2010-2023, 2025 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -25,6 +25,7 @@
 #include "Language.h"
 #include "StringUtils.h"
 #include "PathUtils.h"
+#include "PackageRegistration.h"
 #pragma warning(push)
 #pragma warning(disable : 4458) // declaration of 'xxx' hides class member
 #include "../sktoolslib/OnOutOfScope.h"
@@ -41,6 +42,58 @@ HANDLE              hInitProtection    = nullptr;
 
 ULONGLONG           g_startTime        = GetTickCount64();
 UINT                GREPWIN_STARTUPMSG = RegisterWindowMessage(L"grepWin_StartupMessage");
+
+static void         RegisterWin11ContextMenu()
+{
+    if (::GetSystemMetrics(SM_CLEANBOOT) > 0)
+    {
+        return;
+    }
+
+    CRegStdDWORD registeredContextMenu(L"Software\\grepWin\\Win11ContextMenuRegistered", 0, true, HKEY_CURRENT_USER);
+    if (registeredContextMenu)
+        return;
+
+    // check if we're running on windows 11
+    PWSTR        pszPath = nullptr;
+    std::wstring sysPath;
+    if (SHGetKnownFolderPath(FOLDERID_System, KF_FLAG_CREATE, nullptr, &pszPath) == S_OK)
+    {
+        sysPath = pszPath;
+        CoTaskMemFree(pszPath);
+    }
+    auto             explorerVersion = CPathUtils::GetVersionFromFile(sysPath + L"\\shell32.dll");
+    std::vector<int> versions;
+    stringtok(versions, explorerVersion, true, L".");
+    bool isWin11OrLater = versions.size() > 3 && versions[2] >= 22000;
+    if (isWin11OrLater)
+    {
+        auto thread = std::thread([&]() {
+            try
+            {
+                CRegStdDWORD noContextMenuHKCU(L"Software\\grepWin\\NoWin11ContextMenu", 0, true, HKEY_CURRENT_USER);
+                CRegStdDWORD noContextMenuHKLM(L"Software\\grepWin\\NoWin11ContextMenu", 0, true, HKEY_LOCAL_MACHINE);
+
+                auto                extPath  = CPathUtils::GetModuleDir(nullptr);
+                auto                msixPath = extPath + L"\\package.msix";
+                PackageRegistration registrator(extPath, msixPath, L"7BE7C3C4-6740-4AB4-9C5B-DD64067515BF");
+                if (noContextMenuHKCU || noContextMenuHKLM)
+                {
+                    registrator.UnregisterForCurrentUser();
+                    registeredContextMenu = 1;
+                }
+                if (registrator.RegisterForCurrentUser().empty())
+                {
+                    registeredContextMenu = 1;
+                }
+            }
+            catch (const std::exception&)
+            {
+            }
+        });
+        thread.detach();
+    }
+}
 
 static std::wstring GetPathFromCommandLine()
 {
@@ -248,6 +301,8 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
         RegisterContextMenu(false);
         return FALSE;
     }
+
+    RegisterWin11ContextMenu();
 
     bool bQuit   = false;
     HWND hWnd    = nullptr;
