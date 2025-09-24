@@ -43,16 +43,12 @@ HANDLE              hInitProtection    = nullptr;
 ULONGLONG           g_startTime        = GetTickCount64();
 UINT                GREPWIN_STARTUPMSG = RegisterWindowMessage(L"grepWin_StartupMessage");
 
-static void         RegisterWin11ContextMenu()
+static void         RegisterWin11ContextMenu(bool doRegister)
 {
     if (::GetSystemMetrics(SM_CLEANBOOT) > 0)
     {
         return;
     }
-
-    CRegStdDWORD registeredContextMenu(L"Software\\grepWin\\Win11ContextMenuRegistered", 0, true, HKEY_CURRENT_USER);
-    if (registeredContextMenu)
-        return;
 
     // check if we're running on windows 11
     PWSTR        pszPath = nullptr;
@@ -71,27 +67,24 @@ static void         RegisterWin11ContextMenu()
         auto thread = std::thread([&]() {
             try
             {
-                CRegStdDWORD noContextMenuHKCU(L"Software\\grepWin\\NoWin11ContextMenu", 0, true, HKEY_CURRENT_USER);
-                CRegStdDWORD noContextMenuHKLM(L"Software\\grepWin\\NoWin11ContextMenu", 0, true, HKEY_LOCAL_MACHINE);
-
                 auto                extPath  = CPathUtils::GetModuleDir(nullptr);
                 auto                msixPath = extPath + L"\\package.msix";
                 PackageRegistration registrator(extPath, msixPath, L"7BE7C3C4-6740-4AB4-9C5B-DD64067515BF");
-                if (noContextMenuHKCU || noContextMenuHKLM)
-                {
+                if (doRegister)
+                    registrator.RegisterForCurrentUser();
+                else
                     registrator.UnregisterForCurrentUser();
-                    registeredContextMenu = 1;
-                }
-                if (registrator.RegisterForCurrentUser().empty())
-                {
-                    registeredContextMenu = 1;
-                }
             }
             catch (const std::exception&)
             {
             }
         });
         thread.detach();
+    }
+
+    if (::GetSystemMetrics(SM_CLEANBOOT) > 0)
+    {
+        return;
     }
 }
 
@@ -302,7 +295,16 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
         return FALSE;
     }
 
-    RegisterWin11ContextMenu();
+    if (parser.HasKey(L"registerwin11contextmenu"))
+    {
+        RegisterWin11ContextMenu(true);
+        return 0;
+    }
+    if (parser.HasKey(L"unregisterwin11contextmenu"))
+    {
+        RegisterWin11ContextMenu(false);
+        return 0;
+    }
 
     bool bQuit   = false;
     HWND hWnd    = nullptr;
