@@ -142,7 +142,7 @@
           <Component Id="ActiveSetup" Guid="$(var.ActiveSetupGuid)" Win64="$(var.Win64YesNo)">
             <!-- Install only in per-machine context -->
             <Condition>ALLUSERS=1</Condition>
-            <RegistryValue Root="HKLM" Key="Software\Microsoft\Active Setup\Installed Components\[UpgradeCode]" Name="Version" Value="$(var.MajorVersion).$(var.MinorVersion).$(var.BuildVersion)" Type="string" KeyPath="yes" />
+            <RegistryValue Root="HKLM" Key="Software\Microsoft\Active Setup\Installed Components\[UpgradeCode]" Name="Version" Value="$(var.MajorVersion),$(var.MinorVersion),$(var.BuildVersion)" Type="string" KeyPath="yes" />
             <RegistryValue Root="HKLM" Key="Software\Microsoft\Active Setup\Installed Components\[UpgradeCode]" Name="Stubpath" Value="[APPLICATIONFOLDER]grepWin.exe /registerwin11contextmenu" Type="string" />
             <RegistryValue Root="HKLM" Key="Software\Microsoft\Active Setup\Installed Components\[UpgradeCode]" Value="[ProductName]" Type="string" />
           </Component>
