@@ -416,7 +416,7 @@ msgstr "Regex corresp."
 
 #. Resource IDs: (65535)
 msgid "Regex replace string:"
-msgstr "Sequência regex substituída"
+msgstr "Sequência regex substituída:"
 
 #. Resource IDs: (1001)
 msgid "Regex search"
@@ -424,7 +424,7 @@ msgstr "Pesquisa regex"
 
 #. Resource IDs: (65535)
 msgid "Regex search string:"
-msgstr "Sequência regex pesquisada"
+msgstr "Sequência regex pesquisada:"
 
 #. Resource IDs: (179)
 msgid "Regex stack error"
@@ -552,7 +552,7 @@ msgstr "\\"
 
 #. Resource IDs: (116)
 msgid "a regular expression used for searching. Press F1 for more info."
-msgstr "Uma expressão regular usada para pesquisar. Pressione F1 para obter mais informações"
+msgstr "Uma expressão regular usada para pesquisar. Pressione F1 para obter mais informações."
 
 #. Resource IDs: (125)
 msgid "an empty string"
@@ -649,7 +649,7 @@ msgstr "Regex ok"
 
 #. Resource IDs: (117)
 msgid "reuse grepWin instances."
-msgstr "Reutilizar instâncias do grepWin"
+msgstr "Reutilizar instâncias do grepWin."
 
 #. Resource IDs: (151)
 #, c-format
