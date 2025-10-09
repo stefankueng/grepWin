@@ -53,7 +53,7 @@ msgstr "&Acerca do grepWin..."
 
 #. Resource IDs: (1061)
 msgid "&Convert newlines"
-msgstr "Converter quebras de linha"
+msgstr "&Converter quebras de linha"
 
 #. Resource IDs: (1049)
 msgid "&Replace"
@@ -73,7 +73,7 @@ msgstr "/"
 
 #. Resource IDs: (1045)
 msgid "<a href=\"https://tools.stefankueng.com\">Visit our website</a>"
-msgstr "<a href=\"https://tools.stefankueng.com\">Visite o nosso página</a>"
+msgstr "<a href=\"https://tools.stefankueng.com\">Visite a nossa página</a>"
 
 #. Resource IDs: (1052)
 msgid "<a>about grepWin</a>"
