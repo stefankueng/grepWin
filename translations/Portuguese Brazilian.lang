@@ -40,7 +40,7 @@ msgstr "%ld mais encontrados"
 
 #. Resource IDs: (1069)
 msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset"
-msgstr ""
+msgstr "%path% é substituído pelo caminho do arquivo, %line% com a linha a localizar, %column% com o deslocamento na linha"
 
 #. Resource IDs: (175)
 #, c-format
@@ -662,7 +662,7 @@ msgstr "Sequência de pesquisa está vazia"
 
 #. Resource IDs: (170, 171)
 msgid "start new grepWin window"
-msgstr "Iniciar uma nova janela do grepwin"
+msgstr "Iniciar uma nova janela do grepWin"
 
 #. Resource IDs: (114)
 msgid "the path(s) which is searched recursively.\r\nSeparate paths with the | symbol.\r\nExample: c:\\temp|d:\\logs"
