@@ -53,7 +53,7 @@ msgstr "&A grepWin névjegye"
 
 #. Resource IDs: (1061)
 msgid "&Convert newlines"
-msgstr ""
+msgstr "Sortörések konvertálása"
 
 #. Resource IDs: (1049)
 msgid "&Replace"
@@ -114,11 +114,11 @@ msgstr "Között"
 
 #. Resource IDs: (1095)
 msgid "Both"
-msgstr ""
+msgstr "Mind"
 
 #. Resource IDs: (1093)
 msgid "CRLF (Windows)"
-msgstr ""
+msgstr "CRLF (Windows)"
 
 #. Resource IDs: (2)
 msgid "Cancel"
@@ -146,7 +146,7 @@ msgstr "Tartalom"
 
 #. Resource IDs: (65535)
 msgid "Convert newlines to regex newline tags:"
-msgstr ""
+msgstr "Új sorok átalakítása reguláris kifejezésű új sor címkékké:"
 
 #. Resource IDs: (177)
 msgid "Copy column for all items"
@@ -254,7 +254,7 @@ msgstr "Fájlok"
 
 #. Resource IDs: (181)
 msgid "Filter results"
-msgstr ""
+msgstr "Keresés eredménye"
 
 #. Resource IDs: (174)
 #, c-format
@@ -311,7 +311,7 @@ msgstr "Cserénél tartsa meg a fájl dátumát"
 
 #. Resource IDs: (1094)
 msgid "LF (Linux)"
-msgstr ""
+msgstr "LF (Linux)"
 
 #. Resource IDs: (1075)
 msgid "Language:"
@@ -336,7 +336,7 @@ msgstr "Egyezések"
 
 #. Resource IDs: (137)
 msgid "Multiline editor"
-msgstr ""
+msgstr "Többsoros szerkesztő"
 
 #. Resource IDs: (104)
 msgid "Name"
@@ -352,11 +352,11 @@ msgstr "Új sorra a '.' illeszkedik"
 
 #. Resource IDs: (140)
 msgid "Newlines"
-msgstr ""
+msgstr "Új sorok"
 
 #. Resource IDs: (1056)
 msgid "Note: newlines in the text are ignored, used for formatting only. To convert the formatting newlines to proper regex newlines use the button below."
-msgstr ""
+msgstr "Megjegyzés: a szövegben szereplő új sorok figyelmen kívül maradnak, csak formázási célokat szolgálnak. Az új sorok formázásának megfelelő reguláris kifejezéssel történő konvertálásához használja az alábbi gombot."
 
 #. Resource IDs: (1)
 msgid "OK"
