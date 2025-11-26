@@ -2715,35 +2715,37 @@ LRESULT CSearchDlg::ColorizeMatchResultProc(LPNMLVCUSTOMDRAW lpLVCD)
                 }
                 if (ListView_GetItem(hListControl, &lv))
                 {
-                    LPWSTR pMatch   = lv.pszText + colMatch;
-                    SIZE   textSize = {0, 0};
+                    LPWSTR pMatch = lv.pszText + colMatch;
+                    RECT   rc2    = {0, 0, 0, 0};
+                    LONG   width;
 
                     rc.left += 6;
                     rc.right -= 6;
 
-                    // Not precise sometimes.
-                    // We keep the text and draw a transparent rectangle only. So, will not break the text.
-                    GetTextExtentPoint32(hdc, lv.pszText, colMatch, &textSize);
-                    rc.left += textSize.cx;
+                    // GetTextExtentPoint32 is not accurate sometimes.
+                    DrawTextEx(hdc, lv.pszText, colMatch, &rc2, DT_CALCRECT | DT_NOPREFIX | DT_SINGLELINE, NULL);
+                    width = rc2.right - rc2.left;
+                    rc.left += width;
                     if (rc.left >= rc.right)
                     {
                         break;
                     }
-                    GetTextExtentPoint32(hdc, pMatch, pInfo->matchLengths[subIndex], &textSize);
-                    if (rc.right > rc.left + textSize.cx)
+                    DrawTextEx(hdc, pMatch, pInfo->matchLengths[subIndex], &rc2, DT_CALCRECT | DT_NOPREFIX | DT_SINGLELINE, NULL);
+                    width = rc2.right - rc2.left;
+                    if (rc.right > rc.left + width)
                     {
-                        rc.right = rc.left + textSize.cx;
+                        rc.right = rc.left + width;
                     }
 
-                    LONG          width   = rc.right - rc.left;
+                    width = rc.right - rc.left;
                     LONG          height  = rc.bottom - rc.top;
                     HDC           hcdc    = CreateCompatibleDC(hdc);
                     BITMAPINFO    bmi     = {{sizeof(BITMAPINFOHEADER), width, height, 1, 32, BI_RGB, static_cast<DWORD>(width * height * 4u), 0, 0, 0, 0}, {{0, 0, 0, 0}}};
                     BLENDFUNCTION blend   = {AC_SRC_OVER, 0, 92, 0}; // 36%
                     HBITMAP       hBitmap = CreateDIBSection(hcdc, &bmi, DIB_RGB_COLORS, nullptr, nullptr, 0x0);
-                    RECT          rc2     = {0, 0, width, height};
                     auto          oldBmp  = SelectObject(hcdc, hBitmap);
                     auto          brush   = CreateSolidBrush(RGB(255, 255, 0));
+                    rc2 = {0, 0, width, height};
                     FillRect(hcdc, &rc2, brush);
                     AlphaBlend(hdc, rc.left, rc.top, width, height, hcdc, 0, 0, width, height, blend);
                     SelectObject(hcdc, oldBmp);
