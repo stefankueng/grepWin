@@ -51,13 +51,13 @@ msgstr "%s fájlban, kihagyva %s fájl. %s eredmény kiválasztva."
 msgid "&About grepWin..."
 msgstr "&A grepWin névjegye"
 
+#. Resource IDs: (1061)
+msgid "&Convert newlines"
+msgstr "Sortörések konvertálása"
+
 #. Resource IDs: (1049)
 msgid "&Replace"
 msgstr "&Csere"
-
-#. Resource IDs: (123)
-msgid "&Search"
-msgstr "&Keresés"
 
 #. Resource IDs: (1003)
 msgid "&Whole word"
@@ -112,6 +112,14 @@ msgstr "Biztosan lecseréli ezt:\n%s\nerre:\n%s\nbiztonsági másolat nélkül"
 msgid "Between"
 msgstr "Között"
 
+#. Resource IDs: (1095)
+msgid "Both"
+msgstr "Mind"
+
+#. Resource IDs: (1093)
+msgid "CRLF (Windows)"
+msgstr "CRLF (Windows)"
+
 #. Resource IDs: (2)
 msgid "Cancel"
 msgstr "Mégsem"
@@ -135,6 +143,10 @@ msgstr "Parancs, ami a szerkesztőt egy bizonyos sornál nyitja meg:"
 #. Resource IDs: (1060)
 msgid "Content"
 msgstr "Tartalom"
+
+#. Resource IDs: (65535)
+msgid "Convert newlines to regex newline tags:"
+msgstr "Új sorok átalakítása reguláris kifejezésű új sor címkékké:"
 
 #. Resource IDs: (177)
 msgid "Copy column for all items"
@@ -183,10 +195,6 @@ msgstr "Sötét mód"
 #. Resource IDs: (139)
 msgid "Date modified"
 msgstr "Módosítás dátuma"
-
-#. Resource IDs: (137)
-msgid "Dialog"
-msgstr "Párbeszédablak"
 
 #. Resource IDs: (1078)
 msgid "Don't warn when replacing without creating backups"
@@ -244,6 +252,10 @@ msgstr "Illeszkedő fájlnevek:\nHasználja a '|' jelet a különböző illeszke
 msgid "Files"
 msgstr "Fájlok"
 
+#. Resource IDs: (181)
+msgid "Filter results"
+msgstr "Keresés eredménye"
+
 #. Resource IDs: (174)
 #, c-format
 msgid "Found %s files, skipped %s files."
@@ -297,6 +309,10 @@ msgstr "kB"
 msgid "Keep file date when replacing"
 msgstr "Cserénél tartsa meg a fájl dátumát"
 
+#. Resource IDs: (1094)
+msgid "LF (Linux)"
+msgstr "LF (Linux)"
+
 #. Resource IDs: (1075)
 msgid "Language:"
 msgstr "Nyelv:"
@@ -318,6 +334,10 @@ msgstr "%5ld : %30s sor\n"
 msgid "Matches"
 msgstr "Egyezések"
 
+#. Resource IDs: (137)
+msgid "Multiline editor"
+msgstr "Többsoros szerkesztő"
+
 #. Resource IDs: (104)
 msgid "Name"
 msgstr "Név"
@@ -329,6 +349,14 @@ msgstr "Újabb mint"
 #. Resource IDs: (115)
 msgid "Newline is matched by '.'"
 msgstr "Új sorra a '.' illeszkedik"
+
+#. Resource IDs: (140)
+msgid "Newlines"
+msgstr "Új sorok"
+
+#. Resource IDs: (1056)
+msgid "Note: newlines in the text are ignored, used for formatting only. To convert the formatting newlines to proper regex newlines use the button below."
+msgstr "Megjegyzés: a szövegben szereplő új sorok figyelmen kívül maradnak, csak formázási célokat szolgálnak. Az új sorok formázásának megfelelő reguláris kifejezéssel történő konvertálásához használja az alábbi gombot."
 
 #. Resource IDs: (1)
 msgid "OK"
@@ -467,10 +495,6 @@ msgstr "Válasszon szerkesztő alkalmazást..."
 #. Resource IDs: (127)
 msgid "Select path to search"
 msgstr "Válassza ki a keresés útvonalát"
-
-#. Resource IDs: (1071)
-msgid "Settings"
-msgstr "Beállítások"
 
 #. Resource IDs: (133)
 msgid "Size"
@@ -655,4 +679,12 @@ msgstr "|"
 #. Resource IDs: (1024)
 msgid "⑂"
 msgstr "⑂"
+
+#. Resource IDs: (1071)
+msgid "⚙ Settings"
+msgstr "⚙ Beállítások"
+
+#. Resource IDs: (123)
+msgid "🔎 &Search"
+msgstr "🔎 &Keresés"
 

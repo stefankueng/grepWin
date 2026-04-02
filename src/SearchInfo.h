@@ -33,21 +33,21 @@ public:
     CSearchInfo& operator=(CSearchInfo&& other)      = default;
     ~CSearchInfo();
 
-    static bool                   NameCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2);
-    static bool                   SizeCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2);
-    static bool                   MatchesCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2);
-    static bool                   PathCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2);
-    static bool                   EncodingCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2);
-    static bool                   ModifiedTimeCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2);
-    static bool                   ExtCompareAsc(const CSearchInfo& entry1, const CSearchInfo& entry2);
+    static bool                   NameCompareAsc(const CSearchInfo* entry1, const CSearchInfo* entry2);
+    static bool                   SizeCompareAsc(const CSearchInfo* entry1, const CSearchInfo* entry2);
+    static bool                   MatchesCompareAsc(const CSearchInfo* entry1, const CSearchInfo* entry2);
+    static bool                   PathCompareAsc(const CSearchInfo* entry1, const CSearchInfo* entry2);
+    static bool                   EncodingCompareAsc(const CSearchInfo* entry1, const CSearchInfo* entry2);
+    static bool                   ModifiedTimeCompareAsc(const CSearchInfo* entry1, const CSearchInfo* entry2);
+    static bool                   ExtCompareAsc(const CSearchInfo* entry1, const CSearchInfo* entry2);
 
-    static bool                   NameCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2);
-    static bool                   SizeCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2);
-    static bool                   MatchesCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2);
-    static bool                   PathCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2);
-    static bool                   EncodingCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2);
-    static bool                   ModifiedTimeCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2);
-    static bool                   ExtCompareDesc(const CSearchInfo& entry1, const CSearchInfo& entry2);
+    static bool                   NameCompareDesc(const CSearchInfo* entry1, const CSearchInfo* entry2);
+    static bool                   SizeCompareDesc(const CSearchInfo* entry1, const CSearchInfo* entry2);
+    static bool                   MatchesCompareDesc(const CSearchInfo* entry1, const CSearchInfo* entry2);
+    static bool                   PathCompareDesc(const CSearchInfo* entry1, const CSearchInfo* entry2);
+    static bool                   EncodingCompareDesc(const CSearchInfo* entry1, const CSearchInfo* entry2);
+    static bool                   ModifiedTimeCompareDesc(const CSearchInfo* entry1, const CSearchInfo* entry2);
+    static bool                   ExtCompareDesc(const CSearchInfo* entry1, const CSearchInfo* entry2);
 
     bool                          operator<(const CSearchInfo& other) const;
 

@@ -51,13 +51,13 @@ msgstr ""
 msgid "&About grepWin..."
 msgstr "&Oor grepWin..."
 
+#. Resource IDs: (1061)
+msgid "&Convert newlines"
+msgstr ""
+
 #. Resource IDs: (1049)
 msgid "&Replace"
 msgstr "&Vervang"
-
-#. Resource IDs: (123)
-msgid "&Search"
-msgstr "&Soek"
 
 #. Resource IDs: (1003)
 msgid "&Whole word"
@@ -112,6 +112,14 @@ msgstr "Is u seker dat u \n%s\nmet\n%s\n wil vervang sonder om 'n backup te maak
 msgid "Between"
 msgstr "Tussen"
 
+#. Resource IDs: (1095)
+msgid "Both"
+msgstr ""
+
+#. Resource IDs: (1093)
+msgid "CRLF (Windows)"
+msgstr ""
+
 #. Resource IDs: (2)
 msgid "Cancel"
 msgstr "Kanselleer"
@@ -135,6 +143,10 @@ msgstr ""
 #. Resource IDs: (1060)
 msgid "Content"
 msgstr "Inhoud"
+
+#. Resource IDs: (65535)
+msgid "Convert newlines to regex newline tags:"
+msgstr ""
 
 #. Resource IDs: (177)
 msgid "Copy column for all items"
@@ -183,10 +195,6 @@ msgstr "Donker modus"
 #. Resource IDs: (139)
 msgid "Date modified"
 msgstr "Datum gewysig"
-
-#. Resource IDs: (137)
-msgid "Dialog"
-msgstr "Dialoog"
 
 #. Resource IDs: (1078)
 msgid "Don't warn when replacing without creating backups"
@@ -244,6 +252,10 @@ msgstr "Lêernaam ooreenstem:\nGebruik '|' om verskillende teks-paspatrone te sk
 msgid "Files"
 msgstr "Lêers"
 
+#. Resource IDs: (181)
+msgid "Filter results"
+msgstr ""
+
 #. Resource IDs: (174)
 #, c-format
 msgid "Found %s files, skipped %s files."
@@ -297,6 +309,10 @@ msgstr "KB"
 msgid "Keep file date when replacing"
 msgstr ""
 
+#. Resource IDs: (1094)
+msgid "LF (Linux)"
+msgstr ""
+
 #. Resource IDs: (1075)
 msgid "Language:"
 msgstr "Taal:"
@@ -318,6 +334,10 @@ msgstr ""
 msgid "Matches"
 msgstr "gevind"
 
+#. Resource IDs: (137)
+msgid "Multiline editor"
+msgstr ""
+
 #. Resource IDs: (104)
 msgid "Name"
 msgstr "Naam"
@@ -329,6 +349,14 @@ msgstr "Nuwer asa"
 #. Resource IDs: (115)
 msgid "Newline is matched by '.'"
 msgstr "Nuwe lyn word gekoppel deur '.'"
+
+#. Resource IDs: (140)
+msgid "Newlines"
+msgstr ""
+
+#. Resource IDs: (1056)
+msgid "Note: newlines in the text are ignored, used for formatting only. To convert the formatting newlines to proper regex newlines use the button below."
+msgstr ""
 
 #. Resource IDs: (1)
 msgid "OK"
@@ -467,10 +495,6 @@ msgstr "Kies Editor Programma..."
 #. Resource IDs: (127)
 msgid "Select path to search"
 msgstr "Kies Soekpad"
-
-#. Resource IDs: (1071)
-msgid "Settings"
-msgstr "Instellings"
 
 #. Resource IDs: (133)
 msgid "Size"
@@ -655,4 +679,12 @@ msgstr ""
 #. Resource IDs: (1024)
 msgid "⑂"
 msgstr "⑂"
+
+#. Resource IDs: (1071)
+msgid "⚙ Settings"
+msgstr "⚙ Instellings"
+
+#. Resource IDs: (123)
+msgid "🔎 &Search"
+msgstr "🔎 &Soek"
 

@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\..\..\packages\Microsoft.SourceLink.GitHub.10.0.103\build\Microsoft.SourceLink.GitHub.props" Condition="Exists('..\..\..\packages\Microsoft.SourceLink.GitHub.10.0.103\build\Microsoft.SourceLink.GitHub.props')" />
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
@@ -20,12 +21,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -76,8 +77,17 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="CustomActions.def" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\..\..\packages\Microsoft.SourceLink.GitHub.10.0.103\build\Microsoft.SourceLink.GitHub.targets" Condition="Exists('..\..\..\packages\Microsoft.SourceLink.GitHub.10.0.103\build\Microsoft.SourceLink.GitHub.targets')" />
   </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\..\..\packages\Microsoft.SourceLink.GitHub.10.0.103\build\Microsoft.SourceLink.GitHub.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Microsoft.SourceLink.GitHub.10.0.103\build\Microsoft.SourceLink.GitHub.props'))" />
+    <Error Condition="!Exists('..\..\..\packages\Microsoft.SourceLink.GitHub.10.0.103\build\Microsoft.SourceLink.GitHub.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Microsoft.SourceLink.GitHub.10.0.103\build\Microsoft.SourceLink.GitHub.targets'))" />
+  </Target>
 </Project>

@@ -14,3 +14,4 @@
 /_ReSharper.Caches
 /src/ExplorerCommandVerb/ExplorerCommandVerb.vcxproj.user
 /src/Setup/x64
+/vcpkg_installed

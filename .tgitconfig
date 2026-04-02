@@ -5,3 +5,5 @@
 	cmdline = WScript %root%\\\\tools\\\\checkyear.js
 	wait = true
 	show = false
+[tgit]
+	projectlanguage = 1033

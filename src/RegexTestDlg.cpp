@@ -1,6 +1,6 @@
 // grepWin - regex search and replace for Windows
 
-// Copyright (C) 2007-2008, 2011-2013, 2019-2021, 2024 - Stefan Kueng
+// Copyright (C) 2007-2008, 2011-2013, 2019-2021, 2024-2025 - Stefan Kueng
 
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -217,7 +217,7 @@ void CRegexTestDlg::DoRegex()
                 replaceFmt.SetReplacePair(L"${filename}", L"file");
                 replaceFmt.SetReplacePair(L"${fileext}", L"txt");
 
-                replaceResult = regex_replace(m_textContent, expression, replaceFmt, rflags);
+                replaceResult = regex_replace(m_textContent, expression, std::ref(replaceFmt), rflags);
 
                 while (boost::regex_search(start, end, whatc, expression, flags))
                 {

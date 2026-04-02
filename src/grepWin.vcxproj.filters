@@ -147,6 +147,12 @@
     <ClCompile Include="..\sktoolslib\InfoRtfDialog.cpp">
       <Filter>sktoolslib</Filter>
     </ClCompile>
+    <ClCompile Include="NewlinesDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sktoolslib\PackageRegistration.cpp">
+      <Filter>sktoolslib</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AboutDlg.h">
@@ -296,6 +302,12 @@
     <ClInclude Include="TextOffset.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="NewlinesDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sktoolslib\PackageRegistration.h">
+      <Filter>sktoolslib</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\grepWin.ico">
@@ -320,6 +332,9 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="packages.config" />
+    <None Include="..\.github\workflows\msbuild.yml">
+      <Filter>Scripts</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resources\grepWin.rc">

@@ -6,12 +6,12 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: grepWin\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 1900-01-01 00:00+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"Last-Translator: 비너스걸-VenusGirl💋 <venusgirl@outlook.com>\n"
+"Language-Team: VᴇɴᴜsGɪʀʟ <https://venusgirls.tistory.com/>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -51,13 +51,13 @@ msgstr "%s 파일, %s 파일을 건너뛰었습니다. %s 결과가 선택되었
 msgid "&About grepWin..."
 msgstr "grepWin 정보(&A)..."
 
+#. Resource IDs: (1061)
+msgid "&Convert newlines"
+msgstr "새 줄 변환(&C)"
+
 #. Resource IDs: (1049)
 msgid "&Replace"
 msgstr "바꾸기(&R)"
-
-#. Resource IDs: (123)
-msgid "&Search"
-msgstr "검색(&S)"
 
 #. Resource IDs: (1003)
 msgid "&Whole word"
@@ -105,21 +105,20 @@ msgstr "모든 크기"
 
 #. Resource IDs: (124)
 #, c-format
-msgid ""
-"Are you sure you want to replace\n"
-"%s\n"
-"with\n"
-"%s\n"
-"without creating backups?"
-msgstr ""
-"백업을 생성하지 않고\n"
-"%s\n"
-"을(를)\n"
-"%s로 바꾸시겠습니까?"
+msgid "Are you sure you want to replace\n%s\nwith\n%s\nwithout creating backups?"
+msgstr "백업을 생성하지 않고\n%s\n을(를)\n%s로 바꾸시겠습니까?"
 
 #. Resource IDs: (1081)
 msgid "Between"
 msgstr "다음 사이"
+
+#. Resource IDs: (1095)
+msgid "Both"
+msgstr "둘 다"
+
+#. Resource IDs: (1093)
+msgid "CRLF (Windows)"
+msgstr "CRLF (Windows)"
 
 #. Resource IDs: (2)
 msgid "Cancel"
@@ -144,6 +143,10 @@ msgstr "명령줄을 사용하여 특정 줄과 줄 오프셋에서 편집기를
 #. Resource IDs: (1060)
 msgid "Content"
 msgstr "내용"
+
+#. Resource IDs: (65535)
+msgid "Convert newlines to regex newline tags:"
+msgstr "새 줄을 새 줄 태그를 다시 생성하도록 변환합니다:"
 
 #. Resource IDs: (177)
 msgid "Copy column for all items"
@@ -192,10 +195,6 @@ msgstr "어두운 모드"
 #. Resource IDs: (139)
 msgid "Date modified"
 msgstr "수정 일자"
-
-#. Resource IDs: (137)
-msgid "Dialog"
-msgstr "대화 상자"
 
 #. Resource IDs: (1078)
 msgid "Don't warn when replacing without creating backups"
@@ -246,16 +245,16 @@ msgid "Ext"
 msgstr "확장자"
 
 #. Resource IDs: (1039)
-msgid ""
-"File Names match:\n"
-"use '|' to separate multiple text match patterns, prepen&d '-' to exclude"
-msgstr ""
-"파일 이름 일치:\n"
-"'|'로 여러 텍스트 패턴을 구분하고, '-'를 앞에 붙여 제외합니다(&D)"
+msgid "File Names match:\nuse '|' to separate multiple text match patterns, prepen&d '-' to exclude"
+msgstr "파일 이름 일치:\n'|'로 여러 텍스트 패턴을 구분하고, '-'를 앞에 붙여 제외합니다(&D)"
 
 #. Resource IDs: (1059)
 msgid "Files"
 msgstr "파일"
+
+#. Resource IDs: (181)
+msgid "Filter results"
+msgstr "필터 결과"
 
 #. Resource IDs: (174)
 #, c-format
@@ -310,6 +309,10 @@ msgstr "KB"
 msgid "Keep file date when replacing"
 msgstr "교체 시 파일 날짜 유지"
 
+#. Resource IDs: (1094)
+msgid "LF (Linux)"
+msgstr "LF (Linux)"
+
 #. Resource IDs: (1075)
 msgid "Language:"
 msgstr "언어:"
@@ -331,6 +334,10 @@ msgstr "쥴 %5ld : %s\n"
 msgid "Matches"
 msgstr "일치"
 
+#. Resource IDs: (137)
+msgid "Multiline editor"
+msgstr "다중 줄 편집기"
+
 #. Resource IDs: (104)
 msgid "Name"
 msgstr "이름"
@@ -342,6 +349,14 @@ msgstr "다음보다 최신"
 #. Resource IDs: (115)
 msgid "Newline is matched by '.'"
 msgstr "새 줄은 '.'로 일치"
+
+#. Resource IDs: (140)
+msgid "Newlines"
+msgstr "새 줄"
+
+#. Resource IDs: (1056)
+msgid "Note: newlines in the text are ignored, used for formatting only. To convert the formatting newlines to proper regex newlines use the button below."
+msgstr "참고: 텍스트의 개행은 무시되며 서식 지정에만 사용됩니다. 서식 개행을 적절한 정규식 개행으로 변환하려면 아래 버튼을 사용하세요."
 
 #. Resource IDs: (1)
 msgid "OK"
@@ -428,12 +443,8 @@ msgid "Replace string"
 msgstr "문자열 바꾸기"
 
 #. Resource IDs: (1027)
-msgid ""
-"Replace with/\n"
-"Capture format:"
-msgstr ""
-"바꿀 문자열/\n"
-"캡쳐 형식:"
+msgid "Replace with/\nCapture format:"
+msgstr "바꿀 문자열/\n캡쳐 형식:"
 
 #. Resource IDs: (126)
 msgid "S&top"
@@ -484,10 +495,6 @@ msgstr "편집기 프로그램을 선택하세요..."
 #. Resource IDs: (127)
 msgid "Select path to search"
 msgstr "검색할 경로를 선택하세요"
-
-#. Resource IDs: (1071)
-msgid "Settings"
-msgstr "설정"
 
 #. Resource IDs: (133)
 msgid "Size"
@@ -672,4 +679,12 @@ msgstr "|"
 #. Resource IDs: (1024)
 msgid "⑂"
 msgstr "⑂"
+
+#. Resource IDs: (1071)
+msgid "⚙ Settings"
+msgstr "⚙ 설정"
+
+#. Resource IDs: (123)
+msgid "🔎 &Search"
+msgstr "🔎 검색(&S)"
 

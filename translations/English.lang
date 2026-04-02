@@ -51,12 +51,12 @@ msgstr ""
 msgid "&About grepWin..."
 msgstr ""
 
-#. Resource IDs: (1049)
-msgid "&Replace"
+#. Resource IDs: (1061)
+msgid "&Convert newlines"
 msgstr ""
 
-#. Resource IDs: (123)
-msgid "&Search"
+#. Resource IDs: (1049)
+msgid "&Replace"
 msgstr ""
 
 #. Resource IDs: (1003)
@@ -112,6 +112,14 @@ msgstr ""
 msgid "Between"
 msgstr ""
 
+#. Resource IDs: (1095)
+msgid "Both"
+msgstr ""
+
+#. Resource IDs: (1093)
+msgid "CRLF (Windows)"
+msgstr ""
+
 #. Resource IDs: (2)
 msgid "Cancel"
 msgstr ""
@@ -134,6 +142,10 @@ msgstr ""
 
 #. Resource IDs: (1060)
 msgid "Content"
+msgstr ""
+
+#. Resource IDs: (65535)
+msgid "Convert newlines to regex newline tags:"
 msgstr ""
 
 #. Resource IDs: (177)
@@ -182,10 +194,6 @@ msgstr ""
 
 #. Resource IDs: (139)
 msgid "Date modified"
-msgstr ""
-
-#. Resource IDs: (137)
-msgid "Dialog"
 msgstr ""
 
 #. Resource IDs: (1078)
@@ -244,6 +252,10 @@ msgstr ""
 msgid "Files"
 msgstr ""
 
+#. Resource IDs: (181)
+msgid "Filter results"
+msgstr ""
+
 #. Resource IDs: (174)
 #, c-format
 msgid "Found %s files, skipped %s files."
@@ -297,6 +309,10 @@ msgstr ""
 msgid "Keep file date when replacing"
 msgstr ""
 
+#. Resource IDs: (1094)
+msgid "LF (Linux)"
+msgstr ""
+
 #. Resource IDs: (1075)
 msgid "Language:"
 msgstr ""
@@ -318,6 +334,10 @@ msgstr ""
 msgid "Matches"
 msgstr ""
 
+#. Resource IDs: (137)
+msgid "Multiline editor"
+msgstr ""
+
 #. Resource IDs: (104)
 msgid "Name"
 msgstr ""
@@ -328,6 +348,14 @@ msgstr ""
 
 #. Resource IDs: (115)
 msgid "Newline is matched by '.'"
+msgstr ""
+
+#. Resource IDs: (140)
+msgid "Newlines"
+msgstr ""
+
+#. Resource IDs: (1056)
+msgid "Note: newlines in the text are ignored, used for formatting only. To convert the formatting newlines to proper regex newlines use the button below."
 msgstr ""
 
 #. Resource IDs: (1)
@@ -466,10 +494,6 @@ msgstr ""
 
 #. Resource IDs: (127)
 msgid "Select path to search"
-msgstr ""
-
-#. Resource IDs: (1071)
-msgid "Settings"
 msgstr ""
 
 #. Resource IDs: (133)
@@ -655,4 +679,12 @@ msgstr ""
 #. Resource IDs: (1024)
 msgid "⑂"
 msgstr "⑂"
+
+#. Resource IDs: (1071)
+msgid "⚙ Settings"
+msgstr ""
+
+#. Resource IDs: (123)
+msgid "🔎 &Search"
+msgstr ""
 

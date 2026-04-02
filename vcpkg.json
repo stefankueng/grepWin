@@ -1,0 +1,7 @@
+{
+  "dependencies": [
+    "boost-iostreams",
+    "boost-regex",
+    "boost-filesystem"
+  ]
+}
