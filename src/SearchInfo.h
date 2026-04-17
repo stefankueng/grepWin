@@ -53,6 +53,7 @@ public:
 
     std::wstring                  filePath;
     __int64                       fileSize;
+    std::wstring                  searchPattern;
     std::deque<DWORD>             matchLinesNumbers;
     std::deque<DWORD>             matchColumnsNumbers;
     std::deque<DWORD>             matchLengths;
