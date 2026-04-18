@@ -2516,7 +2516,7 @@ void CSearchDlg::ShowContextMenu(HWND hWnd, int x, int y)
     {
         vPaths.push_back(*m_items[idx]);
     }
-    shellMenu.SetObjects(std::move(vPaths), std::move(lines));
+    shellMenu.SetObjects(std::move(vPaths), std::move(lines), m_searchString);
 
     if ((x == -1) && (y == -1))
     {
@@ -3355,6 +3355,7 @@ void CSearchDlg::OpenFileAtListIndex(int listIndex)
         {
             SearchReplace(cmd, L"%line%", line);
             SearchReplace(cmd, L"%column%", move);
+            SearchReplace(cmd, L"%pattern%", pInfo->searchPattern);
             SearchReplace(cmd, L"%path%", pInfo->filePath);
             OpenFileInProcess(const_cast<wchar_t*>(cmd.c_str()));
             return;
@@ -4904,6 +4905,7 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot)
         // sInfo.encoding = type; // show the matched encoding
     }
 
+    sInfo.searchPattern = m_searchString;
     SendResult(sInfo, nCount);
 }
 

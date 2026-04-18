@@ -30,7 +30,7 @@ struct LineData;
 class CShellContextMenu
 {
 public:
-    void SetObjects(std::vector<CSearchInfo>&& strVector,  std::vector<LineData>&& lineVector);
+    void SetObjects(std::vector<CSearchInfo>&& strVector, std::vector<LineData>&& lineVector, std::wstring searchPattern);
     UINT ShowContextMenu(HWND hWnd, POINT pt);
     CShellContextMenu();
     virtual ~CShellContextMenu();
@@ -43,6 +43,7 @@ private:
     int                                m_pidlArrayItems;
     std::vector<CSearchInfo>           m_strVector;
     std::vector<LineData>              m_lineVector;
+    std::wstring                       m_searchPattern;
 
     static void                        InvokeCommand(LPCONTEXTMENU pContextMenu, UINT idCommand);
     BOOL                               GetContextMenu(HWND hWnd, void **ppContextMenu, int &iMenuType);

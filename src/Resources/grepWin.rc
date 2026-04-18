@@ -300,7 +300,7 @@ BEGIN
     LTEXT           "Command line to start an editor at a specific line and in line offset:",IDC_STATIC1,13,19,288,8
     EDITTEXT        IDC_EDITORCMD,13,31,269,14,ES_AUTOHSCROLL
     PUSHBUTTON      "...",IDC_SEARCHPATHBROWSE,286,31,15,14
-    LTEXT           "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset",IDC_STATIC2,13,47,288,17
+    LTEXT           "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset, %pattern% with the search pattern",IDC_STATIC2,13,47,288,17
     LTEXT           "Language:",IDC_STATIC4,7,72,135,8
     COMBOBOX        IDC_LANGUAGE,170,71,140,30,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
     LTEXT           "number of NULL bytes per MB allowed for a file to still be considered text instead of binary",IDC_STATIC3,7,85,241,17

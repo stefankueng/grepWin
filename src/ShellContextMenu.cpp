@@ -344,7 +344,7 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
                             auto column = std::to_wstring(line.column);
                             SearchReplace(cmd, L"%line%", number);
                             SearchReplace(cmd, L"%column%", column);
-
+                            SearchReplace(cmd, L"%pattern%", m_searchPattern);
                             STARTUPINFO         startupInfo;
                             PROCESS_INFORMATION processInfo;
                             SecureZeroMemory(&startupInfo, sizeof(startupInfo));
@@ -368,11 +368,13 @@ UINT CShellContextMenu::ShowContextMenu(HWND hWnd, POINT pt)
                             auto move = std::to_wstring(strData.matchColumnsNumbers[0]);
                             SearchReplace(cmd, L"%line%", line);
                             SearchReplace(cmd, L"%column%", move);
+                            SearchReplace(cmd, L"%pattern%", m_searchPattern);
                         }
                         else
                         {
                             SearchReplace(cmd, L"%line%", L"0");
                             SearchReplace(cmd, L"%column%", L"0");
+                            SearchReplace(cmd, L"%pattern%", L"");
                         }
 
                         STARTUPINFO         startupInfo;
@@ -407,7 +409,7 @@ void CShellContextMenu::InvokeCommand(LPCONTEXTMENU pContextMenu, UINT idCommand
     pContextMenu->InvokeCommand(&cmi);
 }
 
-void CShellContextMenu::SetObjects(std::vector<CSearchInfo>&& strVector, std::vector<LineData>&& lineVector)
+void CShellContextMenu::SetObjects(std::vector<CSearchInfo>&& strVector, std::vector<LineData>&& lineVector, std::wstring searchPattern)
 {
     // free all allocated data
     if (m_psfFolder && bDelete)
@@ -451,6 +453,7 @@ void CShellContextMenu::SetObjects(std::vector<CSearchInfo>&& strVector, std::ve
         }
     }
     m_lineVector     = lineVector;
+    m_searchPattern  = std::move(searchPattern);
 
     m_pidlArrayItems = succeededItems;
 
