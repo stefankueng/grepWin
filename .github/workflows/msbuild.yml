@@ -1,0 +1,88 @@
+name: Build
+
+on:
+  push:
+    paths-ignore:
+            - "*.md"
+  pull_request:
+    paths-ignore:
+            - "*.md"
+
+env:
+  # Path to the solution file relative to the root of the project.
+  SOLUTION_FILE_PATH: .
+
+  # Configuration type to build.
+  # You can convert this to a build matrix if you need coverage of multiple configuration types.
+  # https://docs.github.com/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
+  BUILD_CONFIGURATION: Release
+
+jobs:
+  build:
+    runs-on: windows-2025-vs2026 #windows-latest
+    strategy:
+      matrix:
+        include:
+          - platform: Win32
+            dir: Release
+          - platform: x64
+            dir: Release64
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        submodules: recursive
+
+    - name: Add MSBuild to PATH
+      uses: microsoft/setup-msbuild@v2
+
+    - name: Integrate vcpkg
+      run: |
+        & "vcpkg.exe" integrate install
+
+    - name: Restore NuGet packages
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: nuget restore ${{env.SOLUTION_FILE_PATH}}
+
+    - name: Build ${{matrix.platform}}
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: |
+        Select-Xml -Path ./version.build.in 'project/target/setenv/variable' | ForEach-Object { Set-Variable -Name $_.Node.name -Value $_.Node.value }
+        $WCREV = git rev-list --count HEAD
+        $WCDATE = "$($env:GITHUB_SHA.Substring(0,7))" # more specific
+        $Version = "$MajorVersion.$MinorVersion.$MicroVersion.$WCREV"
+        Copy-Item "./src/version.in" -Destination "./src/last/version.h"
+        Copy-Item "./src/Setup/VersionNumberInclude.in.wxi" -Destination "./src/Setup/VersionNumberInclude.wxi"
+        sed -i "s/\`$MajorVersion\`$/$MajorVersion/gm" ./src/last/version.h ./src/Setup/VersionNumberInclude.wxi
+        sed -i "s/\`$MinorVersion\`$/$MinorVersion/gm" ./src/last/version.h ./src/Setup/VersionNumberInclude.wxi
+        sed -i "s/\`$MicroVersion\`$/$MicroVersion/gm" ./src/last/version.h ./src/Setup/VersionNumberInclude.wxi
+        sed -i "s/\`$WCREV\`$/$WCREV/gm" ./src/last/version.h ./src/Setup/VersionNumberInclude.wxi
+        sed -i "s/\`$WCDATE\`$/$WCDATE/gm" ./src/last/version.h
+        msbuild -m -p:Configuration=${{env.BUILD_CONFIGURATION}} -p:Platform=${{matrix.platform}} -warnAsError ${{env.SOLUTION_FILE_PATH}}
+        Copy-Item "./bin/${{matrix.dir}}/grepWin.exe" -Destination "./bin/${{matrix.dir}}/grepWin-${{matrix.platform}}_portable.exe"
+        Set-Location -Path "./src/Setup"
+        if ("${{matrix.platform}}" -eq "x64") {
+          New-Item -ItemType "directory" -Path . -Name "x64"
+          sed "s/\`$Version\`$/$Version/gm" AppXManifest.xml.in > x64\AppxManifest.xml
+          $MSVCRoot = vswhere -property installationPath
+          & "${env:COMSPEC}" /s /c "`"$MSVCRoot\Common7\Tools\vsdevcmd.bat`" -no_logo -arch=amd64 && set" | ForEach-Object {
+            $name, $value = $_ -split '=', 2
+            set-content env:"$name" $value
+          }
+          MakeAppX pack /o /d x64 -p ..\..\bin\release64\package.msix /nv
+          # unsigned
+        }
+        candle -nologo -dPlatform=${{matrix.platform}} -out ..\..\bin\Setup-${{matrix.platform}}.wixobj Setup.wxs
+        light -nologo -sice:ICE57 -ext WixUIExtension -cultures:en-us -out ..\..\bin\grepWin-${{matrix.platform}}.msi ..\..\bin\Setup-${{matrix.platform}}.wixobj
+
+    - name: Upload artifacts for ${{matrix.platform}}
+      uses: actions/upload-artifact@v4
+      with:
+          name: grepWin-${{matrix.platform}}_portable
+          path: bin/${{matrix.dir}}/grepWin-${{matrix.platform}}_portable.exe
+    - name: Upload artifacts for ${{matrix.platform}} msi
+      uses: actions/upload-artifact@v4
+      with:
+          name: grepWin-${{matrix.platform}}-msi
+          path: bin/*.msi
