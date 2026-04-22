@@ -39,8 +39,8 @@ msgid "%ld more matches"
 msgstr "%ld மேலும் பொருத்தங்கள்"
 
 #. Resource IDs: (1069)
-msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset"
-msgstr "%path% கோப்பின் பாதையுடன் மாற்றப்படுகிறது, %line% வரிக்கு செல்ல வேண்டும், %column% வரி ஈடுசெய்யுடன்"
+msgid "%path% is replaced with the path of the file, %line% with the line to jump to, %column% with in line offset, %pattern% with the search pattern"
+msgstr "%path% கோப்பின் பாதையுடன் மாற்றப்படுகிறது, %line% வரிக்கு செல்ல வேண்டும், %column% வரி ஈடுசெய்யுடன், %pattern% = தேடல் முறை"
 
 #. Resource IDs: (175)
 #, c-format
