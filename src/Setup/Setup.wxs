@@ -105,24 +105,28 @@
             <File Id="ChineseSimplified.lang" Name="Chinese Simplified.lang" DiskId="1" Source="../../translations/Chinese Simplified.lang" />
             <File Id="ChineseTraditional.lang" Name="Chinese Traditional.lang" DiskId="1" Source="../../translations/Chinese Traditional.lang" />
             <File Id="Dutch.lang" Name="Dutch.lang" DiskId="1" Source="../../translations/Dutch.lang" />
+            <File Id="EnglishBritish.lang" Name="English British.lang" DiskId="1" Source="../../translations/English British.lang" />
+            <File Id="Finnish.lang" Name="Finnish.lang" DiskId="1" Source="../../translations/Finnish.lang" />
             <File Id="French.lang" Name="French.lang" DiskId="1" Source="../../translations/French.lang" />
             <File Id="German.lang" Name="German.lang" DiskId="1" Source="../../translations/German.lang" />
             <File Id="Greek.lang" Name="Greek.lang" DiskId="1" Source="../../translations/Greek.lang" />
             <File Id="Hindi.lang" Name="Hindi.lang" DiskId="1" Source="../../translations/Hindi.lang" />
             <File Id="Hungarian.lang" Name="Hungarian.lang" DiskId="1" Source="../../translations/Hungarian.lang" />
+            <File Id="Indonesian.lang" Name="Indonesian.lang" DiskId="1" Source="../../translations/Indonesian.lang" />
             <File Id="Italian.lang" Name="Italian.lang" DiskId="1" Source="../../translations/Italian.lang" />
             <File Id="Japanese.lang" Name="Japanese.lang" DiskId="1" Source="../../translations/Japanese.lang" />
             <File Id="Korean.lang" Name="Korean.lang" DiskId="1" Source="../../translations/Korean.lang" />
             <File Id="Polish.lang" Name="Polish.lang" DiskId="1" Source="../../translations/Polish.lang" />
             <File Id="Portuguese.lang" Name="Portuguese.lang" DiskId="1" Source="../../translations/Portuguese.lang" />
-            <File Id="Portuguese_Brazilian.lang" Name="Portuguese Brazilian.lang" DiskId="1" Source="../../translations/Portuguese Brazilian.lang" />
+            <File Id="PortugueseBrazilian.lang" Name="Portuguese Brazilian.lang" DiskId="1" Source="../../translations/Portuguese Brazilian.lang" />
             <File Id="Russian.lang" Name="Russian.lang" DiskId="1" Source="../../translations/Russian.lang" />
             <File Id="Slovak.lang" Name="Slovak.lang" DiskId="1" Source="../../translations/Slovak.lang" />
             <File Id="Spanish.lang" Name="Spanish.lang" DiskId="1" Source="../../translations/Spanish.lang" />
-            <File Id="Spanish_Mexican.lang" Name="Spanish Mexican.lang" DiskId="1" Source="../../translations/Spanish Mexican.lang" />
+            <File Id="SpanishMexican.lang" Name="Spanish Mexican.lang" DiskId="1" Source="../../translations/Spanish Mexican.lang" />
             <File Id="Swedish.lang" Name="Swedish.lang" DiskId="1" Source="../../translations/Swedish.lang" />
             <File Id="Tamil.lang" Name="Tamil.lang" DiskId="1" Source="../../translations/Tamil.lang" />
             <File Id="Turkish.lang" Name="Turkish.lang" DiskId="1" Source="../../translations/Turkish.lang" />
+            <File Id="Vietnamese.lang" Name="Vietnamese.lang" DiskId="1" Source="../../translations/Vietnamese.lang" />
 
 <?foreach it in Directory;Directory\Background;LibraryFolder\background;Folder;Drive;*?>
             <RegistryKey Root="HKMU" Key="Software\Classes\$(var.it)\shell\grepWin" />
