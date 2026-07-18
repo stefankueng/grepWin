@@ -201,6 +201,9 @@
 #define IDC_CRLF                        1093
 #define IDC_LF                          1094
 #define IDC_BOTH                        1095
+#define IDC_QUICKBUTTON1                1097
+#define IDC_QUICKBUTTON2                1098
+#define IDC_QUICKBUTTON3                1099
 #define ID_REMOVEBOOKMARK               32771
 #define ID_DUMMY_RENAMEPRESET           32774
 #define ID_RENAMEBOOKMARK               32775
@@ -213,7 +216,7 @@
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        141
 #define _APS_NEXT_COMMAND_VALUE         32776
-#define _APS_NEXT_CONTROL_VALUE         1097
+#define _APS_NEXT_CONTROL_VALUE         1100
 #define _APS_NEXT_SYMED_VALUE           110
 #endif
 #endif
