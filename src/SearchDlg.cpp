@@ -517,6 +517,19 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             AddToolTip(IDC_PATTERNMRU, TranslatedString(hResource, IDS_OPEN_MRU).c_str());
             AddToolTip(IDC_REPLACETEXT, LPSTR_TEXTCALLBACK);
 
+            // ponytail: init quick search buttons
+            {
+                CBookmarks bks;
+                bks.Load();
+                for (int i = 0; i < 3; ++i)
+                {
+                    wchar_t key[16];
+                    swprintf_s(key, L"button%d", i + 1);
+                    m_quickBtnPreset[i] = bks.GetValue(L"QuickButtons", key, L"");
+                    UpdateQuickBtn(i);
+                }
+            }
+
             SendMessage(GetDlgItem(*this, IDC_FILTER), EM_SETCUEBANNER, TRUE, reinterpret_cast<LPARAM>(TranslatedString(hResource, IDS_FILTER_CUE).c_str()));
 
             SetWindowSubclass(GetDlgItem(*this, IDC_SEARCHPATH), SearchPathWndProc, SearchEditSubclassID, reinterpret_cast<DWORD_PTR>(this));
@@ -790,6 +803,9 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             m_resizer.AddControl(hwndDlg, IDC_TESTREGEX, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_ADDTOBOOKMARKS, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_BOOKMARKS, RESIZER_TOPLEFT);
+            m_resizer.AddControl(hwndDlg, IDC_QUICKBUTTON1, RESIZER_TOPLEFT);
+            m_resizer.AddControl(hwndDlg, IDC_QUICKBUTTON2, RESIZER_TOPLEFT);
+            m_resizer.AddControl(hwndDlg, IDC_QUICKBUTTON3, RESIZER_TOPLEFT);
             m_resizer.AddControl(hwndDlg, IDC_UPDATELINK, RESIZER_TOPRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_GROUPLIMITSEARCH, RESIZER_TOPLEFTRIGHT);
             m_resizer.AddControl(hwndDlg, IDC_ALLSIZERADIO, RESIZER_TOPLEFT);
@@ -932,7 +948,20 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
             return DoCommand(LOWORD(wParam), HIWORD(wParam));
         case WM_CONTEXTMENU:
         {
-            ShowContextMenu(reinterpret_cast<HWND>(wParam), GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+            auto hCtrl = reinterpret_cast<HWND>(wParam);
+            static const int btnIds[3] = {IDC_QUICKBUTTON1, IDC_QUICKBUTTON2, IDC_QUICKBUTTON3};
+            bool handled = false;
+            for (int i = 0; i < 3; ++i)
+            {
+                if (hCtrl == GetDlgItem(*this, btnIds[i]))
+                {
+                    AssignQuickSearch(i);
+                    handled = true;
+                    break;
+                }
+            }
+            if (!handled)
+                ShowContextMenu(hCtrl, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
         }
         break;
         case WM_NOTIFY:
@@ -2140,6 +2169,11 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
             }
         }
         break;
+        case IDC_QUICKBUTTON1:
+        case IDC_QUICKBUTTON2:
+        case IDC_QUICKBUTTON3:
+            RunQuickSearch(id - IDC_QUICKBUTTON1);
+            break;
         default:
             break;
     }
@@ -5316,4 +5350,96 @@ void CSearchDlg::filterItemsList(const wchar_t* filterString)
         }
         ++index;
     }
+}
+
+void CSearchDlg::UpdateQuickBtn(int idx)
+{
+    int id = IDC_QUICKBUTTON1 + idx;
+    HWND hBtn = GetDlgItem(*this, id);
+    if (!hBtn) return;
+    if (m_quickBtnPreset[idx].empty())
+    {
+        wchar_t label[4];
+        swprintf_s(label, L"&%d", idx + 1);
+        SetWindowText(hBtn, label);
+        AddToolTip(id, L"Right-click to assign a preset");
+        DialogEnableWindow(id, FALSE);
+    }
+    else
+    {
+        auto label = m_quickBtnPreset[idx].substr(0, 8);
+        SetWindowText(hBtn, label.c_str());
+        AddToolTip(id, m_quickBtnPreset[idx].c_str());
+        DialogEnableWindow(id, TRUE);
+    }
+}
+
+void CSearchDlg::RunQuickSearch(int idx)
+{
+    if (m_quickBtnPreset[idx].empty() || m_dwThreadRunning)
+        return;
+    SetPreset(m_quickBtnPreset[idx]);
+    // sync member vars to dialog controls
+    SetDlgItemText(*this, IDC_SEARCHTEXT, m_searchString.c_str());
+    SetDlgItemText(*this, IDC_REPLACETEXT, m_replaceString.c_str());
+    CheckRadioButton(*this, IDC_REGEXRADIO, IDC_TEXTRADIO, m_bUseRegex ? IDC_REGEXRADIO : IDC_TEXTRADIO);
+    SetSearchModeUI(!m_bUseRegex);
+    SendDlgItemMessage(*this, IDC_INCLUDESUBFOLDERS, BM_SETCHECK, m_bIncludeSubfolders ? BST_CHECKED : BST_UNCHECKED, 0);
+    SendDlgItemMessage(*this, IDC_INCLUDESYMLINK, BM_SETCHECK, m_bIncludeSymLinks ? BST_CHECKED : BST_UNCHECKED, 0);
+    SendDlgItemMessage(*this, IDC_CREATEBACKUP, BM_SETCHECK, m_bCreateBackup ? BST_CHECKED : BST_UNCHECKED, 0);
+    SendDlgItemMessage(*this, IDC_KEEPFILEDATECHECK, BM_SETCHECK, m_bKeepFileDate ? BST_CHECKED : BST_UNCHECKED, 0);
+    SendDlgItemMessage(*this, IDC_UTF8, BM_SETCHECK, m_bUTF8 ? BST_CHECKED : BST_UNCHECKED, 0);
+    SendDlgItemMessage(*this, IDC_BINARY, BM_SETCHECK, m_bForceBinary ? BST_CHECKED : BST_UNCHECKED, 0);
+    SendDlgItemMessage(*this, IDC_INCLUDESYSTEM, BM_SETCHECK, m_bIncludeSystem ? BST_CHECKED : BST_UNCHECKED, 0);
+    SendDlgItemMessage(*this, IDC_INCLUDEHIDDEN, BM_SETCHECK, m_bIncludeHidden ? BST_CHECKED : BST_UNCHECKED, 0);
+    SendDlgItemMessage(*this, IDC_INCLUDEBINARY, BM_SETCHECK, m_bIncludeBinary ? BST_CHECKED : BST_UNCHECKED, 0);
+    SendDlgItemMessage(*this, IDC_CASE_SENSITIVE, BM_SETCHECK, m_bCaseSensitive ? BST_CHECKED : BST_UNCHECKED, 0);
+    SendDlgItemMessage(*this, IDC_DOTMATCHNEWLINE, BM_SETCHECK, m_bDotMatchesNewline ? BST_CHECKED : BST_UNCHECKED, 0);
+    SendDlgItemMessage(*this, IDC_WHOLEWORDS, BM_SETCHECK, m_bWholeWords ? BST_CHECKED : BST_UNCHECKED, 0);
+    CheckRadioButton(*this, IDC_FILEPATTERNREGEX, IDC_FILEPATTERNTEXT, m_bUseRegexForPaths ? IDC_FILEPATTERNREGEX : IDC_FILEPATTERNTEXT);
+    SetDlgItemText(*this, IDC_EXCLUDEDIRSPATTERN, m_excludeDirsPatternRegex.c_str());
+    SetDlgItemText(*this, IDC_PATTERN, m_patternRegex.c_str());
+    SetDlgItemText(*this, IDC_SEARCHPATH, m_searchPath.c_str());
+    // trigger search
+    DoCommand(IDOK, 0);
+}
+
+void CSearchDlg::AssignQuickSearch(int idx)
+{
+    CBookmarks bks;
+    bks.Load();
+    auto sections = bks.GetSections();
+    // collect bookmark names, skip QuickButtons section
+    std::vector<std::wstring> names;
+    for (const auto& s : sections)
+    {
+        if (wcscmp(s.pName, L"QuickButtons") == 0) continue;
+        if (s.pName[0] == 0) continue;
+        names.push_back(s.pName);
+    }
+    HMENU hMenu = CreatePopupMenu();
+    if (!hMenu) return;
+    OnOutOfScope(DestroyMenu(hMenu));
+    DarkModeHelper::EnableDarkModeForMenu(*this, m_isDarkMode);
+    for (size_t i = 0; i < names.size(); ++i)
+        AppendMenu(hMenu, MF_STRING, i + 1, names[i].c_str());
+    if (names.empty())
+        AppendMenu(hMenu, MF_STRING | MF_GRAYED, 0, L"(No presets)");
+    AppendMenu(hMenu, MF_SEPARATOR, 0, nullptr);
+    AppendMenu(hMenu, MF_STRING, names.size() + 1, L"Clear");
+    POINT pt;
+    GetCursorPos(&pt);
+    int cmd = TrackPopupMenu(hMenu, TPM_RETURNCMD, pt.x, pt.y, 0, *this, nullptr);
+    if (cmd <= 0) return;
+    if (cmd <= (int)names.size())
+        m_quickBtnPreset[idx] = names[cmd - 1];
+    else if (cmd == (int)names.size() + 1)
+        m_quickBtnPreset[idx].clear();
+    else
+        return;
+    wchar_t key[16];
+    swprintf_s(key, L"button%d", idx + 1);
+    bks.SetValue(L"QuickButtons", key, m_quickBtnPreset[idx].c_str());
+    bks.Save();
+    UpdateQuickBtn(idx);
 }

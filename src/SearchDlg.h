@@ -244,6 +244,11 @@ private:
     CEditDoubleClick                 m_editSearchPaths;
     CEditDoubleClick                 m_editFilter;
 
+    void UpdateQuickBtn(int idx);
+    void RunQuickSearch(int idx);
+    void AssignQuickSearch(int idx);
+    std::wstring                     m_quickBtnPreset[3];
+
     CRegStdDWORD                     m_regUseRegex;
     CRegStdDWORD                     m_regAllSize;
     CRegStdString                    m_regSize;
