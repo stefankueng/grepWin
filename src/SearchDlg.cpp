@@ -4558,7 +4558,11 @@ int CSearchDlg::SearchByFilePath(CSearchInfo& sInfo, const std::wstring& searchR
     const CharT*      end      = fBeg + inSize / sizeof(CharT);
 
     TextOffset<CharT> textOffset;
-    start    = fBeg;
+    // Don't search BOM in text mode.
+    if (!m_bForceBinary && ((sInfo.encoding == CTextFile::UTF8) || (sInfo.encoding == CTextFile::Unicode_Le) || (sInfo.encoding == CTextFile::Unicode_Be)))
+    {
+        start = textOffset.SkipBOM(fBeg, end);
+    }
 
     skipSize = reinterpret_cast<const char*>(start) - inData;
     workSize = inSize - skipSize;
@@ -4666,8 +4670,8 @@ int CSearchDlg::SearchByFilePath(CSearchInfo& sInfo, const std::wstring& searchR
             //
             mFlags |= boost::match_prev_avail;
             mFlags |= boost::match_not_bob;
-            //
-            sInfo.matchLinesNumbers.push_back(static_cast<DWORD>(whatC[0].first - fBeg));
+            // Position: text mode skips BOM; binary mode includes BOM.
+            sInfo.matchLinesNumbers.push_back(static_cast<DWORD>(whatC[0].first - start));
             sInfo.matchColumnsNumbers.push_back(static_cast<DWORD>(whatC[0].length()));
             ++sInfo.matchCount;
             if (m_bReplace)
@@ -4729,6 +4733,7 @@ int CSearchDlg::SearchByFilePath(CSearchInfo& sInfo, const std::wstring& searchR
     {
         if ((sInfo.encoding != CTextFile::Binary) && !m_bNotSearch)
         {
+            // Position: text mode skips BOM; binary mode includes BOM.
             if (blockEnd - start < 4 * SEARCHBLOCKSIZE)
                 textOffset.CalculateLines(start, blockEnd, false);
             else
@@ -4742,7 +4747,7 @@ int CSearchDlg::SearchByFilePath(CSearchInfo& sInfo, const std::wstring& searchR
                 sInfo.matchColumnsNumbers[mp] = textOffset.ColumnFromPosition(pos, sInfo.matchLinesNumbers[mp]);
                 auto linePos                  = textOffset.PositionsFromLine(sInfo.matchLinesNumbers[mp]);
                 auto lineStart                = std::get<0>(linePos);
-                auto lineEnd                  = std::get<1>(linePos);
+                auto lineEnd                  = std::get<1>(linePos) + 1;   // whatC[0].second
                 auto lineLength               = lineEnd - lineStart;
                 pos                           = sInfo.matchLinesNumbers[mp];
                 if (lineLength > 0 && lineLength < 4096) // ignore lines longer than 4kb
@@ -4822,7 +4827,7 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot)
     }
 
     sInfo.encoding = type;
-    int nCount     = -1; // >= 0: got results; -1: skipped
+    int nCount     = -1; // -1: skipped; 0: searched, but 0 results; > 0: got results
     if (m_cancelled)     // big file
     {
         SendResult(sInfo, nCount);
@@ -4847,6 +4852,7 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot)
     if (!m_bDotMatchesNewline)
         matchFlags |= boost::match_not_dot_newline;
 
+    // bLoadResult = false;    // test SearchByFilePath()
     if (type == CTextFile::AutoType) // reading the file failed
     {
         sInfo.readError = true;
@@ -4869,30 +4875,24 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot)
         // file is either too big or binary.
         // types: Ansi, UTF8, Unicode_Le, Unicode_Be and Binary
         std::vector<CTextFile::UnicodeType> encodingTries;
-        if (!m_bUseRegex || type == CTextFile::Binary)
+
         {
-            // Treating a multibyte char as single byte chars:
-            //  yields part of it may be matched as a standalone char,
-            //  so requires it grouped for repeats to get accurate results.
-            //  Unicode_Le and Unicode_Be in Regex mode are turned into wchar_t branch. UTF8 is still here.
-            // Without transcoding the file, transcoding the input to other encoding is a trick, to get a bit more outcome.
-            // It only works for raw data, not escaped sequence, that is pure ASCII char!
             switch (type)
             {
                 case CTextFile::Binary:
                 {
-                    if (m_bUseRegex)
-                        encodingTries = {CTextFile::Ansi, CTextFile::UTF8};
-                    else
-                        encodingTries = {CTextFile::Ansi, CTextFile::UTF8, CTextFile::Unicode_Le, CTextFile::Unicode_Be};
+                    // Treating a multibyte char as a byte squences:
+                    //  yields part of it may be matched as a standalone char,
+                    //  incorrectly decoded, line and column result mismatch is expected.
+                    // Windows prefers UTF8 now.
+                    encodingTries = {CTextFile::UTF8, CTextFile::Ansi};
                 }
-                break;
-                case CTextFile::Ansi:
+                    break;
                 case CTextFile::UTF8:
-                case CTextFile::Unicode_Le:
-                case CTextFile::Unicode_Be:
-                default:
+                case CTextFile::Ansi:
                     encodingTries = {type};
+                    break;
+                default:
                     break;
             }
             for (auto assumption : encodingTries)
@@ -4912,7 +4912,9 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot)
                 }
             }
         }
-        if (m_bUseRegex && nCount <= 0 && (type == CTextFile::Unicode_Le || type == CTextFile::Unicode_Be || type == CTextFile::Binary))
+
+        // For unicode, open the file in wide char mode to get meaningful line, column and match length.
+        if (nCount <= 0 && (type == CTextFile::Unicode_Le || type == CTextFile::Unicode_Be || type == CTextFile::Binary))
         {
             switch (type)
             {
