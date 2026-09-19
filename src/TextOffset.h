@@ -35,7 +35,7 @@ public:
     {
     }
 
-    // forcibly treated as char
+    // UTF-8
     const char* SkipBOM(const char* start, const char* end)
     {
         char BOM[] = "\xEF\xBB\xBF";
@@ -44,13 +44,18 @@ public:
             lenBOM = 3;
             return start + 3;
         }
-        else if (end - start > 1)
+        return start;
+    }
+
+    // UTF-16LE, UTF-16BE
+    const wchar_t* SkipBOM(const wchar_t* start, const wchar_t* end)
+    {
+        if (end > start)
         {
-            const wchar_t* startW = reinterpret_cast<const wchar_t*>(start);
-            if (*startW == 0xFEFF || (bBigEndian = *startW == 0xFFFE) == true)
+            if (*start == 0xFEFF || (bBigEndian = *start == 0xFFFE) == true)
             {
-                lenBOM = 2;
-                return start + 2;
+                lenBOM = 1;
+                return start + 1;
             }
         }
         return start;
@@ -88,9 +93,9 @@ public:
                 // lf lineending
                 bGot = true;
             }
-            ++pos;
             if (bGot)
                 linePositions.push_back(pos);
+            ++pos;  // The same as CTextFile. Adopt the last char of this line. Make LineFromPosition(NextLineStart) right.
         }
         if (!bGot)
             linePositions.push_back(pos);
@@ -104,10 +109,11 @@ public:
         return static_cast<long>(lbLine + 1);
     }
 
+    // return [start, end], not out of range, align with linePositions
     std::tuple<size_t, size_t> PositionsFromLine(long line) const
     {
         if (line > 0 && static_cast<size_t>(line) <= linePositions.size())
-            return std::make_tuple(line > 1 ? linePositions[line - 2] - lenBOM : 0, linePositions[line - 1] - lenBOM);
+            return std::make_tuple(line > 1 ? linePositions[line - 2] + 1 : 0, linePositions[line - 1]);
         return std::make_tuple(-1, -1);
     }
 
@@ -117,9 +123,7 @@ public:
             line = LineFromPosition(pos);
         long lastLineEnd = -1;
         if (line > 1)
-            lastLineEnd = static_cast<long>(linePositions[line - 2]) - lenBOM;
-        else
-            lastLineEnd = lenBOM;
+            lastLineEnd += static_cast<long>(linePositions[line - 2]) + 1;
         return pos - lastLineEnd;
     }
 };
