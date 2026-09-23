@@ -29,13 +29,13 @@ jobs:
             dir: Release64
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
       with:
         fetch-depth: 0
         submodules: recursive
 
     - name: Add MSBuild to PATH
-      uses: microsoft/setup-msbuild@v2
+      uses: microsoft/setup-msbuild@v3
 
     - name: Integrate vcpkg
       run: |
@@ -77,12 +77,12 @@ jobs:
         light -nologo -sice:ICE57 -ext WixUIExtension -cultures:en-us -out ..\..\bin\grepWin-${{matrix.platform}}.msi ..\..\bin\Setup-${{matrix.platform}}.wixobj
 
     - name: Upload artifacts for ${{matrix.platform}}
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
           name: grepWin-${{matrix.platform}}_portable
           path: bin/${{matrix.dir}}/grepWin-${{matrix.platform}}_portable.exe
     - name: Upload artifacts for ${{matrix.platform}} msi
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
           name: grepWin-${{matrix.platform}}-msi
           path: bin/*.msi
