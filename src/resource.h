@@ -96,6 +96,7 @@
 #define IDS_FILTER_CUE                  181
 #define IDS_ERR_WHOLEWORDNOTPOSSIBLE    182
 #define IDS_ERR_INVALID_TEXT            183
+#define IDS_REPLACEINFOUNDFILES         184
 #define IDC_SEARCHTEXT                  1000
 #define IDC_REGEXRADIO                  1001
 #define IDC_TEXTRADIO                   1002
@@ -201,6 +202,7 @@
 #define IDC_CRLF                        1093
 #define IDC_LF                          1094
 #define IDC_BOTH                        1095
+#define IDC_REPLACEINFOUNDFILES         1096
 #define ID_REMOVEBOOKMARK               32771
 #define ID_DUMMY_RENAMEPRESET           32774
 #define ID_RENAMEBOOKMARK               32775

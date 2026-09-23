@@ -955,6 +955,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                     return DoListNotify(reinterpret_cast<LPNMITEMACTIVATE>(lParam));
                 }
                 case IDOK:
+                case IDC_REPLACE:
                     switch (reinterpret_cast<LPNMHDR>(lParam)->code)
                     {
                         case BCN_DROPDOWN:
@@ -988,6 +989,11 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
                                 AppendMenu(hSplitMenu, bIsDir ? MF_STRING : MF_STRING | MF_DISABLED, IDC_INVERSESEARCH, sInverseSearch.c_str());
                                 AppendMenu(hSplitMenu, m_items.empty() ? MF_STRING | MF_DISABLED : MF_STRING, IDC_SEARCHINFOUNDFILES, sSearchInFoundFiles.c_str());
                                 AppendMenu(hSplitMenu, m_bUseRegex && GetDlgItemTextLength(IDC_REPLACETEXT) ? MF_STRING : MF_STRING | MF_DISABLED, IDC_CAPTURESEARCH, sCaptureSearch.c_str());
+                            }
+                            else if (pDropDown->hdr.hwndFrom == GetDlgItem(*this, IDC_REPLACE))
+                            {
+                                auto sReplaceInFoundFiles = TranslatedString(hResource, IDS_REPLACEINFOUNDFILES);
+                                AppendMenu(hSplitMenu, m_items.empty() ? MF_STRING | MF_DISABLED : MF_STRING, IDC_REPLACEINFOUNDFILES, sReplaceInFoundFiles.c_str());
                             }
                             // Display the menu.
                             TrackPopupMenu(hSplitMenu, TPM_LEFTALIGN | TPM_TOPALIGN, pt.x, pt.y, 0, *this, nullptr);
@@ -1365,6 +1371,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
         case IDC_INVERSESEARCH:
         case IDC_SEARCHINFOUNDFILES:
         case IDC_CAPTURESEARCH:
+        case IDC_REPLACEINFOUNDFILES:
         {
             if (m_dwThreadRunning)
             {
@@ -1398,7 +1405,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                     }
                 }
 
-                if ((id == IDC_SEARCHINFOUNDFILES) && (!m_items.empty()))
+                if ((id == IDC_SEARCHINFOUNDFILES || id == IDC_REPLACEINFOUNDFILES) && (!m_items.empty()))
                 {
                     m_searchPath.clear();
                     for (const auto& item : m_items)
@@ -1456,7 +1463,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
                     m_autoCompleteSearchPaths.Save();
                 }
 
-                m_bReplace = id == IDC_REPLACE;
+                m_bReplace = (id == IDC_REPLACE || id == IDC_REPLACEINFOUNDFILES);
 
                 if (m_bReplace && !m_bCreateBackup && (m_bConfirmationOnReplace || m_replaceString.empty()))
                 {

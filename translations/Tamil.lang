@@ -474,6 +474,10 @@ msgstr "இதில் தேடு"
 msgid "Search in found files"
 msgstr "கண்டுபிடிக்கப்பட்ட கோப்புகளில் தேடு"
 
+#. Resource IDs: (184)
+msgid "Search in found files"
+msgstr ""
+
 #. Resource IDs: (1018)
 msgid "Search results"
 msgstr "தேடல் முடிவுகள்"
