@@ -199,7 +199,7 @@ BEGIN
     CONTROL         "Text match",IDC_FILEPATTERNTEXT,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,504,174,62,10
     PUSHBUTTON      "⚙ Settings",IDC_SETTINGSBUTTON,7,206,94,14
     EDITTEXT        IDC_FILTER,115,206,310,14,ES_AUTOHSCROLL | NOT WS_VISIBLE
-    PUSHBUTTON      "&Replace",IDC_REPLACE,432,206,67,14
+    CONTROL         "&Replace",IDC_REPLACE,"Button",BS_SPLITBUTTON | WS_TABSTOP,432,206,67,14
     CONTROL         "Search",IDOK,"Button",BS_DEFSPLITBUTTON | WS_TABSTOP,506,206,67,14
     GROUPBOX        "Limit search",IDC_GROUPLIMITSEARCH,7,128,566,75
     CONTROL         "",IDC_RESULTLIST,"SysListView32",LVS_REPORT | LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | LVS_OWNERDATA | WS_BORDER | WS_TABSTOP,14,228,552,73
@@ -449,6 +449,7 @@ BEGIN
     IDS_ERR_PATHNOTEXIST    "The path ""%s"" does not exist or is not accessible!"
     IDS_INVERSESEARCH       "Inverse search"
     IDS_SEARCHINFOUNDFILES  "Search in found files"
+    IDS_REPLACEINFOUNDFILES "Replace in found files"
     IDS_EXPORT_TT           "Export results..."
     IDS_EXPORTTITLE         "Export resultlist"
     IDS_EXPORTPATHS         "include file paths"
