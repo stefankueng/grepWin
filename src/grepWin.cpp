@@ -662,10 +662,19 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
         }
         if (bPortable)
         {
-            FILE* pFile = nullptr;
-            _wfopen_s(&pFile, g_iniPath.c_str(), L"wb");
-            g_iniFile.SaveFile(pFile);
-            fclose(pFile);
+            // Closing multiple instances at the same time from taskbar will cause crash.
+            int countDown = 5;
+            while (countDown > 0)
+            {
+                FILE* pFile = nullptr;
+                if (_wfopen_s(&pFile, g_iniPath.c_str(), L"wb") == 0) {
+                    g_iniFile.SaveFile(pFile);
+                    fclose(pFile);
+                    break;
+                }
+                Sleep(50);
+                --countDown;
+            }
         }
         Gdiplus::GdiplusShutdown(gdiplusToken);
     }
