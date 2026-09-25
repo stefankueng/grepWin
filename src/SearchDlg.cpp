@@ -4804,8 +4804,9 @@ int CSearchDlg::SearchByFilePath(CSearchInfo& sInfo, const std::wstring& searchR
 
 void CSearchDlg::SendResult(const CSearchInfo& sInfo, const int nCount)
 {
+    // Classify the one with error as skipped, and show the error.
     SendMessage(*this, SEARCH_PROGRESS, (nCount >= 0), 0);
-    bool bAsResult = m_bNotSearch ? (nCount <= 0) : (nCount >= 0);
+    bool bAsResult = m_bNotSearch ? (nCount <= 0) : (nCount != 0);
     if (bAsResult)
         SendMessage(*this, SEARCH_FOUND, bAsResult, reinterpret_cast<LPARAM>(&sInfo));
 }
@@ -4834,7 +4835,7 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot)
     }
 
     sInfo.encoding = type;
-    int nCount     = -1; // -1: skipped; 0: searched, but 0 results; > 0: got results
+    int nCount     = -1; // -1: skipped/failed; 0: searched, but 0 matches; > 0: got matches
     if (m_cancelled)     // big file
     {
         SendResult(sInfo, nCount);
@@ -4863,7 +4864,6 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot)
     if (type == CTextFile::AutoType) // reading the file failed
     {
         sInfo.readError = true;
-        nCount = 0;
     }
     else if (bLoadResult && ((type != CTextFile::Binary) || m_bIncludeBinary)) // transcoded
     {
@@ -4875,7 +4875,6 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot)
         catch (const std::exception& ex)
         {
             sInfo.exception = CUnicodeUtils::StdGetUnicode(ex.what());
-            nCount          = 0;
         }
     }
     else if ((type != CTextFile::Binary) || m_bIncludeBinary || m_bForceBinary)
@@ -4914,7 +4913,6 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot)
                 catch (const std::exception& ex)
                 {
                     sInfo.exception = CUnicodeUtils::StdGetUnicode(ex.what());
-                    nCount          = 0;
                 }
                 if (nCount > 0)
                 {
@@ -4950,7 +4948,6 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot)
                 catch (const std::exception& ex)
                 {
                     sInfo.exception = CUnicodeUtils::StdGetUnicode(ex.what());
-                    nCount          = 0;
                 }
                 if (nCount > 0)
                 {
