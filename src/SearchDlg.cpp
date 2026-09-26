@@ -4367,7 +4367,11 @@ int CSearchDlg::SearchOnTextFile(CSearchInfo& sInfo, const std::wstring& searchR
                 if (m_bNotSearch)
                     break;
                 if (m_bReplace)
-                    regex_replace(replacedIter, startIter, whatC[0].second, wRegEx, std::ref(replaceFmt), mFlags);
+                {
+                    // Regex is more resource-intensive.
+                    replaced.append(startIter, whatC[0].first);
+                    regex_replace(replacedIter, whatC[0].first, whatC[0].second, wRegEx, std::ref(replaceFmt), mFlags);
+                }
                 startIter = whatC[0].second;
                 if (startIter == whatC[0].first) // ^$
                 {
@@ -4679,17 +4683,19 @@ int CSearchDlg::SearchByFilePath(CSearchInfo& sInfo, const std::wstring& searchR
                     break;
                 if (m_bReplace)
                 {
+                    // Regex is more resource-intensive.
+                    outFileBufA.sputn(reinterpret_cast<const char*>(startIter), (whatC[0].first - startIter) * sizeof(CharT));
                     if constexpr (sizeof(CharT) > 1)
                     {
                         std::wstring replaced;
                         auto         replacedIter = std::back_inserter(replaced);
-                        regex_replace(replacedIter, startIter, whatC[0].second, regEx, std::ref(replaceFmt), mFlags);
+                        regex_replace(replacedIter, whatC[0].first, whatC[0].second, regEx, std::ref(replaceFmt), mFlags);
                         outFileBufA.sputn(reinterpret_cast<const char*>(replaced.c_str()), replaced.length() * 2);
                     }
                     else
                     {
                         std::ostreambuf_iterator<char> outIter(&outFileBufA);
-                        regex_replace(outIter, startIter, whatC[0].second, regEx, std::ref(replaceFmt), mFlags);
+                        regex_replace(outIter, whatC[0].first, whatC[0].second, regEx, std::ref(replaceFmt), mFlags);
                     }
                 }
                 startIter = whatC[0].second;
