@@ -4331,7 +4331,6 @@ int CSearchDlg::SearchOnTextFile(CSearchInfo& sInfo, const std::wstring& searchR
     size_t                                             count            = textFile.GetFileString().size();
     size_t                                             remainder        = count % (SEARCHBLOCKSIZE / 2);
     std::wstring::const_iterator                       startIter        = start;
-    std::wstring::const_iterator                       startReplaceIter = start;
     std::wstring::const_iterator                       blockEnd         = start + remainder;
 
     std::wstring                                       filePathTemp     = sInfo.filePath + L".grepwinreplaced";
@@ -4360,11 +4359,30 @@ int CSearchDlg::SearchOnTextFile(CSearchInfo& sInfo, const std::wstring& searchR
     }
     do
     {
-        while (!m_cancelled && (startIter < blockEnd) && regex_search(startIter, blockEnd, whatC, wRegEx, mFlags, start))
+        while (!m_cancelled && (startIter < blockEnd))
         {
-            nFound++;
-            if (m_bNotSearch)
+            if (regex_search(startIter, blockEnd, whatC, wRegEx, mFlags, start))
+            {
+                nFound++;
+                if (m_bNotSearch)
+                    break;
+                if (m_bReplace)
+                    regex_replace(replacedIter, startIter, whatC[0].second, wRegEx, std::ref(replaceFmt), mFlags);
+                startIter = whatC[0].second;
+                if (startIter == whatC[0].first) // ^$
+                {
+                    if (startIter < blockEnd)
+                        ++startIter;
+                }
+            }
+            else
+            {
+                // no found in this block
+                if (m_bReplace)
+                    replaced.append(startIter, blockEnd);
+                startIter = blockEnd;
                 break;
+            }
             //
             mFlags |= boost::match_prev_avail;
             mFlags |= boost::match_not_bob;
@@ -4413,25 +4431,9 @@ int CSearchDlg::SearchOnTextFile(CSearchInfo& sInfo, const std::wstring& searchR
                 }
             }
             ++sInfo.matchCount;
-            if (m_bReplace)
-            {
-                regex_replace(replacedIter, startReplaceIter, blockEnd, wRegEx, std::ref(replaceFmt), mFlags);
-                startReplaceIter = blockEnd;
-            }
-            //
-            startIter = whatC[0].second;
-            if (startIter == whatC[0].first) // ^$
-            {
-                if (startIter == blockEnd)
-                    break;
-                ++startIter;
-            }
         }
-        if (startIter < blockEnd) // not found
-        {
-            startIter        = blockEnd;
-            startReplaceIter = blockEnd;
-        }
+        if (m_bNotSearch && nFound > 0)
+            break;
         if (blockEnd < end)
             blockEnd += SEARCHBLOCKSIZE / 2;
         else
@@ -4609,7 +4611,6 @@ int CSearchDlg::SearchByFilePath(CSearchInfo& sInfo, const std::wstring& searchR
     size_t                                     count            = workSize / sizeof(CharT);
     size_t                                     remainder        = count % (SEARCHBLOCKSIZE / sizeof(CharT));
     const CharT*                               startIter        = start;
-    const CharT*                               startReplaceIter = start;
     const CharT*                               blockEnd         = start + remainder;
 
     int                                        nFound           = 0;
@@ -4669,11 +4670,43 @@ int CSearchDlg::SearchByFilePath(CSearchInfo& sInfo, const std::wstring& searchR
 
     do
     {
-        while (!m_cancelled && (startIter < blockEnd) && boost::regex_search(startIter, blockEnd, whatC, regEx, mFlags, start))
+        while (!m_cancelled && (startIter < blockEnd))
         {
-            nFound++;
-            if (m_bNotSearch)
+            if (boost::regex_search(startIter, blockEnd, whatC, regEx, mFlags, start))
+            {
+                nFound++;
+                if (m_bNotSearch)
+                    break;
+                if (m_bReplace)
+                {
+                    if constexpr (sizeof(CharT) > 1)
+                    {
+                        std::wstring replaced;
+                        auto         replacedIter = std::back_inserter(replaced);
+                        regex_replace(replacedIter, startIter, whatC[0].second, regEx, std::ref(replaceFmt), mFlags);
+                        outFileBufA.sputn(reinterpret_cast<const char*>(replaced.c_str()), replaced.length() * 2);
+                    }
+                    else
+                    {
+                        std::ostreambuf_iterator<char> outIter(&outFileBufA);
+                        regex_replace(outIter, startIter, whatC[0].second, regEx, std::ref(replaceFmt), mFlags);
+                    }
+                }
+                startIter = whatC[0].second;
+                if (startIter == whatC[0].first) // ^$
+                {
+                    if (startIter < blockEnd)
+                        ++startIter;
+                }
+            }
+            else
+            {
+                // no found in this block
+                if (m_bReplace)
+                    outFileBufA.sputn(reinterpret_cast<const char*>(startIter), (blockEnd - startIter) * sizeof(CharT));
+                startIter = blockEnd;
                 break;
+            }
             //
             mFlags |= boost::match_prev_avail;
             mFlags |= boost::match_not_bob;
@@ -4681,37 +4714,9 @@ int CSearchDlg::SearchByFilePath(CSearchInfo& sInfo, const std::wstring& searchR
             sInfo.matchLinesNumbers.push_back(static_cast<DWORD>(whatC[0].first - start));
             sInfo.matchColumnsNumbers.push_back(static_cast<DWORD>(whatC[0].length()));
             ++sInfo.matchCount;
-            if (m_bReplace)
-            {
-                if constexpr (sizeof(CharT) > 1)
-                {
-                    std::wstring replaced;
-                    auto         replacedIter = std::back_inserter(replaced);
-                    regex_replace(replacedIter, startReplaceIter, blockEnd, regEx, std::ref(replaceFmt), mFlags);
-                    outFileBufA.sputn(reinterpret_cast<const char*>(replaced.c_str()), replaced.length() * 2);
-                    startReplaceIter = blockEnd;
-                }
-                else
-                {
-                    std::ostreambuf_iterator<char> outIter(&outFileBufA);
-                    regex_replace(outIter, startReplaceIter, blockEnd, regEx, std::ref(replaceFmt), mFlags);
-                    startReplaceIter = blockEnd;
-                }
-            }
-            //
-            startIter = whatC[0].second;
-            if (startIter == whatC[0].first) // ^$
-            {
-                if (startIter == blockEnd)
-                    break;
-                ++startIter;
-            }
         }
-        if (startIter < blockEnd) // not found
-        {
-            startIter        = blockEnd;
-            startReplaceIter = blockEnd;
-        }
+        if (m_bNotSearch && nFound > 0)
+            break;
         if (blockEnd < end)
             blockEnd += SEARCHBLOCKSIZE / sizeof(CharT);
         else
