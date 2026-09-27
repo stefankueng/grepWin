@@ -4765,7 +4765,9 @@ int CSearchDlg::SearchByFilePath(CSearchInfo& sInfo, const std::wstring& searchR
                 sInfo.matchColumnsNumbers[mp] = textOffset.ColumnFromPosition(pos, sInfo.matchLinesNumbers[mp]);
                 auto linePos                  = textOffset.PositionsFromLine(sInfo.matchLinesNumbers[mp]);
                 auto lineStart                = std::get<0>(linePos);
-                auto lineEnd                  = std::get<1>(linePos) + 1;   // whatC[0].second
+                auto lineEnd                  = std::get<1>(linePos);   // the next start
+                if (lineEnd > lineStart)                                // exclude EOF
+                    lineEnd++;
                 auto lineLength               = lineEnd - lineStart;
                 pos                           = sInfo.matchLinesNumbers[mp];
                 if (lineLength > 0 && lineLength < 4096) // ignore lines longer than 4kb
