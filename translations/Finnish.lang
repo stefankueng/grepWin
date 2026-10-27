@@ -270,6 +270,10 @@ msgid "If enabled, a backup folder is created inside the folder that's searched/
 msgstr "Jos tämä asetus on käytössä, hakukohteena olevaan kansioon luodaan varmuuskopiokansio, ja tiedostot varmuuskopioidaan kyseiseen kansioon"
 
 #. Resource IDs: (1050)
+msgid "Include binary files"
+msgstr ""
+
+#. Resource IDs: (1050)
 msgid "Include binary items"
 msgstr "Myös binäärikohteet"
 
