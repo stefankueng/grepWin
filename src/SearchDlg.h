@@ -132,6 +132,7 @@ protected:
     bool        CloneWindow();
     void        doFilter();
     void        filterItemsList(const wchar_t* filterString);
+    void        SortContentByLine(bool preserveSelection = false);
 
     struct ListItemsItem
     {
@@ -211,6 +212,7 @@ private:
     int                              m_totalMatches;
     int                              m_selectedItems;
     bool                             m_bAscending;
+    bool                             m_sortByLine;
     std::wstring                     m_toolTipReplaceString;
     std::unique_ptr<CInfoRtfDialog>  m_rtfDialog;
 
