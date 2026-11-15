@@ -62,6 +62,7 @@
 #include <numeric>
 #include <ranges>
 #include <string>
+#include <utility>
 
 #include <boost/regex.hpp>
 #include <boost/iostreams/device/mapped_file.hpp>
@@ -350,6 +351,7 @@ CSearchDlg::CSearchDlg(HWND hParent)
     , m_totalMatches(0)
     , m_selectedItems(0)
     , m_bAscending(true)
+    , m_sortByLine(false)
     , m_hasSearchDir(false)
     , m_bSearchPathValid(false)
     , m_searchValidLength(0)
@@ -1074,6 +1076,7 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
         }
         case SEARCH_START:
         {
+            m_sortByLine    = false;
             m_totalItems    = 0;
             m_searchedItems = 0;
             m_totalMatches  = 0;
@@ -1915,6 +1918,7 @@ LRESULT CSearchDlg::DoCommand(int id, int msg)
         case IDC_RESULTFILES:
         case IDC_RESULTCONTENT:
         {
+            m_sortByLine = false;
             doFilter();
             InitResultList();
             FillResultList();
@@ -2760,7 +2764,7 @@ bool CSearchDlg::PreTranslateMessage(MSG* pMsg)
                         int selIndex = GetSelectedListIndex(fileList, iItem);
                         if ((selIndex < 0) || (selIndex >= static_cast<int>(m_items.size())))
                             continue;
-                        OpenFileAtListIndex(selIndex);
+                        OpenFileAtListIndex(iItem);
                     }
                 }
             }
@@ -2935,9 +2939,16 @@ LRESULT CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
     }
     else if (lpNMItemActivate->hdr.code == LVN_COLUMNCLICK)
     {
+        // Incoming results use file indexes in their original order.
+        if (m_dwThreadRunning)
+            return 0;
         bool fileList = (IsDlgButtonChecked(*this, IDC_RESULTFILES) == BST_CHECKED);
-        m_bAscending  = !m_bAscending;
-        bool bDidSort = false;
+        if (!fileList && lpNMItemActivate->iSubItem != 0 && lpNMItemActivate->iSubItem != 1 && lpNMItemActivate->iSubItem != 4)
+            return 0;
+        bool sortByLine = !fileList && lpNMItemActivate->iSubItem == 1;
+        m_bAscending    = sortByLine && !m_sortByLine ? true : !m_bAscending;
+        m_sortByLine    = sortByLine;
+        bool bDidSort   = false;
         switch (lpNMItemActivate->iSubItem)
         {
             case 0:
@@ -2954,6 +2965,11 @@ LRESULT CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
                         std::ranges::sort(m_items, CSearchInfo::SizeCompareAsc);
                     else
                         std::ranges::sort(m_items, CSearchInfo::SizeCompareDesc);
+                    bDidSort = true;
+                }
+                else
+                {
+                    SortContentByLine(true);
                     bDidSort = true;
                 }
                 break;
@@ -3011,7 +3027,7 @@ LRESULT CSearchDlg::DoListNotify(LPNMITEMACTIVATE lpNMItemActivate)
             default:
                 break;
         }
-        if (bDidSort)
+        if (bDidSort && !sortByLine)
         {
             m_listItems.clear();
             auto filterText = GetDlgItemText(IDC_FILTER);
@@ -5339,5 +5355,80 @@ void CSearchDlg::filterItemsList(const wchar_t* filterString)
             ++subIndex;
         }
         ++index;
+    }
+    if (m_sortByLine)
+        SortContentByLine();
+}
+
+void CSearchDlg::SortContentByLine(bool preserveSelection)
+{
+    HWND                          hListControl = GetDlgItem(*this, IDC_RESULTLIST);
+    std::set<std::pair<int, int>> selected;
+    std::pair<int, int>           focused{-1, -1};
+    if (preserveSelection)
+    {
+        int row = -1;
+        while ((row = ListView_GetNextItem(hListControl, row, LVNI_SELECTED)) != -1)
+        {
+            const auto& item = m_listItems[row];
+            selected.emplace(item.itemsIndex, item.itemsSubIndex);
+        }
+        row = ListView_GetNextItem(hListControl, -1, LVNI_FOCUSED);
+        if (row >= 0)
+        {
+            const auto& item = m_listItems[row];
+            focused          = {item.itemsIndex, item.itemsSubIndex};
+        }
+    }
+
+    std::ranges::sort(m_listItems, [this](const ListItemsItem& left, const ListItemsItem& right) {
+        const auto* leftInfo    = m_items[left.itemsIndex];
+        const auto* rightInfo   = m_items[right.itemsIndex];
+        // Binary results have no displayed line number and always follow text results.
+        bool        leftBinary  = leftInfo->encoding == CTextFile::Binary;
+        bool        rightBinary = rightInfo->encoding == CTextFile::Binary;
+        if (leftBinary != rightBinary)
+            return !leftBinary;
+        if (!leftBinary)
+        {
+            auto leftLine  = leftInfo->matchLinesNumbers[left.itemsSubIndex];
+            auto rightLine = rightInfo->matchLinesNumbers[right.itemsSubIndex];
+            if (leftLine != rightLine)
+                return m_bAscending ? leftLine < rightLine : leftLine > rightLine;
+        }
+        auto pathCompare = leftInfo->filePath.compare(rightInfo->filePath);
+        if (pathCompare != 0)
+            return pathCompare < 0;
+        if (!leftBinary)
+        {
+            auto leftColumn  = leftInfo->matchColumnsNumbers[left.itemsSubIndex];
+            auto rightColumn = rightInfo->matchColumnsNumbers[right.itemsSubIndex];
+            if (leftColumn != rightColumn)
+                return leftColumn < rightColumn;
+        }
+        if (left.itemsIndex != right.itemsIndex)
+            return left.itemsIndex < right.itemsIndex;
+        return left.itemsSubIndex < right.itemsSubIndex;
+    });
+
+    if (preserveSelection)
+    {
+        bool blockUpdate = m_bBlockUpdate;
+        m_bBlockUpdate   = true;
+        ListView_SetItemState(hListControl, -1, 0, LVIS_SELECTED | LVIS_FOCUSED);
+        int row = 0;
+        for (const auto& item : m_listItems)
+        {
+            std::pair<int, int> key{item.itemsIndex, item.itemsSubIndex};
+            UINT                state = selected.contains(key) ? LVIS_SELECTED : 0;
+            if (key == focused)
+                state |= LVIS_FOCUSED;
+            if (state)
+                ListView_SetItemState(hListControl, row, state, LVIS_SELECTED | LVIS_FOCUSED);
+            ++row;
+        }
+        m_bBlockUpdate  = blockUpdate;
+        m_selectedItems = ListView_GetSelectedCount(hListControl);
+        UpdateInfoLabel();
     }
 }
