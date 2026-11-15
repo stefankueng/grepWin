@@ -271,7 +271,7 @@ msgstr "Jos tämä asetus on käytössä, hakukohteena olevaan kansioon luodaan 
 
 #. Resource IDs: (1050)
 msgid "Include binary files"
-msgstr "Myös binäärikohteet"
+msgstr "Myös binaaritiedostot"
 
 #. Resource IDs: (1010)
 msgid "Include hidden items"
