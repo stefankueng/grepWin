@@ -106,6 +106,7 @@ protected:
     int              SearchOnTextFile(CSearchInfo& sInfo, const std::wstring& searchRoot, const std::wstring& searchExpression, const std::wstring& replaceExpression, UINT syntaxFlags, UINT matchFlags, CTextFile& textFile);
     template <typename CharT = char>
     int         SearchByFilePath(CSearchInfo& sInfo, const std::wstring& searchRoot, const std::wstring& searchExpression, const std::wstring& replaceExpression, UINT syntaxFlags, UINT matchFlags, bool misaligned, CharT* dummy = nullptr);
+    int         SearchDecodedData(CSearchInfo& sInfo, const char* data, size_t size, const std::wstring& searchExpression, UINT syntaxFlags, UINT matchFlags, bool misaligned, bool utf16);
     void        SendResult(const CSearchInfo& sInfo, const int nCount);
     void        SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot);
 
