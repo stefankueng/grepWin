@@ -4491,6 +4491,47 @@ std::wstring utf16Swap(const std::wstring& str)
     return swapped;
 }
 
+std::wstring DecodeUtf16Data(const char* data, size_t size, bool bigEndian, bool misaligned, bool stripBom)
+{
+    const size_t offset = misaligned ? 1 : 0;
+    if (size <= offset)
+        return {};
+
+    const size_t count = (size - offset) / sizeof(wchar_t);
+    std::wstring text;
+    text.reserve(count);
+    for (size_t i = 0; i < count; ++i)
+    {
+        auto first  = static_cast<unsigned char>(data[offset + i * 2]);
+        auto second = static_cast<unsigned char>(data[offset + i * 2 + 1]);
+        if (!bigEndian)
+            std::swap(first, second);
+        text.push_back(static_cast<wchar_t>((first << 8) | second));
+    }
+    if (stripBom && !text.empty() && text.front() == 0xFEFF)
+        text.erase(text.begin());
+    return text;
+}
+
+std::wstring DecodeMultibyteData(const char* data, size_t size, UINT codePage, bool stripBom)
+{
+    if (size == 0 || size > static_cast<size_t>(INT_MAX))
+        return {};
+
+    int len = MultiByteToWideChar(codePage, 0, data, static_cast<int>(size), nullptr, 0);
+    if (len <= 0)
+        return {};
+
+    std::wstring text(static_cast<size_t>(len), L'\0');
+    len = MultiByteToWideChar(codePage, 0, data, static_cast<int>(size), text.data(), len);
+    if (len <= 0)
+        return {};
+    text.resize(static_cast<size_t>(len));
+    if (stripBom && !text.empty() && text.front() == 0xFEFF)
+        text.erase(text.begin());
+    return text;
+}
+
 std::wstring ConvertToWstring(const std::string_view& str, CTextFile::UnicodeType encoding)
 {
     std::wstring strW;
@@ -4570,6 +4611,110 @@ std::basic_string<wchar_t> ConvertToString<wchar_t>(const std::wstring& str, CTe
     return str;
 };
 
+int CSearchDlg::SearchDecodedData(CSearchInfo& sInfo, const char* data, size_t size, const std::wstring& searchExpression, UINT syntaxFlags, UINT matchFlags, bool misaligned, bool utf16)
+{
+    const bool   stripBom = !m_bForceBinary;
+    std::wstring text;
+    if (utf16)
+        text = DecodeUtf16Data(data, size, sInfo.encoding == CTextFile::Unicode_Be, misaligned, stripBom);
+    else
+        text = DecodeMultibyteData(data, size, sInfo.encoding == CTextFile::UTF8 ? CP_UTF8 : CP_ACP, stripBom);
+    if (text.empty())
+        return 0;
+
+    std::wstring expr = searchExpression;
+    if (!m_bUseRegex && m_bWholeWords)
+    {
+        expr = L"\\b" + expr + L"\\b";
+    }
+
+    boost::match_results<std::wstring::const_iterator> whatC;
+    boost::wregex                                      wRegEx  = boost::wregex(expr, syntaxFlags);
+    boost::match_flag_type                             mFlags  = static_cast<boost::match_flag_type>(matchFlags);
+    std::wstring::const_iterator                       start   = text.cbegin();
+    std::wstring::const_iterator                       end     = text.cend();
+    std::wstring::const_iterator                       startIt = start;
+
+    int                                                nFound  = 0;
+    std::vector<long>                                  matchPositions;
+    std::vector<long>                                  matchLengths;
+    while (!m_cancelled && startIt < end)
+    {
+        if (!boost::regex_search(startIt, end, whatC, wRegEx, mFlags, start))
+            break;
+
+        ++nFound;
+        if (m_bNotSearch)
+            break;
+
+        matchPositions.push_back(static_cast<long>(whatC[0].first - start));
+        matchLengths.push_back(static_cast<long>(whatC[0].length()));
+
+        startIt = whatC[0].second;
+        if (startIt == whatC[0].first && startIt < end)
+            ++startIt;
+
+        mFlags |= boost::match_prev_avail;
+        mFlags |= boost::match_not_bob;
+    }
+
+    if (nFound == 0 || m_bNotSearch)
+        return nFound;
+
+    TextOffset<wchar_t> textOffset;
+    textOffset.CalculateLines(text.c_str(), text.c_str() + text.size(), m_cancelled);
+    for (size_t i = 0; i < matchPositions.size(); ++i)
+    {
+        const long posMatchHead = matchPositions[i];
+        long       posMatchTail = posMatchHead + matchLengths[i];
+        if (matchLengths[i] > 0)
+            --posMatchTail;
+        const long lineStart = textOffset.LineFromPosition(posMatchHead);
+        const long lineEnd   = textOffset.LineFromPosition(posMatchTail);
+        long       colMatch  = textOffset.ColumnFromPosition(posMatchHead, lineStart);
+        long       lenMatch  = matchLengths[i];
+
+        for (long line = lineStart; line <= lineEnd; ++line)
+        {
+            if (!sInfo.matchLinesMap.contains(line))
+            {
+                auto linePos      = textOffset.PositionsFromLine(line);
+                auto lineStartPos = std::get<0>(linePos);
+                auto lineEndPos   = std::get<1>(linePos);
+                if (lineEndPos > lineStartPos)
+                    ++lineEndPos;
+                const bool validLine  = lineStartPos != static_cast<size_t>(-1) && lineEndPos != static_cast<size_t>(-1) && lineStartPos < text.size() && lineEndPos >= lineStartPos;
+                const auto clampedEnd = validLine ? (std::min)(lineEndPos, text.size()) : 0;
+                const auto lineLength = validLine ? clampedEnd - lineStartPos : 0;
+                if (validLine && lineLength > 0 && lineLength < 4096)
+                    sInfo.matchLinesMap[line] = text.substr(lineStartPos, lineLength);
+                else
+                    sInfo.matchLinesMap[line] = L"";
+            }
+
+            const auto& sLine        = sInfo.matchLinesMap.at(line);
+            long        lenLineMatch = 0;
+            if (colMatch > 0 && static_cast<size_t>(colMatch - 1) < sLine.length())
+            {
+                lenLineMatch = static_cast<long>(sLine.length()) - colMatch + 1;
+                if (lenMatch < lenLineMatch)
+                    lenLineMatch = lenMatch;
+            }
+
+            sInfo.matchLinesNumbers.push_back(static_cast<DWORD>(line));
+            sInfo.matchColumnsNumbers.push_back(static_cast<DWORD>(colMatch));
+            sInfo.matchLengths.push_back(static_cast<DWORD>(lenLineMatch));
+            if (lenMatch > lenLineMatch)
+            {
+                colMatch = 1;
+                lenMatch -= lenLineMatch;
+            }
+        }
+        ++sInfo.matchCount;
+    }
+    return nFound;
+}
+
 template <typename CharT>
 int CSearchDlg::SearchByFilePath(CSearchInfo& sInfo, const std::wstring& searchRoot, const std::wstring& searchExpression, const std::wstring& replaceExpression, UINT syntaxFlags, UINT matchFlags, bool misaligned, CharT*)
 {
@@ -4579,6 +4724,13 @@ int CSearchDlg::SearchByFilePath(CSearchInfo& sInfo, const std::wstring& searchR
 
     const char*       inData   = inFile.data();
     size_t            inSize   = inFile.size();
+    if (!m_bReplace && !m_bCaptureSearch && inSize <= SEARCHBLOCKSIZE)
+    {
+        const int nCount = SearchDecodedData(sInfo, inData, inSize, searchExpression, syntaxFlags, matchFlags, misaligned, sizeof(CharT) > 1);
+        inFile.close();
+        return nCount;
+    }
+
     size_t            skipSize = 0;
     size_t            workSize = inSize;
     size_t            dropSize = 0;
@@ -4894,9 +5046,8 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot)
     {
         sInfo.readError = true;
     }
-    else if (bLoadResult && ((type != CTextFile::Binary) || m_bIncludeBinary)) // transcoded
+    else if (bLoadResult && type != CTextFile::Binary) // transcoded
     {
-        // for unrecognized, only `Binary` returns true and treated as UTF-16LE, the same as app internal
         try
         {
             nCount = SearchOnTextFile(sInfo, searchRoot, searchExpression, replaceExpression, syntaxFlags, matchFlags, textFile);
@@ -4904,6 +5055,28 @@ void CSearchDlg::SearchFile(CSearchInfo sInfo, const std::wstring& searchRoot)
         catch (const std::exception& ex)
         {
             sInfo.exception = CUnicodeUtils::StdGetUnicode(ex.what());
+        }
+
+        if (nCount <= 0 && type == CTextFile::Unicode_Le && !textFile.HasBOM() && sInfo.exception.empty() &&
+            !m_bReplace && !m_bCaptureSearch && textFile.GetFileLength() > 0 && textFile.GetFileLength() <= SEARCHBLOCKSIZE)
+        {
+            bool hasBOM       = false;
+            bool inconclusive = false;
+            int  skip         = 0;
+            if (GetCodepageFromBuf(textFile.GetFileContent(), textFile.GetFileLength(), hasBOM, inconclusive, skip) == 1201)
+            {
+                sInfo.encoding = CTextFile::Unicode_Be;
+                try
+                {
+                    nCount = SearchDecodedData(sInfo, static_cast<const char*>(textFile.GetFileContent()), static_cast<size_t>(textFile.GetFileLength()), searchExpression, syntaxFlags, matchFlags, false, true);
+                }
+                catch (const std::exception& ex)
+                {
+                    sInfo.exception = CUnicodeUtils::StdGetUnicode(ex.what());
+                }
+                if (nCount <= 0)
+                    sInfo.encoding = type;
+            }
         }
     }
     else if ((type != CTextFile::Binary) || m_bIncludeBinary || m_bForceBinary)
